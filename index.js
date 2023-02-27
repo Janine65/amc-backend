@@ -1,13 +1,16 @@
 
 const express = require('express');
+const FastAPI = require('fastapi')
+const CORSMiddleware = require('fastapi.middleware.cors')
+
 const helmet = require('helmet');
 const path = require("path");
-const _ = require("./public/js/cipher");
+const _ = require("./src/cipher");
 const multer = require('multer') // v1.0.5
 const upload = multer() // for parsing multipart/form-data
 const expresssession = require("express-session");
 const SequelizeStore = require("connect-session-sequelize")(expresssession.Store);
-const system = require("./public/js/system");
+const system = require("./src/system");
 const https = require("https");
 const fs = require('fs');
 const passport = require('passport');
@@ -34,7 +37,22 @@ function extendDefaultFields(defaults, session) {
   };
 }
 
-const app = express();
+const app = FastAPI();
+origins = [
+  "http://localhost",
+  "http://localhost:8000",
+  "http://localhost:8080",
+  "http://localhost:8081",
+]
+
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=origins,
+  allow_credentials=True,
+  allow_methods=["*"],
+  allow_headers=["*"],
+)
+
 
 const winston = require('winston')
 
@@ -77,7 +95,7 @@ const logger = winston.createLogger({
 })();
 
 
-const db = require("./public/js/db")
+const db = require("./src/db")
 
 let store = new SequelizeStore({
   db: sequelize,
@@ -111,7 +129,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-const userRouter = require('./public/js/controllers/user');
+const userRouter = require('./src/controllers/user');
 app.get('/Users/data', userRouter.getData);
 app.put('/Users/data', userRouter.updateData);
 app.delete('/Users/data', userRouter.deleteData);
@@ -138,9 +156,9 @@ passport.deserializeUser(function (user, done) {
 app.get('/System/env', function (req, res) {
   res.json({ env: process.env.NODE_ENV });
 })
-const exportData = require("./public/js/controllers/exports");
+const exportData = require("./src/controllers/exports");
 
-const adresse = require("./public/js/controllers/adresse");
+const adresse = require("./src/controllers/adresse");
 app.get('/Adressen/data', adresse.getData);
 app.post('/Adressen/data', adresse.updateData);
 app.put('/Adressen/data', adresse.updateData);
@@ -150,11 +168,11 @@ app.get('/Adressen/data', adresse.getOneData);
 app.get('/Adressen/getOverviewData', adresse.getOverviewData);
 app.put('/Adressen/export', exportData.writeAdresses);
 
-const qrbill = require('./public/js/controllers/createbill');
+const qrbill = require('./src/controllers/createbill');
 app.post('/Adressen/email', qrbill.sendEmail);
 app.post('/Adressen/qrbill', qrbill.createQRBill);
 
-const anlaesse = require("./public/js/controllers/anlaesse");
+const anlaesse = require("./src/controllers/anlaesse");
 app.get('/Anlaesse/data', anlaesse.getData);
 app.post('/Anlaesse/data', anlaesse.updateData);
 app.put('/Anlaesse/data', anlaesse.updateData);
@@ -166,7 +184,7 @@ app.get('/Anlaesse/getOverviewData', anlaesse.getOverviewData);
 app.post('/Anlaesse/sheet', exportData.writeExcelTemplate);
 app.post('/Anlaesse/writeAuswertung', exportData.writeAuswertung);
 
-const meisterschaft = require("./public/js/controllers/meisterschaft");
+const meisterschaft = require("./src/controllers/meisterschaft");
 app.get('/Meisterschaft/data', meisterschaft.getData);
 app.post('/Meisterschaft/data', meisterschaft.addData);
 app.put('/Meisterschaft/data', meisterschaft.updateData);
@@ -176,17 +194,17 @@ app.get('/Meisterschaft/mitglied', meisterschaft.getMitgliedData);
 app.get('/Meisterschaft/getChartData', meisterschaft.getChartData);
 app.get('/Meisterschaft/checkJahr', meisterschaft.checkJahr);
 
-const clubmeister = require("./public/js/controllers/clubmeister");
+const clubmeister = require("./src/controllers/clubmeister");
 app.get('/Clubmeister/data', clubmeister.getData);
 app.get('/Clubmeister/refresh', clubmeister.calcMeister);
 app.get('/Clubmeister/getOverviewData', clubmeister.getOverviewData);
-const kegelmeister = require("./public/js/controllers/kegelmeister");
+const kegelmeister = require("./src/controllers/kegelmeister");
 app.get('/Kegelmeister/data', kegelmeister.getData);
 app.get('/Kegelmeister/refresh', kegelmeister.calcMeister);
 app.get('/Kegelmeister/getOverviewData', kegelmeister.getOverviewData);
 
 
-const parameter = require("./public/js/controllers/parameter");
+const parameter = require("./src/controllers/parameter");
 app.get('/Parameter/data', parameter.getData);
 app.post('/Parameter/data', upload.array(), parameter.updateData);
 app.put('/Parameter/data', upload.array(), parameter.updateData);
@@ -197,7 +215,7 @@ parameter.getGlobal();
 
 console.log(global.Parameter);
 
-const fiscalyear = require("./public/js/controllers/fiscalyear");
+const fiscalyear = require("./src/controllers/fiscalyear");
 app.get('/Fiscalyear/data', fiscalyear.getData);
 app.post('/Fiscalyear/data', upload.array(), fiscalyear.addData);
 app.put('/Fiscalyear/data', upload.array(), fiscalyear.updateData);
@@ -207,7 +225,7 @@ app.get('/Fiscalyear/getOneData', fiscalyear.getOneData);
 app.get('/Fiscalyear/export', exportData.writeExcelData);
 app.post('/Fiscalyear/close', fiscalyear.closeYear);
 
-const account = require("./public/js/controllers/account");
+const account = require("./src/controllers/account");
 app.get('/Account/data', account.getData);
 app.post('/Account/data', upload.array(), account.addData);
 app.put('/Account/data', upload.array(), account.updateData);
@@ -217,7 +235,7 @@ app.get('/Account/export', exportData.writeAccountToExcel);
 app.get('/Account/getOneDataByOrder', account.getOneDataByOrder);
 
 
-const journal = require("./public/js/controllers/journal");
+const journal = require("./src/controllers/journal");
 app.get('/Journal/data', journal.getData);
 app.post('/Journal/data', upload.array(), journal.addData);
 app.put('/Journal/data', upload.array(), journal.updateData);
@@ -235,7 +253,7 @@ app.get('/Journal/getAtt', journal.getAttachment);
 app.get('/Journal/getAllAtt', journal.getAllAttachment);
 app.get('/Journal/export', exportData.writeJournal);
 
-const budget = require("./public/js/controllers/budget");
+const budget = require("./src/controllers/budget");
 const { exit, connected } = require('process');
 app.get('/Budget/data', budget.getData);
 app.post('/Budget/data', upload.array(),  budget.addData);

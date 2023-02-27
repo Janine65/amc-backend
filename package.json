@@ -11,21 +11,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com:Janine65/amc-administration.git"
+    "url": "https://github.com:Janine65/amc-backend.git"
   },
   "keywords": [
-    "webix",
     "admin",
     "private"
   ],
   "author": "Janine Franken",
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/Janine65/amc-administration/issues"
+    "url": "https://github.com/Janine65/amc-backend/issues"
   },
-  "homepage": "https://github.com/Janine65/amc-administration",
+  "homepage": "https://github.com/Janine65/amc-backend",
   "dependencies": {
-    "@mdi/font": "^6.5.95",
     "archiver": "^5.3.0",
     "blob-stream": "^0.1.3",
     "connect-session-sequelize": "^7.0.4",
@@ -34,13 +32,13 @@
     "express": "^4.17.2",
     "express-fileupload": "^1.2.0",
     "express-session": "^1.17.1",
+    "fastapi": "^0.0.8",
     "file-saver": "^2.0.5",
     "formidable": "^2.1.1",
     "helmet": "^4.6.0",
     "mariadb": "^2.5.2",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^2.2.5",
-    "nedb": "^1.8.0",
     "nodemailer": "^6.9.0",
     "numeral": "^2.0.6",
     "passport": "^0.6.0",
@@ -54,10 +52,8 @@
     "project-version": "^2.0.0",
     "sequelize": "^6.28.0",
     "swissqrbill": "^3.2.2",
-    "underscore": "^1.13.2",
     "uuid": "^8.3.2",
     "voilab-pdf-table": "^0.5.1",
-    "webix": "^8.3.0",
     "winston": "^3.8.2"
   },
   "devDependencies": {

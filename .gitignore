@@ -8,7 +8,6 @@ public/exports/*
 *.zip
 .DS_Store
 public/.DS_Store
-public/js/.DS_Store
 public/uploads/*
 node_modules
 documents/*
