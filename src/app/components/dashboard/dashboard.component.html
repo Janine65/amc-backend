@@ -1,1 +1,42 @@
-<p>dashboard works!</p>
+<div *ngIf="!loading">
+    <p-fieldset legend="Mitglieder">
+        <div class="grid">
+            <p-fieldset legend="Aktive Mitglieder" class="col-4">
+                {{getAnzahlForKey('Aktive Mitglieder')}}
+            </p-fieldset>
+            <p-fieldset legend="SAM Mitglieder" class="col-4">
+                {{getAnzahlForKey('SAM Mitglieder')}}
+            </p-fieldset>
+            <p-fieldset legend="Freimitglieder" class="col-4">
+                {{getAnzahlForKey('Freimitglieder')}}
+            </p-fieldset>
+        </div>
+    </p-fieldset>
+    <p-fieldset legend="Anlässe">
+        <div class="grid">
+            <p-fieldset legend="Total Anlässe" class="col-6">
+                {{getAnzahlForKey('Total Anlässe')}}
+            </p-fieldset>
+            <p-fieldset legend="Zukünftige Anlässe" class="col-6">
+                {{getAnzahlForKey('Zukünftige Anlässe')}}
+            </p-fieldset>
+        </div>
+    </p-fieldset>
+    <p-fieldset legend="Meisterschaft">
+        <div class="grid">
+            <p-fieldset legend="Clubmeisterschaft" class="col-6">
+                {{getAnzahlForKey('Clubmeisterschaft')}}
+            </p-fieldset>
+            <p-fieldset legend="Kegelmeisterschaft" class="col-6">
+                {{getAnzahlForKey('Kegelmeisterschaft')}}
+            </p-fieldset>
+        </div>
+    </p-fieldset>
+    <p-fieldset legend="Journal">
+            <p-fieldset legend="Buchhaltung" class="col-6">
+                <div [class]="fiscalyear?.state === 1 ? 'open' : fiscalyear?.state === 2 ? 'prov-closed' : 'closed'">
+                {{getAnzahlForKey('Buchhaltung')}}
+            </div>
+            </p-fieldset>
+    </p-fieldset>
+</div>
