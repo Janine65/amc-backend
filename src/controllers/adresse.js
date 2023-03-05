@@ -16,7 +16,7 @@ module.exports = {
 		// count of SAM_Mitglieder
 		// count of not SAM_Mitglieder
 		
-		let arResult = [{label: 'Aktive Mitglieder', anzahl: 0},{label: 'SAM Mitglieder', anzahl: 0},{label: 'Freimitglieder', anzahl: 0}];
+		let arResult = [{label: 'Aktive Mitglieder', value: 0},{label: 'SAM Mitglieder', value: 0},{label: 'Freimitglieder', value: 0}];
 
 		let anzahl = await Adressen.count({
 			where: {"austritt": { [Op.gt]: Sequelize.fn('NOW') } }

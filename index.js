@@ -1,7 +1,7 @@
 
 const express = require('express');
-const FastAPI = require('fastapi')
-const CORSMiddleware = require('fastapi.middleware.cors')
+const bodyParser = require('body-parser')
+const cors = require('cors')
 
 const helmet = require('helmet');
 const path = require("path");
@@ -11,7 +11,7 @@ const upload = multer() // for parsing multipart/form-data
 const expresssession = require("express-session");
 const SequelizeStore = require("connect-session-sequelize")(expresssession.Store);
 const system = require("./src/system");
-const https = require("https");
+const http = require("http");
 const fs = require('fs');
 const passport = require('passport');
 const fileUpload = require('express-fileupload');
@@ -37,22 +37,11 @@ function extendDefaultFields(defaults, session) {
   };
 }
 
-const app = FastAPI();
-origins = [
-  "http://localhost",
-  "http://localhost:8000",
-  "http://localhost:8080",
-  "http://localhost:8081",
-]
-
-app.add_middleware(
-  CORSMiddleware,
-  allow_origins=origins,
-  allow_credentials=True,
-  allow_methods=["*"],
-  allow_headers=["*"],
-)
-
+const app = express();
+app.use( bodyParser.json());
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true})); 
+app.use(cors())
 
 const winston = require('winston')
 
@@ -106,6 +95,7 @@ let store = new SequelizeStore({
 });
 
 // 
+app.set('trust proxy', 1) // trust first proxy
 app.use(express.json());
 app.use("/", express.static(path.join(__dirname, '/public')));
 
@@ -129,6 +119,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get('/', function(req,res){
+  res.json({status: 'ok', message: 'alive'});
+})
 const userRouter = require('./src/controllers/user');
 app.get('/Users/data', userRouter.getData);
 app.put('/Users/data', userRouter.updateData);
@@ -301,7 +294,7 @@ const options = {
   ca: fs.readFileSync('chain.pem')
 };
 
-https.createServer(options, app).listen(global.gConfig.node_port, () => {
+http.createServer(app).listen(global.gConfig.node_port,() => {
   console.log('%s listening on port %d in %s mode - Version %s', global.gConfig.app_name, global.gConfig.node_port, app.settings.env, global.system.version);
 });
 
