@@ -32,6 +32,7 @@ import { AdressenComponent } from './components/verwaltung/adressen/adressen.com
 import { AnlaesseComponent } from './components/verwaltung/anlaesse/anlaesse.component';
 import { ParameterComponent } from './components/verwaltung/parameter/parameter.component';
 import { UserComponent } from './components/verwaltung/user/user.component';
+import { BaseTableComponent } from './components/shared/basetable/basetable.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { UserComponent } from './components/verwaltung/user/user.component';
     AdressenComponent,
     AnlaesseComponent,
     ParameterComponent,
-    UserComponent
+    UserComponent,
+    BaseTableComponent
   ],
   imports: [
     BrowserModule,

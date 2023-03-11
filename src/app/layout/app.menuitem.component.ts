@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, Host, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+/* eslint-disable no-mixed-spaces-and-tabs */
+import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Subscription } from 'rxjs';
@@ -49,6 +50,7 @@ import { LayoutService } from './service/app.layout.service';
 })
 export class AppMenuitemComponent implements OnInit, OnDestroy {
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     @Input() item: any;
 
     @Input() index!: number;
@@ -84,6 +86,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
         });
 
         this.router.events.pipe(filter(event => event instanceof NavigationEnd))
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             .subscribe(params => {
                 if (this.item.routerLink) {
                     this.updateActiveStateFromRoute();

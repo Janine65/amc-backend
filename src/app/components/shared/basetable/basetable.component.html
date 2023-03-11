@@ -1,0 +1,15 @@
+<p-table [columns]="tableOptions" [value]="tableData">
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            {{buildHeader()}}
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-adr let-columns="columns">
+        <tr>
+            <td *ngFor="let col of columns">
+                <div *ngIf="formatFunction === undefined">{{adr[col.field]}}</div>
+                <div *ngIf="formatFunction">{{formatFunction(col.field,adr[col.field])}}</div>
+            </td>            
+        </tr>
+    </ng-template>
+</p-table>

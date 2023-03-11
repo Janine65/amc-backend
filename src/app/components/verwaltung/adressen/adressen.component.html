@@ -1,26 +1,5 @@
-<p-table [value]="adressList" *ngIf="!loading">
-    <ng-template pTemplate="header">
-        <tr>
-            <th>MNR</th>
-            <th>Name</th>
-            <th>Vorname</th>
-            <th>Adresse</th>
-            <th>PLZ</th>
-            <th>Ort</th>
-            <th>Land</th>
-            <th>Email</th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-adr>
-        <tr>
-            <td>{{adr.mnr}}</td>
-            <td>{{adr.name}}</td>
-            <td>{{adr.vorname}}</td>
-            <td>{{adr.adresse}}</td>
-            <td>{{adr.plz}}</td>
-            <td>{{adr.ort}}</td>
-            <td>{{adr.land}}</td>
-            <td>{{adr.email}}</td>
-        </tr>
-    </ng-template>
-</p-table>
+<app-basetable
+    [tableOptions]="cols"
+    [tableData]="adressList"
+    [formatFunction]="formatField">
+</app-basetable>
