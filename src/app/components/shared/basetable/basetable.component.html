@@ -1,15 +1,44 @@
-<p-table [columns]="tableOptions" [value]="tableData">
+<p-table #table [columns]="tableOptions" [value]="tableData" selectionMode="single" [(selection)]="selectedRecord"
+    (onFilter)="filterEvent($event)" dataKey="id" (onRowSelect)="rowSelect($event.data)" sortMode="multiple">
+    <ng-template pTemplate="caption">
+        <div class="flex" *ngIf="checkSorting()">
+            <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                (click)="clear(table)"></button>
+            <button pButton *ngFor="let but of tableToolbar; index as ind" [label]="but.label!" [icon]="but.icon!"
+                [ngClass]="but.btnClass!" (click)="clickOnToolbar(ind)"></button>
+        </div>
+    </ng-template>
     <ng-template pTemplate="header" let-columns>
         <tr>
-            {{buildHeader()}}
+            <th *ngFor="let col of columns" [pSortableColumnDisabled]="!col.sortable" [pSortableColumn]="col.field">
+                {{col.header}}<p-sortIcon field="col.field" *ngIf="col.sortable"></p-sortIcon>
+                <p-columnFilter *ngIf="col.filtering" [field]="col.field" [type]="col.filter"
+                    display="menu"></p-columnFilter>
+            </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-adr let-columns="columns">
-        <tr>
+    <ng-template pTemplate="body" let-data let-columns="columns">
+        <tr [pSelectableRow]="data">
             <td *ngFor="let col of columns">
-                <div *ngIf="formatFunction === undefined">{{adr[col.field]}}</div>
-                <div *ngIf="formatFunction">{{formatFunction(col.field,adr[col.field])}}</div>
-            </td>            
+                <div *ngIf="col.format === false && col.filter !== 'boolean'">{{data[col.field]}}</div>
+                <div *ngIf="col.format === false && col.filter === 'boolean'">
+                    <i *ngIf="data[col.field]" class="pi pi-check mr-4 p-text-secondary"></i>
+                </div>
+                <div *ngIf="col.format && formatFunction">{{formatFunction(col.field,data[col.field])}}</div>
+            </td>
+            <td>
+                <button type="button" pButton pRipple icon="pi pi-file-edit" (click)="selectData(data)"></button>
+            </td>
         </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td [colSpan]="tableOptions.length">Keine Datensaätze gefunden.</td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+            {{tableData ? tableData.length : 0 }} Datensätze.
+        </div>
     </ng-template>
 </p-table>
