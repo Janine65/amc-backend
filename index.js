@@ -8,39 +8,39 @@ const path = require("path");
 const _ = require("./src/cipher");
 const multer = require('multer') // v1.0.5
 const upload = multer() // for parsing multipart/form-data
-const expresssession = require("express-session");
-const SequelizeStore = require("connect-session-sequelize")(expresssession.Store);
+//const expresssession = require("express-session");
+//const SequelizeStore = require("connect-session-sequelize")(expresssession.Store);
 const system = require("./src/system");
 const http = require("http");
 const fs = require('fs');
-const passport = require('passport');
+//const passport = require('passport');
 const fileUpload = require('express-fileupload');
 const { Sequelize } = require('sequelize');
+const errorHandler = require('./src/authorize/error-handler')
 
 // environment variables
 if (process.env.NODE_ENV == undefined)
   process.env.NODE_ENV = 'development';
-
-// config variables
-const config = require('./config/config.js');
 
 global.documents = __dirname + "/documents/"
 global.uploads = __dirname + "/public/uploads/"
 global.exports = __dirname + "/public/exports/"
 global.public = "/uploads/"
 
-function extendDefaultFields(defaults, session) {
-  return {
-    data: defaults.data,
-    expires: defaults.expires,
-    userid: session.userid,
-  };
-}
+const cfg = require('./config/config')
+// function extendDefaultFields(defaults, session) {
+//   return {
+//     data: defaults.data,
+//     expires: defaults.expires,
+//     userid: session.userid,
+//   };
+// }
 
 const app = express();
-app.use( bodyParser.json());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true})); 
+  extended: true
+}));
 app.use(cors())
 
 const winston = require('winston')
@@ -56,43 +56,46 @@ const logger = winston.createLogger({
   ],
 });
 
-(async() => {
+
+
+(async () => {
   const conn = new Sequelize(global.gConfig.database, global.gConfig.db_user, global.cipher.decrypt(global.gConfig.db_pwd), {
-    host: global.gConfig.dbhost, 
+    host: global.gConfig.dbhost,
     port: global.gConfig.port,
     dialect: global.gConfig.dbtype,
     logging: (msg) => logger.info(msg),
   });
   global.sequelize = conn;
-  
+
   global.connected = false;
-    let retries = 5;
+  let retries = 5;
   while (retries) {
     try {
       await global.sequelize.authenticate();
       global.connected = true;
-      break;        
+      break;
     } catch (err) {
       console.log(err);
       retries -= 1;
       console.log(`retries left: ${retries}`)
       await new Promise(res => setTimeout(res, 5000));
     }
-  } 
+  }
   if (!global.connected)
     exit(1)
-})();
+    
 
+})();
 
 const db = require("./src/db")
 
-let store = new SequelizeStore({
-  db: sequelize,
-  table: "Session",
-  extendDefaultFields: extendDefaultFields,
-  checkExpirationInterval: 15 * 60 * 1000, // The interval at which to cleanup expired sessions in milliseconds.
-  expiration: 30 * 60 * 1000  // The maximum age (in milliseconds) of a valid session.
-});
+// let store = new SequelizeStore({
+//   db: sequelize,
+//   table: "Session",
+//   extendDefaultFields: extendDefaultFields,
+//   checkExpirationInterval: 15 * 60 * 1000, // The interval at which to cleanup expired sessions in milliseconds.
+//   expiration: 30 * 60 * 1000  // The maximum age (in milliseconds) of a valid session.
+// });
 
 // 
 app.set('trust proxy', 1) // trust first proxy
@@ -104,47 +107,51 @@ expireDate.setDate(expireDate.getDate() + 1);
 
 
 app.use(helmet());
-app.use(
-  expresssession({
-    key: 'user_sid',
-    secret: global.cipher.secret,
-    saveUninitialized: true,
-    store: store,
-    resave: false, // we support the touch method so per the express-session docs this should be set to false
-    proxy: true, // if you do SSL outside of node.
-    cookie: { expires: expireDate }
-  })
-);
+// app.use(
+//   expresssession({
+//     key: 'user_sid',
+//     secret: global.cipher.secret,
+//     saveUninitialized: true,
+//     store: store,
+//     resave: false, // we support the touch method so per the express-session docs this should be set to false
+//     proxy: true, // if you do SSL outside of node.
+//     cookie: { expires: expireDate }
+//   })
+// );
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
-app.get('/', function(req,res){
-  res.json({status: 'ok', message: 'alive'});
+app.use('/users', require('./src/authorize/users.controller'));
+
+app.use(errorHandler);
+
+app.get('/', function (req, res) {
+  res.json({ status: 'ok', message: 'alive' });
 })
-const userRouter = require('./src/controllers/user');
-app.get('/Users/data', userRouter.getData);
-app.put('/Users/data', userRouter.updateData);
-app.delete('/Users/data', userRouter.deleteData);
-app.get('/Users/readUser', userRouter.readUser);
-app.put('/Users/updateProfile', userRouter.updateProfle);
-app.get('/Users/checkEmail', userRouter.checkEmail);
+// const userRouter = require('./src/controllers/user');
+// app.get('/Users/data', userRouter.getData);
+// app.put('/Users/data', userRouter.updateData);
+// app.delete('/Users/data', userRouter.deleteData);
+// app.get('/Users/readUser', userRouter.readUser);
+// app.put('/Users/updateProfile', userRouter.updateProfle);
+// app.get('/Users/checkEmail', userRouter.checkEmail);
 
-app.get('/user/register', userRouter.registerView);
-app.post('/user/register', userRouter.registerPost);
-app.post('/user/login', userRouter.loginUser);
-app.post('/user/logout', function (req, res) {
-  req.logout((err) => {
-    res.redirect('/');
-  });
-});
+// app.get('/user/register', userRouter.registerView);
+// app.post('/user/register', userRouter.registerPost);
+// app.post('/user/login', userRouter.loginUser);
+// app.post('/user/logout', function (req, res) {
+//   req.logout((err) => {
+//     res.redirect('/');
+//   });
+// });
 
-passport.serializeUser(function (user, done) {
-  done(null, { id: user.userid });
-});
-passport.deserializeUser(function (user, done) {
-  done(null, { id: user.userid });
-});
+// passport.serializeUser(function (user, done) {
+//   done(null, { id: user.userid });
+// });
+// passport.deserializeUser(function (user, done) {
+//   done(null, { id: user.userid });
+// });
 
 app.get('/System/env', function (req, res) {
   res.json({ env: process.env.NODE_ENV });
@@ -249,7 +256,7 @@ app.get('/Journal/export', exportData.writeJournal);
 const budget = require("./src/controllers/budget");
 const { exit, connected } = require('process');
 app.get('/Budget/data', budget.getData);
-app.post('/Budget/data', upload.array(),  budget.addData);
+app.post('/Budget/data', upload.array(), budget.addData);
 app.put('/Budget/data', upload.array(), budget.updateData);
 app.delete('/Budget/data', budget.removeData);
 app.get('/Budget/getOne', budget.getOneData);
@@ -288,13 +295,7 @@ process.stdout.on('error', function (err) {
   }
 });
 
-const options = {
-  key: fs.readFileSync('privkey.pem'),
-  cert: fs.readFileSync('cert.pem'),
-  ca: fs.readFileSync('chain.pem')
-};
-
-http.createServer(app).listen(global.gConfig.node_port,() => {
+http.createServer(app).listen(global.gConfig.node_port, () => {
   console.log('%s listening on port %d in %s mode - Version %s', global.gConfig.app_name, global.gConfig.node_port, app.settings.env, global.system.version);
 });
 

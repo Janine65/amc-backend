@@ -24,7 +24,6 @@ passport.use(new LocalStrategy({
           return done(null, false, { message: 'Incorrect password.' });
         }
         // fillup lastlogin
-
         return done(null, user);
       })
       .catch((e) => console.error(e));

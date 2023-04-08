@@ -5,7 +5,8 @@ module.exports = {
 	getData: function (req, res) {		
 		Adressen.findAll({ where: { 			
 			austritt: { [Op.gte]: new Date() }
-			 }})
+			 },
+			order:[['name', 'asc'],['vorname', 'asc']]})
 		.then(data => res.json(data))
 		.catch((e) => console.error(e));		
 	},
@@ -21,19 +22,19 @@ module.exports = {
 		let anzahl = await Adressen.count({
 			where: {"austritt": { [Op.gt]: Sequelize.fn('NOW') } }
 		});
-		arResult[0].anzahl = anzahl;
+		arResult[0].value = anzahl;
 
 		anzahl = await Adressen.count({
 			where: [{"austritt": { [Op.gt]: Sequelize.fn('NOW') } }, 
 				{"sam_mitglied": true}]
 		});
-		arResult[1].anzahl = anzahl;
+		arResult[1].value = anzahl;
 
 		anzahl = await Adressen.count({
 			where: [{"austritt": {[Op.gt]: Sequelize.fn('NOW')}}, 
 			{"sam_mitglied": false}]
 		});
-		arResult[2].anzahl = anzahl;
+		arResult[2].value = anzahl;
 
 		res.json(arResult);
 	},

@@ -36,5 +36,7 @@
         "port": "5435",
         "dbtype": "postgres",
         "defaultEmail" : "HansjoergDutler"
-    }
+    },
+    "secret": "Auto Moto Club Swissair"
+    
 }
