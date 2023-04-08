@@ -1,0 +1,27 @@
+<p-toast></p-toast>
+<form #f="ngForm" autocomplete="off" (ngSubmit)="onSubmit(f)">
+    <div class="card">
+        <div class="formgrid grid">
+            <label for="email" class="p-2 w-2">Email</label>
+            <input type="text" name="email" id="email" pInputText
+                class="text-base text-color surface-overlay p-2 appearance-none outline-none w-2" ngModel
+                #email="ngModel" name="email" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$">
+            <app-input-validation [control]="email" [errDef]="{ required: 'Emailadresse ist notwendig',
+                        pattern:  'Keine gültige Emailadresse'}"></app-input-validation>
+        </div>
+        <div class="formgrid grid">
+            <label for="password" class="p-2 w-2">Passwort</label>
+            <p-password id="password" name="password" #password="ngModel" ngModel [toggleMask]="false"
+                required
+                class="text-base text-color surface-overlay appearance-none outline-none w-2" ></p-password>
+            <app-input-validation [control]="password" [errDef]="{ required: 'Passwort muss angegeben sein'}">
+            </app-input-validation>
+        </div>
+        <div class="formgrid grid">
+            <button pButton type="button" [disabled]="loading" class="p-button-primary p-button-outlined p-2"
+                (click)="onSubmit(f)">
+                Login
+            </button>
+        </div>
+    </div>
+</form>

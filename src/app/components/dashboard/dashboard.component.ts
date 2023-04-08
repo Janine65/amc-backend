@@ -2,8 +2,8 @@
 /* eslint-disable prefer-spread */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, combineLatest, from, map } from 'rxjs';
-import { BackendService } from 'src/app/service/backend.service';
-import { Fiscalyear, OverviewData, ParamData } from 'src/app/service/datatypes';
+import { BackendService } from '@app/service/backend.service';
+import { Fiscalyear, OverviewData, ParamData } from 'src/app/models/datatypes';
 
 @Component({
   selector: 'app-dashboard',

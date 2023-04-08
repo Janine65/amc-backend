@@ -13,17 +13,10 @@
     </button>
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-        <button class="p-link layout-topbar-button">
-            <i class="pi pi-calendar"></i>
-            <span>Calendar</span>
-        </button>
-        <button class="p-link layout-topbar-button">
-            <i class="pi pi-user"></i>
-            <span>Profile</span>
-        </button>
-        <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">
-            <i class="pi pi-cog"></i>
-            <span>Settings</span>
-        </button>
+        <span *ngIf="isLoggedIn()" class="mt-4">{{getLoggedinUser()}}</span>
+        <button #accBtn class="p-link layout-topbar-button" (click)="clickUser()" >
+            <i class="pi pi-user" [style]="isLoggedIn() ? 'color: green' : 'color: black'"></i>            
+        </button>        
+        <p-contextMenu #cmUser *ngIf="isLoggedIn()" [target]="accBtn" [model]="userItems" triggerEvent="click"></p-contextMenu>
     </div>
 </div>

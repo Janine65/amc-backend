@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Adresse, Fiscalyear, OverviewData, ParamData } from './datatypes';
-import { environment } from 'src/environments/environment.prod';
+import { Adresse, Fiscalyear, OverviewData, ParamData } from '../models/datatypes';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ import { environment } from 'src/environments/environment.prod';
 export class BackendService {
 
   constructor(private http: HttpClient) { }
+
+  
 
   getParameterData(): Observable<ParamData[]> {
     const apiURL = environment.apiUrl + '/Parameter/data';
@@ -84,5 +87,28 @@ export class BackendService {
       'Access-Control-Allow-Origin': '*',
     })
     return this.http.get<Adresse[]>(apiURL, {headers: header});
+  }
+
+  getAdressenFK(): Observable<any> {
+    const apiURL = environment.apiUrl + '/data/getFkData'
+    const header = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Origin': '*',
+    })
+    return this.http.get<Adresse[]>(apiURL, {headers: header});
+  }
+
+  updateData(adresse: Adresse): Observable<Adresse> {
+    const apiURL = environment.apiUrl + '/Adressen/data'
+    const header = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Origin': '*',
+    })
+    const body = JSON.stringify(adresse)
+    return this.http.post<Adresse>(apiURL, body, {headers: header});
   }
 }

@@ -1,0 +1,141 @@
+<p-toast></p-toast>
+<p-scrollPanel [style]="{width: '100%', height: '100%'}">
+    <form #f="ngForm" autocomplete="off" (ngSubmit)="save(f)">
+        <div class="card">
+            <div class="formgrid grid">
+                <div class="field col-12 md:col-6">
+                    <label for="geschlecht">Geschlecht</label>
+                    <p-selectButton [options]="lstGeschlecht" [(ngModel)]="adresse.geschlecht" optionLabel="name"
+                        optionValue="code" name="geschlecht" id="geschlecht" #geschlect="ngModel" required></p-selectButton>
+                    <app-input-validation [control]="geschlect" [errDef]="{ required: 'Geschlecht muss ausgewählt sein'}">
+                    </app-input-validation>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="mnr">MNR</label>
+                    <input id="mnr" [disabled]="true" pInputText
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="adresse.mnr" name="mnr" />
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="vorname">Vorname</label>
+                    <input type="text" id="vorname" pInputText name="vorname" #vorname="ngModel" minlength="3" required
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="adresse.vorname">
+                    <app-input-validation [control]="vorname" [errDef]="{ required: 'A vorname is required',
+                                minlength: 'The vorname should be at least 3 characteres'}">
+                    </app-input-validation>
+
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="name">Nachname</label>
+                    <input type="text" id="name" pInputText
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" name="name"
+                        #name="ngModel" minlength="3" required [(ngModel)]="adresse.name">
+                    <app-input-validation [control]="name" [errDef]="{ required: 'A name is required',
+                                minlength: 'The name should be at least 3 characteres'}">
+                    </app-input-validation>
+                </div>
+                <div class="field col-12">
+                    <label for="strasse">Strasse</label>
+                    <input type="text" id="adresse" pInputText name="strasse" #strasse="ngModel" minlength="3" required
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="adresse.adresse">
+                    <app-input-validation [control]="strasse" [errDef]="{ required: 'A strasse is required',
+                                minlength: 'The strasse should be at least 3 characteres'}">
+                    </app-input-validation>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <label for="plz">PLZ</label>
+                    <input type="text" id="plz" pInputText
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" name="plz"
+                        #plz="ngModel" minlength="4" required [(ngModel)]="adresse.plz">
+                    <app-input-validation [control]="plz" [errDef]="{ required: 'A plz is required',
+                                minlength: 'The plz should be at least 4 characteres'}">
+                    </app-input-validation>
+                </div>
+                <div class="field col-12 md:col-8">
+                    <label for="ort" class="p-2">Ort</label>
+                    <input type="text" id="ort" pInputText
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" name="ort"
+                        #ort="ngModel" minlength="3" required [(ngModel)]="adresse.ort">
+                    <app-input-validation [control]="ort" [errDef]="{ required: 'A ort is required',
+                                minlength: 'The ort should be at least 3 characteres'}">
+                    </app-input-validation>
+                </div>
+                <div class="field col-12 md:col-3">
+                    <label for="email" class="p-2">Email</label>
+                    <button pButton type="button" icon="pi pi-send" class="p-button-secondary p-button-outlined" 
+                        styleClass="p-button-sm p-button-icon"
+                        (click)="sendEmail()" [disabled]="!adresse.email"></button>
+                    <input type="text" name="email" id="email" pInputText minlength="5"
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="adresse.email" ngModel #email="ngModel" name="email"
+                        pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$">
+                    <app-input-validation [control]="email" [errDef]="{ required: 'A email is required',
+                                pattern:  'Enter a valid email address',
+                                minlength: 'The email should be at least 5 characteres'}"></app-input-validation>
+                </div>
+                <div class="field col-12 md:col-3">
+                    <label for="phone">Telefon</label>
+                    <input type="text" id="phone" pInputText name="phone"
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="adresse.telefon_p">
+                </div>
+                <div class="field col-12 md:col-3">
+                    <label for="mobil">Mobil</label>
+                    <input type="text" id="mobil" pInputText name="mobil"
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="adresse.mobile">
+                </div>
+                <div class="formgroup-inline field col-12">
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="sam" [(ngModel)]="adresse.sam_mitglied" name="sam">
+                        <label for="sam">SAM-Mitglied</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="allianz" [(ngModel)]="adresse.allianz" name="allianz">
+                        <label for="allianz">Allianz</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="vorstand" [(ngModel)]="adresse.vorstand" name="vorstand">
+                        <label for="vorstand">Vorstand</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="revisor" [(ngModel)]="adresse.revisor" name="revisor">
+                        <label for="revisor">Revisor</label>
+                    </div>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="eintritt">Eintritt</label>
+                    <p-calendar dateFormat="dd.mm.yy" id="eintritt" name="eintritt"
+                        class="surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="adresse.eintritt_date"></p-calendar>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="austritt">Austritt</label>
+                    <p-calendar dateFormat="dd.mm.yy" id="austritt" name="austritt"
+                        class="surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="adresse.austritt_date"></p-calendar>
+                </div>
+                <div class="field col-12">
+                    <label for="notes">Notizen</label>
+                    <textarea [(ngModel)]="adresse.notes" id="notes" [rows]="5" name="notes"
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"></textarea>
+                </div>
+                <div class="field col-12">
+                    <label for="geworben">Geworben von</label>
+                    <p-dropdown id="geworben" [options]="dlstFKAdressen" optionLabel="value" optionValue="id"
+                        [filter]="true" filterBy="value" [autoDisplayFirst]="false" [showClear]="true" name="geworben"
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="adresse.adressenid"></p-dropdown>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p-toolbar>
+        <button pButton type="button" label="Zurück" icon="pi pi-back" class="p-button-secondary p-button-outlined"
+            (click)="back()"></button>
+        <button pButton type="button" label="Sicher" icon="pi pi-save" class="p-button-primary p-button-outlined"
+            (click)="save(f)"></button>
+    </p-toolbar>
+</p-scrollPanel>

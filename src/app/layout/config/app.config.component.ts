@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Component, Input } from '@angular/core';
-import { LayoutService } from "../service/app.layout.service";
+import { LayoutService } from "../../service/app.layout.service";
 import { MenuService } from "../app.menu.service";
 
 @Component({

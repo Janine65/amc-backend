@@ -24,9 +24,10 @@ export class ParamData {
 
 export class Adresse extends TableData {
     public mnr?: number;
-    public geschlecht?: number;
+    public geschlecht?: string;
     public name?: string;
     public vorname?: string;
+    public fullname?: string;
     public adresse?: string;
     public plz?: number;
     public ort?: string;
@@ -35,14 +36,16 @@ export class Adresse extends TableData {
     public telefon_g?: string;
     public mobile?: string;
     public email?: string;
-    public eintritt?: Date;
     public sam_mitglied?: boolean;
+    public eintritt?: string;
+    public eintritt_date?: Date;
     public jahresbeitrag?: number;
     public mnr_sam?: number;
     public vorstand?: boolean;
     public ehrenmitglied?: boolean;
     public revisor?: boolean;
-    public austritt?: Date;
+    public austritt?: string;
+    public austritt_date?: Date;
     public austritt_mail?: boolean;
     public adressenid?: number;
     public allianz?: boolean;

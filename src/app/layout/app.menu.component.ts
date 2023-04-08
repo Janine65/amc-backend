@@ -1,20 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { LayoutService } from './service/app.layout.service';
+import { LayoutService } from '../service/app.layout.service';
+import { MenuItem } from 'primeng/api';
+import { User } from '@app/models';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-menu',
     templateUrl: './app.menu.component.html'
 })
+
 export class AppMenuComponent implements OnInit {
 
-    model: any[] = [];
+    public model!: MenuItem[];
+    private username = 'nicht angemeldet';
 
     constructor(public layoutService: LayoutService) { }
 
     ngOnInit() {
+        
         this.model = [
             {
-                label: 'Home',
+                label: '',
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
                 ]
@@ -32,46 +38,19 @@ export class AppMenuComponent implements OnInit {
                 label: 'Auswertungen',
                 items: [
                     { label: 'Meisterschaft', icon: 'pi pi-fw pi-eye', routerLink: ['/blocks'], badge: 'NEW' },
-                    { label: 'Auswertungen', icon: 'pi pi-fw pi-globe', routerLink: []},
+                    { label: 'Auswertungen', icon: 'pi pi-fw pi-globe', routerLink: ['/blocks']},
                 ]
             },
             {
                 label: 'Buchhaltung',
                 items: [
-                    { label: 'Journal', icon: 'pi pi-fw pi-desktop', routerLink: []},
-                    { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-prime', routerLink: ['/utilities/icons'] },
-                    { label: 'Konten', icon: 'pi pi-fw pi-prime', routerLink: ['/utilities/icons'] },
+                    { label: 'Journal', icon: 'pi pi-fw pi-desktop', routerLink: ['/blocks']},
+                    { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-prime', routerLink: ['/blocks'] },
+                    { label: 'Konten', icon: 'pi pi-fw pi-prime', routerLink: ['/blocks'] },
                 ]
             },
-            {
-                label: 'User',
-                icon: 'pi pi-fw pi-briefcase',
-                items: [
-                    {
-                        label: 'Login',
-                        id: 'login',
-                        icon: 'pi pi-fw pi-sign-in',
-                        routerLink: ['/auth/login']
-                    },
-                    {
-                        label: 'Nicht angemeldet',
-                        id: 'username',
-                        icon: 'pi pi-fw pi-user',
-                        items: [
-                            {
-                                label: 'logout',
-                                icon: 'pi pi-fw pi-sign-out',
-                                routerLink: ['/auth/error']
-                            },
-                            {
-                                label: 'Profile',
-                                icon: 'pi pi-fw pi-user',
-                                routerLink: ['/auth/access']
-                            }
-                        ]
-                    },
-                ]
-            },
+
         ];
     }
+
 }

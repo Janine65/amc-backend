@@ -23,11 +23,13 @@ export class TableToolbar {
   public label: string;
   public btnClass: string;
   public icon: string;
+  public isDefault: boolean;
   public clickfnc: ((selRec?: TableData, lstData?: TableData[]) => void);
-  constructor(label: string, btnClass: string, icon: string, clickfnc: (selRec?: TableData | undefined, lstData?: TableData[] | undefined) => void) {
+  constructor(label: string, btnClass: string, icon: string, isDefault: boolean, clickfnc: (selRec?: TableData | undefined, lstData?: TableData[] | undefined) => void) {
     this.label = label;
     this.btnClass = btnClass;
     this.icon = icon;
+    this.isDefault = isDefault;
     this.clickfnc = clickfnc;
   }
 }
@@ -52,23 +54,6 @@ export class BaseTableComponent implements OnInit {
 
   }
 
-  buildHeader() : string {
-    let allHeader = ''
-    this.tableOptions.forEach(col => {
-      let header = '<th '
-      if (col.sortable)
-        header += 'pSortableColumn="' + col.field + '"'
-      header += ">" + col.header
-      if (col.sortable)
-        header += '<p-sortIcon field="' + col.field + '"></p-sortIcon>'
-      
-      header += '</th> '
-      allHeader += header
-    })
-    
-    return allHeader
-  }
-
   clear(table: Table) {
     table.clear();
     }
@@ -80,15 +65,23 @@ export class BaseTableComponent implements OnInit {
       return retVal;
     }
     
+    retDefaultFunc () {
+      const funcDefault = this.tableToolbar?.find(entry => entry.isDefault)
+      if (funcDefault)
+        return funcDefault.clickfnc
+
+      return this.selectData
+    }
+
     filterEvent(event: any) {
       this.filteredRows = event.filteredValue;
     }
 
     selectData(data: TableData) {
-      console.log(data)
-    }
-    rowSelect(data: TableData) {
-      console.log(data)
+      console.log('selectData: ', data);
+      const funcDefault = this.retDefaultFunc()
+      if (funcDefault && this.selectedRecord)
+        funcDefault(this.selectedRecord)
     }
 
     clickOnToolbar(ind: number) {      
