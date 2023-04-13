@@ -8,15 +8,11 @@ const path = require("path");
 const _ = require("./src/cipher");
 const multer = require('multer') // v1.0.5
 const upload = multer() // for parsing multipart/form-data
-//const expresssession = require("express-session");
-//const SequelizeStore = require("connect-session-sequelize")(expresssession.Store);
-const system = require("./src/system");
 const http = require("http");
-const fs = require('fs');
-//const passport = require('passport');
 const fileUpload = require('express-fileupload');
 const { Sequelize } = require('sequelize');
 const errorHandler = require('./src/authorize/error-handler')
+const { exit } = require('process');
 
 // environment variables
 if (process.env.NODE_ENV == undefined)
@@ -28,14 +24,6 @@ global.exports = __dirname + "/public/exports/"
 global.public = "/uploads/"
 
 const cfg = require('./config/config')
-// function extendDefaultFields(defaults, session) {
-//   return {
-//     data: defaults.data,
-//     expires: defaults.expires,
-//     userid: session.userid,
-//   };
-// }
-
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -89,15 +77,6 @@ const logger = winston.createLogger({
 
 const db = require("./src/db")
 
-// let store = new SequelizeStore({
-//   db: sequelize,
-//   table: "Session",
-//   extendDefaultFields: extendDefaultFields,
-//   checkExpirationInterval: 15 * 60 * 1000, // The interval at which to cleanup expired sessions in milliseconds.
-//   expiration: 30 * 60 * 1000  // The maximum age (in milliseconds) of a valid session.
-// });
-
-// 
 app.set('trust proxy', 1) // trust first proxy
 app.use(express.json());
 app.use("/", express.static(path.join(__dirname, '/public')));
@@ -107,159 +86,35 @@ expireDate.setDate(expireDate.getDate() + 1);
 
 
 app.use(helmet());
-// app.use(
-//   expresssession({
-//     key: 'user_sid',
-//     secret: global.cipher.secret,
-//     saveUninitialized: true,
-//     store: store,
-//     resave: false, // we support the touch method so per the express-session docs this should be set to false
-//     proxy: true, // if you do SSL outside of node.
-//     cookie: { expires: expireDate }
-//   })
-// );
-
-// app.use(passport.initialize());
-// app.use(passport.session());
 
 app.use('/users', require('./src/authorize/users.controller'));
+app.use('/club', require('./src/authorize/club.controller'));
+app.use('/journal', require('./src/authorize/journal.controller'));
 
 app.use(errorHandler);
 
 app.get('/', function (req, res) {
   res.json({ status: 'ok', message: 'alive' });
 })
-// const userRouter = require('./src/controllers/user');
-// app.get('/Users/data', userRouter.getData);
-// app.put('/Users/data', userRouter.updateData);
-// app.delete('/Users/data', userRouter.deleteData);
-// app.get('/Users/readUser', userRouter.readUser);
-// app.put('/Users/updateProfile', userRouter.updateProfle);
-// app.get('/Users/checkEmail', userRouter.checkEmail);
 
-// app.get('/user/register', userRouter.registerView);
-// app.post('/user/register', userRouter.registerPost);
-// app.post('/user/login', userRouter.loginUser);
-// app.post('/user/logout', function (req, res) {
-//   req.logout((err) => {
-//     res.redirect('/');
-//   });
-// });
-
-// passport.serializeUser(function (user, done) {
-//   done(null, { id: user.userid });
-// });
-// passport.deserializeUser(function (user, done) {
-//   done(null, { id: user.userid });
-// });
-
-app.get('/System/env', function (req, res) {
+app.get('/system/env', function (req, res) {
   res.json({ env: process.env.NODE_ENV });
 })
 const exportData = require("./src/controllers/exports");
-
-const adresse = require("./src/controllers/adresse");
-app.get('/Adressen/data', adresse.getData);
-app.post('/Adressen/data', adresse.updateData);
-app.put('/Adressen/data', adresse.updateData);
-app.delete('/Adressen/data', adresse.removeData);
-app.get('/data/getFkData', adresse.getFKData);
-app.get('/Adressen/data', adresse.getOneData);
-app.get('/Adressen/getOverviewData', adresse.getOverviewData);
-app.put('/Adressen/export', exportData.writeAdresses);
-
-const qrbill = require('./src/controllers/createbill');
-app.post('/Adressen/email', qrbill.sendEmail);
-app.post('/Adressen/qrbill', qrbill.createQRBill);
-
-const anlaesse = require("./src/controllers/anlaesse");
-app.get('/Anlaesse/data', anlaesse.getData);
-app.post('/Anlaesse/data', anlaesse.updateData);
-app.put('/Anlaesse/data', anlaesse.updateData);
-app.delete('/Anlaesse/data', anlaesse.removeData);
-app.delete('/Anlaesse/data', anlaesse.removeData);
-app.get('/Anlaesse/getFkData', anlaesse.getFKData);
-app.get('/Anlaesse/data/:id', anlaesse.getOneData);
-app.get('/Anlaesse/getOverviewData', anlaesse.getOverviewData);
-app.post('/Anlaesse/sheet', exportData.writeExcelTemplate);
-app.post('/Anlaesse/writeAuswertung', exportData.writeAuswertung);
-
-const meisterschaft = require("./src/controllers/meisterschaft");
-app.get('/Meisterschaft/data', meisterschaft.getData);
-app.post('/Meisterschaft/data', meisterschaft.addData);
-app.put('/Meisterschaft/data', meisterschaft.updateData);
-app.delete('/Meisterschaft/data', meisterschaft.removeData);
-app.get('/Meisterschaft/getOneData', meisterschaft.getOneData);
-app.get('/Meisterschaft/mitglied', meisterschaft.getMitgliedData);
-app.get('/Meisterschaft/getChartData', meisterschaft.getChartData);
-app.get('/Meisterschaft/checkJahr', meisterschaft.checkJahr);
-
-const clubmeister = require("./src/controllers/clubmeister");
-app.get('/Clubmeister/data', clubmeister.getData);
-app.get('/Clubmeister/refresh', clubmeister.calcMeister);
-app.get('/Clubmeister/getOverviewData', clubmeister.getOverviewData);
-const kegelmeister = require("./src/controllers/kegelmeister");
-app.get('/Kegelmeister/data', kegelmeister.getData);
-app.get('/Kegelmeister/refresh', kegelmeister.calcMeister);
-app.get('/Kegelmeister/getOverviewData', kegelmeister.getOverviewData);
+app.post('/system/sendmail', exportData.sendEmail);
 
 
 const parameter = require("./src/controllers/parameter");
-app.get('/Parameter/data', parameter.getData);
-app.post('/Parameter/data', upload.array(), parameter.updateData);
-app.put('/Parameter/data', upload.array(), parameter.updateData);
-app.get('/Parameter/getOneDataByKey', parameter.getOneDataByKey);
+app.get('/parameter/data', parameter.getData);
+app.post('/parameter/data', upload.array(), parameter.updateData);
+app.put('/parameter/data', upload.array(), parameter.updateData);
+app.get('/parameter/getOneDataByKey', parameter.getOneDataByKey);
 
 global.Parameter = new Map();
 parameter.getGlobal();
+require('./src/system')
 
 console.log(global.Parameter);
-
-const fiscalyear = require("./src/controllers/fiscalyear");
-app.get('/Fiscalyear/data', fiscalyear.getData);
-app.post('/Fiscalyear/data', upload.array(), fiscalyear.addData);
-app.put('/Fiscalyear/data', upload.array(), fiscalyear.updateData);
-app.delete('/Fiscalyear/data', fiscalyear.removeData);
-app.get('/Fiscalyear/getFkData', fiscalyear.getFKData);
-app.get('/Fiscalyear/getOneData', fiscalyear.getOneData);
-app.get('/Fiscalyear/export', exportData.writeExcelData);
-app.post('/Fiscalyear/close', fiscalyear.closeYear);
-
-const account = require("./src/controllers/account");
-app.get('/Account/data', account.getData);
-app.post('/Account/data', upload.array(), account.addData);
-app.put('/Account/data', upload.array(), account.updateData);
-app.get('/Account/getFkData', account.getFKData);
-app.get('/Account/showData', account.getAccountSummary);
-app.get('/Account/export', exportData.writeAccountToExcel);
-app.get('/Account/getOneDataByOrder', account.getOneDataByOrder);
-
-
-const journal = require("./src/controllers/journal");
-app.get('/Journal/data', journal.getData);
-app.post('/Journal/data', upload.array(), journal.addData);
-app.put('/Journal/data', upload.array(), journal.updateData);
-app.delete('/Journal/data', journal.removeData);
-app.post('/Journal/import', journal.importJournal);
-app.get('/Journal/getAccData', journal.getAccData);
-app.put('/Journal/addR2J', journal.addReceipt2Journal)
-app.post('/Journal/addAtt', journal.addAttachment);
-app.post('/Journal/addReceipt', journal.addReceipt);
-app.put('/Journal/updReceipt', journal.updReceipt);
-app.post('/Journal/delReceipt', journal.delReceipt);
-
-app.delete('/Journal/delAtt', journal.delAttachment);
-app.get('/Journal/getAtt', journal.getAttachment);
-app.get('/Journal/getAllAtt', journal.getAllAttachment);
-app.get('/Journal/export', exportData.writeJournal);
-
-const budget = require("./src/controllers/budget");
-const { exit, connected } = require('process');
-app.get('/Budget/data', budget.getData);
-app.post('/Budget/data', upload.array(), budget.addData);
-app.put('/Budget/data', upload.array(), budget.updateData);
-app.delete('/Budget/data', budget.removeData);
-app.get('/Budget/getOne', budget.getOneData);
 
 
 // fileupload router

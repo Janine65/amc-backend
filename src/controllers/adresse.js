@@ -67,7 +67,7 @@ module.exports = {
 		.then((adresse) =>
 			//adresse.destroy()
 			adresse.update({austritt: endDate})
-			.then((obj) => res.json({ id: obj.id }))
+			.then((obj) => res.json(obj))
 			.catch((e) => console.error(e)))
 		.catch((e) => console.error(e));
 	},
@@ -83,7 +83,7 @@ module.exports = {
 		}
 		console.info('insert: ',data);
 		Adressen.create(data)
-			.then((obj) => res.json({ id: obj.id }))
+			.then((obj) => res.json(obj))
 			.catch((e) => console.error(e));
 	},
 	
@@ -95,12 +95,12 @@ module.exports = {
 		if (data.eintritt == "" || data.eintritt == null) {
 			data.eintritt = new Date().toISOString();
 		}
-		if (data.mnr == "") {
+		if (data.mnr == undefined || data.mnr == "") {
 			// insert
 			data.id = null;
 			console.info('insert: ',data);
 			Adressen.create(data)
-			.then((obj) => res.json({ id: obj.id }))
+			.then((obj) => res.json(obj))
 			.catch((e) => console.error(e))
 		} else {
 			// update
@@ -108,7 +108,7 @@ module.exports = {
 		
 			Adressen.findByPk(data.id)
 			.then((adresse) => adresse.update(data)
-				.then((obj) => res.json({id: obj.id}))
+				.then((obj) => res.json(obj))
 				.catch((e) => console.error(e)))
 			.catch((e) => console.error(e));
 		}

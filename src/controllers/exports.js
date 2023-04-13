@@ -10,6 +10,7 @@ const ExcelJS = require("exceljs");
 const PDFDocument = require('pdfkit');
 const PdfTable = require('voilab-pdf-table')
 const numeral = require('numeral');
+const nodemailer = require("nodemailer");
 
 const cName = "C6";
 const cVorname = "C7";
@@ -20,6 +21,81 @@ const iFontSizeTitel = 14
 const iFontSizeRow = 13
 
 module.exports = {
+    /**
+     * Sendet eine Email
+     * @param {Request} req 
+     * @param {Response} res 
+     * @returns 
+     */
+    sendEmail: async function (req, res) {
+        console.log("sendEmail");
+
+        const emailBody = req.body;
+        let email_from = global.gConfig.userEmail;
+        if (emailBody.email_signature != "") {
+            email_from = emailBody.email_signature;
+            let email_signature = fs.readFileSync("./public/" + emailBody.email_signature + ".html")
+            emailBody.email_body += "<p>" + email_signature + "</p>";
+        }
+        let emailConfig = global.gConfig[email_from];
+        
+        // create reusable transporter object using the default SMTP transport
+        const transporter = nodemailer.createTransport({
+            host: emailConfig.smtp,
+            port: emailConfig.smtp_port,
+            secure: true,
+            auth: {
+                user: emailConfig.smtp_user,
+                pass: global.cipher.decrypt(emailConfig.smtp_pwd),
+            }
+        });
+    
+        // verify connection configuration
+        transporter.verify(function (error, success) {
+            if (error) {
+                return { type: "error", message: "SMTP Connection can not be verified" };
+            } 
+            if (success) {
+                console.log("Server is ready to take our messages");
+            }
+        });
+    
+        let attachments = []
+    
+        if (emailBody.uploadFiles) {
+            let files = emailBody.uploadFiles.split(',');
+            for (let ind2 = 0; ind2 < files.length; ind2++) {
+                const file = files[ind2];
+                attachments.push({ filename: file, path: path.join(__dirname, '../../uploads/' + file) });
+            }
+        }
+    
+        transporter.sendMail({
+            from: emailConfig.email_from, // sender address
+            to: emailBody.email_an, // list of receivers
+            cc: emailBody.email_cc,
+            bcc: emailBody.email_bcc,
+            attachments: attachments,
+            subject: emailBody.email_subject, // Subject line
+            text: decodeURI(emailBody.email_body), // plain text body
+            html: emailBody.email_body, // html body
+            dsn: {
+                id: 'AMC',
+                return: 'headers',
+                notify: ['failure', 'delay'],
+                recipient: emailConfig.email_from
+            }
+        }, (err, info) => {
+            if (err) {
+                console.log(err);
+                return err;
+            }
+            console.log(info);
+            transporter.close();
+            return info;
+        });
+    
+    },
 
     /**
      * Erstellt ein Excelfile mit dem Journal
@@ -927,7 +1003,7 @@ module.exports = {
             }
 
         }
-        var arrAmount = await Journal.findAll({
+        let arrAmount = await Journal.findAll({
             attributes: ["from_account", [Sequelize.fn('SUM', Sequelize.col("amount")), "amount"]],
             where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("date")), sjahr),
             group: ["from_account"]
@@ -1219,8 +1295,8 @@ module.exports = {
         for (let index = 0; index < arData.length; index++) {
             const element = arData[index];
 
-            var sSheetName = element.order + " " + element.name.replace("/", "");
-            var sheet = workbook.addWorksheet(sSheetName.substr(0, 31), {
+            let sSheetName = element.order + " " + element.name.replace("/", "");
+            let sheet = workbook.addWorksheet(sSheetName.substr(0, 31), {
                 pageSetup: {
                     fitToPage: true,
                     fitToHeight: 1,
@@ -1258,7 +1334,7 @@ module.exports = {
             let iSaldo = 0.0;
             let iRow = 4;
 
-            var arJournal = await Journal.findAll({
+            let arJournal = await Journal.findAll({
                 where: [Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("date")), sJahr),
                 {
                     [Op.or]: [

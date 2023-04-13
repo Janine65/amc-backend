@@ -12,6 +12,7 @@
         "port": "5432",
         "dbtype": "postgres",
         "defaultEmail" : "JanineFranken",
+        "userEmail" : "Janine Franken",
         "JanineFranken" : {
             "smtp": "smtp.zoho.com",
             "smtp_port": 465,

@@ -1,4 +1,4 @@
-class system {
+class SystemVal {
     constructor(){
         this.version = this.getVersion();
     }
@@ -12,4 +12,4 @@ class system {
     }
 }
 
-global.system = new system();
+global.system = new SystemVal();
