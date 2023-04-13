@@ -1,0 +1,30 @@
+<div class="grid">
+    <div class="col-12">
+        <label for="to">TO:</label>
+        <input id="to" [(ngModel)]="emailBody.an" name="to"
+            class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" />
+    </div>
+    <div class="col-12">
+        <label for="cc">CC:</label>
+        <input id="cc" [(ngModel)]="emailBody.cc" name="cc"
+            class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" />
+    </div>
+    <div class="col-12">
+        <label for="bbc">BBC:</label>
+        <input id="bbc" [(ngModel)]="emailBody.bcc" name="bcc"
+            class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" />
+    </div>
+    <div class="col-12">
+        <label for="subject">Subject:</label>
+        <input id="subject" [(ngModel)]="emailBody.subject" name="subject"
+            class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" />
+    </div>
+    <div class="col-12">
+        <label for="body">Body:</label>
+        <p-editor id="body" [(ngModel)]="emailBody.body" name="body"></p-editor>
+    </div>
+</div>
+<p-toolbar>
+    <p-button icon="pi pi-back" (click)="back()" label="Abbruch" styleClass="p-button-text"></p-button>
+    <p-button icon="pi pi-send" (click)="submit()" label="Senden" styleClass="p-button-text"></p-button>
+</p-toolbar>

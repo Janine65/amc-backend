@@ -1,4 +1,3 @@
-<p-toast></p-toast>
 <form #f="ngForm" autocomplete="off" (ngSubmit)="onSubmit(f)">
     <div class="card">
         <div class="formgrid grid">
@@ -18,6 +17,10 @@
             </app-input-validation>
         </div>
         <div class="formgrid grid">
+            <button pButton type="button" [disabled]="loading" class="p-button-secondary p-button-outlined p-2"
+                (click)="onReset(f)">
+                Neues Passwot senden
+            </button>
             <button pButton type="button" [disabled]="loading" class="p-button-primary p-button-outlined p-2"
                 (click)="onSubmit(f)">
                 Login

@@ -1,4 +1,3 @@
-<p-toast position="top-center"></p-toast>
 <div class="layout-wrapper" [ngClass]="containerClass">
     <app-topbar></app-topbar>
     <div class="layout-sidebar">
@@ -6,6 +5,7 @@
     </div>
     <div class="layout-main-container">
         <div class="layout-main">
+            <p-toast position="top-center"></p-toast>
             <router-outlet></router-outlet>
         </div>
         <app-footer></app-footer>

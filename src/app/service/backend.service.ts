@@ -12,10 +12,8 @@ export class BackendService {
 
   constructor(private http: HttpClient) { }
 
-  
-
   getParameterData(): Observable<ParamData[]> {
-    const apiURL = environment.apiUrl + '/Parameter/data';
+    const apiURL = environment.apiUrl + '/parameter/data';
     const header = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -27,7 +25,7 @@ export class BackendService {
   }
 
   getDashboarJournalData(jahr: string): Observable<Fiscalyear> {
-    const apiURL = environment.apiUrl + '/Fiscalyear/getOneData?jahr=' + jahr;
+    const apiURL = environment.apiUrl + '/journal/fiscalyear/getOneData?jahr=' + jahr;
     const header = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -39,7 +37,7 @@ export class BackendService {
   }
 
   getDashboardAdressData(): Observable<OverviewData[]> {
-    const apiURL = environment.apiUrl + '/Adressen/getOverviewData'
+    const apiURL = environment.apiUrl + '/club/adressen/overview'
     const header = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -49,7 +47,7 @@ export class BackendService {
     return this.http.get<OverviewData[]>(apiURL, {headers: header});
   }
   getDashboardAnlaesseData(): Observable<OverviewData[]> {
-    const apiURL = environment.apiUrl + '/Anlaesse/getOverviewData'
+    const apiURL = environment.apiUrl + '/club/anlaesse/overview'
     const header = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -59,7 +57,7 @@ export class BackendService {
     return this.http.get<OverviewData[]>(apiURL, {headers: header});
   }
   getDashboardClubmeisterData(): Observable<OverviewData[]> {
-    const apiURL = environment.apiUrl + '/Clubmeister/getOverviewData'
+    const apiURL = environment.apiUrl + '/club/clubmeister/overview'
     const header = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -69,7 +67,7 @@ export class BackendService {
     return this.http.get<OverviewData[]>(apiURL, {headers: header});
   }
   getDashboardKegelmeisterData(): Observable<OverviewData[]> {
-    const apiURL = environment.apiUrl + '/Kegelmeister/getOverviewData'
+    const apiURL = environment.apiUrl + '/club/kegelmeister/overview'
     const header = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -79,7 +77,7 @@ export class BackendService {
     return this.http.get<OverviewData[]>(apiURL, {headers: header});
   }
   getAdressenData(): Observable<Adresse[]> {
-    const apiURL = environment.apiUrl + '/Adressen/data'
+    const apiURL = environment.apiUrl + '/club/adressen/data'
     const header = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -90,7 +88,7 @@ export class BackendService {
   }
 
   getAdressenFK(): Observable<any> {
-    const apiURL = environment.apiUrl + '/data/getFkData'
+    const apiURL = environment.apiUrl + '/club/adressen/getFkData'
     const header = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -101,7 +99,7 @@ export class BackendService {
   }
 
   updateData(adresse: Adresse): Observable<Adresse> {
-    const apiURL = environment.apiUrl + '/Adressen/data'
+    const apiURL = environment.apiUrl + '/club/adressen/data'
     const header = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -110,5 +108,18 @@ export class BackendService {
     })
     const body = JSON.stringify(adresse)
     return this.http.post<Adresse>(apiURL, body, {headers: header});
+  }
+
+  sendEmail(emailbody: any) {
+    const apiURL = environment.apiUrl + '/club/adressen/sendemail'
+    const header = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Origin': '*',
+    })
+    const body = JSON.stringify(emailbody)
+    return this.http.post<any>(apiURL, body, {headers: header});
+
   }
 }

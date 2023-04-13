@@ -73,12 +73,14 @@ export class BaseTableComponent implements OnInit {
       return this.selectData
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     filterEvent(event: any) {
       this.filteredRows = event.filteredValue;
     }
 
     selectData(data: TableData) {
       console.log('selectData: ', data);
+      this.selectedRecord = data;
       const funcDefault = this.retDefaultFunc()
       if (funcDefault && this.selectedRecord)
         funcDefault(this.selectedRecord)

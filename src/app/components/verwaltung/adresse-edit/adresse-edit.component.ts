@@ -1,16 +1,17 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription, from } from 'rxjs';
 import { BackendService } from '@app/service/backend.service';
 import { Adresse } from 'src/app/models/datatypes';
+import { EmailDialogComponent } from '@app/components/shared/email-dialog/email-dialog.component';
 
 @Component({
   selector: 'app-adresse-edit',
   templateUrl: './adresse-edit.component.html',
   styleUrls: ['./adresse-edit.component.scss'],
-  providers: [MessageService]
+  providers: [DialogService]
 })
 export class AdresseEditComponent {
   adresse : Adresse = {}
@@ -19,11 +20,13 @@ export class AdresseEditComponent {
   selFKAdressen = {value:undefined,id:undefined}
   subs! : Subscription
   lstGeschlecht = [{name:'Männlich', code: 1},{name:'Weiblich', code: 2}]
+  dialogRef: any;
   
   constructor(
     private backendService: BackendService, 
     public ref: DynamicDialogRef, 
     public config: DynamicDialogConfig,
+    private dialogService: DialogService,
     private messageService: MessageService) {
     this.adresse = config.data.adresse
     this.subs = from(this.backendService.getAdressenFK())
@@ -44,7 +47,29 @@ export class AdresseEditComponent {
   }
 
   sendEmail() {
-    return
+    const emailBody = {
+      email_an: this.adresse.email,
+      email_cc: '',
+      email_bcc: '',
+      email_subject: '',
+      email_body: ''
+    }
+
+    this.dialogRef = this.dialogService.open(EmailDialogComponent, {
+      data: {
+        emailBody: emailBody
+      },
+      header: 'Email senden',
+      width: '70%',
+      height: '70%',
+      resizable: true, 
+      modal: true, 
+      maximizable: true, 
+      draggable: true
+    });
+    this.dialogRef.onClose.subscribe(() => {
+      return
+    });
   }
 
   save(f: NgForm) {
@@ -59,12 +84,10 @@ export class AdresseEditComponent {
       this.adresse.austritt = this.adresse.austritt_date?.toISOString()
 
     this.backendService.updateData(this.adresse).subscribe(
-      {next: () => {
-        this.ref.close(this.adresse)
+      {next: (adr) => {
+        this.ref.close(adr)
       }}
     )
-
-
     this.ref.close(this.adresse);
   }
 }

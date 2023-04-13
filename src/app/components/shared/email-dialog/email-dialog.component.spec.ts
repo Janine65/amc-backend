@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegisterComponent } from './register.component';
+import { EmailDialogComponent } from './email-dialog.component';
 
-describe('RegisterComponent', () => {
-  let component: RegisterComponent;
-  let fixture: ComponentFixture<RegisterComponent>;
+describe('EmailDialogComponent', () => {
+  let component: EmailDialogComponent;
+  let fixture: ComponentFixture<EmailDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RegisterComponent ]
+      declarations: [ EmailDialogComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RegisterComponent);
+    fixture = TestBed.createComponent(EmailDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

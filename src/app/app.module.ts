@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { HashLocationStrategy, LocationStrategy, CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -18,6 +18,7 @@ import { FieldsetModule} from 'primeng/fieldset';
 import { DataViewModule } from 'primeng/dataview'
 import {TableModule} from 'primeng/table';
 import {DynamicDialogModule} from 'primeng/dynamicdialog';
+import {DialogModule } from 'primeng/dialog'
 import {ScrollPanelModule} from 'primeng/scrollpanel';
 import {CalendarModule} from 'primeng/calendar';
 import {InputNumberModule} from 'primeng/inputnumber';
@@ -29,6 +30,8 @@ import {MessageModule} from 'primeng/message';
 import {SelectButtonModule} from 'primeng/selectbutton';
 import { PasswordModule } from 'primeng/password';
 import {ContextMenuModule} from 'primeng/contextmenu';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import { EditorModule } from 'primeng/editor';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -45,15 +48,17 @@ import { AnlaesseComponent } from './components/verwaltung/anlaesse/anlaesse.com
 import { ParameterComponent } from './components/verwaltung/parameter/parameter.component';
 import { BaseTableComponent } from './components/shared/basetable/basetable.component';
 import { BaseeditComponent } from './components/shared/baseedit/baseedit.component';
-import { AdresseEditComponent } from './components/verwaltung/adressen/adresse-edit/adresse-edit.component';
+import { AdresseEditComponent } from './components/verwaltung/adresse-edit/adresse-edit.component';
 import { InputValidationComponent } from './components/shared/input-validation/input-validation.component';
 import { JwtInterceptor, ErrorInterceptor } from './service';
 import { LoginComponent } from './components/account/login/login.component';
-import { RegisterComponent } from './components/account/register/register.component';
 import { ListComponent } from './components/users/list/list.component';
 import { AddEditComponent } from './components/users/add-edit/add-edit.component';
 import { AlertComponent } from './components/shared/alert/alert.component';
 import { MessageService } from 'primeng/api';
+import { GlobalErrorHandler } from './service/global-error-handler';
+import { ProfileComponent } from './components/account/profile/profile.component';
+import { EmailDialogComponent } from './components/shared/email-dialog/email-dialog.component';
 
 @NgModule({
   declarations: [
@@ -74,10 +79,11 @@ import { MessageService } from 'primeng/api';
     AdresseEditComponent,
     InputValidationComponent,
     LoginComponent,
-    RegisterComponent,
     ListComponent,
     AddEditComponent,
     AlertComponent,
+    ProfileComponent,
+    EmailDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -110,12 +116,16 @@ import { MessageService } from 'primeng/api';
     SelectButtonModule,
     PasswordModule,
     ContextMenuModule,
+    ConfirmDialogModule,    
+    DialogModule,
+    EditorModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    { provide: MessageService }
+    { provide: MessageService, useClass: MessageService },
 ],
   bootstrap: [AppComponent],
   exports: [AppLayoutComponent]

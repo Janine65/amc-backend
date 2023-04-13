@@ -1,13 +1,11 @@
+<div class="flex" *ngIf="checkSorting()">
+    <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+        (click)="clear(table)"></button>
+    <button pButton *ngFor="let but of tableToolbar; index as ind" [label]="but.label!" [icon]="but.icon!"
+        [ngClass]="but.btnClass!" (click)="clickOnToolbar(ind)"></button>
+</div>
 <p-table #table [columns]="tableOptions" [value]="tableData" selectionMode="single" [(selection)]="selectedRecord"
     (onFilter)="filterEvent($event)" dataKey="id" sortMode="multiple">
-    <ng-template pTemplate="caption">
-        <div class="flex" *ngIf="checkSorting()">
-            <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
-                (click)="clear(table)"></button>
-            <button pButton *ngFor="let but of tableToolbar; index as ind" [label]="but.label!" [icon]="but.icon!"
-                [ngClass]="but.btnClass!" (click)="clickOnToolbar(ind)"></button>
-        </div>
-    </ng-template>
     <ng-template pTemplate="header" let-columns>
         <tr>
             <th *ngFor="let col of columns" [pSortableColumnDisabled]="!col.sortable" [pSortableColumn]="col.field">

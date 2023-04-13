@@ -1,1 +1,68 @@
-<p>add-edit works!</p>
+<p-scrollPanel [style]="{width: '100%', height: '80%'}">
+    <form #f="ngForm" autocomplete="off" (ngSubmit)="save(f)">
+        <div class="card">
+            <div class="formgrid grid">
+                <div class="field col-12 md:col-6">
+                    <label for="name" class="p-2">Name</label>
+                    <input type="text" id="name" pInputText
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" name="name"
+                        #name="ngModel" minlength="3" required [(ngModel)]="user.name">
+                    <app-input-validation [control]="name" [errDef]="{ required: 'A name is required',
+                                minlength: 'The name should be at least 3 characteres'}">
+                    </app-input-validation>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="email" class="p-2">Email</label>
+                    <input type="text" name="email" id="email" pInputText minlength="5"
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="user.email" ngModel #email="ngModel" name="email"
+                        pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$">
+                    <app-input-validation [control]="email" [errDef]="{ required: 'A email is required',
+                                pattern:  'Enter a valid email address',
+                                minlength: 'The email should be at least 5 characteres'}"></app-input-validation>
+                </div>
+                <div *ngIf="withRole" class="formgroup-inline field col-12">
+                    <div class="field-radiobutton">
+                        <p-radioButton name="user" value="user" [(ngModel)]="user.role" inputId="user"></p-radioButton>
+                        <label for="user">User</label>
+                    </div>
+                    <div class="field-radiobutton">
+                        <p-radioButton name="revisor" value="revisor" [(ngModel)]="user.role"
+                            inputId="revisor"></p-radioButton>
+                        <label for="revisor">Revisor</label>
+                    </div>
+                    <div class="field-radiobutton">
+                        <p-radioButton name="admin" value="admin" [(ngModel)]="user.role"
+                            inputId="admin"></p-radioButton>
+                        <label for="admin">Admin</label>
+                    </div>
+                </div>
+                <div *ngIf="wihtPwd" class="field col-12 md:col-8">
+                    <label for="password" class="p-2 w-2">Passwort</label>
+                    <p-password id="password" name="password" #password="ngModel" ngModel [toggleMask]="false" required
+                        class="text-base text-color surface-overlay appearance-none outline-none w-2"></p-password>
+                    <app-input-validation [control]="password" [errDef]="{ required: 'Passwort muss angegeben sein'}">
+                    </app-input-validation>
+                </div>
+                <div *ngIf="wihtPwd" class="field col-12 md:col-8">
+                    <label for="passwordV" class="p-2 w-2">Passwort wiederholen</label>
+                    <p-password id="passwordV" name="passwordV" #passwordV="ngModel" ngModel [toggleMask]="false"
+                        required
+                        class="text-base text-color surface-overlay appearance-none outline-none w-2"></p-password>
+                    <app-input-validation [control]="passwordV" [errDef]="{ required: 'Passwort muss angegeben sein'}">
+                    </app-input-validation>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</p-scrollPanel>
+<p-toolbar>
+    <button pButton type="button" label="Zurück" icon="pi pi-back" class="p-button-secondary p-button-outlined"
+        (click)="back(f)"></button>
+    <button *ngIf="!wihtPwd && user.id! > 0" pButton type="button" label="Neues Passwort" icon="pi pi-slack"
+        class="p-button-secondary p-button-outlined" (click)="newPwd(f)"></button>
+    <button pButton type="button" label="Sicher" icon="pi pi-save" class="p-button-primary p-button-outlined"
+        (click)="save(f)"></button>
+</p-toolbar>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

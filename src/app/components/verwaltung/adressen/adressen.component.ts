@@ -5,7 +5,7 @@ import { BackendService } from '@app/service/backend.service';
 import { Adresse } from 'src/app/models/datatypes';
 import { TableOptions, TableToolbar } from '../../shared/basetable/basetable.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AdresseEditComponent } from './adresse-edit/adresse-edit.component';
+import { AdresseEditComponent } from '../adresse-edit/adresse-edit.component';
 
 @Component({
   selector: 'app-adressen',
@@ -83,14 +83,7 @@ export class AdressenComponent implements OnInit {
     // eslint-disable-next-line @typescript-eslint/no-this-alias, @typescript-eslint/no-unused-vars
     const thisRef: AdressenComponent = this;
     console.log("Email an selectierte Adressen", lstData);
-  }
 
-  closeEdit() {
-    console.log('closeEdit')
-  }
-
-  saveEdit() {
-    console.log('saveEdit')
   }
 
   addAdress = () => {
@@ -105,6 +98,8 @@ export class AdressenComponent implements OnInit {
     newAdr.ehrenmitglied = false;
     newAdr.revisor = false;
     newAdr.vorstand = false;
+    newAdr.land = 'CH'
+    newAdr.mnr = undefined
 
     thisRef.dialogRef = thisRef.dialogService.open(AdresseEditComponent, {
       data: {
@@ -130,6 +125,9 @@ export class AdressenComponent implements OnInit {
     const thisRef: AdressenComponent = this;
     console.log("Edit Adresse", selRec);
 
+    const newAdr = new Adresse();
+    Object.assign(newAdr, selRec);
+
     thisRef.dialogRef = thisRef.dialogService.open(AdresseEditComponent, {
       data: {
         adresse: selRec
@@ -144,6 +142,7 @@ export class AdressenComponent implements OnInit {
     });
     thisRef.dialogRef.onClose.subscribe((adresse: Adresse) => {
       if (adresse) {
+        thisRef.adressList = thisRef.adressList.map(obj => [adresse].find(o => o.id === obj.id) || obj);
         console.log(adresse)
       }
     });

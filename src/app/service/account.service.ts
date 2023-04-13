@@ -12,6 +12,7 @@ import { User } from '@app/models';
 export class AccountService {
     private userSubject?: BehaviorSubject<User>;
     public user?: Observable<User>;
+    private apiUrl: string;
 
     constructor(
         private router: Router,
@@ -22,6 +23,8 @@ export class AccountService {
             this.userSubject = new BehaviorSubject<User>(JSON.parse(user));
             this.user = this.userSubject.asObservable();
         }
+        this.apiUrl = environment.apiUrl
+        console.log(this.apiUrl)
     }
 
     public get userValue(): User {
@@ -29,7 +32,7 @@ export class AccountService {
     }
 
     login(email: string, password: string) {
-        return this.http.post<User>(`${environment.apiUrl}/users/authenticate`, { email, password })
+        return this.http.post<User>(`${this.apiUrl}/users/authenticate`, { email, password })
             .pipe(map(user => {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(user));
@@ -48,19 +51,19 @@ export class AccountService {
     }
 
     register(user: User) {
-        return this.http.post(`${environment.apiUrl}/users/register`, user);
+        return this.http.post(`${this.apiUrl}/users/register`, user);
     }
 
     getAll() {
-        return this.http.get<User[]>(`${environment.apiUrl}/users`);
+        return this.http.get<User[]>(`${this.apiUrl}/users`);
     }
 
     getById(id: number) {
-        return this.http.get<User>(`${environment.apiUrl}/users/${id}`);
+        return this.http.get<User>(`${this.apiUrl}/users/${id}`);
     }
 
     update(id: number, params: any) {
-        return this.http.put(`${environment.apiUrl}/users/${id}`, params)
+        return this.http.put(`${this.apiUrl}/users/${id}`, params)
             .pipe(map(x => {
                 // update stored user if the logged in user updated their own record
                 if (id == this.userValue.id) {
@@ -75,8 +78,19 @@ export class AccountService {
             }));
     }
 
+    newPasswort(email: string) {
+        return this.http.get(`${this.apiUrl}/users/newpass?email=${email}`)
+            .pipe(map(x => {
+                // auto logout if the logged in user deleted their own record
+                if (email == this.userValue.email) {
+                    this.logout();
+                }
+                return x;
+            }));
+    }
+
     delete(id: number) {
-        return this.http.delete(`${environment.apiUrl}/users/${id}`)
+        return this.http.delete(`${this.apiUrl}/users/${id}`)
             .pipe(map(x => {
                 // auto logout if the logged in user deleted their own record
                 if (id == this.userValue.id) {

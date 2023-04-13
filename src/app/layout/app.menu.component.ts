@@ -31,7 +31,6 @@ export class AppMenuComponent implements OnInit {
                     { label: 'Adressen', icon: 'pi pi-fw pi-id-card', routerLink: ['/verwaltung/adressen'] },
                     { label: 'Anlässe', icon: 'pi pi-fw pi-check-square', routerLink: ['/verwaltung/anlaesse'] },
                     { label: 'Parameters', icon: 'pi pi-fw pi-bookmark', routerLink: ['/verwaltung/parameter'] },
-                    { label: 'User', icon: 'pi pi-fw pi-exclamation-circle', routerLink: ['/verwaltung/user'] },
                 ]
             },
             {
