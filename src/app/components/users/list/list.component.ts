@@ -40,9 +40,12 @@ export class ListComponent implements OnInit {
     ];
 
     this.toolbar = [
-      { label: "Ändern", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-user-edit", isDefault: true, clickfnc: this.editUser },
-      { label: "Register", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-user-plus", isDefault: false, clickfnc: this.addUser },
-      { label: "Löschen", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-user-minus", isDefault: false, clickfnc: this.delUser },
+      { label: "Ändern", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-user-edit", 
+        isDefault: true, disabledWhenEmpty: true,  disabledNoSelection: true, clickfnc: this.editUser },
+      { label: "Register", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-user-plus", 
+        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addUser },
+      { label: "Löschen", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-user-minus", 
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delUser },
     ];
 
     this.accountService.getAll()

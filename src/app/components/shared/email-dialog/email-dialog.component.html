@@ -1,27 +1,68 @@
-<div class="grid">
-    <div class="col-12">
-        <label for="to">TO:</label>
-        <input id="to" [(ngModel)]="emailBody.an" name="to"
-            class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" />
+<div class="card">
+    <div class="field grid">
+        <label for="to" class="col-12 md:col-2 md:mb-0">TO:</label>
+        <div class="col-12 md:col-10">
+            <textarea id="to" rows="1" cols="30" pInputTextarea [(ngModel)]="emailBody.email_an"
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
+        </div>
     </div>
-    <div class="col-12">
-        <label for="cc">CC:</label>
-        <input id="cc" [(ngModel)]="emailBody.cc" name="cc"
-            class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" />
+    <div class="field grid">
+        <label for="cc" class="col-12 md:col-2 md:mb-0">CC:</label>
+        <div class="col-12 md:col-10">
+            <textarea rows="1" cols="30" pInputTextarea id="cc" [(ngModel)]="emailBody.email_cc" name="cc"
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
+        </div>
     </div>
-    <div class="col-12">
-        <label for="bbc">BBC:</label>
-        <input id="bbc" [(ngModel)]="emailBody.bcc" name="bcc"
-            class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" />
+    <div class="field grid">
+        <label for="bbc" class="col-12 md:col-2 md:mb-0">BBC:</label>
+        <div class="col-12 md:col-10">
+            <textarea rows="1" cols="30" pInputTextarea id="bbc" [(ngModel)]="emailBody.email_bcc" name="bcc"
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
+        </div>
     </div>
-    <div class="col-12">
-        <label for="subject">Subject:</label>
-        <input id="subject" [(ngModel)]="emailBody.subject" name="subject"
-            class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full" />
+    <div class="field grid">
+        <label for="from" class="col-12 md:col-2 md:mb-0">Absender:</label>
+        <div class="col-12 md:col-10">
+            <input id="from" [(ngModel)]="emailBody.email_signature" name="from" [required]="true"
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+        </div>
     </div>
-    <div class="col-12">
-        <label for="body">Body:</label>
-        <p-editor id="body" [(ngModel)]="emailBody.body" name="body"></p-editor>
+    <div class="field grid">
+        <label for="subject" class="col-12 md:col-2 md:mb-0">Subject:</label>
+        <div class="col-12 md:col-10">
+            <input id="subject" [(ngModel)]="emailBody.email_subject" name="subject" [required]="true"
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+        </div>
+    </div>
+    <div class="field grid">
+        <label for="uploadfiles" class="col-12 md:col-2 md:mb-0">Anhänge:</label>
+        <div class="col-12 md:col-10">
+            <p-fileUpload id="uploadfiles" name="uploadfiles[]" [multiple]="true" [maxFileSize]="500 * 1024 * 1024"
+                [auto]="true" chooseLabel="Wählen" [showCancelButton]="false" [showUploadButton]="false"
+                accept="application/pdf" [customUpload]="true" (uploadHandler)="prepareFiles($event.files)">
+                <ng-template pTemplate="file">
+                    <div *ngFor="let file of uploadFiles; index as ind" class="p-fileupload-row ng-star-inserted">
+                        <div class="p-fileupload-filename">{{ file.name }}</div>
+                        <div>{{ file.size }}</div>
+                        <div>
+                            <button type="button" icon="pi pi-times" pbutton="" (click)="uploadFiles.splice(ind,1)"
+                                class="p-element p-button p-component p-button-icon-only"
+                                ng-reflect-icon="pi pi-times"><span class="p-button-icon pi pi-times"
+                                    aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-fileUpload>
+        </div>
+    </div>
+    <div class="field grid">
+        <div class="col-12 md:col-12">
+            <quill-editor id="body" [(ngModel)]="emailBody.email_body" name="body"
+                [style]="{ height: '240px', border: 'round'}"
+                class="text-base text-color surface-overlay p-2  appearance-none outline-none w-full">
+            </quill-editor>
+        </div>
     </div>
 </div>
 <p-toolbar>

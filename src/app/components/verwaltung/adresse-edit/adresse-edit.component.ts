@@ -6,6 +6,8 @@ import { Subscription, from } from 'rxjs';
 import { BackendService } from '@app/service/backend.service';
 import { Adresse } from 'src/app/models/datatypes';
 import { EmailDialogComponent } from '@app/components/shared/email-dialog/email-dialog.component';
+import { EmailBody, EmailSignature } from '@app/components/shared/email-dialog/email-dialog.types';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-adresse-edit',
@@ -20,7 +22,7 @@ export class AdresseEditComponent {
   selFKAdressen = {value:undefined,id:undefined}
   subs! : Subscription
   lstGeschlecht = [{name:'Männlich', code: 1},{name:'Weiblich', code: 2}]
-  dialogRef: any;
+  dialogRef!: DynamicDialogRef;
   
   constructor(
     private backendService: BackendService, 
@@ -47,13 +49,14 @@ export class AdresseEditComponent {
   }
 
   sendEmail() {
-    const emailBody = {
+    const emailBody = new EmailBody ({
       email_an: this.adresse.email,
       email_cc: '',
       email_bcc: '',
       email_subject: '',
-      email_body: ''
-    }
+      email_body: '',
+      email_signature: (Object.keys(EmailSignature)[Object.values(EmailSignature).indexOf(environment.defaultSignature as unknown as EmailSignature)] as unknown as EmailSignature)
+    })
 
     this.dialogRef = this.dialogService.open(EmailDialogComponent, {
       data: {
@@ -61,7 +64,7 @@ export class AdresseEditComponent {
       },
       header: 'Email senden',
       width: '70%',
-      height: '70%',
+      height: '90%',
       resizable: true, 
       modal: true, 
       maximizable: true, 

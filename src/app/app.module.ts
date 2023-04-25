@@ -31,7 +31,10 @@ import {SelectButtonModule} from 'primeng/selectbutton';
 import { PasswordModule } from 'primeng/password';
 import {ContextMenuModule} from 'primeng/contextmenu';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import { EditorModule } from 'primeng/editor';
+import { QuillModule } from 'ngx-quill';
+import { FileUploadModule } from 'primeng/fileupload';
+
+import Counter from './counter';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -118,7 +121,17 @@ import { EmailDialogComponent } from './components/shared/email-dialog/email-dia
     ContextMenuModule,
     ConfirmDialogModule,    
     DialogModule,
-    EditorModule,
+    QuillModule.forRoot({
+      customModules: [{
+        implementation: Counter,
+        path: 'modules/counter'
+      }],
+      customOptions: [{
+        import: 'formats/font',
+        whitelist: ['serif', 'sansserif', 'monospace']
+      }]
+    }),
+    FileUploadModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

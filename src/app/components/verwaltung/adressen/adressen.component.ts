@@ -6,6 +6,10 @@ import { Adresse } from 'src/app/models/datatypes';
 import { TableOptions, TableToolbar } from '../../shared/basetable/basetable.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AdresseEditComponent } from '../adresse-edit/adresse-edit.component';
+import { EmailBody, EmailSignature } from '@app/components/shared/email-dialog/email-dialog.types';
+import { EmailDialogComponent } from '@app/components/shared/email-dialog/email-dialog.component';
+import { environment } from '@environments/environment';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-adressen',
@@ -24,7 +28,7 @@ export class AdressenComponent implements OnInit {
   cols: TableOptions[] = [];
   toolbar: TableToolbar[] = [];
 
-  constructor(private backendService: BackendService, private dialogService: DialogService) { }
+  constructor(private backendService: BackendService, private dialogService: DialogService, private messageService: MessageService) { }
 
   ngOnInit(): void {
 
@@ -45,9 +49,14 @@ export class AdressenComponent implements OnInit {
     ];
 
     this.toolbar = [
-      { label: "Email", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-send", isDefault: false, clickfnc: this.emailSelected },
-      { label: "Edit", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-file-edit", isDefault: true, clickfnc: this.editAdresse },
-      { label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus", isDefault: true, clickfnc: this.addAdress },
+      { label: "Email", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-send", 
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.emailSelected },
+      { label: "Edit", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-file-edit", 
+        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editAdresse },
+        { label: "Delete", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-minus", 
+        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delAdresse },
+      { label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus", 
+        isDefault: true, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAdress },
     ];
 
     this.subs = from(this.backendService.getAdressenData())
@@ -83,6 +92,33 @@ export class AdressenComponent implements OnInit {
     // eslint-disable-next-line @typescript-eslint/no-this-alias, @typescript-eslint/no-unused-vars
     const thisRef: AdressenComponent = this;
     console.log("Email an selectierte Adressen", lstData);
+    thisRef.messageService.clear();
+    const emailBody = new EmailBody({
+      email_an: environment.defaultEmail,
+      email_cc: '',
+      email_bcc: '',
+      email_subject: '',
+      email_body: '',
+      email_signature: (Object.keys(EmailSignature)[Object.values(EmailSignature).indexOf(environment.defaultSignature as unknown as EmailSignature)] as unknown as EmailSignature)
+    })
+
+    lstData?.forEach(adresse => emailBody.email_bcc += adresse.email != '' ? adresse.email + ';' : '');
+    this.dialogRef = this.dialogService.open(EmailDialogComponent, {
+      data: {
+        emailBody: emailBody
+      },
+      header: 'Email senden',
+      width: '70%',
+      height: '90%',
+      resizable: true,
+      modal: true,
+      maximizable: true,
+      draggable: true
+    });
+    this.dialogRef.onClose.subscribe(() => {
+      return
+    });
+
 
   }
 
@@ -90,6 +126,7 @@ export class AdressenComponent implements OnInit {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const thisRef: AdressenComponent = this;
     console.log("New Adresse");
+    thisRef.messageService.clear();
     const newAdr = new Adresse();
     newAdr.eintritt_date = new Date()
     newAdr.austritt_date = new Date('3000-01-01')
@@ -108,9 +145,9 @@ export class AdressenComponent implements OnInit {
       header: 'Neue Adresse erfassen',
       width: '70%',
       height: '70%',
-      resizable: true, 
-      modal: true, 
-      maximizable: true, 
+      resizable: true,
+      modal: true,
+      maximizable: true,
       draggable: true
     });
     thisRef.dialogRef.onClose.subscribe((adresse: Adresse) => {
@@ -124,6 +161,7 @@ export class AdressenComponent implements OnInit {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const thisRef: AdressenComponent = this;
     console.log("Edit Adresse", selRec);
+    thisRef.messageService.clear();
 
     const newAdr = new Adresse();
     Object.assign(newAdr, selRec);
@@ -135,9 +173,9 @@ export class AdressenComponent implements OnInit {
       header: 'Adresse ändern',
       width: '70%',
       height: '70%',
-      resizable: true, 
-      modal: true, 
-      maximizable: true, 
+      resizable: true,
+      modal: true,
+      maximizable: true,
       draggable: true
     });
     thisRef.dialogRef.onClose.subscribe((adresse: Adresse) => {
@@ -146,5 +184,28 @@ export class AdressenComponent implements OnInit {
         console.log(adresse)
       }
     });
+  }
+
+
+  delAdresse = (selRec?: Adresse) => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisRef: AdressenComponent = this;
+    console.log("Delete Adresse", selRec);
+    thisRef.messageService.clear();
+
+    if (selRec?.austritt != '3000-01-01') {
+      thisRef.messageService.add({detail: 'Dieses Mitglied hat bereits ein Austrittsdatum.', closable: true, severity: 'error', summary: 'Adresse beenden' } );
+      return
+    }
+
+    thisRef.backendService.removeData(selRec).subscribe(
+      {next: (adresse) => {
+        console.log(adresse)
+        thisRef.adressList = thisRef.adressList.map(obj => [adresse].find(o => o.id === obj.id) || obj);
+        thisRef.messageService.add({detail: 'Das Austrittsdatum wurde auf den 31.12. gesetz', closable: true, severity: 'info', summary: 'Adresse beenden' } );        
+      }}
+    )
+
+
   }
 }

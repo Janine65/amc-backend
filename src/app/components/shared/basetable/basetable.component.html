@@ -1,8 +1,10 @@
+<p-toast></p-toast>
 <div class="flex" *ngIf="checkSorting()">
-    <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+    <button pButton label="Clear" class="p-button-secondary p-button-outlined" icon="pi pi-filter-slash"
         (click)="clear(table)"></button>
     <button pButton *ngFor="let but of tableToolbar; index as ind" [label]="but.label!" [icon]="but.icon!"
-        [ngClass]="but.btnClass!" (click)="clickOnToolbar(ind)"></button>
+        [ngClass]="but.btnClass!" (click)="clickOnToolbar(ind)"
+        [disabled]="isButtonDisabled(ind)" ></button>
 </div>
 <p-table #table [columns]="tableOptions" [value]="tableData" selectionMode="single" [(selection)]="selectedRecord"
     (onFilter)="filterEvent($event)" dataKey="id" sortMode="multiple">
