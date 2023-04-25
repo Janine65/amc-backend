@@ -22,7 +22,7 @@ module.exports = {
 	},
 
 	removeData: function (req, res) {
-		const data = req.body;
+		const data = JSON.parse(req.body);
 		console.info('delete: ', data);
 		Budget.findByPk(data.id)
 			.then((budget) =>
@@ -33,7 +33,7 @@ module.exports = {
 	},
 
 	addData: async function (req, res) {
-		let data = req.body;
+		let data = JSON.parse(req.body);
 		data.id = null;
 		console.info('insert: ', data);
 
@@ -44,7 +44,7 @@ module.exports = {
 	},
 
 	updateData: function (req, res) {
-		let data = req.body;
+		let data = JSON.parse(req.body);
 		console.info('update: ', data);
 
 		Budget.findByPk(data.id)

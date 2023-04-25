@@ -28,7 +28,7 @@ module.exports = {
 	},
 
 	getOneDataByKey: function(req, res) {
-		const data = req.body;
+		const data = JSON.parse(req.body);
 		Parameter.findOne({where: 
 				{ key: {[Op.eq]: data.key } }
 		})
@@ -37,7 +37,7 @@ module.exports = {
 	},
 
 	removeData: function (req, res) {
-		const data = req.body;
+		const data = JSON.parse(req.body);
 		console.info('delete: ',data);
 		Parameter.findByPk(data.id)
 		.then((param) =>
@@ -48,7 +48,7 @@ module.exports = {
 	},
 
 	addData: function (req, res) {
-		let data = req.body;
+		let data = JSON.parse(req.body);
 		data.id = null;
 		console.info('insert: ',data);
 		Parameter.create(data)
@@ -57,7 +57,7 @@ module.exports = {
 	},
 	
 	updateData: function (req, res) {
-		let lparam = req.body;
+		let lparam = JSON.parse(req.body);
 		let ok = true;
 		if (lparam) {
 			for (let k of Object.keys(lparam)) {

@@ -48,7 +48,7 @@ module.exports = {
   },
 
   updateData: function (req, res, next) {
-    let data = req.body;
+    let data = JSON.parse(req.body);
 
     User.findByPk(data.id)
       .then((user) => {
@@ -61,7 +61,7 @@ module.exports = {
   },
 
   deleteData: function (req, res, next) {
-    let data = req.body;
+    let data = JSON.parse(req.body);
 
     User.findByPk(data.id)
       .then((user) => {
@@ -96,7 +96,7 @@ module.exports = {
   },
 
   updateProfle: function (req, res, next) {
-    let data = req.body;
+    let data = JSON.parse(req.body);
 
     if (data.password != undefined && data.password != "" && !isValidPassword(data.password)) {
       res.json({ status: 'error', message: 'Password must be 8 or more characters.' });
@@ -167,14 +167,14 @@ module.exports = {
 
   registerPost: function (req, res, next) {
     let salt = crypto.randomBytes(64).toString('hex');
-    let password = crypto.pbkdf2Sync(req.body.password, salt, 10000, 64, 'sha512').toString('base64');
+    let password = crypto.pbkdf2Sync(JSON.parse(req.body).password, salt, 10000, 64, 'sha512').toString('base64');
 
-    if (!isValidPassword(req.body.password)) {
+    if (!isValidPassword(JSON.parse(req.body).password)) {
       res.json({ status: 'error', message: 'Password must be 8 or more characters.' });
       console.error('Password must be 8 or more charachters', res);
       return;
     }
-    if (!isValidEmail(req.body.email)) {
+    if (!isValidEmail(JSON.parse(req.body).email)) {
       res.json({ status: 'error', message: 'Email address not formed correctly.' });
       console.error('Email address not formed correctly.', res);
       return;
@@ -185,9 +185,9 @@ module.exports = {
 
     User.create({
       userid: userid,
-      name: req.body.name,
-      email: req.body.email,
-      role: req.body.role,
+      name: JSON.parse(req.body).name,
+      email: JSON.parse(req.body).email,
+      role: JSON.parse(req.body).role,
       password: password,
       salt: salt
     })

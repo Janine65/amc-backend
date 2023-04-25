@@ -58,7 +58,7 @@ module.exports = {
 	},
 
 	removeData: function (req, res) {
-		const data = req.body;
+		const data = JSON.parse(req.body);
 		console.info('delete: ',data);
 		let endDate = new Date();
 		endDate.setMonth(11);
@@ -73,7 +73,7 @@ module.exports = {
 	},
 
 	addData: function (req, res) {
-		let data = req.body;
+		let data = JSON.parse(req.body);
 		data.id = null;
 		if (data.austritt == "" || data.austritt == null) {
 			data.austritt = "3000-01-01T00:00:00";
@@ -88,7 +88,7 @@ module.exports = {
 	},
 	
 	updateData: function (req, res) {
-		let data = req.body;
+		let data = JSON.parse(req.body);
 		if (data.austritt == "" || data.austritt == null) {
 			data.austritt = "3000-01-01T00:00:00";
 		}

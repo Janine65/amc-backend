@@ -27,7 +27,7 @@ function authenticateSchema(req, res, next) {
 }
 
 function authenticate(req, res, next) {
-    userService.authenticate(req.body)
+    userService.authenticate(JSON.parse(req.body))
         .then(user => res.json(user))
         .catch(next);
 }
@@ -53,7 +53,7 @@ function newPass(req, res, next) {
                 email_subject: 'AMC Interna - Neues Passwort gesetzt',
                 email_body: 'Hallo ' + user.name + '<br/>Dein Passwort wurde ersetzt mit ' + newPass + '<br/>Bitte setze nach dem Login ein neues Passwort!'
             }
-            req.body = emailBody
+            JSON.parse(req.body) = emailBody
             exportsFnc.sendEmail(req, res, next)
                 .then(() => res.json({ message: 'Passwort erfolgreich gesetzt und Mail gesendet' }))
                 .catch(next);
@@ -63,7 +63,7 @@ function newPass(req, res, next) {
 }
 
 function register(req, res, next) {
-    userService.create(req.body)
+    userService.create(JSON.parse(req.body))
         .then((retVal) => {
             const newPass = retVal.newPass;
             const user = retVal.newUser;
@@ -76,14 +76,14 @@ function register(req, res, next) {
                 email_subject: 'AMC Interna - Willkommen',
                 email_body: 'Hallo ' + user.name + '<br/>Willkommen auf der Applikation für den Auto-Moto-Club Swissair. Dies ist eine interne Applikation und darf nicht in unberechtigte Hände gelangen.<br/>Mit freundlichen Grüssen'
             }
-            req.body = emailBody
+            JSON.parse(req.body) = emailBody
             exportsFnc.sendEmail(req, res, next)
                 .then(() => {
                 // send Password Mail
                 emailBody.email_body = 'Hallo ' + user.name + '<br/>Hier dein Passwort: ' + newPass + '<br/>Bitte setze nach dem Login ein neues Passwort!';
                 emailBody.email_subject = 'AMC Interna - Neues Passwort gesetzt';
                 
-                req.body = emailBody
+                JSON.parse(req.body) = emailBody
                 exportsFnc.sendEmail(req, res, next)
                     .then(() => res.json({ message: 'Registrierung erfolgreich und Mail an ' + user.email + ' gesendet' }))
                     .catch(next);
@@ -119,7 +119,7 @@ function updateSchema(req, res, next) {
 }
 
 function update(req, res, next) {
-    userService.update(req.params.id, req.body)
+    userService.update(req.params.id, JSON.parse(req.body))
         .then(user => res.json(user))
         .catch(next);
 }

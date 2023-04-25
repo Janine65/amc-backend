@@ -141,7 +141,7 @@ async function getOneData(req, res) {
 }
 
 async function removeData(req, res) {
-	const data = req.body;
+	const data = JSON.parse(req.body);
 	console.info('delete: ', data);
 	Journal.findByPk(data.id)
 		.then((journal) =>
@@ -152,7 +152,7 @@ async function removeData(req, res) {
 }
 
 async function addData(req, res) {
-	let data = req.body;
+	let data = JSON.parse(req.body);
 	data.id = null;
 	console.info('insert: ', data);
 	Journal.create(data)
@@ -161,7 +161,7 @@ async function addData(req, res) {
 }
 
 async function updateData(req, res) {
-	let data = req.body;
+	let data = JSON.parse(req.body);
 	console.info('update: ', data);
 
 	Journal.findByPk(data.id)
@@ -172,7 +172,7 @@ async function updateData(req, res) {
 }
 
 async function addReceipt(req, res) {
-	const data = req.body;
+	const data = JSON.parse(req.body);
 
 	if (data.uploadFiles == undefined) {
 		// nothing to do -> return
@@ -228,9 +228,9 @@ async function addReceipt(req, res) {
 
 async function updReceipt(req, res) {
 
-	Receipt.findByPk(req.body.id)
+	Receipt.findByPk(JSON.parse(req.body).id)
 		.then(rec => {
-			rec.bezeichnung = req.body.bezeichnung
+			rec.bezeichnung = JSON.parse(req.body).bezeichnung
 			rec.save({ fields: ['bezeichnung'] })
 				.then(resp => res.json(resp))
 				.catch(err => { console.log(err); payload.type = 'error'; payload.message = 'Konnte nicht gespeichert werden' })
@@ -240,7 +240,7 @@ async function updReceipt(req, res) {
 }
 
 async function delReceipt(req, res) {
-	Receipt.findByPk(req.body.id)
+	Receipt.findByPk(JSON.parse(req.body).id)
 		.then(rec => {
 			rec.destroy()
 				.then(resp => res.json(resp))
@@ -250,7 +250,7 @@ async function delReceipt(req, res) {
 }
 
 async function addReceipt2Journal(req, res) {
-	const data = req.body;
+	const data = JSON.parse(req.body);
 	const journalid = req.query.journalid
 
 	let payload = {
@@ -272,7 +272,7 @@ async function addReceipt2Journal(req, res) {
 }
 
 async function addAttachment(req, res) {
-	const data = req.body;
+	const data = JSON.parse(req.body);
 
 	let sJahr = new Date(data.date).getFullYear();
 	const path = global.documents + sJahr + '/';
@@ -329,7 +329,7 @@ async function addAttachment(req, res) {
 }
 
 async function delAttachment(req, res) {
-	const data = req.body;
+	const data = JSON.parse(req.body);
 
 	JournalReceipt.findOne({
 		where: [
@@ -383,7 +383,7 @@ async function getAccData(req, res) {
 }
 
 async function importJournal(req, res) {
-	let data = req.body;
+	let data = JSON.parse(req.body);
 	let filename = data.sname.replace(process.cwd(), ".");
 	console.log(filename);
 

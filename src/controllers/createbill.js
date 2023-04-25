@@ -17,7 +17,7 @@ module.exports = {
     createQRBill: async function (req, res) {
         console.log("createQRBill");
 
-        const adresse = req.body;
+        const adresse = JSON.parse(req.body);
         const sJahr = global.Parameter.get("CLUBJAHR");
     
         const data = {
@@ -189,7 +189,7 @@ module.exports = {
     },
 
     sendEmail: async function (req, res) {
-        const email = req.body;
+        const email = JSON.parse(req.body);
 
         const retVal = await fncSendEmail(email);
         res.json(retVal);

@@ -1,18 +1,15 @@
 
 const express = require('express');
-const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const helmet = require('helmet');
 const path = require("path");
 const _ = require("./src/cipher");
-const multer = require('multer') // v1.0.5
-const upload = multer() // for parsing multipart/form-data
 const http = require("http");
-const fileUpload = require('express-fileupload');
 const { Sequelize } = require('sequelize');
 const errorHandler = require('./src/authorize/error-handler')
 const { exit } = require('process');
+const formidable = require('formidable');
 
 // environment variables
 if (process.env.NODE_ENV == undefined)
@@ -21,15 +18,57 @@ if (process.env.NODE_ENV == undefined)
 global.documents = __dirname + "/documents/"
 global.uploads = __dirname + "/public/uploads/"
 global.exports = __dirname + "/public/exports/"
-global.public = "/uploads/"
+global.public = __dirname + "/public/"
 
 const cfg = require('./config/config')
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-}));
-app.use(cors())
+
+const whitelist = ['http://localhost:8000', 'http://localhost:4200']
+const corsOptionsDelegate = function (req, callback) {
+  let corsOptions;
+  if (whitelist.indexOf(req.header('Origin')) !== -1) {
+    corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
+  } else {
+    corsOptions = { origin: false } // disable CORS for this request
+  }
+  callback(null, corsOptions) // callback expects two parameters: error and options
+}
+
+app.use(express.text());
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
+app.use(cors(corsOptionsDelegate))
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+  res.setHeader('Access-Control-Allow-Methods', "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
+  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers,Access-Control-Allow-Methods,Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Authorization, Accept');
+  next();
+});
+
+// fileupload router
+app.post('/upload', function (req, res) {
+  const form = formidable({ 
+    multiples: true,
+    maxFileSize: 500 * 1024 * 1024,
+    keepExtensions: true,
+    uploadDir: global.uploads,
+    filename: function (name, ext, part, form) {
+      const { originalFilename, mimetype} = part;
+      return originalFilename;
+    },
+     });
+
+  form.parse(req, (err, fields, files) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.json({ status: 'ok', message: 'file uplaoded', fields, files });
+  });
+  }
+);
 
 const winston = require('winston')
 
@@ -77,13 +116,10 @@ const logger = winston.createLogger({
 
 const db = require("./src/db")
 
-app.set('trust proxy', 1) // trust first proxy
-app.use(express.json());
 app.use("/", express.static(path.join(__dirname, '/public')));
 
 let expireDate = new Date();
 expireDate.setDate(expireDate.getDate() + 1);
-
 
 app.use(helmet());
 
@@ -106,8 +142,8 @@ app.post('/system/sendmail', exportData.sendEmail);
 
 const parameter = require("./src/controllers/parameter");
 app.get('/parameter/data', parameter.getData);
-app.post('/parameter/data', upload.array(), parameter.updateData);
-app.put('/parameter/data', upload.array(), parameter.updateData);
+app.post('/parameter/data', parameter.updateData);
+app.put('/parameter/data', parameter.updateData);
 app.get('/parameter/getOneDataByKey', parameter.getOneDataByKey);
 
 global.Parameter = new Map();
@@ -115,34 +151,6 @@ parameter.getGlobal();
 require('./src/system')
 
 console.log(global.Parameter);
-
-
-// fileupload router
-app.use(fileUpload({ debug: true, useTempFiles: true, tempFileDir: '/tmp/' }));
-
-app.post('/uploadFiles', fncUploadFiles);
-
-function fncUploadFiles(req, res) {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    console.error('status 400 : No files were uploaded');
-    res.send('{"status" : "server", "error" : "status 400 : No files were uploaded"}');
-    return;
-  }
-
-  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-  let uploadFiles = req.files.upload;
-
-  // Use the mv() method to place the file somewhere on your server
-  let newFileName = path.join(__dirname, '/public/uploads/' + uploadFiles.name);
-  uploadFiles.mv(newFileName, function (err) {
-    if (err) {
-      console.error(err);
-      res.send('{"status" : "error", "error" : "' + err + '"}');
-      return;
-    }
-    res.send('{"status" : "server", "sname" : "' + newFileName + '"}');
-  });
-}
 
 process.stdout.on('error', function (err) {
   if (err.code == "EPIPE") {

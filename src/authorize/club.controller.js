@@ -20,7 +20,7 @@ router.get('/adressen/overview', adressService.getOverviewData);
 router.put('/adressen/export', authorize(), exportService.writeAdresses);
 router.post('/adressen/email', authorize(), qrbill.sendEmail);
 router.post('/adressen/qrbill', authorize(), qrbill.createQRBill);
-router.post('adressen/senmail', authorize(), exportService.sendEmail);
+router.post('/adressen/sendmail', authorize(), exportService.sendEmail);
 
 router.get('/anlaesse/data', authorize(), anlaesseService.getData);
 router.post('/anlaesse/data', authorize(), anlaesseService.updateData);

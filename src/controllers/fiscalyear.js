@@ -30,7 +30,7 @@ module.exports = {
 	},
 
 	removeData: function (req, res) {
-		const data = req.body;
+		const data = JSON.parse(req.body);
 		console.info('delete: ',data);
 		FiscalYear.findByPk(data.id)
 		.then((fiscalyear) =>
@@ -41,7 +41,7 @@ module.exports = {
 	},
 
 	addData: function (req, res) {
-		let data = req.body;
+		let data = JSON.parse(req.body);
 		data.id = null;
 		console.info('insert: ',data);
 		FiscalYear.create(data)
@@ -52,7 +52,7 @@ module.exports = {
 	},
 	
 	updateData: function (req, res) {
-		let data = req.body;
+		let data = JSON.parse(req.body);
 		console.info('update: ',data);
 			
 		FiscalYear.findOne(

@@ -30,12 +30,16 @@ module.exports = {
     sendEmail: async function (req, res) {
         console.log("sendEmail");
 
-        const emailBody = req.body;
+        const emailBody = JSON.parse(req.body);
         let email_from = global.gConfig.userEmail;
         if (emailBody.email_signature != "") {
             email_from = emailBody.email_signature;
-            let email_signature = fs.readFileSync("./public/" + emailBody.email_signature + ".html")
-            emailBody.email_body += "<p>" + email_signature + "</p>";
+            try {
+                let email_signature = fs.readFileSync(global.public + emailBody.email_signature + ".html")                
+                emailBody.email_body += "<p>" + email_signature + "</p>";
+            } catch (error) {
+                return res.json(error)
+            }
         }
         let emailConfig = global.gConfig[email_from];
         
@@ -66,11 +70,11 @@ module.exports = {
             let files = emailBody.uploadFiles.split(',');
             for (let ind2 = 0; ind2 < files.length; ind2++) {
                 const file = files[ind2];
-                attachments.push({ filename: file, path: path.join(__dirname, '../../uploads/' + file) });
+                attachments.push({ filename: file, path: path.join(global.uploads, file) });
             }
         }
     
-        transporter.sendMail({
+        await transporter.sendMail({
             from: emailConfig.email_from, // sender address
             to: emailBody.email_an, // list of receivers
             cc: emailBody.email_cc,
@@ -88,11 +92,12 @@ module.exports = {
         }, (err, info) => {
             if (err) {
                 console.log(err);
+                res.json(err);
                 return err;
             }
             console.log(info);
             transporter.close();
-            return info;
+            res.json(info);
         });
     
     },
@@ -106,7 +111,7 @@ module.exports = {
         console.log("writeAdresses");
 
         // filter einbauen aus body.filter
-        const filter = req.body.filter;
+        const filter = JSON.parse(req.body).filter;
         console.log(filter);
 
         let sWhere = { austritt: { [Op.gte]: new Date() } };
@@ -606,7 +611,7 @@ module.exports = {
     writeAuswertung: async function (req, res) {
         console.log("writeAuswertung");
 
-        let objSave = req.body;
+        let objSave = JSON.parse(req.body);
 
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile("./public/exports/Meisterschaft-Vorlage.xlsx");
@@ -720,7 +725,7 @@ module.exports = {
         let sheet
         let oneAdresse
 
-        let objSave = req.body;
+        let objSave = JSON.parse(req.body);
 
         switch (objSave.type) {
             case 0:
@@ -1296,7 +1301,7 @@ module.exports = {
             const element = arData[index];
 
             let sSheetName = element.order + " " + element.name.replace("/", "");
-            let sheet = workbook.addWorksheet(sSheetName.substr(0, 31), {
+            let sheet = workbook.addWorksheet(sSheetName.substring(0, 31), {
                 pageSetup: {
                     fitToPage: true,
                     fitToHeight: 1,
