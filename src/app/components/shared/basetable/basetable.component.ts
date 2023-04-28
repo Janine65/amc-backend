@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Table } from 'primeng/table';
 
 export class TableOptions {
@@ -46,7 +46,7 @@ export class TableToolbar {
   styleUrls: ['./basetable.component.scss']
 })
 
-export class BaseTableComponent implements OnInit {
+export class BaseTableComponent implements OnInit, OnDestroy {
   @Input() tableOptions: TableOptions[] = [];
   @Input() tableData: TableData[] = [];
   @Input() formatFunction: ((field: string, value: string | number | boolean | null) => string | number | boolean | null) | undefined;
@@ -54,20 +54,36 @@ export class BaseTableComponent implements OnInit {
 
   selectedRecord?: TableData;
   filteredRows = this.tableData;
+  public getScreenWidth: any;
+  public getScreenHeight: any;
+  public objHeight$ = '500px';
 
   ngOnInit(): void {
-    return;
-
+    this.getHeight();
   }
 
+  ngOnDestroy() {
+    return;
+  }
+
+  getHeight() { 
+    const element = document.getElementById("main-container")
+    if (element) {
+      this.objHeight$ = (element.scrollHeight - 250).toString() + 'px'; 
+    }
+    return 
+  }
+
+  public onResizeHandler(): void {
+    this.getHeight();
+  }
   clear(table: Table) {
     table.clear();
   }
+
   checkSorting(): boolean {
     let retVal = false;
-
     retVal = this.tableOptions.find(opt => opt.filter) != undefined;
-
     return retVal;
   }
 

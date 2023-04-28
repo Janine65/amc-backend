@@ -49,14 +49,22 @@ export class AdressenComponent implements OnInit {
     ];
 
     this.toolbar = [
-      { label: "Email", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-send", 
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.emailSelected },
-      { label: "Edit", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-file-edit", 
-        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editAdresse },
-        { label: "Delete", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-minus", 
-        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delAdresse },
-      { label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus", 
-        isDefault: true, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAdress },
+      {
+        label: "Email", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-send",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.emailSelected
+      },
+      {
+        label: "Edit", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-file-edit",
+        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editAdresse
+      },
+      {
+        label: "Delete", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-minus",
+        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delAdresse
+      },
+      {
+        label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
+        isDefault: true, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAdress
+      },
     ];
 
     this.subs = from(this.backendService.getAdressenData())
@@ -152,6 +160,9 @@ export class AdressenComponent implements OnInit {
     });
     thisRef.dialogRef.onClose.subscribe((adresse: Adresse) => {
       if (adresse) {
+        adresse.eintritt_date = new Date(adresse.eintritt!);
+        adresse.austritt_date = new Date(adresse.austritt!);
+
         this.adressList.push(adresse)
         console.log(adresse)
       }
@@ -180,6 +191,8 @@ export class AdressenComponent implements OnInit {
     });
     thisRef.dialogRef.onClose.subscribe((adresse: Adresse) => {
       if (adresse) {
+        adresse.eintritt_date = new Date(adresse.eintritt!);
+        adresse.austritt_date = new Date(adresse.austritt!);
         thisRef.adressList = thisRef.adressList.map(obj => [adresse].find(o => o.id === obj.id) || obj);
         console.log(adresse)
       }
@@ -194,16 +207,25 @@ export class AdressenComponent implements OnInit {
     thisRef.messageService.clear();
 
     if (selRec?.austritt != '3000-01-01') {
-      thisRef.messageService.add({detail: 'Dieses Mitglied hat bereits ein Austrittsdatum.', closable: true, severity: 'error', summary: 'Adresse beenden' } );
+      thisRef.messageService.add({ detail: 'Dieses Mitglied hat bereits ein Austrittsdatum.', closable: true, severity: 'error', summary: 'Adresse beenden' });
       return
     }
 
     thisRef.backendService.removeData(selRec).subscribe(
-      {next: (adresse) => {
-        console.log(adresse)
-        thisRef.adressList = thisRef.adressList.map(obj => [adresse].find(o => o.id === obj.id) || obj);
-        thisRef.messageService.add({detail: 'Das Austrittsdatum wurde auf den 31.12. gesetz', closable: true, severity: 'info', summary: 'Adresse beenden' } );        
-      }}
+      {
+        complete: () => {
+          thisRef.backendService.getOneAdress(selRec.id!).subscribe(
+            {
+              next: (adresse) => {
+                adresse.eintritt_date = new Date(adresse.eintritt!);
+                adresse.austritt_date = new Date(adresse.austritt!);
+                thisRef.adressList = thisRef.adressList.map(obj => adresse.id === obj.id ? adresse : obj);
+                thisRef.messageService.add({ detail: 'Das Austrittsdatum wurde auf den 31.12. gesetz', closable: true, severity: 'info', summary: 'Adresse beenden' });
+              }
+            }
+          )
+        }
+      }
     )
 
 

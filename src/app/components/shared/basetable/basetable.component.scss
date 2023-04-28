@@ -6,3 +6,7 @@
     border: 1px solid #007ad9;
     border-width: 1px 1px 0 1px;
 }
+
+::ng-deep .p-toolbar {
+    background-color: transparent !important;
+}

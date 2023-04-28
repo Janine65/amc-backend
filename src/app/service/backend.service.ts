@@ -51,13 +51,18 @@ export class BackendService {
     return this.http.get<OverviewData[]>(apiURL, {headers: this.header});
   }
   getAdressenData(): Observable<Adresse[]> {
-    const apiURL = environment.apiUrl + '/club/adressen/data'
+    const apiURL = environment.apiUrl + '/club/adressen/alldata'
     return this.http.get<Adresse[]>(apiURL, {headers: this.header});
   }
 
   getAdressenFK(): Observable<any> {
     const apiURL = environment.apiUrl + '/club/adressen/getFkData'
     return this.http.get<Adresse[]>(apiURL, {headers: this.header});
+  }
+
+  getOneAdress(id: number): Observable<Adresse> {
+    const apiURL = environment.apiUrl + '/club/adressen/data?id=' + id;
+    return this.http.get<Adresse>(apiURL, {headers: this.header});
   }
 
   updateData(adresse: Adresse): Observable<Adresse> {
