@@ -10,7 +10,8 @@ const clubmeisterService = require('../controllers/clubmeister');
 const kegelmeisterService = require('../controllers/kegelmeister');
 
 // routes
-router.get('/adressen/data', authorize(), adressService.getData);
+router.get('/adressen/alldata', authorize(), adressService.getData);
+router.get('/adressen/data', authorize(), adressService.getOneData);
 router.post('/adressen/data', authorize(), adressService.updateData);
 router.put('/adressen/data', authorize(), adressService.updateData);
 router.delete('/adressen/data', authorize(), adressService.removeData);

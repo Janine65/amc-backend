@@ -40,7 +40,7 @@ module.exports = {
 	},
 
 	getOneData: function (req, res) {
-		Adressen.findByPk(req.param.id)
+		Adressen.findByPk(req.query.id)
 			.then(data => res.json(data))
 			.catch((e) => console.error(e));
 	},
@@ -64,11 +64,12 @@ module.exports = {
 		endDate.setMonth(11);
 		endDate.setDate(31);
 		Adressen.findByPk(data.id)
-		.then((adresse) =>
-			//adresse.destroy()
+		.then((adresse) => {
+			adresse.austritt = endDate;
 			adresse.update({austritt: endDate})
 			.then((obj) => res.json(obj))
-			.catch((e) => console.error(e)))
+			.catch((e) => console.error(e))
+			})
 		.catch((e) => console.error(e));
 	},
 
