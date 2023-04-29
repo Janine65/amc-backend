@@ -32,14 +32,15 @@ module.exports = {
 
         const emailBody = JSON.parse(req.body);
         let email_from = global.gConfig.userEmail;
-        if (emailBody.email_signature != "") {
-            email_from = emailBody.email_signature;
-            try {
-                let email_signature = fs.readFileSync(global.public + emailBody.email_signature + ".html")                
-                emailBody.email_body += "<p>" + email_signature + "</p>";
-            } catch (error) {
-                return res.json(error)
-            }
+        if (emailBody.email_signature == "") {
+            emailBody.email_signature = global.gConfig.defaultEmail;
+        }
+        email_from = emailBody.email_signature;
+        try {
+            let email_signature = fs.readFileSync(global.assets + emailBody.email_signature + ".html")                
+            emailBody.email_body += "<p>" + email_signature + "</p>";
+        } catch (error) {
+            return res.json(error)
         }
         let emailConfig = global.gConfig[email_from];
         
@@ -111,7 +112,7 @@ module.exports = {
         console.log("writeAdresses");
 
         // filter einbauen aus body.filter
-        const filter = JSON.parse(req.body).filter;
+        const filter = JSON.parse(req.body);
         console.log(filter);
 
         let sWhere = { austritt: { [Op.gte]: new Date() } };

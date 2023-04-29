@@ -1,45 +1,27 @@
 ﻿const express = require('express');
 const router = express.Router();
-const Joi = require('joi');
-const validateRequest = require('./validate-request');
 const authorize = require('./authorize')
 const userService = require('../controllers/user.service');
 const exportsFnc = require('../controllers/exports')
 
 // routes
-router.post('/authenticate', authenticateSchema, authenticate);
-router.post('/register', registerSchema, authorize(), register);
+router.post('/authenticate', authenticate);
+router.post('/register', authorize(), register);
 router.get('/', authorize(), getAll);
 router.get('/current', authorize(), getCurrent);
 router.get('/newpass', newPass);
 router.get('/:id', authorize(), getById);
-router.put('/:id', authorize(), updateSchema, update);
+router.put('/:id', authorize(), update);
 router.delete('/:id', authorize(), _delete);
 
 module.exports = router;
 
-function authenticateSchema(req, res, next) {
-    const schema = Joi.object({
-        email: Joi.string().required(),
-        password: Joi.string().required()
-    });
-    validateRequest(req, next, schema);
-}
-
 function authenticate(req, res, next) {
-    userService.authenticate(JSON.parse(req.body))
+    userService.authenticate(req.body)
         .then(user => res.json(user))
         .catch(next);
 }
 
-function registerSchema(req, res, next) {
-    const schema = Joi.object({
-        name: Joi.string().required(),
-        email: Joi.string().required(),
-        role: Joi.string().required()
-    });
-    validateRequest(req, next, schema);
-}
 function newPass(req, res, next) {
     userService.setNewPwd(req.query.email)
         .then((retVal) => {
@@ -53,7 +35,7 @@ function newPass(req, res, next) {
                 email_subject: 'AMC Interna - Neues Passwort gesetzt',
                 email_body: 'Hallo ' + user.name + '<br/>Dein Passwort wurde ersetzt mit ' + newPass + '<br/>Bitte setze nach dem Login ein neues Passwort!'
             }
-            JSON.parse(req.body) = emailBody
+            req.body = emailBody
             exportsFnc.sendEmail(req, res, next)
                 .then(() => res.json({ message: 'Passwort erfolgreich gesetzt und Mail gesendet' }))
                 .catch(next);
@@ -76,14 +58,14 @@ function register(req, res, next) {
                 email_subject: 'AMC Interna - Willkommen',
                 email_body: 'Hallo ' + user.name + '<br/>Willkommen auf der Applikation für den Auto-Moto-Club Swissair. Dies ist eine interne Applikation und darf nicht in unberechtigte Hände gelangen.<br/>Mit freundlichen Grüssen'
             }
-            JSON.parse(req.body) = emailBody
+            req.body = emailBody
             exportsFnc.sendEmail(req, res, next)
                 .then(() => {
                 // send Password Mail
                 emailBody.email_body = 'Hallo ' + user.name + '<br/>Hier dein Passwort: ' + newPass + '<br/>Bitte setze nach dem Login ein neues Passwort!';
                 emailBody.email_subject = 'AMC Interna - Neues Passwort gesetzt';
                 
-                JSON.parse(req.body) = emailBody
+                req.body = emailBody
                 exportsFnc.sendEmail(req, res, next)
                     .then(() => res.json({ message: 'Registrierung erfolgreich und Mail an ' + user.email + ' gesendet' }))
                     .catch(next);
@@ -108,18 +90,8 @@ function getById(req, res, next) {
         .catch(next);
 }
 
-function updateSchema(req, res, next) {
-    const schema = Joi.object({
-        name: Joi.string().empty(''),
-        email: Joi.string().empty(''),
-        password: Joi.string().min(6).empty(''),
-        role: Joi.string().empty(''),
-    });
-    validateRequest(req, next, schema);
-}
-
 function update(req, res, next) {
-    userService.update(req.params.id, JSON.parse(req.body))
+    userService.update(req.params.id, req.body)
         .then(user => res.json(user))
         .catch(next);
 }

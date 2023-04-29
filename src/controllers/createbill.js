@@ -46,7 +46,7 @@ module.exports = {
 
         const filename = "AMC-Mitgliederbeitrag-" + sJahr + "-" + adresse.mnr + ".pdf";
 
-        const pdf = new SwissQRBill.PDF(data, "./public/uploads/" + filename, { autoGenerate: false, size: "A4" });
+        const pdf = new SwissQRBill.PDF(data, global.uploads + filename, { autoGenerate: false, size: "A4" });
         pdf.info = {
             Title: "Mitgliederrechnung " + sJahr,
             Author: "Auto-Moto-Club Swissair",
@@ -54,7 +54,7 @@ module.exports = {
         }
 
         // Fit the image within the dimensions
-        let img = fs.readFileSync('./public/assets/AMCfarbigKlein.jpg');
+        let img = fs.readFileSync(global.assets + '/AMCfarbigKlein.jpg');
         pdf.image(img.buffer, SwissQRBill.utils.mm2pt(140), SwissQRBill.utils.mm2pt(5),
             { fit: [100, 100] });
 
@@ -123,7 +123,7 @@ module.exports = {
         });
 
         // Fit the image within the dimensions
-        img = fs.readFileSync('./public/assets/RNW-TWINT-SWISS-QR-DE.png');
+        img = fs.readFileSync(global.assets + '/RNW-TWINT-SWISS-QR-DE.png');
         pdf.image(img.buffer, SwissQRBill.utils.mm2pt(0), SwissQRBill.utils.mm2pt(182), {fit: [SwissQRBill.utils.mm2pt(210), SwissQRBill.utils.mm2pt(10)]});
 
 
@@ -202,7 +202,7 @@ async function fncSendEmail(email) {
     let email_from = global.gConfig.defaultEmail;
     if (email.email_signature != "") {
         email_from = email.email_signature;
-        let email_signature = fs.readFileSync("./public/assets/" + email.email_signature + ".html")
+        let email_signature = fs.readFileSync(global.assets + email.email_signature + ".html")
         email.email_body += "<p>" + email_signature + "</p>";
     }
     // console.log(email);
@@ -235,7 +235,7 @@ async function fncSendEmail(email) {
         let files = email.uploadFiles.split(',');
         for (let ind2 = 0; ind2 < files.length; ind2++) {
             const file = files[ind2];
-            attachments.push({ filename: file, path: path.join(__dirname, '../../uploads/' + file) });
+            attachments.push({ filename: file, path: global.uploads + file });
         }
     }
 

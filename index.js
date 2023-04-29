@@ -19,8 +19,9 @@ global.documents = __dirname + "/documents/"
 global.uploads = __dirname + "/public/uploads/"
 global.exports = __dirname + "/public/exports/"
 global.public = __dirname + "/public/"
+global.assets = __dirname + "/public/assets/"
 
-const cfg = require('./config/config')
+require('./config/config')
 const app = express();
 
 const whitelist = ['http://localhost:8000', 'http://localhost:4200']
@@ -69,6 +70,11 @@ app.post('/upload', function (req, res) {
   });
   }
 );
+
+app.get('/download', function(req, res) {
+  const filename = global.exports + '/' + req.query.filename;  
+  res.sendFile(filename);
+});
 
 const winston = require('winston')
 

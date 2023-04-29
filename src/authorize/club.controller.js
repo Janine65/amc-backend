@@ -16,7 +16,6 @@ router.post('/adressen/data', authorize(), adressService.updateData);
 router.put('/adressen/data', authorize(), adressService.updateData);
 router.delete('/adressen/data', authorize(), adressService.removeData);
 router.get('/adressen/getFkData', authorize(), adressService.getFKData);
-router.get('/adressen/data', authorize(), adressService.getOneData);
 router.get('/adressen/overview', adressService.getOverviewData);
 router.put('/adressen/export', authorize(), exportService.writeAdresses);
 router.post('/adressen/email', authorize(), qrbill.sendEmail);
