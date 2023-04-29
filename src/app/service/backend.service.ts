@@ -78,6 +78,14 @@ export class BackendService {
     return this.http.request(req);
   }
 
+  exportAdressData(filter = {}) : Observable<any> {
+    const apiURL = environment.apiUrl + '/club/adressen/export'
+    const body = JSON.stringify(filter);
+    const req = new HttpRequest('PUT', apiURL, body, {headers: this.header});
+    return this.http.request(req);
+
+  }
+
   uploadFiles(file: File): Observable<any> {
     const apiURL = environment.apiUrl + '/upload';
     const data = new FormData();
@@ -85,10 +93,24 @@ export class BackendService {
     const req = new HttpRequest('POST', apiURL, data, {headers: this.header});
     return this.http.request(req);
   }
+
+  downloadFile(filename: string): Observable<any> {
+    const apiURL = environment.apiUrl + '/download?filename=' + filename;
+    const req = new HttpRequest('GET', apiURL, {headers: this.header, responseType: 'blob' as 'json'});
+    return this.http.request(req);
+  }
+
   sendEmail(emailbody: any): Observable<any> {
     const apiURL = environment.apiUrl + '/club/adressen/sendmail'
     const body = JSON.stringify(emailbody)
     return this.http.post<any>(apiURL, body, {headers: this.header});
 
+  }
+
+  qrBillAdresse(adresse: Adresse): Observable<any> {
+    const apiURL = environment.apiUrl + '/club/adressen/qrbill'
+    const body = JSON.stringify(adresse)
+    const req = new HttpRequest('POST', apiURL, body, {headers: this.header});
+    return this.http.request(req);
   }
 }

@@ -11,6 +11,34 @@ import { EmailDialogComponent } from '@app/components/shared/email-dialog/email-
 import { environment } from '@environments/environment';
 import { MessageService } from 'primeng/api';
 
+
+export class AdresseFilter {
+  public name: string;
+  public vorname: string;
+  public adresse: string;
+  public plz: string;
+  public ort: string;
+  public sam_mitglied: string;
+  public vorstand: string;
+  public revisor: string;
+  public ehrenmitglied: string;
+
+  constructor() {
+    this.name = '';
+    this.vorname = '';
+    this.adresse = '';
+    this.plz = '';
+    this.ort = '';
+    this.sam_mitglied = '';
+    this.vorstand = '';
+    this.revisor = '';
+    this.ehrenmitglied = '';
+  }
+
+  //  {adresse: '', name: '', vorname: '', ort: '', plz: '', sam_mitglied: '', vorstand: '', revisor: '', ehrenmitglied: ''};
+
+}
+
 @Component({
   selector: 'app-adressen',
   templateUrl: './adressen.component.html',
@@ -51,19 +79,27 @@ export class AdressenComponent implements OnInit {
     this.toolbar = [
       {
         label: "Email", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-send",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.emailSelected
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.emailSelected, roleNeeded: ''
       },
       {
         label: "Edit", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-file-edit",
-        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editAdresse
+        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editAdresse, roleNeeded: ''
       },
       {
         label: "Delete", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-minus",
-        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delAdresse
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delAdresse, roleNeeded: ''
       },
       {
         label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
-        isDefault: true, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAdress
+        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAdress, roleNeeded: ''
+      },
+      {
+        label: "Export", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-excel",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportAdressen, roleNeeded: ''
+      },
+      {
+        label: "Billing", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-excel",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.billAdressen, roleNeeded: 'admin'
       },
     ];
 
@@ -227,7 +263,90 @@ export class AdressenComponent implements OnInit {
         }
       }
     )
+  }
 
+  billAdressen = (selRec?: Adresse, lstData?: Adresse[]) => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisRef = this;
+    if (lstData) {
+      lstData.forEach( (adresse) => {
+        this.backendService.qrBillAdresse(adresse).subscribe(
+          { complete() {
+            thisRef.messageService.add({detail: `Rechnung für ${adresse.vorname} ${adresse.name} wurde erstellt`, closable: true, severity: 'info', summary: 'Rechnung erstellen'});
+            }
+          }
+        )
+      })
+    }
+  }
 
+  exportAdressen = () => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisRef = this;
+    const filter: AdresseFilter = new AdresseFilter();
+
+    const locStore = localStorage.getItem('adressen');
+
+    if (locStore) {
+      const filters = JSON.parse(locStore).filters;
+      if (filters != undefined) {
+        if (filters.name) {
+          if (filters.name[0].value)
+            filter.name = filters.name[0].value;
+        }
+        if (filters.vorname) {
+          if (filters.vorname[0].value)
+            filter.vorname = filters.vorname[0].value;
+        }
+        if (filters.adresse) {
+          if (filters.adresse[0].value)
+            filter.adresse = filters.adresse[0].value;
+        }
+        if (filters.plz) {
+          if (filters.plz[0].value)
+            filter.plz = filters.plz[0].value;
+        }
+        if (filters.ort) {
+          if (filters.ort[0].value)
+            filter.ort = filters.ort[0].value;
+        }
+        if (filters.sam_mitglied) {
+          if (filters.sam_mitglied[0].value)
+            filter.sam_mitglied = filters.sam_mitglied[0].value;
+        }
+        if (filters.vorstand) {
+          if (filters.vorstand[0].value)
+            filter.sam_mitglied = filters.vorstand[0].value;
+        }
+        if (filters.revisor) {
+          if (filters.revisor[0].value)
+            filter.sam_mitglied = filters.revisor[0].value;
+        }
+        console.log(filter);
+      }
+    }
+    console.log("Expoert Adressen");
+
+    thisRef.backendService.exportAdressData(filter).subscribe(
+      {
+        next: (result) => {
+          if (result.body && result.body.type == 'info') {
+            thisRef.backendService.downloadFile(result.body.filename).subscribe(
+              {
+                next(data) {
+                  if (data.body) {
+                    const blob = new Blob([data.body]);
+                    const downloadURL = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = downloadURL;
+                    link.download = result.body.filename;
+                    link.click();
+                  }
+                },
+              }
+            )
+          }
+        }
+      });
   }
 }

@@ -80,6 +80,27 @@ export class AlertComponent implements OnInit, OnDestroy {
       }
   }
 
+  cssButtonClass(alert: Alert) {
+    if (!alert) return;
+
+    const classes = ['p-button-rounded', 'p-button-text'];
+            
+    const alertTypeClass = {
+        [AlertType.Success]: 'p-button--success',
+        [AlertType.Error]: 'p-button-danger',
+        [AlertType.Info]: 'p-button-info',
+        [AlertType.Warning]: 'p-button-warning'
+    }
+
+    classes.push(alertTypeClass[alert.type]);
+
+    if (alert.fade) {
+        classes.push('fade');
+    }
+
+    return classes.join(' ');
+  }
+
   cssClass(alert: Alert) {
       if (!alert) return;
 

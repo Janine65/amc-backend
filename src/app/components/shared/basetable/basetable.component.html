@@ -1,15 +1,15 @@
-<p-toast></p-toast>
+<p-toast key="local"></p-toast>
 <div [style.height.px]="50">
     <button pButton  *ngIf="checkSorting()" label="Clear" class="p-button-secondary p-button-outlined" icon="pi pi-filter-slash"
-        (click)="clear(table)"></button>
+        (click)="clear(basetable)"></button>
     <button pButton *ngFor="let but of tableToolbar; index as ind" [label]="but.label!" [icon]="but.icon!"
         [ngClass]="but.btnClass!" (click)="clickOnToolbar(ind)"
         [disabled]="isButtonDisabled(ind)" ></button>
 </div>
-<p-table #table [columns]="tableOptions" styleClass=" p-datatable-striped" [value]="tableData" selectionMode="single" [(selection)]="selectedRecord"
+<p-table #basetable [columns]="tableOptions" styleClass=" p-datatable-striped" [value]="tableData" selectionMode="single" [(selection)]="selectedRecord"
     (onFilter)="filterEvent($event)" dataKey="id" sortMode="multiple"
     [scrollHeight]="objHeight$" [scrollable]="true" [tableStyle]="{'min-width': '50rem'}"
-    (window:resize)="onResizeHandler()">
+    (window:resize)="onResizeHandler()" [stateKey]="localStorage" stateStorage="local">
     <ng-template pTemplate="header" let-columns>
         <tr>
             <th *ngFor="let col of columns" [pSortableColumnDisabled]="!col.sortable" [pSortableColumn]="col.field">

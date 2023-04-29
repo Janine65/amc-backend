@@ -1,4 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AccountService } from '@app/service';
 import { Table } from 'primeng/table';
 
 export class TableOptions {
@@ -26,19 +27,22 @@ export class TableToolbar {
   public isDefault: boolean;
   public disabledWhenEmpty: boolean;
   public disabledNoSelection: boolean;
+  public roleNeeded: string;
   public clickfnc: ((selRec?: TableData, lstData?: TableData[]) => void);
   constructor(label: string, btnClass: string, icon: string, isDefault: boolean, 
-      disabledWhenEmpty: boolean, disabledNoSelection: boolean,
+      disabledWhenEmpty: boolean, disabledNoSelection: boolean, roleNeeded: string,
       clickfnc: (selRec?: TableData | undefined, lstData?: TableData[] | undefined) => void) {
     this.label = label;
     this.btnClass = btnClass;
     this.icon = icon;
     this.isDefault = isDefault;
+    this.roleNeeded = (roleNeeded === undefined ? '' : roleNeeded);
     this.disabledWhenEmpty = disabledWhenEmpty;
     this.disabledNoSelection = disabledNoSelection;
     this.clickfnc = clickfnc;
   }
 }
+
 
 @Component({
   selector: 'app-basetable',
@@ -51,12 +55,15 @@ export class BaseTableComponent implements OnInit, OnDestroy {
   @Input() tableData: TableData[] = [];
   @Input() formatFunction: ((field: string, value: string | number | boolean | null) => string | number | boolean | null) | undefined;
   @Input() tableToolbar?: TableToolbar[] = []
+  @Input() localStorage = 'basetable'
 
   selectedRecord?: TableData;
   filteredRows = this.tableData;
   public getScreenWidth: any;
   public getScreenHeight: any;
   public objHeight$ = '500px';
+
+  constructor(private accountService : AccountService) {}
 
   ngOnInit(): void {
     this.getHeight();
@@ -66,12 +73,11 @@ export class BaseTableComponent implements OnInit, OnDestroy {
     return;
   }
 
-  getHeight() { 
+  private getHeight() { 
     const element = document.getElementById("main-container")
     if (element) {
-      this.objHeight$ = (element.scrollHeight - 250).toString() + 'px'; 
+      this.objHeight$ = (element.scrollHeight - 100).toString() + 'px'; 
     }
-    return 
   }
 
   public onResizeHandler(): void {
@@ -79,6 +85,7 @@ export class BaseTableComponent implements OnInit, OnDestroy {
   }
   clear(table: Table) {
     table.clear();
+    localStorage.removeItem(this.localStorage);
   }
 
   checkSorting(): boolean {
@@ -110,6 +117,14 @@ export class BaseTableComponent implements OnInit, OnDestroy {
 
   isButtonDisabled(ind: number) : boolean {
     if (this.tableToolbar) {
+      if (this.tableToolbar[ind].roleNeeded != ''){
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          if (user.role != this.tableToolbar[ind].roleNeeded && user.role != 'admin')
+            return true;
+        }
+      }
       if (this.filteredRows.length == 0) 
         return this.tableToolbar[ind].disabledWhenEmpty;
       

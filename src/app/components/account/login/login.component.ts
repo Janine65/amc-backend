@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, NgForm } from '@angular/forms';
-import { first } from 'rxjs/operators';
+import { first, last } from 'rxjs/operators';
 import { AccountService, AlertService } from '@app/service';
 import { AlertType } from '@app/models';
 import { MessageService } from 'primeng/api';
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
     this.loading = true;
     this.accountService.newPasswort(f.value['email'])
-      .pipe(first())
+      .pipe(last())
       .subscribe({
         next: () => {
           // get return url from query parameters or default to home page
@@ -69,7 +69,7 @@ export class LoginComponent implements OnInit {
     this.loading = true;
 
     this.accountService.login(f.value['email'], f.value['password'])
-      .pipe(first())
+      .pipe(last())
       .subscribe({
         next: () => {
           // get return url from query parameters or default to home page

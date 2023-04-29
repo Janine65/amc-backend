@@ -3,9 +3,11 @@
     <div class="layout-sidebar">
         <app-sidebar></app-sidebar>
     </div>
-    <app-alert></app-alert>
-    <div id="main-container" class="layout-main-container">
-        <div class="layout-main">
+    <div class="layout-main-container">
+        <div class="layout-main-alert">
+            <app-alert></app-alert>
+        </div>
+        <div id="main-container" class="layout-main">
             <router-outlet></router-outlet>
         </div>
         <app-footer></app-footer>
