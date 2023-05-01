@@ -2,7 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { from, Subscription } from 'rxjs';
 import { BackendService } from '@app/service/backend.service';
-import { Adresse } from 'src/app/models/datatypes';
+import { Adresse } from '@model/datatypes';
 import { TableOptions, TableToolbar } from '../../shared/basetable/basetable.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AdresseEditComponent } from '../adresse-edit/adresse-edit.component';
@@ -56,7 +56,10 @@ export class AdressenComponent implements OnInit {
   cols: TableOptions[] = [];
   toolbar: TableToolbar[] = [];
 
-  constructor(private backendService: BackendService, private dialogService: DialogService, private messageService: MessageService) { }
+  constructor(
+    private backendService: BackendService, 
+    private dialogService: DialogService, 
+    private messageService: MessageService) { }
 
   ngOnInit(): void {
 

@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Adresse, Fiscalyear, OverviewData, ParamData } from '../models/datatypes';
+import { Adresse, Anlass, Fiscalyear, OverviewData, ParamData } from '../models/datatypes';
 import { environment } from '@environments/environment';
 
 @Injectable({
@@ -113,4 +113,45 @@ export class BackendService {
     const req = new HttpRequest('POST', apiURL, body, {headers: this.header});
     return this.http.request(req);
   }
+
+  getAnlaesseData(): Observable<Anlass[]> {
+    const apiURL = environment.apiUrl + '/club/anlaesse/data'
+    return this.http.get<Anlass[]>(apiURL, {headers: this.header});
+  }
+
+  getAnlaesseFKData(): Observable<any> {
+    const apiURL = environment.apiUrl + '/club/anlaesse/getFkData'
+    return this.http.get<Anlass[]>(apiURL, {headers: this.header});
+  }
+
+  addAnlaesseData(anlass: Anlass): Observable<Anlass> {
+    const apiURL = environment.apiUrl + '/club/anlaesse/data'
+    const body = JSON.stringify(anlass)
+    return this.http.put<Anlass>(apiURL, body, {headers: this.header});
+  }
+
+  updAnlaesseData(anlass: Anlass): Observable<Anlass> {
+    const apiURL = environment.apiUrl + '/club/anlaesse/data'
+    const body = JSON.stringify(anlass)
+    return this.http.post<Anlass>(apiURL, body, {headers: this.header});
+  }
+
+  delAnlaesseData(anlass: Anlass): Observable<Anlass> {
+    const apiURL = environment.apiUrl + '/club/anlaesse/data'
+    const body = JSON.stringify(anlass)
+    return this.http.delete<Anlass>(apiURL, {headers: this.header, body: body});
+  }
+
+  getSheet(params: any): Observable<any> {
+    const apiURL = environment.apiUrl + '/club/anlaesse/sheet'
+    const body = JSON.stringify(params)
+    return this.http.post<Anlass>(apiURL, body, {headers: this.header});
+  }
+
+  getOneAnlass(id: number): Observable<Anlass> {
+    const apiURL = environment.apiUrl + '/club/anlaesse/data/' + id;
+    return this.http.get(apiURL, {headers: this.header});
+  }
+
+
 }

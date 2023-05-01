@@ -1,0 +1,72 @@
+<p-scrollPanel [style]="{width: '100%', height: '80%'}">
+    <form #f="ngForm" autocomplete="off" (ngSubmit)="save(f)">
+        <div class="card">
+            <div class="formgrid grid">
+                <div class="field col-12 md:col-6 mt-4">
+                    <label for="datum" class="mr-2 ">Datum</label>
+                    <p-calendar dateFormat="dd.mm.yy" id="datum" name="datum" [required]="true"
+                        class="p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="anlass.datum_date"></p-calendar>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="status">Status</label>
+                    <p-selectButton [options]="lstStatus" [(ngModel)]="anlass.status" optionLabel="name"
+                        optionValue="code" name="status" id="status" #status="ngModel" required class="p-2 appearance-none outline-none w-full"></p-selectButton>
+                    <app-input-validation [control]="status" [errDef]="{ required: 'Status muss ausgewählt sein'}">
+                    </app-input-validation>
+                </div>
+                <div class="field col-12">
+                    <label for="bezeichnung">Bezeichnung</label>
+                    <input type="text" id="bezeichnung" pInputText name="bezeichnung" #bezeichnung="ngModel" minlength="3" required
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="anlass.name">
+                    <app-input-validation [control]="bezeichnung" [errDef]="{ required: 'Bezeichnung muss gesetzt sein',
+                                minlength: 'Die Bezeichnung soll mind. 3 Zeichen betragen'}">
+                    </app-input-validation>
+                </div>
+                <div class="field col-12">
+                    <label for="beschreibung">Beschreibung</label>
+                    <textarea [(ngModel)]="anlass.beschreibung" id="beschreibung" [rows]="5" name="beschreibung"
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"></textarea>
+                </div>
+                <div class="formgroup-inline field col-12">
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="kegeln" [(ngModel)]="anlass.istkegeln" name="kegeln">
+                        <label for="kegeln">Kegeln?</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="nachkegeln" [(ngModel)]="anlass.nachkegeln" name="nachkegeln">
+                        <label for="nachkegeln">Nachkegeln?</label>
+                    </div>
+                    <div class="field-checkbox">
+                        <input type="checkbox" id="sam" [(ngModel)]="anlass.istsamanlass" name="vorstand">
+                        <label for="sam">SAM-Anlass?</label>
+                    </div>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="punkte">Punkte</label>
+                    <p-inputNumber inputId="integeronly" [max]="200" id="punkte" [(ngModel)]="anlass.punkte" 
+                    name="punkte" class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"></p-inputNumber>
+                </div>
+                <div class="field col-12 md:col-6">
+                    <label for="gaeste">Gäste</label>
+                    <p-inputNumber inputId="integeronly" id="gaeste" [(ngModel)]="anlass.gaeste" name="gaeste"
+                    class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"></p-inputNumber>
+                </div>
+                <div class="field col-12">
+                    <label for="vorjahr" class="mr-2 ">Vorjahres Anlass</label>
+                    <p-dropdown id="vorjahr" [options]="dlstFKAnlaesse" optionLabel="value" optionValue="id"
+                        [filter]="true" filterBy="value" [autoDisplayFirst]="false" [showClear]="true" name="vorjahr"
+                        class="mr-2 text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="anlass.anlaesseid" [style.width.%]="80"></p-dropdown>
+                </div>
+            </div>
+        </div>
+    </form>
+</p-scrollPanel>
+<p-toolbar>
+    <button pButton type="button" label="Zurück" icon="pi pi-back" class="p-button-secondary p-button-outlined"
+        (click)="back()"></button>
+    <button pButton type="button" label="Sichern" icon="pi pi-save" class="p-button-primary p-button-outlined"
+        (click)="save(f)"></button>
+</p-toolbar>

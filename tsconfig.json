@@ -25,8 +25,11 @@
       "dom"
     ],
     "paths": {
+      "@model/*": ["src/app/models/*"],
+      "@service/*": ["src/app/service/*"],
+      "@shared/*": ["src/app/components/shared/*"],
       "@app/*": ["src/app/*"],
-      "@environments/*": ["src/environments/*"]
+      "@environments/*": ["src/environments/*"],
     }
   },
   "angularCompilerOptions": {

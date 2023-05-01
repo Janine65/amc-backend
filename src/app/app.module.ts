@@ -62,6 +62,7 @@ import { MessageService } from 'primeng/api';
 import { GlobalErrorHandler } from './service/global-error-handler';
 import { ProfileComponent } from './components/account/profile/profile.component';
 import { EmailDialogComponent } from './components/shared/email-dialog/email-dialog.component';
+import { AnlaesseEditComponent } from './components/verwaltung/anlaesse-edit/anlaesse-edit.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +88,7 @@ import { EmailDialogComponent } from './components/shared/email-dialog/email-dia
     AlertComponent,
     ProfileComponent,
     EmailDialogComponent,
+    AnlaesseEditComponent,
   ],
   imports: [
     BrowserModule,

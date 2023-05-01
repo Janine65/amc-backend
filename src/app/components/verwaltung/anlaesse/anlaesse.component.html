@@ -1,1 +1,12 @@
-<p>anlaesse works!</p>
+<div [style.height.px]="50">
+    <label class="mr-3">Jahr wählen</label>
+    <p-dropdown [options]="selJahre" [(ngModel)]="selJahr" (onChange)="chgJahr()"></p-dropdown>
+</div>
+
+<app-basetable
+    [tableOptions]="cols"
+    [tableData]="anlaesseList"
+    [formatFunction]="formatField"
+    [tableToolbar]="toolbar"
+    localStorage="anlaesse">
+</app-basetable>

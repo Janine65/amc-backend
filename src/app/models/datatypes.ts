@@ -52,7 +52,22 @@ export class Adresse extends TableData {
     public notes?: string;
 }
 
-
+export class Anlass extends TableData {
+    public datum?: string;
+    public datum_date?: Date;
+    public name?: string;
+    public beschreibung?: string;
+    public punkte?: number;
+    public istkegeln?: boolean;
+    public nachkegeln?: boolean;
+    public istsamanlass?: boolean;
+    public gaeste?: number;
+    public anlaesseid?: number;
+    public longname?: string;
+    public status?: number;
+    public vorjahr?: string;
+    public linkedEvent?: {vorjahr: string};
+}
 
 export class Fiscalyear {
     constructor(

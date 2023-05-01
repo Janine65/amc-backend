@@ -66,7 +66,7 @@ export class AppTopBarComponent implements OnInit {
         if (this.user) {
             this.accountService.logout();
             this.user = undefined;
-            this.messages.add({detail: 'Du bist ausgelogged!', summary: 'Ausgelogged', severity: 'info'})
+            this.messages.add({detail: 'Du bist ausgelogged!', summary: 'Ausgelogged', severity: 'info', closable: false, sticky: true})
         }
     }
 
