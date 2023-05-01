@@ -1,6 +1,6 @@
 const { Meisterschaft, Adressen, Kegelmeister, Clubmeister, Account, Budget, Journal, Anlaesse, Receipt, JournalReceipt } = require("../db");
 const {
-    Op, QueryTypes
+    Op, QueryTypes, Sequelize
 } = require("sequelize");
 
 const fs = require("fs");
@@ -30,7 +30,14 @@ module.exports = {
     sendEmail: async function (req, res) {
         console.log("sendEmail");
 
-        const emailBody = JSON.parse(req.body);
+        let emailBody = {};
+
+        try {
+            emailBody = JSON.parse(req.body);
+            
+        } catch (error) {
+            emailBody = req.body;
+        }
         let email_from = global.gConfig.userEmail;
         if (emailBody.email_signature == "") {
             emailBody.email_signature = global.gConfig.defaultEmail;
@@ -311,7 +318,7 @@ module.exports = {
         
         let arData = await Journal.findAll(
             {
-                where: sequelize.where(sequelize.fn('YEAR', sequelize.col('date')), sjahr),
+                where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('date')), sjahr),
                 include: [
                     { model: Account, as: 'fromAccount', required: true, attributes: ['id', 'order', 'name'] },
                     { model: Account, as: 'toAccount', required: true, attributes: ['id', 'order', 'name'] }
@@ -963,8 +970,8 @@ module.exports = {
 
         let accData = await Account.findAll({
             attributes: ["id", "name", "level", "order", "status",
-                [sequelize.literal(0), "amount"], [sequelize.literal(0), "amountVJ"],
-                [sequelize.literal(0), "budget"], [sequelize.literal(0), "budgetVJ"], [sequelize.literal(0), "budgetNJ"]
+                [Sequelize.literal(0), "amount"], [Sequelize.literal(0), "amountVJ"],
+                [Sequelize.literal(0), "budget"], [Sequelize.literal(0), "budgetVJ"], [Sequelize.literal(0), "budgetNJ"]
             ],
             order: ["level", "order"],
             raw: true, nest: true
@@ -1028,8 +1035,8 @@ module.exports = {
         }
 
         arrAmount = await Journal.findAll({
-            attributes: ["to_account", [sequelize.fn('SUM', sequelize.col("amount")), "amount"]],
-            where: sequelize.where(sequelize.fn('YEAR', sequelize.col("date")), sjahr),
+            attributes: ["to_account", [Sequelize.fn('SUM', Sequelize.col("amount")), "amount"]],
+            where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("date")), sjahr),
             group: ["to_account"]
         })
             .catch((e) => {
@@ -1054,8 +1061,8 @@ module.exports = {
             }
         }
         arrAmount = await Journal.findAll({
-            attributes: ["from_account", [sequelize.fn('SUM', sequelize.col("amount")), "amount"]],
-            where: sequelize.where(sequelize.fn('YEAR', sequelize.col("date")), iVJahr),
+            attributes: ["from_account", [Sequelize.fn('SUM', Sequelize.col("amount")), "amount"]],
+            where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("date")), iVJahr),
             group: ["from_account"]
         })
             .catch((e) => {
@@ -1072,8 +1079,8 @@ module.exports = {
         }
 
         arrAmount = await Journal.findAll({
-            attributes: ["to_account", [sequelize.fn('SUM', sequelize.col("amount")), "amount"]],
-            where: sequelize.where(sequelize.fn('YEAR', sequelize.col("date")), iVJahr),
+            attributes: ["to_account", [Sequelize.fn('SUM', Sequelize.col("amount")), "amount"]],
+            where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("date")), iVJahr),
             group: ["to_account"]
         })
             .catch((e) => {
@@ -1259,7 +1266,7 @@ module.exports = {
         if (req.query.all == 0) {
             let arAccId = await Journal.findAll({
                 attributes: ["from_account", "to_account"],
-                where: sequelize.where(sequelize.fn('YEAR', sequelize.col("date")), req.query.jahr)
+                where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("date")), req.query.jahr)
             });
             let arAccounts = [];
             for (let index = 0; index < arAccId.length; index++) {
@@ -1528,7 +1535,7 @@ function writeArray(sheet, arData, firstRow, fBudget = false, fBudgetVergleich =
  */
 async function fillTemplate(sheet, id, syear) {
     const sqlstring = "select m.* from meisterschaft as m join anlaesse as a on m.eventid = a.id and year(a.datum) = " + syear + " where m.mitgliedid = " + id + " order by m.id"
-    const data = await sequelize.query(sqlstring, { type: QueryTypes.SELECT, logging: console.log, raw: false, model: Meisterschaft } )
+    const data = await Sequelize.query(sqlstring, { type: QueryTypes.SELECT, logging: console.log, raw: false, model: Meisterschaft } )
 
     if (data != undefined && data.length > 0) {
         let cols = sheet.getColumn('K');
@@ -1619,7 +1626,7 @@ async function fillName(sheet, adress) {
 async function createTemplate(syear, sheet, inclPoints) {
     // read all events
     let dbEvents = await Anlaesse.findAll({
-        where: [sequelize.where(sequelize.fn('YEAR', sequelize.col('datum')), syear),
+        where: [Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('datum')), syear),
         {
             [Op.or]: [
                 { "istkegeln": true },

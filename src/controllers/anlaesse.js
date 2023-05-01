@@ -65,8 +65,7 @@ module.exports = {
     console.info("delete: ", data);
     Anlaesse.findByPk(data.id)
       .then((anlass) =>
-        anlass
-          .destroy()
+        anlass.destroy()
           .then((obj) =>
             res.json({
               id: obj.id,
@@ -77,44 +76,38 @@ module.exports = {
       .catch((e) => console.log(e));
   },
 
-  addData: function (req, res) {
+  addData: async function (req, res) {
     let data = JSON.parse(req.body);
 		data.id = null;
     console.info("insert: ", data);
-    Anlaesse.create(data)
-      .then((obj) =>
-        res.json({
-          id: obj.id,
-        })
-      )
-      .catch((e) => console.error(e));
+    const obj = await Anlaesse.create(data);
+    res.json(obj)
   },
 
-  updateData: function (req, res) {
+  updateData: async function (req, res) {
     let data = JSON.parse(req.body);
     if (data.id == 0 || data.id == null) {
       // insert
       data.id = null;
+      let newRec = Anlaesse.build(data);
+      newRec.isNewRecord = true;
       console.info("insert: anlass", data);
-      Anlaesse.create(data)
-        .then((obj) =>
-          res.json({
-            id: obj.id,
-          })
-        )
-        .catch((e) => console.error(e));
+      try {
+        const obj = await newRec.save();
+        return res.json(obj);
+      } catch (err) {
+        return res.json(err);
+      }
+      
     } else {
       // update
       console.info("update: ", data);
 
       Anlaesse.findByPk(data.id)
         .then((anlass) =>
-          anlass
-            .update(data)
+          anlass.update(data)
             .then((obj) =>
-              res.json({
-                id: obj.id,
-              })
+              res.json(obj)
             )
             .catch((e) => console.error(e))
         )

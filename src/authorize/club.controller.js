@@ -29,7 +29,7 @@ router.delete('/anlaesse/data', authorize(), anlaesseService.removeData);
 router.get('/anlaesse/getFkData', authorize(), anlaesseService.getFKData);
 router.get('/anlaesse/data/:id', authorize(), anlaesseService.getOneData);
 router.get('/anlaesse/overview', anlaesseService.getOverviewData);
-router.post('/anlaesse/sheet, authorize()', exportService.writeExcelTemplate);
+router.post('/anlaesse/sheet', authorize(), exportService.writeExcelTemplate);
 router.post('/anlaesse/writeAuswertung', authorize(), exportService.writeAuswertung);
 
 router.get('/meisterschaft/data', authorize(), meisterschaftService.getData);
