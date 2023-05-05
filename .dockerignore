@@ -11,7 +11,6 @@
 **/*.*proj.user
 **/*.dbmdl
 **/*.jfm
-**/azds.yaml
 **/charts
 **/docker-compose*
 **/compose*
@@ -21,4 +20,5 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+LICENSE
 README.md
