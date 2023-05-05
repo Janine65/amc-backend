@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: DimpgP21
+      POSTGRES_DB: amcinterna
+    ports:
+      - 5435:5432
+    volumes:
+      - /Users/janine/backup/pgdata:/var/lib/postgresql/data
+  amcbackend:
+    image: amcbackend
+    build:
+      context: .
+      dockerfile: ../amc-backend/Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 8080:8000
+    links:
+      - db
+  amcinterna:
+    image: amcinterna
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 4200:4200
+    links:
+      - amcbackend
