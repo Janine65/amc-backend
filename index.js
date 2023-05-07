@@ -24,7 +24,7 @@ global.assets = __dirname + "/public/assets/"
 require('./config/config')
 const app = express();
 
-const whitelist = ['http://localhost:8000', 'http://localhost:4200']
+const whitelist = ['http://localhost:8000', 'http://localhost:4200', global.gConfig.webhost]
 const corsOptionsDelegate = function (req, callback) {
   let corsOptions;
   if (whitelist.indexOf(req.header('Origin')) !== -1) {
@@ -42,7 +42,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors(corsOptionsDelegate))
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+  res.setHeader('Access-Control-Allow-Origin', global.gConfig.webhost);
   res.setHeader('Access-Control-Allow-Methods', "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
   res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers,Access-Control-Allow-Methods,Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Authorization, Accept');
   next();
