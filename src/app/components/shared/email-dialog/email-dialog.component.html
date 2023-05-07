@@ -58,10 +58,11 @@
     </div>
     <div class="field grid">
         <div class="col-12 md:col-12">
-            <quill-editor id="body" [(ngModel)]="emailBody.email_body" name="body"
+            <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
+            <ngx-editor id="body" [editor]="editor" [(ngModel)]="emailBody.email_body" [disabled]="false" 
+                [placeholder]="'Hier kommt die Meldung'" name="body"
                 [style]="{ height: '240px', border: 'round'}"
-                class="text-base text-color surface-overlay p-2  appearance-none outline-none w-full">
-            </quill-editor>
+                class="text-base text-color surface-overlay p-2  appearance-none outline-none w-full"></ngx-editor>
         </div>
     </div>
 </div>

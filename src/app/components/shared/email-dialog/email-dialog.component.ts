@@ -1,22 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AccountService, BackendService } from '@app/service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EmailBody, EmailSignature } from './email-dialog.types';
 import {  MessageService } from 'primeng/api';
 import { environment } from '@environments/environment';
 import { Subscription } from 'rxjs';
+import { Editor } from 'ngx-editor';
 
 @Component({
   selector: 'app-email-dialog',
   templateUrl: './email-dialog.component.html',
   styleUrls: ['./email-dialog.component.scss']
 })
-export class EmailDialogComponent {
+export class EmailDialogComponent implements OnInit, OnDestroy {
   emailBody: EmailBody;
   uploadFiles: File[] = [];
   uploadProgress: number | null = null;
   uploadSub?: Subscription;
 
+  editor!: Editor;
 
   constructor(
     private backendService: BackendService,
@@ -26,7 +28,15 @@ export class EmailDialogComponent {
     private accountService: AccountService
   ) {
     this.emailBody = config.data.emailBody;
+  }
 
+  ngOnInit(): void {
+    this.editor = new Editor();
+  }
+
+  // make sure to destory the editor
+  ngOnDestroy(): void {
+    this.editor.destroy();
   }
 
   prepareFiles(files: File[]) {
@@ -45,7 +55,6 @@ export class EmailDialogComponent {
           }
       })
     }
-
   }
 
   cancelUpload() {

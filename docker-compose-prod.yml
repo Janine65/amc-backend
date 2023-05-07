@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+
+  amcbackend:
+    restart: always
+    image: janine65/amcbackend:latest
+    environment:
+      - COMPOSE_PROJECT_NAME
+      - NODE_ENV=production
+    ports:
+      - 2700:2700
+    volumes:
+      - documents:/documents:rw
+    hostname: amcbackend
+    networks:
+      - back-tier
+      - front-tier
+
+  amcinternal:
+    restart: always
+    image: janine65/amcinternal:latest
+    depends_on:
+      - amcbackend
+    environment:
+      - COMPOSE_PROJECT_NAME    
+      - NODE_ENV=production
+    ports:
+      - 4200:4200
+    links:
+      - amcbackend
+    hostname: amcinternal
+    networks:
+      - front-tier
+
+volumes:
+  backup:
+    driver: local
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: '/volume1/dev/backups/postgres'
+  documents:
+    driver: local
+    driver_opts:
+      type: 'nfs'
+      o: 'bind'
+      device: '/volume1/server/amcinterna/documents'
+  
+
+networks:
+  # The presence of these objects is sufficient to define them
+  front-tier: {}
+  back-tier: {}

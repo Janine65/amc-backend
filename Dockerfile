@@ -1,10 +1,26 @@
-FROM node:lts-alpine
+FROM node:alpine AS build
 ENV NODE_ENV=production
-WORKDIR /usr/src/app
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-RUN npm install --production --silent && mv node_modules ../
+
+# set working directory
+WORKDIR /dist
+
+# install package.json (o sea las dependencies)
+COPY package.json /dist/package.json
+RUN npm install
+
+# add .bin to $PATH
+ENV PATH /dist/node_modules/.bin:$PATH
+
+# add app
 COPY . .
+
+# start app
+RUN npm run build --configuration=production
+
+# Stage 1, for copying the compiled app from the previous step and making it ready for production with Nginx
+FROM nginx:alpine
+COPY --from=build /dist/dist/amc-interna /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 4200
-RUN chown -R node /usr/src/app
-USER node
-CMD ["npm", "start"]
+

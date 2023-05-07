@@ -31,10 +31,8 @@ import {SelectButtonModule} from 'primeng/selectbutton';
 import { PasswordModule } from 'primeng/password';
 import {ContextMenuModule} from 'primeng/contextmenu';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import { QuillModule } from 'ngx-quill';
 import { FileUploadModule } from 'primeng/fileupload';
-
-import Counter from './counter';
+import { NgxEditorModule } from 'ngx-editor';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -123,16 +121,7 @@ import { AnlaesseEditComponent } from './components/verwaltung/anlaesse-edit/anl
     ContextMenuModule,
     ConfirmDialogModule,    
     DialogModule,
-    QuillModule.forRoot({
-      customModules: [{
-        implementation: Counter,
-        path: 'modules/counter'
-      }],
-      customOptions: [{
-        import: 'formats/font',
-        whitelist: ['serif', 'sansserif', 'monospace']
-      }]
-    }),
+    NgxEditorModule,
     FileUploadModule,
   ],
   providers: [
