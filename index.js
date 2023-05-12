@@ -24,7 +24,7 @@ global.assets = __dirname + "/public/assets/"
 require('./config/config')
 const app = express();
 
-const whitelist = ['http://localhost:8000', 'http://localhost:4200', 'http://localhost:8000', 'http://olconet:4200','http://olconet:2700',]
+const whitelist = ['http://localhost:4200', 'http://interna.neu.automoto-sr.info', 'http://olconet:4200','http://olconet:2700',]
 const corsOptionsDelegate = function (req, callback) {
   let corsOptions;
   if (whitelist.indexOf(req.header('Origin')) !== -1) {
