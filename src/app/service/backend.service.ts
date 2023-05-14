@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Adresse, Anlass, Fiscalyear, OverviewData, ParamData } from '../models/datatypes';
+import { Adresse, Anlass, Fiscalyear, Meisterschaft, OverviewData, ParamData } from '../models/datatypes';
 import { environment } from '@environments/environment';
 
 @Injectable({
@@ -145,12 +145,34 @@ export class BackendService {
   getSheet(params: any): Observable<any> {
     const apiURL = environment.apiUrl + '/club/anlaesse/sheet'
     const body = JSON.stringify(params)
-    return this.http.post<Anlass>(apiURL, body, {headers: this.header});
+    return this.http.post(apiURL, body, {headers: this.header});
   }
 
   getOneAnlass(id: number): Observable<Anlass> {
     const apiURL = environment.apiUrl + '/club/anlaesse/data/' + id;
     return this.http.get(apiURL, {headers: this.header});
+  }
+
+  getMeisterschaft(eventid: number): Observable<Meisterschaft[]> {
+    const apiURL = environment.apiUrl + '/club/meisterschaft/data?eventid=' + eventid;
+    return this.http.get<Meisterschaft[]>(apiURL, {headers: this.header});
+  }
+
+  addMeisterschaft(meisterschaft: Meisterschaft): Observable<any> {
+    const apiURL = environment.apiUrl + '/club/meisterschaft/data/';
+    const body = JSON.stringify(meisterschaft)
+    return this.http.post(apiURL, body, {headers: this.header});
+  }
+
+  updMeisterschaft(meisterschaft: Meisterschaft): Observable<any> {
+    const apiURL = environment.apiUrl + '/club/meisterschaft/data/';
+    const body = JSON.stringify(meisterschaft)
+    return this.http.put(apiURL, body, {headers: this.header});
+  }
+
+  delMeisterschaft(id: number): Observable<any> {
+    const apiURL = environment.apiUrl + '/club/meisterschaft/data/' + id;
+    return this.http.delete(apiURL, {headers: this.header});
   }
 
 

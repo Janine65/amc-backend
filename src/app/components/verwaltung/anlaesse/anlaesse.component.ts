@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, OnInit } from '@angular/core';
 import { BackendService } from '@app/service';
@@ -7,6 +8,7 @@ import { Anlass } from '@model/datatypes';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { AnlaesseEditComponent } from '../anlaesse-edit/anlaesse-edit.component';
+import { AnlassBookComponent } from '../anlass-book/anlass-book.component';
 
 @Component({
   selector: 'app-anlaesse',
@@ -245,6 +247,23 @@ export class AnlaesseComponent implements OnInit{
     // eslint-disable-next-line @typescript-eslint/no-this-alias, @typescript-eslint/no-unused-vars
     const thisRef: AnlaesseComponent = this;
     console.log("Anlass buchen", selRec);
+    thisRef.messageService.clear();
+
+    const longname = selRec?.datum_date?.toLocaleDateString() + ' ' + selRec?.name
+    thisRef.dialogRef = thisRef.dialogService.open(AnlassBookComponent, {
+      data: {
+        anlass: selRec
+      },
+      header: 'Anlass ' + longname + ' buchen',
+      width: '70%',
+      height: '70%',
+      resizable: true,
+      modal: true,
+      maximizable: true,
+      draggable: true
+    });
+    thisRef.dialogRef.onClose.subscribe();
+
   }
 
   exportOne = (_selRec?: Anlass, _lstData?: Anlass[]) => {

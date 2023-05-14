@@ -1,49 +1,33 @@
 version: '3.9'
 
 services:
-  db:
-    image: postgres:latest
-    container_name: postgres_db
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: DimpgP21
-      POSTGRES_DB: amcinterna
-    ports:
-      - 5435:5432
-    volumes:
-      - db:/var/lib/postgresql/data
-    hostname: postgres
-    networks:
-      - back-tier
   amcbackend:
     container_name: amcbackend
-    image: amcbackend
+    image: janine65/amcbackend:latest
     build:
       context: ../amc-backend/
       dockerfile: ../amc-backend/Dockerfile
-    depends_on:
-      - db
     environment:
-      NODE_ENV: production
+      - COMPOSE_PROJECT_NAME
+      - NODE_ENV=production
     ports:
       - 2700:2700
-    links:
-      - db
     hostname: amcbackend
     networks:
       - back-tier
+      - front-tier
 
   amcinternal:
     container_name: amcinternal
-    image: amcinternal
+    image: janine65/amcinternal:latest
     build:
       context: ./
       dockerfile: ./Dockerfile
     depends_on:
       - amcbackend
     environment:
-      NODE_ENV: production
+      - COMPOSE_PROJECT_NAME
+      - NODE_ENV=production
     ports:
       - 4200:4200
     links:
@@ -51,12 +35,7 @@ services:
     hostname: amcinternal
     networks:
       - front-tier
-      - back-tier
 
-volumes:
-  db:
-    external: true
-    name: amc-interna_db
 
 networks:
   # The presence of these objects is sufficient to define them

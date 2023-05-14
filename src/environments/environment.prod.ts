@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://olconet:2700',
-  apiUrlSelf: 'http://olconet:4200',
+  apiUrl: 'http://interna.neu.automoto-sr.info:2700',
+  apiUrlSelf: 'http://interna.neu.automoto-sr.info',
   defaultSignature: 'HansjoergDutler',
   defaultEmail: 'info@automoto-sr.info'
 };

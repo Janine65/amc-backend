@@ -1,14 +1,13 @@
 <p-toast key="local"></p-toast>
 <div [style.height.px]="50">
-    <button pButton  *ngIf="checkSorting()" label="Clear" class="p-button-secondary p-button-outlined" icon="pi pi-filter-slash"
-        (click)="clear(basetable)"></button>
+    <button pButton *ngIf="checkSorting()" label="Clear" class="p-button-secondary p-button-outlined"
+        icon="pi pi-filter-slash" (click)="clear(basetable)"></button>
     <button pButton *ngFor="let but of tableToolbar; index as ind" [label]="but.label!" [icon]="but.icon!"
-        [ngClass]="but.btnClass!" (click)="clickOnToolbar(ind)"
-        [disabled]="isButtonDisabled(ind)" ></button>
+        [ngClass]="but.btnClass!" (click)="clickOnToolbar(ind)" [disabled]="isButtonDisabled(ind)"></button>
 </div>
-<p-table #basetable [columns]="tableOptions" styleClass=" p-datatable-striped" [value]="tableData" selectionMode="single" [(selection)]="selectedRecord"
-    (onFilter)="filterEvent($event)" dataKey="id" sortMode="multiple"
-    [scrollHeight]="objHeight$" [scrollable]="true" [tableStyle]="{'min-width': '50rem'}"
+<p-table #basetable [columns]="tableOptions" styleClass=" p-datatable-striped" [value]="tableData"
+    selectionMode="single" [(selection)]="selectedRecord" (onFilter)="filterEvent($event)" dataKey="id"
+    sortMode="multiple" [scrollHeight]="objHeight$" [scrollable]="true" [tableStyle]="{'min-width': '50rem'}"
     (window:resize)="onResizeHandler()" [stateKey]="localStorage" stateStorage="local">
     <ng-template pTemplate="header" let-columns>
         <tr>
@@ -25,9 +24,11 @@
                 <div *ngIf="col.format === false && col.filter === 'boolean'">
                     <i *ngIf="data[col.field]" class="pi pi-check mr-4 p-text-secondary"></i>
                 </div>
-                <div *ngIf="col.format === false && col.filter === 'date'">{{data[col.field] | date: 'dd.MM.yyyy'}}</div>
+                <div *ngIf="col.format === false && col.filter === 'date'">{{data[col.field] | date: 'dd.MM.yyyy'}}
+                </div>
                 <div *ngIf="col.format && formatFunction">{{formatFunction(col.field,data[col.field])}}</div>
-                <div *ngIf="col.format === false && col.filter !== 'boolean' && col.filter !== 'date'">{{data[col.field]}}</div>
+                <div *ngIf="col.format === false && col.filter !== 'boolean' && col.filter !== 'date'">
+                    {{data[col.field]}}</div>
             </td>
             <td>
                 <button type="button" pButton pRipple icon="pi pi-file-edit" (click)="selectData(data)"></button>

@@ -32,6 +32,7 @@ import { PasswordModule } from 'primeng/password';
 import {ContextMenuModule} from 'primeng/contextmenu';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import { FileUploadModule } from 'primeng/fileupload';
+import { SplitterModule } from 'primeng/splitter';
 import { NgxEditorModule } from 'ngx-editor';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -61,6 +62,7 @@ import { GlobalErrorHandler } from './service/global-error-handler';
 import { ProfileComponent } from './components/account/profile/profile.component';
 import { EmailDialogComponent } from './components/shared/email-dialog/email-dialog.component';
 import { AnlaesseEditComponent } from './components/verwaltung/anlaesse-edit/anlaesse-edit.component';
+import { AnlassBookComponent } from './components/verwaltung/anlass-book/anlass-book.component';
 
 @NgModule({
   declarations: [
@@ -87,6 +89,7 @@ import { AnlaesseEditComponent } from './components/verwaltung/anlaesse-edit/anl
     ProfileComponent,
     EmailDialogComponent,
     AnlaesseEditComponent,
+    AnlassBookComponent,
   ],
   imports: [
     BrowserModule,
@@ -123,6 +126,7 @@ import { AnlaesseEditComponent } from './components/verwaltung/anlaesse-edit/anl
     DialogModule,
     NgxEditorModule,
     FileUploadModule,
+    SplitterModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

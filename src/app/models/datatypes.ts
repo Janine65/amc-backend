@@ -1,3 +1,4 @@
+import { Table } from "primeng/table";
 import { TableData } from "../components/shared/basetable/basetable.component";
 
 export class OverviewData {
@@ -67,6 +68,21 @@ export class Anlass extends TableData {
     public status?: number;
     public vorjahr?: string;
     public linkedEvent?: {vorjahr: string};
+}
+
+export class Meisterschaft extends TableData {
+    public mitgliedid?: number;
+    public eventid?: number;
+    public punkte?: number;
+    public wurf1?: number;
+    public wurf2?: number;
+    public wurf3?: number;
+    public wurf4?: number;
+    public wurf5?: number;
+    public zusatz?: number;
+    public streichresultat?: number;
+    public total_kegel?: number;
+    public teilnehmer?: {id?: number; fullname?: string}
 }
 
 export class Fiscalyear {
