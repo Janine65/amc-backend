@@ -35,7 +35,7 @@ router.post('/anlaesse/writeAuswertung', authorize(), exportService.writeAuswert
 router.get('/meisterschaft/data', authorize(), meisterschaftService.getData);
 router.post('/meisterschaft/data', authorize(), meisterschaftService.addData);
 router.put('/meisterschaft/data', authorize(), meisterschaftService.updateData);
-router.delete('/meisterschaft/data, authorize()', meisterschaftService.removeData);
+router.delete('/meisterschaft/data', authorize(), meisterschaftService.removeData);
 router.get('/meisterschaft/getOneData', authorize(), meisterschaftService.getOneData);
 router.get('/meisterschaft/mitglied', authorize(), meisterschaftService.getMitgliedData);
 router.get('/meisterschaft/getChartData', authorize(), meisterschaftService.getChartData);
