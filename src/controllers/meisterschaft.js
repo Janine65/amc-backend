@@ -136,13 +136,24 @@ module.exports = {
 	updateData: function (req, res) {
 		let data = JSON.parse(req.body);
 		// update
-		console.info('update: ', data);
 
-		Meisterschaft.findByPk(data.id)
+		if (data.id && data.id > 0) {
+			data.total_kegel = undefined; 
+			console.info('update: ', data);
+			Meisterschaft.findByPk(data.id)
 			.then((eintrag) => eintrag.update(data)
 				.then((obj) => res.json(obj))
 				.catch((e) => console.error(e)))
 			.catch((e) => console.error(e));
+
+		} else {
+			data.id = null;
+			data.total_kegel = undefined; 
+			console.info('insert: ', data);
+			Meisterschaft.create(data)
+				.then((obj) => res.json(obj.id))
+				.catch((e) => console.error(e));
+			}
 	},
 
 };

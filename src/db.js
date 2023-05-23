@@ -238,9 +238,9 @@ Meisterschaft.init({
   },
   total_kegel: {
     type: DataTypes.INTEGER,
-    set() {
-      throw new Error('Do not try to set the total_kegel value!');
-    }
+    // set() {
+    //   throw new Error('Do not try to set the total_kegel value!');
+    // }
   }
 },
   {
