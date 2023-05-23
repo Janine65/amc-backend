@@ -36,7 +36,7 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Auswertungen',
                 items: [
-                    { label: 'Meisterschaft', icon: 'pi pi-fw pi-eye', routerLink: ['/blocks'], badge: 'NEW' },
+                    { label: 'Meisterschaft', icon: 'pi pi-fw pi-eye', routerLink: ['/auswertung/meisterschaft'], badge: 'NEW' },
                     { label: 'Auswertungen', icon: 'pi pi-fw pi-globe', routerLink: ['/blocks']},
                 ]
             },

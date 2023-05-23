@@ -9,6 +9,7 @@ import { AuthGuard } from './service';
 import { ListComponent } from './components/users/list/list.component';
 import { LoginComponent } from './components/account/login/login.component';
 import { ProfileComponent } from './components/account/profile/profile.component';
+import { MeisterschaftComponent } from './components/auswertung/meisterschaft/meisterschaft.component';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { ProfileComponent } from './components/account/profile/profile.component
           { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: {withRole: false, withPwd: true, user: undefined} }
 
       ] },
+      { path: 'auswertung/meisterschaft', component: MeisterschaftComponent, canActivate: [AuthGuard], data: {role: 'user'} },
     ]
   }
   ])],

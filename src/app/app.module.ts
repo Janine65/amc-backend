@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { SidebarModule } from 'primeng/sidebar';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -34,6 +35,7 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { SplitterModule } from 'primeng/splitter';
 import { NgxEditorModule } from 'ngx-editor';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -63,6 +65,7 @@ import { ProfileComponent } from './components/account/profile/profile.component
 import { EmailDialogComponent } from './components/shared/email-dialog/email-dialog.component';
 import { AnlaesseEditComponent } from './components/verwaltung/anlaesse-edit/anlaesse-edit.component';
 import { AnlassBookComponent } from './components/verwaltung/anlass-book/anlass-book.component';
+import { MeisterschaftComponent } from './components/auswertung/meisterschaft/meisterschaft.component';
 
 @NgModule({
   declarations: [
@@ -90,6 +93,7 @@ import { AnlassBookComponent } from './components/verwaltung/anlass-book/anlass-
     EmailDialogComponent,
     AnlaesseEditComponent,
     AnlassBookComponent,
+    MeisterschaftComponent,
   ],
   imports: [
     BrowserModule,
@@ -127,6 +131,8 @@ import { AnlassBookComponent } from './components/verwaltung/anlass-book/anlass-
     NgxEditorModule,
     FileUploadModule,
     SplitterModule,
+    ReactiveFormsModule,
+    InputTextareaModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

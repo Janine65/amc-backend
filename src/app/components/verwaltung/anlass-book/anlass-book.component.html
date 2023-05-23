@@ -1,76 +1,135 @@
 <p-toast key="local"></p-toast>
-<p-splitter [panelSizes]="[25, 75]" styleClass="mb-1">
+<p-splitter [panelSizes]="[40, 60]" styleClass="mb-1">
     <ng-template pTemplate>
-        <div class="card" style="width: 100%;">
+        <div class="card" style="width: 100%; " id="table-box">
+            <div class="row col-md-12 mb-3 p-1 border-1 border-round">
+                <label for="gaeste" class="mr-2 mb-1">Gäste</label>
+                <input type="number" id="gaeste" class="wurf mb-1" [(ngModel)]="anlass.gaeste">
+                <button pButton type="button" label="Sichern" icon="pi pi-save"
+                    class="p-button-secondary p-button-outlined ml-6" (click)="saveGaeste()"></button>
+            </div>
             <div class="row col-md-12">
-                <p-scrollPanel>
-                    <p-table styleClass=" p-datatable-striped" [value]="lstMeisterschaft" selectionMode="single"
-                        [(selection)]="selMeisterschaft" dataKey="id" [paginator]="true" [rows]="7"
-                        [tableStyle]="{'min-width': '20rem'}">
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th>
-                                    Teilnehmer
-                                </th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-data>
-                            <tr [pSelectableRow]="data">
-                                <td>{{data.punkte}} - {{data.teilnehmer.fullname}}</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </p-scrollPanel>
+                <p-table styleClass=" p-datatable-striped" [value]="lstMeisterschaft" selectionMode="single"
+                    [(selection)]="selMeisterschaft" dataKey="id" [scrollHeight]="objHeight$" [virtualScroll]="true"
+                    [virtualScrollItemSize]="36" (window:resize)="onResizeHandler()"
+                    [tableStyle]="{'min-width': '100%'}" (onRowSelect)="selTeilnehmerTable()">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>
+                                Teilnehmer
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-data>
+                        <tr style="height:36px" [pSelectableRow]="data">
+                            <td>{{data.punkte}} - {{data.teilnehmer.fullname}}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="summary">
+                        <div class="flex align-items-center justify-content-between">
+                            {{lstMeisterschaft ? lstMeisterschaft.length : 0 }} Teilnehmer
+                        </div>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div class="row col-md-12 mt-1">
+                <button pButton type="button" label="Löschen" icon="pi pi-file-delete"
+                    class="p-button-secondary p-button-outlined" (click)="deleteEntry()"
+                    [disabled]="!selMeisterschaft"></button>
             </div>
         </div>
     </ng-template>
     <ng-template pTemplate>
-        <form #f="ngForm" autocomplete="off" (ngSubmit)="save(f)">
-            <div class="card" style="width: 100%;">
-                <div class="fformgroup-inline">
+        <div class="card" style="width: 100%;">
+            <form [formGroup]="fgMeisterschaft" autocomplete="off">
+                <div class="formgroup-inline">
                     <div class="field pb-2">
                         <label for="teilnehmer" class="pr-2">Teilnehmer wählen</label>
-                        <p-dropdown name="teilnehmer" inputId="teilnehmer" [autoDisplayFirst]="false"
-                            [options]="lstAdressen" [(ngModel)]="selAdresse" optionLabel="fullname" optionValue="id"
-                            placeholder="Teilnehmer auswählen" [filter]="true" filterBy="fullname" [showClear]="true"
-                            (onChange)="selTeilnehmer(f)">
-                        </p-dropdown>
+                        <input type="text" pInputText formControlName="teilnehmername" id="teilnehmername" />
+                        <i class="pi pi-times" (click)="clearTeilnehmer()"></i>
                     </div>
-                    <div class="field pb-2">
+                    <div class="field pb-2 col-12 md:col-12">
                         <label for="punkte" class="pr-2">Punkte</label>
-                        <p-inputNumber inputId="punkte" [(ngModel)]="newMeisterschaft.punkte" name="punkte"
-                            [required]="true" class="input-styling"></p-inputNumber>
+                        <input type="number" id="punkte" formControlName="punkte" class="wurf input-styling">
+                        <div *ngIf="punkte.invalid && (punkte.dirty || punkte.touched)" class="alert alert-danger">
+                            <div *ngIf="punkte.errors?.['required'] || punkte.errors?.['min']">
+                                Punkte müssen angegeben sein.
+                            </div>
+                            <div *ngIf="punkte.errors?.['max']">
+                                Maximal 200 Punkte sind erlaubt
+                            </div>
+                        </div>
                     </div>
-                    <div *ngIf="anlass.istkegeln"></div>
-                    <div class="field">
-                        <label>Würfe</label>
-                    </div>
-                    <div class="field">
-                        <p-inputNumber inputId="wurf1" [(ngModel)]="newMeisterschaft.wurf1" name="wurf1"
-                            [min]="0" [max]="200" class="input-styling pr-1"> </p-inputNumber>
-                        <p-inputNumber inputId="wurf2" [(ngModel)]="newMeisterschaft.wurf2" name="wurf2"
-                            [min]="0" [max]="200" class="input-styling pr-1"> </p-inputNumber>
-                        <p-inputNumber inputId="wurf3" [(ngModel)]="newMeisterschaft.wurf3" name="wurf3"
-                            [min]="0" [max]="200" class="input-styling pr-1"> </p-inputNumber>
-                        <p-inputNumber inputId="wurf4" [(ngModel)]="newMeisterschaft.wurf4" name="wurf4"
-                            [min]="0" [max]="200" class="input-styling pr-1"> </p-inputNumber>
-                        <p-inputNumber inputId="wurf5" [(ngModel)]="newMeisterschaft.wurf5" name="wurf5"
-                            [min]="0" [max]="200" class="input-styling pr-1"> </p-inputNumber>
-                        <p-inputNumber inputId="zusatz" [(ngModel)]="newMeisterschaft.zusatz" name="zusatz"
-                            [disabled]="true" class="input-styling pr-1"> </p-inputNumber>
-                    </div>
-                    <div class="field pb-2">
-                        <label for="total" class="pr-2">Total</label>
-                        <p-inputNumber inputId="total" [(ngModel)]="newMeisterschaft.total_kegel" name="total"
-                            [disabled]="true" class="input-styling pr-1"> </p-inputNumber>
+                    <div *ngIf="anlass.istkegeln">
+                        <div class="field">
+                            <label>Würfe</label>
+                        </div>
+                        <div class="field">
+                            <input type="number" id="wurf1" formControlName="wurf1" [min]="0" [max]="9"
+                                class="wurf input-styling pr-1" (input)="inputWurf(1)">
+                            <input type="number" id="wurf2" formControlName="wurf2" [min]="0" [max]="9"
+                                class="wurf input-styling pr-1" (input)="inputWurf(2)">
+                            <input type="number" id="wurf3" formControlName="wurf3" [min]="0" [max]="9"
+                                class="wurf input-styling pr-1" (input)="inputWurf(3)">
+                            <input type="number" id="wurf4" formControlName="wurf4" [min]="0" [max]="9"
+                                class="wurf input-styling pr-1" (input)="inputWurf(4)">
+                            <input type="number" id="wurf5" formControlName="wurf5" [min]="0" [max]="9"
+                                class="wurf input-styling pr-1" (input)="inputWurf(5)">
+                            <input type="number" id="zusatz" formControlName="zusatz" class="wurf input-styling pr-1">
+                        </div>
+                        <div *ngIf="wurf1.invalid && (wurf1.dirty || wurf1.touched)" class="alert alert-danger">
+                            <div *ngIf="wurf1.errors?.['min']">
+                                Wurf darf nicht kleiner als 0 sein.
+                            </div>
+                            <div *ngIf="wurf1.errors?.['max']">
+                                Maximal 9 je Wurf sind erlaubt
+                            </div>
+                        </div>
+                        <div *ngIf="wurf2.invalid && (wurf2.dirty || wurf2.touched)" class="alert alert-danger">
+                            <div *ngIf="wurf2.errors?.['min']">
+                                Wurf darf nicht kleiner als 0 sein.
+                            </div>
+                            <div *ngIf="wurf2.errors?.['max']">
+                                Maximal 9 je Wurf sind erlaubt
+                            </div>
+                        </div>
+                        <div *ngIf="wurf3.invalid && (wurf3.dirty || wurf3.touched)" class="alert alert-danger">
+                            <div *ngIf="wurf3.errors?.['min']">
+                                Wurf darf nicht kleiner als 0 sein.
+                            </div>
+                            <div *ngIf="wurf3.errors?.['max']">
+                                Maximal 9 je Wurf sind erlaubt
+                            </div>
+                        </div>
+                        <div *ngIf="wurf4.invalid && (wurf4.dirty || wurf4.touched)" class="alert alert-danger">
+                            <div *ngIf="wurf4.errors?.['min']">
+                                Wurf darf nicht kleiner als 0 sein.
+                            </div>
+                            <div *ngIf="wurf4.errors?.['max']">
+                                Maximal 9 je Wurf sind erlaubt
+                            </div>
+                        </div>
+                        <div *ngIf="wurf5.invalid && (wurf5.dirty || wurf5.touched)" class="alert alert-danger">
+                            <div *ngIf="wurf5.errors?.['min']">
+                                Wurf darf nicht kleiner als 0 sein.
+                            </div>
+                            <div *ngIf="wurf5.errors?.['max']">
+                                Maximal 9 je Wurf sind erlaubt
+                            </div>
+                        </div>
+                        <div class="field pb-2">
+                            <label for="total" class="pr-2">Total</label>
+                            <input type="number" id="total" formControlName="total" class="wurf input-styling pr-1">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div *ngIf="anlass.istkegeln" class="field col-12 md:col-12 md:mb-0">
-                <button pButton type="button" label="Sichern" icon="pi pi-save"
-                    class="p-button-primary p-button-outlined" (click)="save(f)"></button>
-            </div>
-        </form>
+                <div class="field col-12 md:col-12 md:mb-0">
+                    <button pButton type="submit" label="Sichern" icon="pi pi-save"
+                        [disabled]="!fgMeisterschaft.valid && fgMeisterschaft.dirty"
+                        class="p-button-primary p-button-outlined" id="save" (click)="save()"></button>
+                </div>
+            </form>
+        </div>
     </ng-template>
 </p-splitter>
 <p-toolbar>

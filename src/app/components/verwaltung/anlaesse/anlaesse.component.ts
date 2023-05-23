@@ -228,16 +228,10 @@ export class AnlaesseComponent implements OnInit{
     thisRef.backendService.delAnlaesseData(selRec!).subscribe(
       {
         complete: () => {
-          thisRef.backendService.getOneAnlass(selRec!.id!).subscribe(
-            {
-              next: (anlass) => {
-                anlass.datum_date = new Date(anlass.datum!);
-                thisRef.anlaesseListAll = thisRef.anlaesseListAll.map(obj => anlass.id === obj.id ? anlass : obj);
-                thisRef.anlaesseList = thisRef.anlaesseListAll.map(obj => anlass.id === obj.id ? anlass : obj);
-                thisRef.messageService.add({ detail: 'Der Anlass wurde gelöscht', closable: true, severity: 'info', summary: 'Anlass beenden' });
-              }
-            }
-          )
+          thisRef.anlaesseListAll.splice(thisRef.anlaesseListAll.indexOf((selRec as Anlass)),1)
+          thisRef.anlaesseList.splice(thisRef.anlaesseList.indexOf((selRec as Anlass)),1)
+
+          thisRef.messageService.add({ detail: 'Der Anlass wurde gelöscht', closable: true, severity: 'info', summary: 'Anlass beenden' });
         }
       }
     )

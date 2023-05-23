@@ -1,0 +1,74 @@
+<p-toast key="local"></p-toast>
+<div class="card" style="width: 100%; " id="table-box">
+    <div class="row col-md-12 mb-3 p-1 border-1 border-round">
+        <label for="gaeste" class="mr-2 mb-1">Gäste</label>
+    </div>
+</div>
+<p-splitter [panelSizes]="[50, 50]" styleClass="mb-1">
+    <ng-template pTemplate>
+        <div class="card" style="width: 100%; " id="table-box">
+            <div class="row col-md-12">
+                <p-table styleClass=" p-datatable-striped" [value]="lstClubmeister"
+                    dataKey="id" [scrollHeight]="objHeight$" [virtualScroll]="true"
+                    [virtualScrollItemSize]="36" (window:resize)="onResizeHandler()"
+                    [tableStyle]="{'min-width': '100%'}">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Rang</th>
+                            <th>Vorname</th>
+                            <th>Name</th>
+                            <th>Punkte</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-data>
+                        <tr style="height:36px">
+                            <td>{{data.rang}}</td>
+                            <td>{{data.vorname}}</td>
+                            <td>{{data.name}}</td>
+                            <td>{{data.punkte}}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="summary">
+                        <div class="flex align-items-center justify-content-between">
+                            {{lstClubmeister ? lstClubmeister.length : 0 }} Teilnehmer
+                        </div>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate>
+        <div class="card" style="width: 100%;">
+            <p-table styleClass=" p-datatable-striped" [value]="lstKegelmeister"
+            dataKey="id" [scrollHeight]="objHeight$" [virtualScroll]="true"
+            [virtualScrollItemSize]="36" (window:resize)="onResizeHandler()"
+            [tableStyle]="{'min-width': '100%'}">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Rang</th>
+                    <th>Vorname</th>
+                    <th>Name</th>
+                    <th>Punkte</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-data>
+                <tr style="height:36px">
+                    <td>{{data.rang}}</td>
+                    <td>{{data.vorname}}</td>
+                    <td>{{data.name}}</td>
+                    <td>{{data.punkte}}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between">
+                    {{lstKegelmeister ? lstKegelmeister.length : 0 }} Teilnehmer
+                </div>
+            </ng-template>
+        </p-table>
+</div>
+    </ng-template>
+</p-splitter>
+<p-toolbar>
+    <button pButton type="button" label="Refresh" icon="pi pi-spin" class="p-button-primary p-button-outlined"
+        (click)="refresh()"></button>
+</p-toolbar>

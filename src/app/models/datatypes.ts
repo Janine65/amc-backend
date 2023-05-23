@@ -1,4 +1,3 @@
-import { Table } from "primeng/table";
 import { TableData } from "../components/shared/basetable/basetable.component";
 
 export class OverviewData {
@@ -20,7 +19,7 @@ export class OverviewData {
 */
 
 export class ParamData {
-    constructor(public key: string, public value: string) { }
+    constructor(public id: number, public key: string, public value: string) { }
 }
 
 export class Adresse extends TableData {
@@ -71,19 +70,44 @@ export class Anlass extends TableData {
 }
 
 export class Meisterschaft extends TableData {
-    public mitgliedid?: number;
-    public eventid?: number;
-    public punkte?: number;
-    public wurf1?: number;
-    public wurf2?: number;
-    public wurf3?: number;
-    public wurf4?: number;
-    public wurf5?: number;
-    public zusatz?: number;
-    public streichresultat?: number;
-    public total_kegel?: number;
-    public teilnehmer?: {id?: number; fullname?: string}
+    public mitgliedid?: number | null;
+    public eventid?: number | null;
+    public punkte?: number | null;
+    public wurf1?: number | null;
+    public wurf2?: number | null;
+    public wurf3?: number | null;
+    public wurf4?: number | null;
+    public wurf5?: number | null;
+    public zusatz?: number | null;
+    public streichresultat?: number | null;
+    public total_kegel?: number | null;
+    public teilnehmer?: {id?: number | null; fullname?: string | null}
 }
+
+export class Clubmeister extends TableData {
+    jahr: number | null | undefined;
+    rang: number | null | undefined;
+    vorname: string | null | undefined;
+    nachname: string | null | undefined;
+    mitgliedid: number | null | undefined;
+    punkte: number | null | undefined;
+    anlaesse: number | null | undefined;
+    werbungen: number | null | undefined;
+    mitglieddauer: number | null | undefined;
+    status: number | null | undefined;
+  }  
+  
+  export class Kegelmeister extends TableData {
+    jahr: number | null | undefined;
+    rang: number | null | undefined;
+    vorname: string | null | undefined;
+    nachname: string | null | undefined;
+    mitgliedid: number | null | undefined;
+    punkte: number | null | undefined;
+    anlaesse: number | null | undefined;
+    babeli: number | null | undefined;
+    status: number | null | undefined;
+  }  
 
 export class Fiscalyear {
     constructor(

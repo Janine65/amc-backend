@@ -30,6 +30,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subs = from(this.backendService.getParameterData())
     .subscribe(async list => {
       this.parameter = list;
+      localStorage.setItem('parameter', JSON.stringify(list));
       const element = this.parameter.find(element => element.key === 'CLUBJAHR');
       if (element) {
         this.jahr = element.value;      

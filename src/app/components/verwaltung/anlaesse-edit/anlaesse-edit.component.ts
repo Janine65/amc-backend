@@ -61,7 +61,6 @@ export class AnlaesseEditComponent {
         this.ref.close(anl)
       }}
     )
-    // this.ref.close(this.anlass);
   }
 
 

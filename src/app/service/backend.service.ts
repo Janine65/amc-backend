@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Adresse, Anlass, Fiscalyear, Meisterschaft, OverviewData, ParamData } from '../models/datatypes';
+import { Adresse, Anlass, Clubmeister, Fiscalyear, Kegelmeister, Meisterschaft, OverviewData, ParamData } from '../models/datatypes';
 import { environment } from '@environments/environment';
 
 @Injectable({
@@ -26,6 +26,18 @@ export class BackendService {
     const apiURL = environment.apiUrl + '/parameter/data';
     return this.http.get<ParamData[]>(apiURL, {headers: this.header});
 
+  }
+
+  updParameterData(parameter: ParamData): Observable<any> {
+    const apiURL = environment.apiUrl + '/parameter/data'
+    const body = JSON.stringify(parameter)
+    return this.http.post<ParamData>(apiURL, body, {headers: this.header});
+  }
+
+  addParameterData(parameter: ParamData): Observable<any> {
+    const apiURL = environment.apiUrl + '/parameter/data'
+    const body = JSON.stringify(parameter)
+    return this.http.put<ParamData>(apiURL, body, {headers: this.header});
   }
 
   getDashboarJournalData(jahr: string): Observable<Fiscalyear> {
@@ -170,9 +182,29 @@ export class BackendService {
     return this.http.put(apiURL, body, {headers: this.header});
   }
 
-  delMeisterschaft(id: number): Observable<any> {
-    const apiURL = environment.apiUrl + '/club/meisterschaft/data/' + id;
-    return this.http.delete(apiURL, {headers: this.header});
+  delMeisterschaft(meisterschaft: Meisterschaft): Observable<any> {
+    const apiURL = environment.apiUrl + '/club/meisterschaft/data/';
+    return this.http.delete(apiURL, {headers: this.header, body: JSON.stringify(meisterschaft)});
+  }
+
+  getClubmeister(jahr: number): Observable<Clubmeister[]> {
+    const apiURL = environment.apiUrl + '/club/clubmeister/data?jahr=' + jahr;
+    return this.http.get<Clubmeister[]>(apiURL, {headers: this.header});
+  }
+
+  refreshClubmeister(jahr: number): Observable<any> {
+    const apiURL = environment.apiUrl + '/club/clubmeister/refresh?jahr=' + jahr;
+    return this.http.get<any>(apiURL, {headers: this.header});
+  }
+
+  getKegelmeister(jahr: number): Observable<Kegelmeister[]> {
+    const apiURL = environment.apiUrl + '/club/kegelmeister/data?jahr=' + jahr;
+    return this.http.get<Kegelmeister[]>(apiURL, {headers: this.header});
+  }
+
+  refreshKegelmeister(jahr: number): Observable<any> {
+    const apiURL = environment.apiUrl + '/club/kegelmeister/refresh?jahr=' + jahr;
+    return this.http.get<any>(apiURL, {headers: this.header});
   }
 
 
