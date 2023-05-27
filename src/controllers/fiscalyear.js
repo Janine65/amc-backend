@@ -4,7 +4,7 @@ const fs = require('fs');
 
 module.exports = {
 	getData: function (req, res) {		
-		FiscalYear.findAll({order: [['year', 'asc']]})
+		FiscalYear.findAll({order: [['year', 'desc']]})
 		.then(data => res.json(data))
 		.catch((e) => console.error(e));		
 	},
@@ -32,12 +32,12 @@ module.exports = {
 	removeData: function (req, res) {
 		const data = JSON.parse(req.body);
 		console.info('delete: ',data);
-		FiscalYear.findByPk(data.id)
+		FiscalYear.findOne({where: {year: data.year}})
 		.then((fiscalyear) =>
-			fiscalyear.update({status: 0})
-			.then((obj) => res.json({ id: obj.id }))
-			.catch((e) => console.error(e)))
-		.catch((e) => console.error(e));
+			fiscalyear.destroy()
+			.then((obj) => res.json())
+			.catch((e) => console.log(e)))
+		.catch((e) => console.log(e));
 	},
 
 	addData: function (req, res) {

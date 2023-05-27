@@ -2,6 +2,15 @@ let {Journal, Account, Budget} = require("../db");
 const { Op, Sequelize } = require("sequelize");
 
 module.exports = {
+	getAllData: async function (req, res) {
+		arAccount = await Account.findAll(
+			{
+				where: { "order": { [Op.gt]: 10 } },
+				order: [["level", "ASC"], ["order", "ASC"]]
+			}).catch((e) => console.error(e));
+		res.json(arAccount);
+	},
+
 	getData: async function (req, res) {
 		let arJournalIds = [];
 
@@ -108,6 +117,17 @@ module.exports = {
 		Account.findByPk(data.id)
 			.then((account) => account.update(data)
 				.then((obj) => res.json(obj))
+				.catch((e) => console.error(e)))
+			.catch((e) => console.error(e));
+	},
+
+	removeData: function (req, res) {
+		let data = JSON.parse(req.body);
+		console.info('delete: ', data);
+
+		Account.findByPk(data.id)
+			.then((account) => account.destroy()
+				.then((obj) => res.json())
 				.catch((e) => console.error(e)))
 			.catch((e) => console.error(e));
 	},

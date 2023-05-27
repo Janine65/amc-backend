@@ -20,8 +20,10 @@ router.get('/fiscalyear/export', authorize(), exportService.writeExcelData);
 router.post('/fiscalyear/close', authorize(), fiscalyearService.closeYear);
 
 router.get('/account/data', authorize(), accountService.getData);
+router.get('/account/alldata', authorize(), accountService.getAllData);
 router.post('/account/data', authorize(), accountService.addData);
 router.put('/account/data', authorize(), accountService.updateData);
+router.delete('/account/data', authorize(), accountService.removeData);
 router.get('/account/getFkData', authorize(), accountService.getFKData);
 router.get('/account/showData', authorize(), accountService.getAccountSummary);
 router.get('/account/export', authorize(), exportService.writeAccountToExcel);

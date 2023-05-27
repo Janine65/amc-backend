@@ -16,32 +16,6 @@
                 "<node_internals>/**"
             ],
             "type": "node"
-        },
-        {
-            "command": "npm --trace-warnings start",
-            "name": "Run npm start",
-            "request": "launch",
-            "type": "node-terminal"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "runtimeArgs": [
-                "--trace-warnings"
-            ],
-            "name": "Launch AMC Program",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/index.js",
-            "args": []
-        },
-        {
-            "name": "Docker Node.js Launch",
-            "type": "docker",
-            "request": "launch",
-            "preLaunchTask": "docker-run: debug",
-            "platform": "node"
         }
     ]
 }
