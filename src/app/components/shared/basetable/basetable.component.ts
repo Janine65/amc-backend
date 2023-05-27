@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AccountService } from '@app/service';
 import { Table } from 'primeng/table';
@@ -90,7 +91,13 @@ export class BaseTableComponent implements OnInit, OnDestroy {
 
   checkSorting(): boolean {
     let retVal = false;
-    retVal = this.tableOptions.find(opt => opt.filter) != undefined;
+    retVal = this.tableOptions.find(opt => opt.sorting) != undefined;
+    return retVal;
+  }
+
+  checkFiltering(): boolean {
+    let retVal = false;
+    retVal = this.tableOptions.find(opt => opt.filtering) != undefined;
     return retVal;
   }
 
@@ -125,7 +132,7 @@ export class BaseTableComponent implements OnInit, OnDestroy {
             return true;
         }
       }
-      if (this.filteredRows.length == 0) 
+      if (this.filteredRows.length == 0 && this.checkFiltering()) 
         return this.tableToolbar[ind].disabledWhenEmpty;
       
       if (this.selectedRecord == undefined)

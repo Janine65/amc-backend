@@ -1,11 +1,10 @@
 import { ErrorHandler, NgModule } from '@angular/core';
 import { HashLocationStrategy, LocationStrategy, CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule } from '@angular/forms';
 
 import { SidebarModule } from 'primeng/sidebar';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -36,6 +35,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { SplitterModule } from 'primeng/splitter';
 import { NgxEditorModule } from 'ngx-editor';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ChartModule } from 'primeng/chart';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -66,6 +66,11 @@ import { EmailDialogComponent } from './components/shared/email-dialog/email-dia
 import { AnlaesseEditComponent } from './components/verwaltung/anlaesse-edit/anlaesse-edit.component';
 import { AnlassBookComponent } from './components/verwaltung/anlass-book/anlass-book.component';
 import { MeisterschaftComponent } from './components/auswertung/meisterschaft/meisterschaft.component';
+import { AuswertungComponent } from './components/auswertung/auswertung/auswertung.component';
+import { GeschaeftsjahrComponent } from './components/buchhaltung/geschaeftsjahr/geschaeftsjahr.component';
+import { KontenComponent } from './components/buchhaltung/konten/konten.component';
+import { JournalComponent } from './components/buchhaltung/journal/journal.component';
+import { KtoAuswertungComponent } from './components/buchhaltung/kto-auswertung/kto-auswertung.component';
 
 @NgModule({
   declarations: [
@@ -94,6 +99,11 @@ import { MeisterschaftComponent } from './components/auswertung/meisterschaft/me
     AnlaesseEditComponent,
     AnlassBookComponent,
     MeisterschaftComponent,
+    AuswertungComponent,
+    GeschaeftsjahrComponent,
+    KontenComponent,
+    JournalComponent,
+    KtoAuswertungComponent,
   ],
   imports: [
     BrowserModule,
@@ -133,6 +143,7 @@ import { MeisterschaftComponent } from './components/auswertung/meisterschaft/me
     SplitterModule,
     ReactiveFormsModule,
     InputTextareaModule,
+    ChartModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

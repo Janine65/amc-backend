@@ -10,27 +10,44 @@ import { ListComponent } from './components/users/list/list.component';
 import { LoginComponent } from './components/account/login/login.component';
 import { ProfileComponent } from './components/account/profile/profile.component';
 import { MeisterschaftComponent } from './components/auswertung/meisterschaft/meisterschaft.component';
+import { AuswertungComponent } from './components/auswertung/auswertung/auswertung.component';
+import { JournalComponent } from './components/buchhaltung/journal/journal.component';
+import { KontenComponent } from './components/buchhaltung/konten/konten.component';
+import { GeschaeftsjahrComponent } from './components/buchhaltung/geschaeftsjahr/geschaeftsjahr.component';
+import { KtoAuswertungComponent } from './components/buchhaltung/kto-auswertung/kto-auswertung.component';
 
 
 @NgModule({
   imports: [RouterModule.forRoot([
     {
-    path: '', component: AppLayoutComponent,
-    children: [
-      { path: '', component: DashboardComponent},
-      { path: 'verwaltung/adressen', component: AdressenComponent, canActivate: [AuthGuard], data: {role: 'user'} },
-      { path: 'verwaltung/anlaesse', component: AnlaesseComponent, canActivate: [AuthGuard], data: {role: 'user'} },
-      { path: 'verwaltung/parameter', component: ParameterComponent, canActivate: [AuthGuard], data: {role: 'user'} },
-      { path: 'users', component: ListComponent, canActivate: [AuthGuard], data: {role: 'admin'} },
-      { path: 'account', 
-        children: [
-          { path: 'login', component: LoginComponent },
-          { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: {withRole: false, withPwd: true, user: undefined} }
+      path: '', component: AppLayoutComponent,
+      children: [
+        { path: '', component: DashboardComponent },
+        { path: 'verwaltung/adressen', component: AdressenComponent, canActivate: [AuthGuard], data: { role: 'user' } },
+        { path: 'verwaltung/anlaesse', component: AnlaesseComponent, canActivate: [AuthGuard], data: { role: 'user' } },
+        { path: 'verwaltung/parameter', component: ParameterComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
+        { path: 'users', component: ListComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
+        {
+          path: 'account',
+          children: [
+            { path: 'login', component: LoginComponent },
+            { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: { withRole: false, withPwd: true, user: undefined } }
 
-      ] },
-      { path: 'auswertung/meisterschaft', component: MeisterschaftComponent, canActivate: [AuthGuard], data: {role: 'user'} },
-    ]
-  }
+          ]
+        },
+        { path: 'auswertung/meisterschaft', component: MeisterschaftComponent, canActivate: [AuthGuard], data: { role: 'user' } },
+        { path: 'auswertung/auswertung', component: AuswertungComponent, canActivate: [AuthGuard], data: { role: 'user' } },
+        {
+          path: 'buchhaltung',
+          children: [
+            { path: 'journal', component: JournalComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
+            { path: 'konten', component: KontenComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
+            { path: 'geschaeftsjahr', component: GeschaeftsjahrComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
+            { path: 'kto-auswertung', component: KtoAuswertungComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
+          ]
+        },
+      ]
+    }
   ])],
   exports: [RouterModule]
 })

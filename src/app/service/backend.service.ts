@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Adresse, Anlass, Clubmeister, Fiscalyear, Kegelmeister, Meisterschaft, OverviewData, ParamData } from '../models/datatypes';
+import { Account, Adresse, Anlass, Clubmeister, Fiscalyear, Kegelmeister, Meisterschaft, MeisterschaftAuswertung, OverviewData, ParamData } from '../models/datatypes';
 import { environment } from '@environments/environment';
 
 @Injectable({
@@ -43,7 +43,6 @@ export class BackendService {
   getDashboarJournalData(jahr: string): Observable<Fiscalyear> {
     const apiURL = environment.apiUrl + '/journal/fiscalyear/getOneData?jahr=' + jahr;
     return this.http.get<Fiscalyear>(apiURL, {headers: this.header});
-
   }
 
   getDashboardAdressData(): Observable<OverviewData[]> {
@@ -207,5 +206,65 @@ export class BackendService {
     return this.http.get<any>(apiURL, {headers: this.header});
   }
 
+  getChartData(jahr: number): Observable<MeisterschaftAuswertung[]> {
+    const apiURL = environment.apiUrl + '/club/meisterschaft/getChartData?jahr=' + jahr;
+    return this.http.get<any>(apiURL, {headers: this.header});
 
+  }
+
+  getFiscalyear(): Observable<Fiscalyear[]> {
+    const apiURL = environment.apiUrl + '/journal/fiscalyear/data';
+    return this.http.get<Fiscalyear[]>(apiURL, {headers: this.header});
+  }
+
+  // router.post('/fiscalyear/data', authorize(), fiscalyearService.addData);
+  addFiscalyear(data: Fiscalyear): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/fiscalyear/data';
+    const body = JSON.stringify(data)
+    return this.http.post(apiURL, body, {headers: this.header});
+  }
+
+  // router.put('/fiscalyear/data', authorize(), fiscalyearService.updateData);
+  updFiscalyear(data: Fiscalyear): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/fiscalyear/data';
+    const body = JSON.stringify(data)
+    return this.http.put(apiURL, body, {headers: this.header});
+  }
+  // router.delete('/fiscalyear/data', authorize(), fiscalyearService.removeData);
+  delFiscalyear(data: Fiscalyear): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/fiscalyear/data';
+    const body = JSON.stringify(data)
+    return this.http.delete(apiURL, {headers: this.header, body: body});
+  }
+  // router.get('/fiscalyear/getOneData', fiscalyearService.getOneData);
+  getOneFiscalyear(year: string) : Observable<Fiscalyear> {
+    const apiURL = environment.apiUrl + '/journal/fiscalyear/getOneData?jahr=' + year;
+    return this.http.get<Fiscalyear>(apiURL, {headers: this.header});
+
+  }
+
+  getAccount(): Observable<Account[]> {
+    const apiURL = environment.apiUrl + '/journal/account/alldata';
+    return this.http.get<Account[]>(apiURL, {headers: this.header});
+  }
+  addAccount(data: Account): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/account/data';
+    const body = JSON.stringify(data)
+    return this.http.post(apiURL, body, {headers: this.header});
+  }
+  updAccount(data: Account): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/account/data';
+    const body = JSON.stringify(data)
+    return this.http.put(apiURL, body, {headers: this.header});
+  }
+  delAccount(data: Account): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/account/data';
+    const body = JSON.stringify(data)
+    return this.http.delete(apiURL, {headers: this.header, body: body});
+  }
+  getOneDataByOrder(order: number) : Observable<Account> {
+    const apiURL = environment.apiUrl + '/journal/account/getOneDataByOrder?order=' + order;
+    return this.http.get<Account>(apiURL, {headers: this.header});
+
+  }
 }

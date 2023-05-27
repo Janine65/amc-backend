@@ -1,0 +1,43 @@
+<p-splitter [panelSizes]="[40, 60]" styleClass="mb-1">
+    <ng-template pTemplate>
+        <div class="card" style="width: 100%;">
+            <app-basetable
+                [tableOptions]="cols"
+                [tableData]="lstFiscalyear"
+                [formatFunction]="formatField"
+                [tableToolbar]="toolbar"
+                localStorage="fiscalyear">
+            </app-basetable>
+        </div>
+    </ng-template>
+    <ng-template pTemplate=>
+        <div class="card" style="width: 100%;">
+            <form autocomplete="off" (ngSubmit)="save()">
+                <div class="formgrid grid">
+                    <div class="field col-12 md:col-12 mt-4">
+                        <label for="year" class="mr-2 ">Jahr</label>
+                        <input type="text" name="year" pInputText minlength="4" required
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="selFiscalyear.year" [disabled]="!addMode" >
+                    </div>
+                    <div class="field col-12 md:col-12 mt-4">
+                        <label for="name" class="mr-2 ">Bezeichnung</label>
+                        <input type="text" name="name" pInputText minlength="5" required
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="selFiscalyear.name" [disabled]="!editMode && !addMode" >
+                    </div>
+                    <div class="field col-12 md:col-12 mt-4">
+                        <label for="state" class="mr-2 ">Status</label>
+                        <p-dropdown name="state" [options]="lstStates" optionLabel="label" optionValue="value"
+                        [autoDisplayFirst]="true" [disabled]="!editMode && !addMode"
+                        class="mr-2 text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="selFiscalyear.state" [style.width.%]="80"></p-dropdown>
+                    </div>
+                    <div class="field col-12 md:col-12 mt-4">
+                        <button pButton type="button" label="Sichern" icon="pi pi-save" class="p-button-primary p-button-outlined"
+                        (click)="save()" [disabled]="!editMode && !addMode"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </ng-template>

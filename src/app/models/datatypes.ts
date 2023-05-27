@@ -109,13 +109,22 @@ export class Clubmeister extends TableData {
     status: number | null | undefined;
   }  
 
-export class Fiscalyear {
-    constructor(
-        public id: number,
-        public year: string,
-        public name: string,
-        public state: number,
-        public createdAt: Date,
-        public updatedAt: Date
-    ){ }
+  export class Fiscalyear extends TableData {
+    year?: string;
+    name?: string;
+    state?: number;
+  }
+
+  export class Account extends TableData {
+    name?: string;
+    level?: number;
+    order?: number;
+    status?: number;
+  }
+
+export class MeisterschaftAuswertung {
+    public datum: string | undefined;
+    public name: string | undefined;
+    public gaeste: number | undefined | null;
+    public meisterschafts:{teilnehmer: number | null | undefined} | undefined;
 }

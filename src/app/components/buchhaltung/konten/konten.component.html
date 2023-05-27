@@ -1,0 +1,49 @@
+<p-splitter [panelSizes]="[40, 60]" styleClass="mb-1">
+    <ng-template pTemplate>
+        <div class="card" style="width: 100%;">
+            <app-basetable
+                [tableOptions]="cols"
+                [tableData]="lstAccount"
+                [formatFunction]="formatField"
+                [tableToolbar]="toolbar"
+                localStorage="account">
+            </app-basetable>
+        </div>
+    </ng-template>
+    <ng-template pTemplate=>
+        <div class="card" style="width: 100%;">
+            <form autocomplete="off" (ngSubmit)="save()">
+                <div class="formgrid grid">
+                    <div class="field col-12 md:col-12 mt-4">
+                        <label for="name" class="mr-2 ">Name</label>
+                        <input type="text" name="name" pInputText minlength="4" required
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="selAccount.name" [disabled]="!editMode && !addMode" >
+                    </div>
+                    <div class="field col-12 md:col-12 mt-4">
+                        <label for="level" class="mr-2 ">Level</label>
+                        <input type="text" name="level" pInputText minlength="5" required
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="selAccount.level" [disabled]="!editMode && !addMode" >
+                    </div>
+                    <div class="field col-12 md:col-12 mt-4">
+                        <label for="order" class="mr-2 ">Order</label>
+                        <input type="text" name="order" pInputText minlength="5" required
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="selAccount.order" [disabled]="!editMode && !addMode" >
+                    </div>
+                    <div class="field col-12 md:col-12 mt-4">
+                        <label for="status" class="mr-2 ">Status</label>
+                        <p-dropdown name="state" [options]="lstStates" optionLabel="label" optionValue="value"
+                        [autoDisplayFirst]="true" [disabled]="!editMode && !addMode"
+                        class="mr-2 text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="selAccount.status" [style.width.%]="80"></p-dropdown>
+                    </div>
+                    <div class="field col-12 md:col-12 mt-4">
+                        <button pButton type="button" label="Sichern" icon="pi pi-save" class="p-button-primary p-button-outlined"
+                        (click)="save()" [disabled]="!editMode && !addMode"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </ng-template>

@@ -29,23 +29,24 @@ export class AppMenuComponent implements OnInit {
                 label: 'Verwaltung',
                 items: [
                     { label: 'Adressen', icon: 'pi pi-fw pi-id-card', routerLink: ['/verwaltung/adressen'] },
-                    { label: 'Anlässe', icon: 'pi pi-fw pi-check-square', routerLink: ['/verwaltung/anlaesse'] },
+                    { label: 'Anlässe', icon: 'pi pi-fw pi-calendar', routerLink: ['/verwaltung/anlaesse'] },
                     { label: 'Parameters', icon: 'pi pi-fw pi-bookmark', routerLink: ['/verwaltung/parameter'] },
                 ]
             },
             {
                 label: 'Auswertungen',
                 items: [
-                    { label: 'Meisterschaft', icon: 'pi pi-fw pi-eye', routerLink: ['/auswertung/meisterschaft'], badge: 'NEW' },
-                    { label: 'Auswertungen', icon: 'pi pi-fw pi-globe', routerLink: ['/blocks']},
+                    { label: 'Meisterschaft', icon: 'pi pi-fw pi-map', routerLink: ['/auswertung/meisterschaft'] },
+                    { label: 'Auswertungen', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/auswertung/auswertung']},
                 ]
             },
             {
                 label: 'Buchhaltung',
                 items: [
-                    { label: 'Journal', icon: 'pi pi-fw pi-desktop', routerLink: ['/blocks']},
-                    { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-prime', routerLink: ['/blocks'] },
-                    { label: 'Konten', icon: 'pi pi-fw pi-prime', routerLink: ['/blocks'] },
+                    { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-book', routerLink: ['/buchhaltung/geschaeftsjahr'] },
+                    { label: 'Konten', icon: 'pi pi-fw pi-bitcoin', routerLink: ['/buchhaltung/konten'] },
+                    { label: 'Journal', icon: 'pi pi-fw pi-money-bill', routerLink: ['/buchhaltung/journal']},
+                    { label: 'Auswertung', icon: 'pi pi-fw pi-percentage', routerLink: ['/buchhaltung/kto-auswertung']},
                 ]
             },
 

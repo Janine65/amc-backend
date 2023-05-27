@@ -33,6 +33,7 @@
               "src/styles.scss"
             ],
             "scripts": [
+              "../node_modules/chart.js/dist/chart.js"
             ],
             "allowedCommonJsDependencies": [
             ]
@@ -105,7 +106,9 @@
               "@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "../node_modules/chart.js/dist/chart.js"
+            ]
           }
         },
         "lint": {

@@ -1,15 +1,18 @@
 <p-toast key="local"></p-toast>
 <div class="card" style="width: 100%; " id="table-box">
     <div class="row col-md-12 mb-3 p-1 border-1 border-round">
-        <label for="gaeste" class="mr-2 mb-1">Gäste</label>
+        <label for="jahr" class="mr-2 ">Jahr auswählen</label>
+        <p-dropdown id="jahr" [options]="selJahre" optionLabel="label" optionValue="value" [(ngModel)]="selJahr" 
+        class="mr-2 mb-1" (onChange)="readMeisterschaft()"></p-dropdown>
     </div>
 </div>
 <p-splitter [panelSizes]="[50, 50]" styleClass="mb-1">
     <ng-template pTemplate>
-        <div class="card" style="width: 100%; " id="table-box">
+        <div class="card" style="width: 100%; " id="table-boxc">
             <div class="row col-md-12">
+                <h2>Clubmeisterschaft</h2>
                 <p-table styleClass=" p-datatable-striped" [value]="lstClubmeister"
-                    dataKey="id" [scrollHeight]="objHeight$" [virtualScroll]="true"
+                    dataKey="id" [scrollHeight]="objHeightc$" [virtualScroll]="true"
                     [virtualScrollItemSize]="36" (window:resize)="onResizeHandler()"
                     [tableStyle]="{'min-width': '100%'}">
                     <ng-template pTemplate="header">
@@ -38,10 +41,11 @@
         </div>
     </ng-template>
     <ng-template pTemplate>
-        <div class="card" style="width: 100%;">
+        <div class="card" style="width: 100%;" id="table-boxk">
+            <h2>Kegelmeisterschaft</h2>
             <p-table styleClass=" p-datatable-striped" [value]="lstKegelmeister"
-            dataKey="id" [scrollHeight]="objHeight$" [virtualScroll]="true"
-            [virtualScrollItemSize]="36" (window:resize)="onResizeHandler()"
+            dataKey="id" [scrollHeight]="objHeightk$" [virtualScroll]="true"
+            [virtualScrollItemSize]="36"
             [tableStyle]="{'min-width': '100%'}">
             <ng-template pTemplate="header">
                 <tr>

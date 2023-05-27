@@ -1,6 +1,6 @@
 <p-toast key="local"></p-toast>
 <div [style.height.px]="50">
-    <button pButton *ngIf="checkSorting()" label="Clear" class="p-button-secondary p-button-outlined"
+    <button pButton *ngIf="checkFiltering()" label="Clear" class="p-button-secondary p-button-outlined"
         icon="pi pi-filter-slash" (click)="clear(basetable)"></button>
     <button pButton *ngFor="let but of tableToolbar; index as ind" [label]="but.label!" [icon]="but.icon!"
         [ngClass]="but.btnClass!" (click)="clickOnToolbar(ind)" [disabled]="isButtonDisabled(ind)"></button>

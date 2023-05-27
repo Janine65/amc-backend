@@ -1,0 +1,5 @@
+<h2>Auswertung für  <p-dropdown id="jahr" [options]="selJahre" optionLabel="label" optionValue="value" [(ngModel)]="selJahr" 
+    class="mr-2 mb-1" (onChange)="updateGraph()"></p-dropdown></h2>
+<div class="card">
+    <p-chart type="bar" [data]="data" [options]="options"></p-chart>
+</div>
