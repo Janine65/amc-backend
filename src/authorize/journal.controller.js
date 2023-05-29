@@ -31,6 +31,7 @@ router.get('/account/getOneDataByOrder', authorize(), accountService.getOneDataB
 
 
 router.get('/journal/data', authorize(), journalService.getData);
+router.get('/journal/onedata', authorize(), journalService.getOneData);
 router.post('/journal/data', authorize(), journalService.addData);
 router.put('/journal/data', authorize(), journalService.updateData);
 router.delete('/journal/data', authorize(), journalService.removeData);

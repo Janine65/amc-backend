@@ -39,7 +39,7 @@ function newPass(req, res, next) {
             exportsFnc.sendEmail(req, res, next)
                 .then(() => res.json({ message: 'Passwort erfolgreich gesetzt und Mail gesendet' }))
                 .catch(next);
-            
+
         })
         .catch(next);
 }
@@ -56,22 +56,22 @@ function register(req, res, next) {
                 email_cc: '',
                 email_bcc: '',
                 email_subject: 'AMC Interna - Willkommen',
-                email_body: 'Hallo ' + user.name + '<br/>Willkommen auf der Applikation für den Auto-Moto-Club Swissair. Dies ist eine interne Applikation und darf nicht in unberechtigte Hände gelangen.<br/>Mit freundlichen Grüssen'
+                email_body: 'Hallo ' + user.name + '<br/>Willkommen auf der Applikation für den Auto-Moto-Club Swissair erreichbar unter https://interna.neu.automoto-sr.info. Dies ist eine interne Applikation und darf nicht in unberechtigte Hände gelangen.<br/>Mit freundlichen Grüssen'
             }
             req.body = emailBody
             exportsFnc.sendEmail(req, res, next)
                 .then(() => {
-                // send Password Mail
-                emailBody.email_body = 'Hallo ' + user.name + '<br/>Hier dein Passwort: ' + newPass + '<br/>Bitte setze nach dem Login ein neues Passwort!';
-                emailBody.email_subject = 'AMC Interna - Neues Passwort gesetzt';
-                
-                req.body = emailBody
-                exportsFnc.sendEmail(req, res, next)
-                    .then(() => res.json({ message: 'Registrierung erfolgreich und Mail an ' + user.email + ' gesendet' }))
-                    .catch(next);
-                    })
+                    // send Password Mail
+                    emailBody.email_body = 'Hallo ' + user.name + '<br/>Hier dein Passwort: ' + newPass + '<br/>Bitte setze nach dem Login ein neues Passwort!';
+                    emailBody.email_subject = 'AMC Interna - Neues Passwort gesetzt';
+
+                    req.body = emailBody
+                    exportsFnc.sendEmail(req, res, next)
+                        .then(() => res.json({ message: 'Registrierung erfolgreich und Mail an ' + user.email + ' gesendet' }))
+                        .catch(next);
                 })
-            .catch(next);
+        })
+        .catch(next);
 }
 
 function getAll(req, res, next) {

@@ -24,15 +24,14 @@ global.assets = __dirname + "/public/assets/"
 require('./config/config')
 const app = express();
 
-const whitelist = ['http://localhost:4200', 'http://interna.neu.automoto-sr.info', 'http://olconet:4200','http://olconet:2700',]
+const whitelist = ['http://localhost:4200', 'http://interna.neu.automoto-sr.info', 'https://interna.neu.automoto-sr.info', 'http://olconet:4200','http://olconet:2700',]
 const corsOptionsDelegate = function (req, callback) {
   let corsOptions;
   if (whitelist.indexOf(req.header('Origin')) !== -1) {
     corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
-    console.log('CORS is ok')
   } else {
     corsOptions = { origin: false } // disable CORS for this request
-    console.log('CORS denied')
+    console.log('CORS denied', req.header('Origin'))
   }
   callback(null, corsOptions) // callback expects two parameters: error and options
 }

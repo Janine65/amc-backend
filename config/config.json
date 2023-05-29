@@ -33,7 +33,7 @@
         "config_id": "production",
         "node_port": 2700,
         "dbhost": "olconet",
-        "webhost": "https://interna.neu.automoto-sr.info:4200",
+        "webhost": "https://interna.neu.automoto-sr.info",
         "database": "amcinterna",
         "db_user": "webuser",
         "db_pwd": "U2FsdGVkX1+uREut48vXcp9FVvrcmZcVefiR8vBlKiA=",
