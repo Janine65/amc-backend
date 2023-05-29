@@ -30,28 +30,23 @@ export class AppTopBarComponent implements OnInit {
     ngOnInit() {
         this.userItems = [
             {
-                label: 'Account',
-                items: [
-                    {
-                    label: 'Mein Profil',
-                    icon: 'pi pi-user-edit',
-                    routerLink: ['/account/profile']
-                    },
-                    {
-                        label: 'Alle gespeicherten Einstellung löschen',
-                        icon: 'pi pi-trash',
-                        command: () => {
-                            this.clearStorage();
-                        }
-                     },
-                     {
-                        label: 'Ausloggen',
-                        icon: 'pi pi-sign-out',
-                        command: () => {
-                            this.loggoutUser();
-                        }
-                    }
-                ]
+                label: 'Ausloggen',
+                icon: 'pi pi-sign-out',
+                command: () => {
+                    this.loggoutUser();
+                }
+            },
+            {
+                label: 'Mein Profil',
+                icon: 'pi pi-user-edit',
+                routerLink: ['/account/profile']
+            },
+            {
+                label: 'Alle gespeicherten Einstellung löschen',
+                icon: 'pi pi-trash',
+                command: () => {
+                    this.clearStorage();
+                }
             },
             {
                 label: 'Users',
@@ -73,7 +68,7 @@ export class AppTopBarComponent implements OnInit {
         if (this.isLoggedIn()) {
             this.accountService.logout();
             this.user = undefined;
-            this.messages.add({detail: 'Du bist ausgelogged!', summary: 'Ausgelogged', severity: 'info', closable: false, sticky: true})
+            this.messages.add({ detail: 'Du bist ausgelogged!', summary: 'Ausgelogged', severity: 'info', closable: true, sticky: false })
         }
     }
 
@@ -84,7 +79,7 @@ export class AppTopBarComponent implements OnInit {
         if (saveUser)
             localStorage.setItem('user', saveUser);
         if (parameter)
-        localStorage.setItem('parameter', parameter);
+            localStorage.setItem('parameter', parameter);
     }
 
     public isLoggedIn(): boolean {

@@ -53,7 +53,8 @@ export class AuswertungComponent implements OnInit {
     const dataset2: number[] = []
 
     this.lstGraphData.forEach((rec) => {
-      labels.push(rec.name!);
+      const datum = new Date(rec.datum!);
+      labels.push(rec.name! + ' - ' + datum.toLocaleDateString());
       dataset1.push(rec.meisterschafts!.teilnehmer ? rec.meisterschafts!.teilnehmer : 0)
       dataset2.push(rec.gaeste ? rec.gaeste : 0)
     })

@@ -1,15 +1,15 @@
 ﻿import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
-import { AccountService } from '@app/service';
-import { MessageService } from 'primeng/api';
+import { AccountService, AlertService } from '@app/service';
+import { AlertType } from '@model/alert';
 
 @Injectable({ providedIn: 'root'})
 export class AuthGuard  {
     constructor(
         private router: Router,
         private accountService: AccountService,
-        private messageService: MessageService
+        private alertService: AlertService
     ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -24,13 +24,14 @@ export class AuthGuard  {
         this.router.navigate(['/account/login'], { queryParams: { returnUrl: state.url }});
         return false;
     }
-    checkPermission(permission?: string) {
+    async checkPermission(permission?: string) {
         if (permission) {
             if (this.accountService.userValue) {
                 if (this.accountService.userValue.role === permission || this.accountService.userValue.role === 'admin')
                     return true;
                 else {
-                    this.messageService.add({detail: "Keine Berechtigung für diesen Task", closable: true, sticky: false, summary: "Keine Berechtigung"});
+                    await this.router.navigateByUrl('/');
+                    this.alertService.alert({ autoClose: true, fade: false, type: AlertType.Error, message: 'Keine Berechtigung für diesen Task', keepAfterRouteChange: false });
                     return false;
                 }
             } else {

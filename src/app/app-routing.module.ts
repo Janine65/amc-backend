@@ -32,7 +32,6 @@ import { KtoAuswertungComponent } from './components/buchhaltung/kto-auswertung/
           children: [
             { path: 'login', component: LoginComponent },
             { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: { withRole: false, withPwd: true, user: undefined } }
-
           ]
         },
         { path: 'auswertung/meisterschaft', component: MeisterschaftComponent, canActivate: [AuthGuard], data: { role: 'user' } },
@@ -40,10 +39,10 @@ import { KtoAuswertungComponent } from './components/buchhaltung/kto-auswertung/
         {
           path: 'buchhaltung',
           children: [
-            { path: 'journal', component: JournalComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
+            { path: 'journal', component: JournalComponent, canActivate: [AuthGuard], data: { role: 'revisor' } },
             { path: 'konten', component: KontenComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
             { path: 'geschaeftsjahr', component: GeschaeftsjahrComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
-            { path: 'kto-auswertung', component: KtoAuswertungComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
+            { path: 'kto-auswertung', component: KtoAuswertungComponent, canActivate: [AuthGuard], data: { role: 'revisor' } },
           ]
         },
       ]
