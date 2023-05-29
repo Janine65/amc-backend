@@ -1,5 +1,10 @@
 import { TableData } from "../components/shared/basetable/basetable.component";
 
+type NumberEmpty = number | null | undefined;
+type StringEmpty = string | null | undefined;
+type DateEmpty = Date | null | undefined;
+type BooleanEmpty = boolean | null | undefined;
+
 export class OverviewData {
     constructor(
         public label: string,
@@ -23,108 +28,169 @@ export class ParamData {
 }
 
 export class Adresse extends TableData {
-    public mnr?: number;
-    public geschlecht?: string;
-    public name?: string;
-    public vorname?: string;
-    public fullname?: string;
-    public adresse?: string;
-    public plz?: number;
-    public ort?: string;
-    public land?: string;
-    public telefon_p?: string;
-    public telefon_g?: string;
-    public mobile?: string;
-    public email?: string;
-    public sam_mitglied?: boolean;
-    public eintritt?: string;
-    public eintritt_date?: Date;
-    public jahresbeitrag?: number;
-    public mnr_sam?: number;
-    public vorstand?: boolean;
-    public ehrenmitglied?: boolean;
-    public revisor?: boolean;
-    public austritt?: string;
-    public austritt_date?: Date;
-    public austritt_mail?: boolean;
-    public adressenid?: number;
-    public allianz?: boolean;
-    public notes?: string;
+    public mnr?: NumberEmpty;
+    public geschlecht?: StringEmpty;
+    public name?: StringEmpty;
+    public vorname?: StringEmpty;
+    public fullname?: StringEmpty;
+    public adresse?: StringEmpty;
+    public plz?: NumberEmpty;
+    public ort?: StringEmpty;
+    public land?: StringEmpty;
+    public telefon_p?: StringEmpty;
+    public telefon_g?: StringEmpty;
+    public mobile?: StringEmpty;
+    public email?: StringEmpty;
+    public sam_mitglied?: BooleanEmpty;
+    public eintritt?: StringEmpty;
+    public eintritt_date?: DateEmpty;
+    public jahresbeitrag?: NumberEmpty;
+    public mnr_sam?: NumberEmpty;
+    public vorstand?: BooleanEmpty;
+    public ehrenmitglied?: BooleanEmpty;
+    public revisor?: BooleanEmpty;
+    public austritt?: StringEmpty;
+    public austritt_date?: DateEmpty;
+    public austritt_mail?: BooleanEmpty;
+    public adressenid?: NumberEmpty;
+    public allianz?: BooleanEmpty;
+    public notes?: StringEmpty;
+
+    constructor() {
+      super();
+    }
 }
 
 export class Anlass extends TableData {
-    public datum?: string;
-    public datum_date?: Date;
-    public name?: string;
-    public beschreibung?: string;
-    public punkte?: number;
-    public istkegeln?: boolean;
-    public nachkegeln?: boolean;
-    public istsamanlass?: boolean;
-    public gaeste?: number;
-    public anlaesseid?: number;
-    public longname?: string;
-    public status?: number;
-    public vorjahr?: string;
-    public linkedEvent?: {vorjahr: string};
+    public datum?: StringEmpty;
+    public datum_date?: DateEmpty;
+    public name?: StringEmpty;
+    public beschreibung?: StringEmpty;
+    public punkte?: NumberEmpty;
+    public istkegeln?: BooleanEmpty;
+    public nachkegeln?: BooleanEmpty;
+    public istsamanlass?: BooleanEmpty;
+    public gaeste?: NumberEmpty;
+    public anlaesseid?: NumberEmpty;
+    public longname?: StringEmpty;
+    public status?: NumberEmpty;
+    public vorjahr?: StringEmpty;
+    public linkedEvent?: {vorjahr?: StringEmpty} | undefined;
+
+    constructor() {
+      super();
+    }
 }
 
 export class Meisterschaft extends TableData {
-    public mitgliedid?: number | null;
-    public eventid?: number | null;
-    public punkte?: number | null;
-    public wurf1?: number | null;
-    public wurf2?: number | null;
-    public wurf3?: number | null;
-    public wurf4?: number | null;
-    public wurf5?: number | null;
-    public zusatz?: number | null;
-    public streichresultat?: number | null;
-    public total_kegel?: number | null;
-    public teilnehmer?: {id?: number | null; fullname?: string | null}
+    public mitgliedid?: NumberEmpty;
+    public eventid?: NumberEmpty;
+    public punkte?: NumberEmpty;
+    public wurf1?: NumberEmpty;
+    public wurf2?: NumberEmpty;
+    public wurf3?: NumberEmpty;
+    public wurf4?: NumberEmpty;
+    public wurf5?: NumberEmpty;
+    public zusatz?: NumberEmpty;
+    public streichresultat?: NumberEmpty;
+    public total_kegel?: NumberEmpty;
+    public teilnehmer?: {id?: NumberEmpty; fullname?: StringEmpty} | undefined
+
+    constructor() {
+      super();
+    }
 }
 
 export class Clubmeister extends TableData {
-    jahr: number | null | undefined;
-    rang: number | null | undefined;
-    vorname: string | null | undefined;
-    nachname: string | null | undefined;
-    mitgliedid: number | null | undefined;
-    punkte: number | null | undefined;
-    anlaesse: number | null | undefined;
-    werbungen: number | null | undefined;
-    mitglieddauer: number | null | undefined;
-    status: number | null | undefined;
+    jahr?: NumberEmpty;
+    rang?: NumberEmpty;
+    vorname?: StringEmpty;
+    nachname?: StringEmpty;
+    mitgliedid?: NumberEmpty;
+    punkte?: NumberEmpty;
+    anlaesse?: NumberEmpty;
+    werbungen?: NumberEmpty;
+    mitglieddauer?: NumberEmpty;
+    status?: NumberEmpty;
+
+    constructor() {
+      super();
+    }
   }  
   
   export class Kegelmeister extends TableData {
-    jahr: number | null | undefined;
-    rang: number | null | undefined;
-    vorname: string | null | undefined;
-    nachname: string | null | undefined;
-    mitgliedid: number | null | undefined;
-    punkte: number | null | undefined;
-    anlaesse: number | null | undefined;
-    babeli: number | null | undefined;
-    status: number | null | undefined;
+    jahr?: NumberEmpty;
+    rang?: NumberEmpty;
+    vorname?: StringEmpty;
+    nachname?: StringEmpty;
+    mitgliedid?: NumberEmpty;
+    punkte?: NumberEmpty;
+    anlaesse?: NumberEmpty;
+    babeli?: NumberEmpty;
+    status?: NumberEmpty;
+
+    constructor() {
+      super();
+    }
   }  
 
   export class Fiscalyear extends TableData {
-    year?: string;
-    name?: string;
-    state?: number;
+    year?: StringEmpty;
+    name?: StringEmpty;
+    state?: NumberEmpty;
+
+    constructor() {
+      super();
+    }
   }
 
   export class Account extends TableData {
-    name?: string;
-    level?: number;
-    order?: number;
-    status?: number;
+    name?: StringEmpty;
+    level?: NumberEmpty;
+    order?: NumberEmpty;
+    status?: NumberEmpty;
+
+    constructor() {
+      super();
+    }
+  }
+
+  export class Receipt extends TableData {
+    receipt?: StringEmpty;
+    bezeichnung?: StringEmpty;
+    jahr?: StringEmpty;
+  }
+  export class JournalReceipt extends TableData {
+
+  }
+  
+  export class Journal extends TableData {
+    date?: StringEmpty;
+    date_date?: DateEmpty;
+    memo?: StringEmpty;
+    journalno?: NumberEmpty;
+    amount?: NumberEmpty;
+    status?: NumberEmpty;
+    from_account?: NumberEmpty;
+    fromAcc?: StringEmpty;
+    to_account?: NumberEmpty;
+    toAcc?: StringEmpty;
+    fromAccount?: Account | undefined;
+    toAccount?: Account | undefined;
+    journal2receipt? : JournalReceipt | undefined;
+
+    constructor() {
+      super();
+    }
   }
 
 export class MeisterschaftAuswertung {
-    public datum: string | undefined;
-    public name: string | undefined;
-    public gaeste: number | undefined | null;
-    public meisterschafts:{teilnehmer: number | null | undefined} | undefined;
+    public datum?: StringEmpty;
+    public name?: StringEmpty;
+    public gaeste?: NumberEmpty;
+    public meisterschafts?:{teilnehmer?: NumberEmpty} | undefined;
+
+    constructor() {
+      return 
+    }
 }

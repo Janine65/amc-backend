@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AfterViewInit, Component, OnInit, Renderer2 } from '@angular/core';
@@ -15,10 +16,51 @@ import { Subscription, from } from 'rxjs';
   providers: [DialogService]
 })
 export class AnlassBookComponent implements OnInit, AfterViewInit {
-  anlass: Anlass = {}
+  anlass: Anlass = {
+    datum: undefined,
+    datum_date: undefined,
+    name: undefined,
+    beschreibung: undefined,
+    punkte: undefined,
+    istkegeln: undefined,
+    nachkegeln: undefined,
+    istsamanlass: undefined,
+    gaeste: undefined,
+    anlaesseid: undefined,
+    longname: undefined,
+    status: undefined,
+    vorjahr: undefined,
+    linkedEvent: undefined
+  }
   lstMeisterschaft: Meisterschaft[] = []
-  selMeisterschaft: Meisterschaft = {}
-  newMeisterschaft: Meisterschaft = {}
+  selMeisterschaft: Meisterschaft = {
+    mitgliedid: undefined,
+    eventid: undefined,
+    punkte: undefined,
+    wurf1: undefined,
+    wurf2: undefined,
+    wurf3: undefined,
+    wurf4: undefined,
+    wurf5: undefined,
+    zusatz: undefined,
+    streichresultat: undefined,
+    total_kegel: undefined,
+    teilnehmer: undefined
+  }
+  newMeisterschaft: Meisterschaft = {
+    mitgliedid: undefined,
+    eventid: undefined,
+    punkte: undefined,
+    wurf1: undefined,
+    wurf2: undefined,
+    wurf3: undefined,
+    wurf4: undefined,
+    wurf5: undefined,
+    zusatz: undefined,
+    streichresultat: undefined,
+    total_kegel: undefined,
+    teilnehmer: undefined
+  }
   fMeisterschaft = false;
   lstAdressen: Adresse[] = []
   selAdresse?: number;

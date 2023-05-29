@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LayoutService } from '../service/app.layout.service';
 import { MenuItem } from 'primeng/api';
-import { User } from '@app/models';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-menu',
@@ -45,8 +43,8 @@ export class AppMenuComponent implements OnInit {
                 items: [
                     { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-book', routerLink: ['/buchhaltung/geschaeftsjahr'] },
                     { label: 'Konten', icon: 'pi pi-fw pi-bitcoin', routerLink: ['/buchhaltung/konten'] },
-                    { label: 'Journal', icon: 'pi pi-fw pi-money-bill', routerLink: ['/buchhaltung/journal']},
-                    { label: 'Auswertung', icon: 'pi pi-fw pi-percentage', routerLink: ['/buchhaltung/kto-auswertung']},
+                    { label: 'Journal', disabled: true, icon: 'pi pi-fw pi-money-bill', routerLink: ['/buchhaltung/journal']},
+                    { label: 'Auswertung', disabled: true, icon: 'pi pi-fw pi-percentage', routerLink: ['/buchhaltung/kto-auswertung']},
                 ]
             },
 

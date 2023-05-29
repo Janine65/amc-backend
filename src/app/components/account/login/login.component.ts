@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, NgForm } from '@angular/forms';
-import { first, last } from 'rxjs/operators';
+import { NgForm } from '@angular/forms';
+import { last } from 'rxjs/operators';
 import { AccountService, AlertService } from '@app/service';
 import { AlertType } from '@app/models';
 import { MessageService } from 'primeng/api';
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
     return
   }
 
-  onReset(f: NgForm) {
+  async onReset(f: NgForm) {
     // reset alerts on submit
     this.alertService.clear();
 
@@ -41,17 +41,12 @@ export class LoginComponent implements OnInit {
     this.accountService.newPasswort(f.value['email'])
       .pipe(last())
       .subscribe({
-        next: () => {
+        next: async () => {
           // get return url from query parameters or default to home page
           this.alertService.alert({ autoClose: false, fade: false, type: AlertType.Success, message: 'Mail gesendet mit neuem Passwort', keepAfterRouteChange: false });
-          this.router.navigateByUrl('/');
-        },
-        error: error => {
-          this.alertService.error(error);
-          this.loading = false;
-          this.submitted = false;
+          await this.router.navigateByUrl('/');
         }
-      });
+      })
   }
 
   onSubmit(f: NgForm) {
@@ -71,11 +66,11 @@ export class LoginComponent implements OnInit {
     this.accountService.login(f.value['email'], f.value['password'])
       .pipe(last())
       .subscribe({
-        next: () => {
+        next: async () => {
           // get return url from query parameters or default to home page
           const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
           console.log(returnUrl)
-          this.router.navigateByUrl(returnUrl);
+          await this.router.navigateByUrl(returnUrl);
         },
         error: error => {
           this.alertService.error(error);

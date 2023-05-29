@@ -22,5 +22,5 @@ FROM nginx:alpine
 COPY --from=build /dist/dist/amc-interna /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 4200
+EXPOSE 8080
 

@@ -38,6 +38,13 @@ export class AppTopBarComponent implements OnInit {
                     routerLink: ['/account/profile']
                     },
                     {
+                        label: 'Alle gespeicherten Einstellung löschen',
+                        icon: 'pi pi-trash',
+                        command: () => {
+                            this.clearStorage();
+                        }
+                     },
+                     {
                         label: 'Ausloggen',
                         icon: 'pi pi-sign-out',
                         command: () => {
@@ -54,20 +61,30 @@ export class AppTopBarComponent implements OnInit {
         ];
     }
 
-    clickUser() {
-        if (this.user) {
+    async clickUser() {
+        if (this.isLoggedIn()) {
             return
         } else {
-            this.router.navigateByUrl('/account/login');
+            await this.router.navigateByUrl('/account/login');
         }
     }
 
     loggoutUser() {
-        if (this.user) {
+        if (this.isLoggedIn()) {
             this.accountService.logout();
             this.user = undefined;
             this.messages.add({detail: 'Du bist ausgelogged!', summary: 'Ausgelogged', severity: 'info', closable: false, sticky: true})
         }
+    }
+
+    clearStorage() {
+        const saveUser = localStorage.getItem('user');
+        const parameter = localStorage.getItem('parameter');
+        localStorage.clear();
+        if (saveUser)
+            localStorage.setItem('user', saveUser);
+        if (parameter)
+        localStorage.setItem('parameter', parameter);
     }
 
     public isLoggedIn(): boolean {

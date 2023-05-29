@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Account, Adresse, Anlass, Clubmeister, Fiscalyear, Kegelmeister, Meisterschaft, MeisterschaftAuswertung, OverviewData, ParamData } from '../models/datatypes';
+import { Account, Adresse, Anlass, Clubmeister, Fiscalyear, Journal, Kegelmeister, Meisterschaft, MeisterschaftAuswertung, OverviewData, ParamData } from '../models/datatypes';
 import { environment } from '@environments/environment';
 
 @Injectable({
@@ -265,6 +265,30 @@ export class BackendService {
   getOneDataByOrder(order: number) : Observable<Account> {
     const apiURL = environment.apiUrl + '/journal/account/getOneDataByOrder?order=' + order;
     return this.http.get<Account>(apiURL, {headers: this.header});
+
+  }
+  getJournal(jahr: number): Observable<Journal[]> {
+    const apiURL = environment.apiUrl + '/journal/journal/data?jahr=' + jahr;
+    return this.http.get<Journal[]>(apiURL, {headers: this.header});
+  }
+  addJournal(data: Journal): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/data';
+    const body = JSON.stringify(data)
+    return this.http.post(apiURL, body, {headers: this.header});
+  }
+  updJournal(data: Journal): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/data';
+    const body = JSON.stringify(data)
+    return this.http.put(apiURL, body, {headers: this.header});
+  }
+  delJournal(data: Journal): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/data';
+    const body = JSON.stringify(data)
+    return this.http.delete(apiURL, {headers: this.header, body: body});
+  }
+  getOneJournal(id: number) : Observable<Journal> {
+    const apiURL = environment.apiUrl + '/journal/journal/onedata?id=' + id;
+    return this.http.get<Journal>(apiURL, {headers: this.header});
 
   }
 }

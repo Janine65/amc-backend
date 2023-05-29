@@ -1,11 +1,12 @@
+type StringEmpty = string | null | undefined;
 export class EmailBody {
-    email_an?: string;
-    email_cc?: string;
-    email_bcc?: string;
-    email_subject?: string;
-    email_body?: string;
+    email_an?: StringEmpty;
+    email_cc?: StringEmpty;
+    email_bcc?: StringEmpty;
+    email_subject?: StringEmpty;
+    email_body?: StringEmpty;
     email_signature: EmailSignature | undefined;
-    uploadFiles?: string;
+    uploadFiles?: StringEmpty;
 
     constructor (init?:Partial<EmailBody>) {
         Object.assign(this, init);

@@ -2,12 +2,14 @@
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { AccountService } from '@app/service';
+import { MessageService } from 'primeng/api';
 
 @Injectable({ providedIn: 'root'})
 export class AuthGuard  {
     constructor(
         private router: Router,
-        private accountService: AccountService
+        private accountService: AccountService,
+        private messageService: MessageService
     ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -27,8 +29,10 @@ export class AuthGuard  {
             if (this.accountService.userValue) {
                 if (this.accountService.userValue.role === permission || this.accountService.userValue.role === 'admin')
                     return true;
-                else
+                else {
+                    this.messageService.add({detail: "Keine Berechtigung für diesen Task", closable: true, sticky: false, summary: "Keine Berechtigung"});
                     return false;
+                }
             } else {
                 return false;
             }

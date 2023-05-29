@@ -73,12 +73,8 @@ export class AddEditComponent {
       accept: () => {
         this.accountService.newPasswort(this.user.email || '')
         .subscribe(
-          {next: () => {
-            this.ref.close();
-            }
-          })
-        }
-    });      
+          {next: () => this.ref.close()})
+        }});      
 
   }
 

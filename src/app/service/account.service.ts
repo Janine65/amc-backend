@@ -42,11 +42,11 @@ export class AccountService {
             }));
     }
 
-    logout() {
+    async logout() {
         // remove user from local storage and set current user to null
         localStorage.removeItem('user');
         this.userSubject = undefined;
-        this.router.navigate(['/']);
+        await this.router.navigate(['/']);
         this.user = undefined;
     }
 
@@ -91,7 +91,7 @@ export class AccountService {
 
     delete(id: number) {
         return this.http.delete(`${this.apiUrl}/users/${id}`)
-            .pipe(map(x => {
+            .pipe(map(x =>  {
                 // auto logout if the logged in user deleted their own record
                 if (id == this.userValue.id) {
                     this.logout();

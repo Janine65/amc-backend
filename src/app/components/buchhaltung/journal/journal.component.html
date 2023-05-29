@@ -1,1 +1,54 @@
-<p>journal works!</p>
+<p-splitter [panelSizes]="[60, 40]" styleClass="mb-1" layout="vertical">
+    <ng-template pTemplate>
+        <div class="card" style="width: 100%;">
+            <app-basetable
+                [tableOptions]="cols"
+                [tableData]="lstJournal"
+                [formatFunction]="formatField"
+                [tableToolbar]="toolbar"
+                localStorage="journal">
+            </app-basetable>
+        </div>
+    </ng-template>
+    <ng-template pTemplate=>
+        <div class="card" style="width: 100%;">
+            <form autocomplete="off" (ngSubmit)="save()">
+                <div class="formgrid grid">
+                    <div class="field col-12 md:col-2">
+                        <label for="date" class="mr-2 ">Datum</label>
+                        <p-calendar dateFormat="dd.mm.yy" name="date" [required]="true"
+                        class="appearance-none outline-none w-full"
+                        [(ngModel)]="selJournal.date_date" [disabled]="!editMode && !addMode"></p-calendar>
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <label for="fromAcc" class="mr-2 ">Konto Soll</label>
+                        <p-dropdown name="fromAcc" [options]="lstAccounts" [(ngModel)]="selFromAccount" optionLabel="name" 
+                            class="text-base text-color surface-overlay appearance-none outline-none w-full"
+                            [required]="true" [disabled]="!editMode && !addMode"></p-dropdown>
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <label for="toAcc" class="mr-2 ">Konto Haben</label>
+                        <p-dropdown name="toAcc" [options]="lstAccounts" [(ngModel)]="selToAccount" optionLabel="name" 
+                            class="text-base text-color surface-overlay appearance-none outline-none w-full"
+                            [required]="true" [disabled]="!editMode && !addMode"></p-dropdown>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="memo" class="mr-2 ">Text</label>
+                        <input type="text" name="memo" pInputText minlength="5" required
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="selJournal.memo" [disabled]="!editMode && !addMode" >
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <label for="amount" class="mr-2 ">Betrag</label>
+                        <input type="number" name="amount" pInputText minlength="5" required
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        [(ngModel)]="selJournal.amount" [disabled]="!editMode && !addMode" >
+                    </div>
+                    <div class="field col-12 md:col-12 mt-4">
+                        <button pButton type="button" label="Sichern" icon="pi pi-save" class="p-button-primary p-button-outlined"
+                        (click)="save()" [disabled]="!editMode && !addMode"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </ng-template>
