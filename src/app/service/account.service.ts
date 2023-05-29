@@ -51,7 +51,7 @@ export class AccountService {
     }
 
     register(user: User) {
-        return this.http.post(`${this.apiUrl}/users/register`, user);
+        return this.http.post(`${this.apiUrl}/users/register`, JSON.stringify(user));
     }
 
     getAll() {
