@@ -7,7 +7,8 @@
   "scripts": {
     "pm2": "pm2 start processes.json --no-daemon",
     "start": "node index.js",
-    "test": "jest"
+    "test": "jest",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
