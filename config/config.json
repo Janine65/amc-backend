@@ -34,7 +34,7 @@
         "node_port": 2700,
         "dbhost": "olconet",
         "webhost": "https://interna.neu.automoto-sr.info",
-        "database": "amcinterna",
+        "database": "amcadmin",
         "db_user": "webuser",
         "db_pwd": "U2FsdGVkX1+uREut48vXcp9FVvrcmZcVefiR8vBlKiA=",
         "port": "5439",
