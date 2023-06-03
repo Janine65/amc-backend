@@ -71,6 +71,9 @@ import { GeschaeftsjahrComponent } from './components/buchhaltung/geschaeftsjahr
 import { KontenComponent } from './components/buchhaltung/konten/konten.component';
 import { JournalComponent } from './components/buchhaltung/journal/journal.component';
 import { KtoAuswertungComponent } from './components/buchhaltung/kto-auswertung/kto-auswertung.component';
+import { BudgetComponent } from './components/buchhaltung/budget/budget.component';
+import { AttachementListComponent } from './components/buchhaltung/attachement-list/attachement-list.component';
+import { AttachementShowComponent } from './components/buchhaltung/attachement-show/attachement-show.component';
 
 @NgModule({
   declarations: [
@@ -104,6 +107,9 @@ import { KtoAuswertungComponent } from './components/buchhaltung/kto-auswertung/
     KontenComponent,
     JournalComponent,
     KtoAuswertungComponent,
+    BudgetComponent,
+    AttachementListComponent,
+    AttachementShowComponent,
   ],
   imports: [
     BrowserModule,

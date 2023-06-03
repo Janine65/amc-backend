@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Account, Adresse, Anlass, Clubmeister, Fiscalyear, Journal, Kegelmeister, Meisterschaft, MeisterschaftAuswertung, OverviewData, ParamData } from '../models/datatypes';
+import { Account, Adresse, Anlass, Budget, Clubmeister, Fiscalyear, Journal, Kegelmeister, Meisterschaft, MeisterschaftAuswertung, OverviewData, ParamData, Receipt } from '../models/datatypes';
 import { environment } from '@environments/environment';
 
 @Injectable({
@@ -271,12 +271,12 @@ export class BackendService {
     const apiURL = environment.apiUrl + '/journal/journal/data?jahr=' + jahr;
     return this.http.get<Journal[]>(apiURL, {headers: this.header});
   }
-  addJournal(data: Journal): Observable<any> {
+  addJournal(data: Journal): Observable<Journal> {
     const apiURL = environment.apiUrl + '/journal/journal/data';
     const body = JSON.stringify(data)
     return this.http.post(apiURL, body, {headers: this.header});
   }
-  updJournal(data: Journal): Observable<any> {
+  updJournal(data: Journal): Observable<Journal> {
     const apiURL = environment.apiUrl + '/journal/journal/data';
     const body = JSON.stringify(data)
     return this.http.put(apiURL, body, {headers: this.header});
@@ -290,5 +290,40 @@ export class BackendService {
     const apiURL = environment.apiUrl + '/journal/journal/onedata?id=' + id;
     return this.http.get<Journal>(apiURL, {headers: this.header});
 
+  }
+  getAttachment(id: number) : Observable<Receipt[]> {
+    const apiURL = environment.apiUrl + '/journal/journal/getAtt?id=' + id;
+    return this.http.get<Receipt[]>(apiURL, {headers: this.header});
+
+  }
+  getAllAttachment(jahr: number, id?: number) : Observable<Receipt[]> {
+    let apiURL = environment.apiUrl + '/journal/journal/getAllAtt?jahr=' + jahr;
+    if (id)
+      apiURL += '&id=' + id;
+    return this.http.get<Receipt[]>(apiURL, {headers: this.header});
+
+  }
+  getBudget(jahr: number): Observable<Budget[]> {
+    const apiURL = environment.apiUrl + '/journal/budget/data?jahr=' + jahr;
+    return this.http.get<Budget[]>(apiURL, {headers: this.header});
+  }
+  addBudget(data: Budget): Observable<Budget> {
+    const apiURL = environment.apiUrl + '/journal/budget/data';
+    const body = JSON.stringify(data)
+    return this.http.post(apiURL, body, {headers: this.header});
+  }
+  updBudget(data: Budget): Observable<Budget> {
+    const apiURL = environment.apiUrl + '/journal/budget/data';
+    const body = JSON.stringify(data)
+    return this.http.put(apiURL, body, {headers: this.header});
+  }
+  delBudget(data: Budget): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/budget/data';
+    const body = JSON.stringify(data)
+    return this.http.delete(apiURL, {headers: this.header, body: body});
+  }
+  copyBudget(yearFrom: number, yearTo: number): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/budget/copyyear?from='+yearFrom+'&to='+yearTo;
+    return this.http.put(apiURL, {headers: this.header});
   }
 }

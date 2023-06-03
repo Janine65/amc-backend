@@ -2,8 +2,10 @@
 <div class="card" style="width: 100%; " id="table-box">
     <div class="row col-md-12 mb-3 p-1 border-1 border-round">
         <label for="jahr" class="mr-2 ">Jahr auswählen</label>
-        <p-dropdown id="jahr" [options]="selJahre" optionLabel="label" optionValue="value" [(ngModel)]="selJahr" 
-        class="mr-2 mb-1" (onChange)="readMeisterschaft()"></p-dropdown>
+        <p-dropdown id="jahr" [options]="selJahre" optionLabel="label" optionValue="value" [(ngModel)]="selJahr"
+            class="mr-2 mb-1" (onChange)="readMeisterschaft()"></p-dropdown>
+        <button pButton type="button" label="Refresh" icon="pi pi-spin" class="p-button-primary p-button-outlined ml-8"
+            (click)="refresh()"></button>
     </div>
 </div>
 <p-splitter [panelSizes]="[50, 50]" styleClass="mb-1">
@@ -11,10 +13,9 @@
         <div class="card" style="width: 100%; " id="table-boxc">
             <div class="row col-md-12">
                 <h2>Clubmeisterschaft</h2>
-                <p-table styleClass=" p-datatable-striped" [value]="lstClubmeister"
-                    dataKey="id" [scrollHeight]="objHeightc$" [virtualScroll]="true"
-                    [virtualScrollItemSize]="36" (window:resize)="onResizeHandler()"
-                    [tableStyle]="{'min-width': '100%'}">
+                <p-table styleClass=" p-datatable-striped" [value]="lstClubmeister" dataKey="id"
+                    [scrollHeight]="objHeightc$" [virtualScroll]="true" [virtualScrollItemSize]="36"
+                    (window:resize)="onResizeHandler()" [tableStyle]="{'min-width': '100%'}">
                     <ng-template pTemplate="header">
                         <tr>
                             <th>Rang</th>
@@ -43,36 +44,31 @@
     <ng-template pTemplate>
         <div class="card" style="width: 100%;" id="table-boxk">
             <h2>Kegelmeisterschaft</h2>
-            <p-table styleClass=" p-datatable-striped" [value]="lstKegelmeister"
-            dataKey="id" [scrollHeight]="objHeightk$" [virtualScroll]="true"
-            [virtualScrollItemSize]="36"
-            [tableStyle]="{'min-width': '100%'}">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>Rang</th>
-                    <th>Vorname</th>
-                    <th>Nachname</th>
-                    <th>Punkte</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-data>
-                <tr style="height:36px">
-                    <td>{{data.rang}}</td>
-                    <td>{{data.vorname}}</td>
-                    <td>{{data.nachname}}</td>
-                    <td>{{data.punkte}}</td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="summary">
-                <div class="flex align-items-center justify-content-between">
-                    {{lstKegelmeister ? lstKegelmeister.length : 0 }} Teilnehmer
-                </div>
-            </ng-template>
-        </p-table>
-</div>
+            <p-table styleClass=" p-datatable-striped" [value]="lstKegelmeister" dataKey="id"
+                [scrollHeight]="objHeightk$" [virtualScroll]="true" [virtualScrollItemSize]="36"
+                [tableStyle]="{'min-width': '100%'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Rang</th>
+                        <th>Vorname</th>
+                        <th>Nachname</th>
+                        <th>Punkte</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-data>
+                    <tr style="height:36px">
+                        <td>{{data.rang}}</td>
+                        <td>{{data.vorname}}</td>
+                        <td>{{data.nachname}}</td>
+                        <td>{{data.punkte}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="flex align-items-center justify-content-between">
+                        {{lstKegelmeister ? lstKegelmeister.length : 0 }} Teilnehmer
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
     </ng-template>
 </p-splitter>
-<p-toolbar>
-    <button pButton type="button" label="Refresh" icon="pi pi-spin" class="p-button-primary p-button-outlined"
-        (click)="refresh()"></button>
-</p-toolbar>

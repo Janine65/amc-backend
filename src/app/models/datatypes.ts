@@ -159,6 +159,7 @@ export class Clubmeister extends TableData {
     receipt?: StringEmpty;
     bezeichnung?: StringEmpty;
     jahr?: StringEmpty;
+    cntjournal?: NumberEmpty;
   }
   export class JournalReceipt extends TableData {
 
@@ -175,15 +176,25 @@ export class Clubmeister extends TableData {
     fromAcc?: StringEmpty;
     to_account?: NumberEmpty;
     toAcc?: StringEmpty;
-    fromAccount?: Account | undefined;
-    toAccount?: Account | undefined;
-    journal2receipt? : JournalReceipt | undefined;
+    fromAccount?: Account;
+    toAccount?: Account;
+    journal2receipt? : JournalReceipt;
 
     constructor() {
       super();
     }
   }
 
+  export class Budget extends TableData {
+    account? : NumberEmpty;
+    year?: NumberEmpty;
+    amount?: NumberEmpty;
+    memo?: StringEmpty;
+    acc?: Account;
+    acc_order?: NumberEmpty;
+    acc_id?: NumberEmpty;
+    acc_name?: StringEmpty;
+  }
 export class MeisterschaftAuswertung {
     public datum?: StringEmpty;
     public name?: StringEmpty;

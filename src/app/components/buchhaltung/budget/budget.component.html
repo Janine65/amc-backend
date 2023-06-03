@@ -1,0 +1,83 @@
+<div class="card">
+    <div class="mb-0">
+        <label class="mr-3">Jahr wählen</label>
+        <p-dropdown [options]="selJahre" [(ngModel)]="selJahr" (onChange)="chgJahr()"></p-dropdown>
+        <button pButton pRipple type="button" icon="pi pi-plus" (click)=onAddNewRow()
+            class="ml-5 p-button-secondary p-button-outline">Neuen Eintrag hinzufügen</button>
+        <button pButton pRipple type="button" icon="pi pi-copy" (click)=copyYear()
+            class="ml-5 p-button-secondary p-button-outline">Auf nächstes Jahr kopieren</button>
+        <hr />
+    </div>
+    <p-table [value]="lstBudget" dataKey="id" editMode="row" *ngIf="!loading">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width:10%">No.</th>
+                <th style="width:30%">Konto</th>
+                <th style="width:15%">Budget</th>
+                <th style="width:30%">Notizen</th>
+                <th style="width:15%"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-data let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="data" [pEditableRowDisabled]="!editing && !addRow">
+                <td>
+                    {{ data.acc_order }}
+                </td>
+                <td [pEditableColumn]="data.acc_id" pEditableColumnField="acc_id">
+                    <div *ngIf="!editing && !addRow">
+                        {{ data.acc_name }}
+                    </div>
+                    <p-cellEditor *ngIf="editing || addRow">
+                        <ng-template pTemplate="input">
+                            <p-dropdown [options]="lstAccounts" [(ngModel)]="data.acc_id" optionLabel="name"
+                                optionValue="id" [required]="true" (onChange)="chgAcc(data)"></p-dropdown>
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ data.acc_name }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td [pEditableColumn]="data.amount" pEditableColumnField="amount">
+                    <div *ngIf="!editing && !addRow">
+                        {{ data.amount }}
+                    </div>
+                    <p-cellEditor *ngIf="editing || addRow">
+                        <ng-template pTemplate="input">
+                            <p-inputNumber [(ngModel)]="data.amount" [required]="true"></p-inputNumber>
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ data.amount }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td [pEditableColumn]="data.memo" pEditableColumnField="memo">
+                    <div *ngIf="!editing && !addRow">
+                        {{ data.memo }}
+                    </div>
+                    <p-cellEditor *ngIf="editing || addRow">
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="data.memo">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ data.memo }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td>
+                    <button *ngIf="!editing && !addRow" pButton pRipple type="button" pInitEditableRow
+                        icon="pi pi-pencil" (click)="onRowEditInit(data)"
+                        class="p-button-rounded p-button-text"></button>
+                    <button *ngIf="editing || addRow" pButton pRipple type="button" pSaveEditableRow
+                        icon="pi pi-check" (click)="onRowEditSave(data)"
+                        class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                    <button *ngIf="editing || addRow" pButton pRipple type="button" pCancelEditableRow
+                        icon="pi pi-times" (click)="onRowEditCancel(data, ri)"
+                        class="p-button-rounded p-button-text p-button-danger"></button>
+                    <button *ngIf="!editing && !addRow" pButton pRipple type="button" icon="pi pi-times"
+                        (click)="onRowEditDelete(data)" class="p-button-rounded p-button-text"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

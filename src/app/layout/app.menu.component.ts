@@ -43,6 +43,7 @@ export class AppMenuComponent implements OnInit {
                 items: [
                     { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-book', routerLink: ['/buchhaltung/geschaeftsjahr'] },
                     { label: 'Konten', icon: 'pi pi-fw pi-bitcoin', routerLink: ['/buchhaltung/konten'] },
+                    { label: 'Budget', disabled: true, icon: 'pi pi-fw pi-calculator', routerLink: ['/buchhaltung/budget']},
                     { label: 'Journal', disabled: true, icon: 'pi pi-fw pi-money-bill', routerLink: ['/buchhaltung/journal']},
                     { label: 'Auswertung', disabled: true, icon: 'pi pi-fw pi-percentage', routerLink: ['/buchhaltung/kto-auswertung']},
                 ]

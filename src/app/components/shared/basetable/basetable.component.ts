@@ -57,6 +57,8 @@ export class BaseTableComponent implements OnInit, OnDestroy {
   @Input() formatFunction: ((field: string, value: string | number | boolean | null) => string | number | boolean | null) | undefined;
   @Input() tableToolbar?: TableToolbar[] = []
   @Input() localStorage = 'basetable'
+  @Input() diffCalcHight = 150;
+  @Input() editable = true;
 
   selectedRecord?: TableData;
   filteredRows = this.tableData;
@@ -77,7 +79,7 @@ export class BaseTableComponent implements OnInit, OnDestroy {
   private getHeight() { 
     const element = document.getElementById("main-container")
     if (element) {
-      this.objHeight$ = (element.scrollHeight - 100).toString() + 'px'; 
+      this.objHeight$ = (element.scrollHeight - this.diffCalcHight).toString() + 'px'; 
     }
   }
 

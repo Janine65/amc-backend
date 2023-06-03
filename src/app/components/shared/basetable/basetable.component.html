@@ -30,7 +30,7 @@
                 <div *ngIf="col.format === false && col.filter !== 'boolean' && col.filter !== 'date'">
                     {{data[col.field]}}</div>
             </td>
-            <td>
+            <td *ngIf="editable">
                 <button type="button" pButton pRipple icon="pi pi-file-edit" (click)="selectData(data)"></button>
             </td>
         </tr>

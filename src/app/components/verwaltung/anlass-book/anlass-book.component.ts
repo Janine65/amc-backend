@@ -234,7 +234,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
       this.renderer.selectRootElement('#punkte').focus();
   
     if (this.anlass.istkegeln) {
-      this.subFields.push(this.wurf1!.valueChanges.subscribe(() => this.inputWurf(1)));
+      this.subFields.push(this.wurf1.valueChanges.subscribe(() => this.inputWurf(1)));
       this.subFields.push(this.wurf2.valueChanges.subscribe(() => this.inputWurf(2)));
       this.subFields.push(this.wurf3.valueChanges.subscribe(() => this.inputWurf(3)));
       this.subFields.push(this.wurf4.valueChanges.subscribe(() => this.inputWurf(4)));

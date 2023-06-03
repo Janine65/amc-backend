@@ -15,6 +15,7 @@ import { JournalComponent } from './components/buchhaltung/journal/journal.compo
 import { KontenComponent } from './components/buchhaltung/konten/konten.component';
 import { GeschaeftsjahrComponent } from './components/buchhaltung/geschaeftsjahr/geschaeftsjahr.component';
 import { KtoAuswertungComponent } from './components/buchhaltung/kto-auswertung/kto-auswertung.component';
+import { BudgetComponent } from './components/buchhaltung/budget/budget.component';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import { KtoAuswertungComponent } from './components/buchhaltung/kto-auswertung/
             { path: 'journal', component: JournalComponent, canActivate: [AuthGuard], data: { role: 'revisor' } },
             { path: 'konten', component: KontenComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
             { path: 'geschaeftsjahr', component: GeschaeftsjahrComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
+            { path: 'budget', component: BudgetComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
             { path: 'kto-auswertung', component: KtoAuswertungComponent, canActivate: [AuthGuard], data: { role: 'revisor' } },
           ]
         },
