@@ -39,7 +39,7 @@ async function getAllAttachment(req, res) {
 	if (req.query.journalid != null) {
 		Receipt.findAll(
 			{
-				logging: console.log,
+				logging: console.debug,
 				where: { 
 					[Op.and]: [
 						{jahr: req.query.jahr}, 
@@ -73,7 +73,7 @@ async function getAllAttachment(req, res) {
 	} else {
 		Receipt.findAll(
 			{
-				logging: console.log,
+				logging: console.debug,
 				where: { jahr: req.query.jahr },
 				attributes: {
 					include: [[Sequelize.fn('COUNT', Sequelize.col('receipt2journal.journalid')), 'cntjournal']]
@@ -135,8 +135,27 @@ async function getAttachment(req, res) {
 }
 
 async function getOneData(req, res) {
-	Journal.findByPk(req.param.id)
-		.then(data => res.json(data))
+	Journal.findByPk(req.query.id,
+		{
+			attributes: [
+				'id', 'date', 'memo', 'journalno', 'amount', 'status',
+				[Sequelize.fn("COUNT", Sequelize.col("journal2receipt.receiptid")), "receipts"]
+			],
+			include: [
+				{ model: Account, as: 'fromAccount', required: true, attributes: ['id', 'order', 'name'] },
+				{ model: Account, as: 'toAccount', required: true, attributes: ['id', 'order', 'name'] },
+				{ model: JournalReceipt, as: 'journal2receipt', required: false, attributes: [] }
+			],
+			group: ['journal.id', 'journal.date', 'journal.memo', 'journal.journalno',
+				'journal.amount', 'journal.status',
+				'fromAccount.id', 'fromAccount.order', 'fromAccount.name',
+				'toAccount.id', 'toAccount.order', 'toAccount.name'
+			]
+		}
+	)
+		.then(data => {
+			res.json(data);
+		})
 		.catch((e) => console.error(e));
 }
 

@@ -1,3 +1,4 @@
+const { Sequelize } = require("sequelize");
 let db = require("../db");
 const { Budget, Account } = require("../db")
 
@@ -54,5 +55,22 @@ module.exports = {
 			.catch((e) => console.error(e));
 	},
 
+	copyYear: async function (req, res) {
+		const yearFrom = req.query.from
+		const yearTo = req.query.to
+
+		await Budget.destroy({where: {year: yearTo}})
+		const sqlquery = 'INSERT INTO "budget" ("year", "account", "amount", "memo") SELECT ' + yearTo + ', account, amount, memo from "budget" where "year" = ?'
+		const result = await global.sequelize.query(sqlquery,
+			{
+				replacements: [yearFrom],
+				type: Sequelize.QueryTypes.INSERT,
+				plain: false,
+				logging: console.debug,
+				raw: false
+			}
+		)
+		res.json(result)
+	}
 
 };

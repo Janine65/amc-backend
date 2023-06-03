@@ -53,5 +53,6 @@ router.post('/budget/data', authorize(), budgetService.addData);
 router.put('/budget/data', authorize(), budgetService.updateData);
 router.delete('/budget/data', authorize(), budgetService.removeData);
 router.get('/budget/getOne', authorize(), budgetService.getOneData);
+router.put('/budget/copyyear', authorize(), budgetService.copyYear);
 
 module.exports = router;

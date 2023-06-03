@@ -416,7 +416,7 @@ module.exports = {
             sheet.getCell('H' + row).alignment = { vertical: "top", wrapText: true };
             let linkAdress = ""
             await Receipt.findAll( {
-                logging: console.log,
+                logging: console.debug,
                 include: [
                     { model: JournalReceipt, as: 'receipt2journal', required: true, attributes: [], where: {'journalid': element.id} }
                 ],
@@ -1535,7 +1535,7 @@ function writeArray(sheet, arData, firstRow, fBudget = false, fBudgetVergleich =
  */
 async function fillTemplate(sheet, id, syear) {
     const sqlstring = "select m.* from meisterschaft as m join anlaesse as a on m.eventid = a.id and year(a.datum) = " + syear + " where m.mitgliedid = " + id + " order by m.id"
-    const data = await Sequelize.query(sqlstring, { type: QueryTypes.SELECT, logging: console.log, raw: false, model: Meisterschaft } )
+    const data = await Sequelize.query(sqlstring, { type: QueryTypes.SELECT, logging: console.debug, raw: false, model: Meisterschaft } )
 
     if (data != undefined && data.length > 0) {
         let cols = sheet.getColumn('K');
