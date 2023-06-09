@@ -57,7 +57,7 @@ app.post('/upload', function (req, res) {
     keepExtensions: true,
     uploadDir: global.uploads,
     filename: function (name, ext, part, form) {
-      const { originalFilename, mimetype} = part;
+      const originalFilename = part;
       return originalFilename;
     },
      });

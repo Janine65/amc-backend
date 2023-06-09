@@ -89,7 +89,7 @@ async function getAllAttachment(req, res) {
 					const pathname = global.documents + req.query.jahr + '/';
 					try {
 						fs.copyFileSync(pathname + rec.receipt, global.uploads + rec.receipt);
-						rec.receipt = global.public + rec.receipt
+						rec.receipt = global.uploads + rec.receipt
 					} catch (ex) {
 						console.log(pathname + rec.receipt + ': File not found');
 						rec.receipt = 'File not found: ' + rec.receipt
@@ -123,7 +123,7 @@ async function getAttachment(req, res) {
 				console.log(pathname + rec.receipt);
 				try {
 					fs.copyFileSync(pathname + rec.receipt, global.uploads + rec.receipt);
-					rec.receipt = global.public + rec.receipt
+					rec.receipt = global.uploads + rec.receipt
 				} catch (ex) {
 					rec.receipt = 'File not found: ' + rec.receipt
 				}

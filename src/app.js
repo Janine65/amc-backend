@@ -114,7 +114,7 @@ window.onload = async () => {
     try {
       const result = await auth0.handleRedirectCallback();
 
-      if (result.appState && result.appState.targetUrl) {
+      if (result.appState?.targetUrl) {
         showContentFromUrl(result.appState.targetUrl);
       }
 
