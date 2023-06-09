@@ -39,7 +39,7 @@ export class AttachementListComponent {
     ];
 
     if (config.data.type == 'one' && this.journalid) {
-      this.backendService.getAttachment(this.journalid)
+      this.backendService.getAttachment(this.journalid, this.jahr)
         .subscribe(list => {
           this.lstReceipts = list;
         });

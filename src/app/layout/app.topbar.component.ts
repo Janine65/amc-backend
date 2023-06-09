@@ -32,8 +32,8 @@ export class AppTopBarComponent implements OnInit {
             {
                 label: 'Ausloggen',
                 icon: 'pi pi-sign-out',
-                command: () => {
-                    this.loggoutUser();
+                command: async () => {
+                    await this.loggoutUser();
                 }
             },
             {
@@ -64,9 +64,9 @@ export class AppTopBarComponent implements OnInit {
         }
     }
 
-    loggoutUser() {
+    async loggoutUser() {
         if (this.isLoggedIn()) {
-            this.accountService.logout();
+            await this.accountService.logout();
             this.user = undefined;
             this.messages.add({ detail: 'Du bist ausgelogged!', summary: 'Ausgelogged', severity: 'info', closable: true, sticky: false })
         }

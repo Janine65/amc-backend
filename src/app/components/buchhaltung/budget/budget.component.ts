@@ -58,6 +58,9 @@ export class BudgetComponent {
           rec.acc_order = rec.acc?.order
         })
         this.loading = false;
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Fehler', detail: err.message });
       }
     })
   }
@@ -74,11 +77,21 @@ export class BudgetComponent {
         this.backendService.copyBudget(this.selJahr, nextYear).subscribe(
           { complete: () => {
             this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Kopiervorgang abgeschlossen' })
+          },
+          error: (err) => {
+            this.messageService.add({ severity: 'error', summary: 'Fehler', detail: err.message });
           }}
         )
         }
     });      
 
+  }
+
+  rowIsEditing(data:Budget) : boolean {
+    if (this.clonedlstBudget[data.id!])
+      return true;
+    else
+      return false;
   }
 
   chgAcc(budget: Budget) {
@@ -95,7 +108,6 @@ export class BudgetComponent {
   }
 
   onRowEditSave(budget: Budget) {
-    this.addRow = false
     budget.account = budget.acc_id
     let sub
     if (budget.id === 0)
@@ -105,6 +117,7 @@ export class BudgetComponent {
 
     sub.subscribe({
         next: (rec) => {
+          this.addRow = false
           delete this.clonedlstBudget[budget.id!];
           const ind: Budget | undefined = this.lstBudget.find(rec => rec.id == budget.id)
           if (ind) {
@@ -117,6 +130,9 @@ export class BudgetComponent {
             }
           }
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'budget is updated' });
+        },
+        error: (err) => {
+          this.messageService.add({ severity: 'error', summary: 'Fehler', detail: err.message });
         }
       })
   }
@@ -126,21 +142,28 @@ export class BudgetComponent {
       next: () => {
         delete this.clonedlstBudget[budget.id!];
         const ind = this.lstBudget.findIndex(rec => rec.id == budget.id)
-        delete this.lstBudget[ind]
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'budget is updated' });
-      }
+        this.lstBudget.splice(ind, 1)
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'budget is deleted' });
+      },
+      error: (err) => {
+        this.messageService.add({ severity: 'error', summary: 'Fehler', detail: err.message });
+    }
     })
   }
 
   onRowEditCancel(budget: Budget, index: number) {
-    this.lstBudget[index] = this.clonedlstBudget[budget.id!];
+    if (budget.id === 0) {
+      this.lstBudget.splice(index, 1)
+    } else {
+      this.lstBudget[index] = this.clonedlstBudget[budget.id!];
+    }
     delete this.clonedlstBudget[budget.id!];
     this.addRow = false
   }
 
   onAddNewRow(){
     this.lstBudget.unshift({id: 0, acc_id: null, acc_name: null, acc_order: null, amount: 0, memo: '', year: this.selJahr});
-    this.onRowEditInit(this.lstBudget[this.lstBudget.length-1]);
+    this.clonedlstBudget[0] = { ...this.lstBudget[this.lstBudget.length-1] };
     this.addRow = true
   }
 }

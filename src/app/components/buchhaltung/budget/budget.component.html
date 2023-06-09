@@ -19,15 +19,15 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-data let-editing="editing" let-ri="rowIndex">
-            <tr [pEditableRow]="data" [pEditableRowDisabled]="!editing && !addRow">
+            <tr [pEditableRow]="data" [pEditableRowDisabled]="rowIsEditing(data)">
                 <td>
                     {{ data.acc_order }}
                 </td>
                 <td [pEditableColumn]="data.acc_id" pEditableColumnField="acc_id">
-                    <div *ngIf="!editing && !addRow">
+                    <div *ngIf="!rowIsEditing(data)">
                         {{ data.acc_name }}
                     </div>
-                    <p-cellEditor *ngIf="editing || addRow">
+                    <p-cellEditor *ngIf="rowIsEditing(data)">
                         <ng-template pTemplate="input">
                             <p-dropdown [options]="lstAccounts" [(ngModel)]="data.acc_id" optionLabel="name"
                                 optionValue="id" [required]="true" (onChange)="chgAcc(data)"></p-dropdown>
@@ -38,10 +38,10 @@
                     </p-cellEditor>
                 </td>
                 <td [pEditableColumn]="data.amount" pEditableColumnField="amount">
-                    <div *ngIf="!editing && !addRow">
+                    <div *ngIf="!rowIsEditing(data)">
                         {{ data.amount }}
                     </div>
-                    <p-cellEditor *ngIf="editing || addRow">
+                    <p-cellEditor *ngIf="rowIsEditing(data)">
                         <ng-template pTemplate="input">
                             <p-inputNumber [(ngModel)]="data.amount" [required]="true"></p-inputNumber>
                         </ng-template>
@@ -51,10 +51,10 @@
                     </p-cellEditor>
                 </td>
                 <td [pEditableColumn]="data.memo" pEditableColumnField="memo">
-                    <div *ngIf="!editing && !addRow">
+                    <div *ngIf="!rowIsEditing(data)">
                         {{ data.memo }}
                     </div>
-                    <p-cellEditor *ngIf="editing || addRow">
+                    <p-cellEditor *ngIf="rowIsEditing(data)">
                         <ng-template pTemplate="input">
                             <input pInputText [(ngModel)]="data.memo">
                         </ng-template>
@@ -64,16 +64,16 @@
                     </p-cellEditor>
                 </td>
                 <td>
-                    <button *ngIf="!editing && !addRow" pButton pRipple type="button" pInitEditableRow
+                    <button *ngIf="!rowIsEditing(data)" pButton pRipple type="button" pInitEditableRow
                         icon="pi pi-pencil" (click)="onRowEditInit(data)"
                         class="p-button-rounded p-button-text"></button>
-                    <button *ngIf="editing || addRow" pButton pRipple type="button" pSaveEditableRow
+                    <button *ngIf="rowIsEditing(data)" pButton pRipple type="button" pSaveEditableRow
                         icon="pi pi-check" (click)="onRowEditSave(data)"
                         class="p-button-rounded p-button-text p-button-success mr-2"></button>
-                    <button *ngIf="editing || addRow" pButton pRipple type="button" pCancelEditableRow
+                    <button *ngIf="rowIsEditing(data)" pButton pRipple type="button" pCancelEditableRow
                         icon="pi pi-times" (click)="onRowEditCancel(data, ri)"
                         class="p-button-rounded p-button-text p-button-danger"></button>
-                    <button *ngIf="!editing && !addRow" pButton pRipple type="button" icon="pi pi-times"
+                    <button *ngIf="!rowIsEditing(data)" pButton pRipple type="button" icon="pi pi-times"
                         (click)="onRowEditDelete(data)" class="p-button-rounded p-button-text"></button>
                 </td>
             </tr>

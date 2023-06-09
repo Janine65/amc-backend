@@ -1,55 +1,81 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { LayoutService } from '../service/app.layout.service';
 import { MenuItem } from 'primeng/api';
+import { AccountService } from '@service/account.service';
+import { User } from '@model/user';
+import { ReplaySubject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-menu',
-    templateUrl: './app.menu.component.html'
+    templateUrl: './app.menu.component.html',
+    providers: [AccountService]
 })
 
-export class AppMenuComponent implements OnInit {
+export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
 
     public model!: MenuItem[];
-    private username = 'nicht angemeldet';
+    private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
-    constructor(public layoutService: LayoutService) { }
+    constructor(public layoutService: LayoutService, private accountSevice: AccountService) {
+
+    }
+    ngOnChanges(): void {
+        console.log('ngOnChagnes')
+        this.refreshMenu(this.accountSevice.userValue)
+    }
+    ngOnDestroy(): void {
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
+    }
 
     ngOnInit() {
-        
+        this.refreshMenu(this.accountSevice.userValue);
+    }
+
+    refreshMenu(user: User | undefined) {
         this.model = [
             {
                 label: '',
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
                 ]
-            },
-            {
-                label: 'Verwaltung',
-                items: [
-                    { label: 'Adressen', icon: 'pi pi-fw pi-id-card', routerLink: ['/verwaltung/adressen'] },
-                    { label: 'Anlässe', icon: 'pi pi-fw pi-calendar', routerLink: ['/verwaltung/anlaesse'] },
-                    { label: 'Parameters', icon: 'pi pi-fw pi-bookmark', routerLink: ['/verwaltung/parameter'] },
-                ]
-            },
-            {
-                label: 'Auswertungen',
-                items: [
-                    { label: 'Meisterschaft', icon: 'pi pi-fw pi-map', routerLink: ['/auswertung/meisterschaft'] },
-                    { label: 'Auswertungen', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/auswertung/auswertung']},
-                ]
-            },
-            {
-                label: 'Buchhaltung',
-                items: [
-                    { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-book', routerLink: ['/buchhaltung/geschaeftsjahr'] },
-                    { label: 'Konten', icon: 'pi pi-fw pi-bitcoin', routerLink: ['/buchhaltung/konten'] },
-                    { label: 'Budget', disabled: true, icon: 'pi pi-fw pi-calculator', routerLink: ['/buchhaltung/budget']},
-                    { label: 'Journal', disabled: true, icon: 'pi pi-fw pi-money-bill', routerLink: ['/buchhaltung/journal']},
-                    { label: 'Auswertung', disabled: true, icon: 'pi pi-fw pi-percentage', routerLink: ['/buchhaltung/kto-auswertung']},
-                ]
-            },
+            }];
 
-        ];
+        if (user) {
+            if (user.role === 'user' || user.role === 'admin') {
+                this.model.push(
+                    {
+                        label: 'Verwaltung',
+                        items: [
+                            { label: 'Adressen', icon: 'pi pi-fw pi-id-card', routerLink: ['/verwaltung/adressen'] },
+                            { label: 'Anlässe', icon: 'pi pi-fw pi-calendar', routerLink: ['/verwaltung/anlaesse'] },
+                            user.role === 'admin' ? { label: 'Parameters', icon: 'pi pi-fw pi-bookmark', routerLink: ['/verwaltung/parameter'] } : {},
+                        ]
+                    },
+                    {
+                        label: 'Auswertungen',
+                        items: [
+                            { label: 'Meisterschaft', icon: 'pi pi-fw pi-map', routerLink: ['/auswertung/meisterschaft'] },
+                            { label: 'Auswertungen', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/auswertung/auswertung'] },
+                        ]
+                    }
+                )
+            }
+            if (user.role === 'revisor' || user.role === 'admin') {
+                this.model.push(
+                    {
+                        label: 'Buchhaltung',
+                        items: [
+                            { label: 'Journal', icon: 'pi pi-fw pi-money-bill', routerLink: ['/buchhaltung/journal'] },
+                            { label: 'Auswertung', icon: 'pi pi-fw pi-percentage', routerLink: ['/buchhaltung/kto-auswertung'] },
+                            user.role === 'admin' ? { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-book', routerLink: ['/buchhaltung/geschaeftsjahr'] } : {},
+                            user.role === 'admin' ? { label: 'Budget', disabled: true, icon: 'pi pi-fw pi-calculator', routerLink: ['/buchhaltung/budget'] } : {},
+                            user.role === 'admin' ? { label: 'Konten', icon: 'pi pi-fw pi-bitcoin', routerLink: ['/buchhaltung/konten'] } : {},
+                        ]
+                    }
+                )
+            }
+        }
     }
 
 }

@@ -75,7 +75,7 @@ export class Anlass extends TableData {
     public longname?: StringEmpty;
     public status?: NumberEmpty;
     public vorjahr?: StringEmpty;
-    public linkedEvent?: {vorjahr?: StringEmpty} | undefined;
+    public linkedEvent?: {vorjahr?: StringEmpty};
 
     constructor() {
       super();
@@ -94,7 +94,7 @@ export class Meisterschaft extends TableData {
     public zusatz?: NumberEmpty;
     public streichresultat?: NumberEmpty;
     public total_kegel?: NumberEmpty;
-    public teilnehmer?: {id?: NumberEmpty; fullname?: StringEmpty} | undefined
+    public teilnehmer?: {id?: NumberEmpty; fullname?: StringEmpty};
 
     constructor() {
       super();
@@ -199,7 +199,7 @@ export class MeisterschaftAuswertung {
     public datum?: StringEmpty;
     public name?: StringEmpty;
     public gaeste?: NumberEmpty;
-    public meisterschafts?:{teilnehmer?: NumberEmpty} | undefined;
+    public meisterschafts?:{teilnehmer?: NumberEmpty};
 
     constructor() {
       return 

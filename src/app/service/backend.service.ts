@@ -291,8 +291,8 @@ export class BackendService {
     return this.http.get<Journal>(apiURL, {headers: this.header});
 
   }
-  getAttachment(id: number) : Observable<Receipt[]> {
-    const apiURL = environment.apiUrl + '/journal/journal/getAtt?id=' + id;
+  getAttachment(id: number, jahr: number) : Observable<Receipt[]> {
+    const apiURL = environment.apiUrl + '/journal/journal/getAtt?id=' + id + '&jahr=' + jahr;
     return this.http.get<Receipt[]>(apiURL, {headers: this.header});
 
   }

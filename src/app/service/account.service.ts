@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '@environments/environment';
@@ -11,7 +11,6 @@ import { User } from '@app/models';
 @Injectable({ providedIn: 'root' })
 export class AccountService {
     private userSubject?: BehaviorSubject<User>;
-    public user?: Observable<User>;
     private apiUrl: string;
 
     constructor(
@@ -21,7 +20,6 @@ export class AccountService {
         const user = localStorage.getItem('user')
         if (user) {
             this.userSubject = new BehaviorSubject<User>(JSON.parse(user));
-            this.user = this.userSubject.asObservable();
         }
         this.apiUrl = environment.apiUrl
         console.log(this.apiUrl)
@@ -31,14 +29,17 @@ export class AccountService {
         return (this.userSubject ? this.userSubject.value : new User());
     }
 
+    isLogged(): Observable<boolean> {
+        
+        return of(this.userSubject && this.userValue.id ? true : false)
+    }
+
     login(email: string, password: string) {
         return this.http.post<User>(`${this.apiUrl}/users/authenticate`, { email, password })
             .pipe(map(user => {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(user));
-                this.userSubject = new BehaviorSubject<User>(user);
-                this.user = this.userSubject?.asObservable();
-
+                this.userSubject?.next(user);
                 return user;
             }));
     }
@@ -46,9 +47,9 @@ export class AccountService {
     async logout() {
         // remove user from local storage and set current user to null
         localStorage.removeItem('user');
-        this.userSubject = undefined;
+        this.userSubject?.next(new User());
         await this.router.navigate(['/']);
-        this.user = undefined;
+        window.location.reload();
     }
 
     register(user: User) {
