@@ -50,7 +50,7 @@ app.use(function (req, res, next) {
 });
 
 // fileupload router
-app.post('/upload', function (req, res) {
+app.post('/upload', function (req, res, next) {
   const form = formidable({ 
     multiples: true,
     maxFileSize: 500 * 1024 * 1024,

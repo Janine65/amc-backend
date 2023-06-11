@@ -56,11 +56,15 @@ async function getAllAttachment(req, res) {
 			}
 		)
 			.then(data => {
+				const pathname = global.documents + req.query.jahr + '/';
+				try {
+					fs.readdirSync(global.uploads + 'receipt/');					
+				} catch (error) {
+					fs.mkdirSync(global.uploads + 'receipt/')
+				}
 				data.forEach(rec => {
-					const pathname = global.documents + req.query.jahr + '/';
 					try {
 						fs.copyFileSync(pathname + rec.receipt, global.uploads + rec.receipt);
-						rec.receipt = global.public + rec.receipt
 					} catch (ex) {
 						console.log(pathname + rec.receipt + ': File not found');
 						rec.receipt = 'File not found: ' + rec.receipt
@@ -85,16 +89,22 @@ async function getAllAttachment(req, res) {
 			}
 		)
 			.then(data => {
-				data.forEach(rec => {
-					const pathname = global.documents + req.query.jahr + '/';
+				const pathname = global.documents + req.query.jahr + '/';
+				try {
+					fs.readdirSync(global.uploads + 'receipt/');					
+				} catch (error) {
+					fs.mkdirSync(global.uploads + 'receipt/')
+				}
+				for (let index = 0; index < data.length; index++) {
+					const rec = data[index];
 					try {
 						fs.copyFileSync(pathname + rec.receipt, global.uploads + rec.receipt);
-						rec.receipt = global.uploads + rec.receipt
 					} catch (ex) {
 						console.log(pathname + rec.receipt + ': File not found');
 						rec.receipt = 'File not found: ' + rec.receipt
 					}
-				});
+					
+				}
 				res.json(data);
 			})
 			.catch((e) => console.error(e));
@@ -118,12 +128,16 @@ async function getAttachment(req, res) {
 		}
 	)
 		.then(data => {
+			const pathname = global.documents + req.query.jahr + '/';
+			try {
+				fs.readdirSync(global.uploads + 'receipt/');					
+			} catch (error) {
+				fs.mkdirSync(global.uploads + 'receipt/')
+			}
 			data.forEach(rec => {
-				const pathname = global.documents + req.query.jahr + '/';
 				console.log(pathname + rec.receipt);
 				try {
 					fs.copyFileSync(pathname + rec.receipt, global.uploads + rec.receipt);
-					rec.receipt = global.uploads + rec.receipt
 				} catch (ex) {
 					rec.receipt = 'File not found: ' + rec.receipt
 				}
@@ -133,6 +147,22 @@ async function getAttachment(req, res) {
 		.catch((e) => console.error(e));
 
 }
+async function uploadAtt(req, res, next) {
+	const filename = req.query.receipt;
+    const options = {
+        root: global.uploads
+    };
+	res.sendFile(filename, options, function (err) {
+        if (err) {
+            next(err);
+        } else {
+            console.log('Sent:', filename);
+        }
+	})
+
+
+}
+
 
 async function getOneData(req, res) {
 	Journal.findByPk(req.query.id,
@@ -440,7 +470,7 @@ async function importJournal(req, res) {
 
 	let Nr, Datum, Soll, Haben, Buchungstext, Betrag, idSoll, idHaben, Meldung, fSoll, fHaben;
 
-	worksheet.eachRow(async function (row, rowNumber) {
+	worksheet.eachRow( function (row, rowNumber) {
 		if (rowNumber > 1) {
 			Nr = row.getCell(cNr).value;
 			Datum = row.getCell(cDatum).value;
@@ -523,5 +553,6 @@ module.exports = {
 	delReceipt: delReceipt,
 	delAttachment: delAttachment,
 	getAccData: getAccData,
-	importJournal: importJournal
+	importJournal: importJournal,
+	uploadAtt: uploadAtt
 };

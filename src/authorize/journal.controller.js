@@ -46,6 +46,7 @@ router.post('/journal/delReceipt', authorize(), journalService.delReceipt);
 router.delete('/journal/delAtt', authorize(), journalService.delAttachment);
 router.get('/journal/getAtt', authorize(), journalService.getAttachment);
 router.get('/journal/getAllAtt', authorize(), journalService.getAllAttachment);
+router.get('/journal/uploadAtt', authorize(), journalService.uploadAtt);
 router.get('/journal/export', authorize(), exportService.writeJournal);
 
 router.get('/budget/data', authorize(), budgetService.getData);
