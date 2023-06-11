@@ -296,13 +296,33 @@ export class BackendService {
     return this.http.get<Receipt[]>(apiURL, {headers: this.header});
 
   }
-  getAllAttachment(jahr: number, id?: number) : Observable<Receipt[]> {
+  getAllAttachment(jahr: number, journalid?: number) : Observable<Receipt[]> {
     let apiURL = environment.apiUrl + '/journal/journal/getAllAtt?jahr=' + jahr;
-    if (id)
-      apiURL += '&id=' + id;
+    if (journalid)
+      apiURL += '&journalid=' + journalid;
     return this.http.get<Receipt[]>(apiURL, {headers: this.header});
+  }
+
+  uploadAtt(reciept: string): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/uploadAtt?receipt=' + reciept;
+    // return apiURL;
+    return this.http.get(apiURL, {headers: this.header, responseType: 'blob'});
 
   }
+  delAtt(journalid: number, receipt: Receipt): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/delAtt';
+    const body = {'journalid': journalid, 'receiptid': receipt.id}
+    return this.http.delete(apiURL, {headers: this.header, body: JSON.stringify(body)});
+
+  }
+
+  addAtt(journalid: number, receipt: Receipt[]): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/addR2J?journalid=' + journalid;
+    const body = JSON.stringify(receipt);
+    return this.http.put(apiURL, body, {headers: this.header});
+
+  }
+
   getBudget(jahr: number): Observable<Budget[]> {
     const apiURL = environment.apiUrl + '/journal/budget/data?jahr=' + jahr;
     return this.http.get<Budget[]>(apiURL, {headers: this.header});

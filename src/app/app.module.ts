@@ -74,6 +74,8 @@ import { KtoAuswertungComponent } from './components/buchhaltung/kto-auswertung/
 import { BudgetComponent } from './components/buchhaltung/budget/budget.component';
 import { AttachementListComponent } from './components/buchhaltung/attachement-list/attachement-list.component';
 import { AttachementShowComponent } from './components/buchhaltung/attachement-show/attachement-show.component';
+import { SafePipe } from './components/shared/safe.pipe';
+import { AttachmentAddComponent } from './components/buchhaltung/attachment-add/attachment-add.component';
 
 @NgModule({
   declarations: [
@@ -110,6 +112,8 @@ import { AttachementShowComponent } from './components/buchhaltung/attachement-s
     BudgetComponent,
     AttachementListComponent,
     AttachementShowComponent,
+    SafePipe,
+    AttachmentAddComponent,
   ],
   imports: [
     BrowserModule,

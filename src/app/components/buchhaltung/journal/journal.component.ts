@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, OnInit } from '@angular/core';
-import { Account, Journal, JournalReceipt, ParamData, Receipt } from '@model/datatypes';
+import { Account, Journal, ParamData } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, from } from 'rxjs';
 import { AttachementListComponent } from '../attachement-list/attachement-list.component';
+import { AttachmentAddComponent } from '../attachment-add/attachment-add.component';
 
 
 @Component({
@@ -85,6 +86,14 @@ export class JournalComponent implements OnInit {
         isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.showAtt, roleNeeded: 'admin'
       },
       {
+        label: "Anhänge hinzufügen", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-pdf",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.addAtt, roleNeeded: 'admin'
+      },
+      {
+        label: "Neuen Anhang", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-pdf",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.addNewAtt, roleNeeded: 'admin'
+      },
+      {
         label: "Alle Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-pdf",
         isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.showAllAtt, roleNeeded: 'admin'
       },
@@ -124,6 +133,47 @@ export class JournalComponent implements OnInit {
     this.readJournal();
   }
 
+  addNewAtt = (selRec?: Journal) => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisRef: JournalComponent = this;
+    thisRef.messageService.clear();
+    if (selRec)
+      thisRef.dialogRef = thisRef.dialogService.open(AttachmentAddComponent, {
+        data: {
+          journalid: selRec.id,
+        },
+        header: 'Neuen Anhang zu Journaleintrag ' + selRec.memo + ' hinzufügen',
+        width: '90%',
+        height: '90%',
+        resizable: true,
+        modal: true,
+        maximizable: true,
+        draggable: true
+      });
+  }
+
+  addAtt = (selRec?: Journal) => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisRef: JournalComponent = this;
+    thisRef.messageService.clear();
+    if (selRec)
+      thisRef.dialogRef = thisRef.dialogService.open(AttachementListComponent, {
+        data: {
+          journalid: selRec.id,
+          jahr: thisRef.selJahr,
+          type: 'add'
+        },
+        header: 'Anhänge zu Journaleintrag ' + selRec.memo + ' hinzufügen',
+        width: '90%',
+        height: '90%',
+        resizable: true,
+        modal: true,
+        maximizable: true,
+        draggable: true
+      });
+  }
+
+
   showAtt = (selRec?: Journal) => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const thisRef: JournalComponent = this;
@@ -140,7 +190,7 @@ export class JournalComponent implements OnInit {
           jahr: this.selJahr,
           type: 'one'
         },
-        header: 'Attachments anzeigen für den Journaleintrag ' + selRec.memo,
+        header: 'Anhänge anzeigen für den Journaleintrag ' + selRec.memo,
         width: '90%',
         height: '90%',
         resizable: true,
@@ -165,7 +215,7 @@ export class JournalComponent implements OnInit {
           jahr: this.selJahr,
           type: 'all'
         },
-        header: 'Attachments anzeigen für das Jahr ' + this.jahr,
+        header: 'Alle Anhänge anzeigen für das Jahr ' + this.jahr,
         width: '90%',
         height: '90%',
         resizable: true,
