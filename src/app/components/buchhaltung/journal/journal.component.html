@@ -16,14 +16,14 @@
                 <div class="field col-12 md:col-2">
                     <label for="fromAcc" class="mr-2 ">Konto Soll</label>
                     <p-dropdown name="fromAcc" [options]="lstAccounts" [(ngModel)]="selJournal.from_account"
-                        optionLabel="name" optionValue="id"
+                        optionLabel="name" optionValue="id" [style]="{width: '100%'}"
                         class="text-base text-color surface-overlay appearance-none outline-none w-full"
                         [required]="true" [disabled]="!editMode && !addMode"></p-dropdown>
                 </div>
                 <div class="field col-12 md:col-2">
                     <label for="toAcc" class="mr-2 ">Konto Haben</label>
                     <p-dropdown name="toAcc" [options]="lstAccounts" [(ngModel)]="selJournal.to_account"
-                        optionLabel="name" optionValue="id"
+                        optionLabel="name" optionValue="id" [style]="{width: '100%'}"
                         class="text-base text-color surface-overlay appearance-none outline-none w-full"
                         [required]="true" [disabled]="!editMode && !addMode"></p-dropdown>
                 </div>

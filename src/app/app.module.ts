@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 import { SidebarModule } from 'primeng/sidebar';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -154,6 +155,7 @@ import { AttachmentAddComponent } from './components/buchhaltung/attachment-add/
     ReactiveFormsModule,
     InputTextareaModule,
     ChartModule,
+    AutoCompleteModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

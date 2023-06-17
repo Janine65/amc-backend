@@ -45,8 +45,10 @@
                 <div class="formgroup-inline">
                     <div class="field pb-2">
                         <label for="teilnehmer" class="pr-2">Teilnehmer wählen</label>
-                        <input type="text" pInputText formControlName="teilnehmername" id="teilnehmername" />
-                        <i class="pi pi-times" (click)="clearTeilnehmer()"></i>
+                        <p-autoComplete #teilnehmername id="teilnehmername" formControlName="teilnehmername" 
+                            [suggestions]="lstFilteredAdressen" (completeMethod)="searchTeilnehmer($event)"
+                            field="fullname" [dropdown]="true" (onSelect)="selectTielnehmer($event)" [forceSelection]="true" >
+                        </p-autoComplete>
                     </div>
                     <div class="field pb-2 col-12 md:col-12">
                         <label for="punkte" class="pr-2">Punkte</label>

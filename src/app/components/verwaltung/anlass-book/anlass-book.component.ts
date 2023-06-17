@@ -1,13 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { AfterViewInit, Component, OnInit, Renderer2 } from '@angular/core';
+import {  AfterContentInit, AfterViewInit, Component, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Adresse, Anlass, Meisterschaft } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { MessageService } from 'primeng/api';
+import { AutoComplete } from 'primeng/autocomplete';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription, from } from 'rxjs';
+
+interface AutoCompleteCompleteEvent {
+  originalEvent: Event;
+  query: string;
+}
 
 @Component({
   selector: 'app-anlass-book',
@@ -63,6 +69,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
   }
   fMeisterschaft = false;
   lstAdressen: Adresse[] = []
+  lstFilteredAdressen: Adresse[] = []
   selAdresse?: number;
   subs!: Subscription;
   dialogRef!: DynamicDialogRef;
@@ -72,8 +79,10 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
   public getScreenHeight: any;
   public objHeight$ = '300px';
 
+  @ViewChild('teilnehmername') private teilnehmerObject!: AutoComplete;
+
   fgMeisterschaft = new FormGroup({
-    teilnehmername: new FormControl('', Validators.required),
+    teilnehmername: new FormControl<Adresse | null>({ value: null, disabled: false }, Validators.required),
     punkte: new FormControl<number | null>({ value: null, disabled: true }, [Validators.required,Validators.min(0),Validators.max(200)]),
     wurf1: new FormControl<number | null>({ value: null, disabled: true }, [Validators.min(0),Validators.max(9)]),
     wurf2: new FormControl<number | null>({ value: null, disabled: true }, [Validators.min(0),Validators.max(9)]),
@@ -104,17 +113,13 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
         console.log(this.lstAdressen);
       });
   }
-
-  ngOnInit(): void {
-    this.getHeight();    
+  ngAfterViewInit(): void {
+    setTimeout(() =>
+    this.teilnehmerObject.focusInput(), 500);
   }
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-
-      this.renderer.selectRootElement('#teilnehmername').focus();
-      this.subFields.push(this.fgMeisterschaft.get("teilnehmername")!.valueChanges.subscribe(() => this.searchTeilnehmer()));
-    }, 1000);
+  ngOnInit(): void {
+    this.getHeight();
   }
 
   back() {
@@ -134,7 +139,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
   private getHeight() { 
     const element = document.getElementById("table-box")
     if (element) {
-      this.objHeight$ = (element.scrollHeight - 150).toString() + 'px'; 
+      this.objHeight$ = (element.scrollHeight - 250).toString() + 'px'; 
     }
   }
 
@@ -189,16 +194,20 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     }
   }
 
-  clearTeilnehmer() {
+  clearMeisterschaft() {
     this.unsubscribeList();
-    this.teilnehmername.setValue('');
-
-    this.subFields.push(this.fgMeisterschaft.get("teilnehmername")!.valueChanges.subscribe(() => this.searchTeilnehmer()));
     this.newMeisterschaft = {};
     this.patchFields();
 
-    this.teilnehmername.enable();
-    this.renderer.selectRootElement('#teilnehmername').focus();
+    this.setDisabled(true)
+  }
+
+  clearTeilnehmer() {
+    this.clearMeisterschaft();
+    this.lstFilteredAdressen = []
+
+    this.teilnehmername.reset(null)
+    this.teilnehmerObject.focusInput();
     this.setDisabled(true)
   }
 
@@ -222,12 +231,18 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
   selTeilnehmerTable() {
     this.newMeisterschaft = this.selMeisterschaft;
     this.unsubscribeList();
-    this.teilnehmername.setValue(this.selMeisterschaft.teilnehmer?.fullname!);
+    this.lstFilteredAdressen = []
+    const adr = this.lstAdressen.find(rec => rec.fullname == this.selMeisterschaft.teilnehmer?.fullname!);
+    if (!adr) {
+      this.messageService.add({closable: true, sticky: false, detail: "Fehler aufgetreten!", severity: "error", summary: "selTeilnehmerTable"});
+      return;
+    }
+    this.teilnehmername.setValue(adr);
+    this.teilnehmerObject.focusInput();
     this.patchFields()
     this.fgMeisterschaft.markAsUntouched({onlySelf: false});
 
     this.setDisabled(false)
-    this.teilnehmername.disable();
     if (this.anlass.istkegeln)
       this.renderer.selectRootElement('#wurf1').focus();
     else
@@ -243,12 +258,48 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
 
   }
 
-  searchTeilnehmer() {
-    const lstString = this.fgMeisterschaft.get('teilnehmername')?.value!.split(" ");
+  selectTielnehmer(adr: Adresse) {
+    this.clearMeisterschaft();
+    this.teilnehmername.setValue(adr);
+    this.lstFilteredAdressen = []
+    this.unsubscribeList();
+    this.setDisabled(false)
+    if (this.anlass.istkegeln)
+      this.renderer.selectRootElement('#wurf1').focus();
+    else
+      this.renderer.selectRootElement('#punkte').focus();
+
+    this.patchFields();
+    this.fgMeisterschaft.markAsUntouched({onlySelf: false});
+
+    if (this.newMeisterschaft.eventid == undefined) {
+      this.newMeisterschaft.eventid = this.anlass.id
+      this.newMeisterschaft.mitgliedid = adr.id;
+      this.newMeisterschaft.punkte = this.anlass.punkte;
+      this.newMeisterschaft.teilnehmer = {id : adr.id!, fullname : adr.fullname!};
+      this.newMeisterschaft.zusatz = this.anlass.istkegeln && !this.anlass.nachkegeln ? 5 : undefined;
+      this.patchFields();
+      this.fgMeisterschaft.markAllAsTouched();
+    }
+
+    if (this.anlass.istkegeln) {
+      this.subFields.push(this.wurf1.valueChanges.subscribe(() => this.inputWurf(1)));
+      this.subFields.push(this.wurf2.valueChanges.subscribe(() => this.inputWurf(2)));
+      this.subFields.push(this.wurf3.valueChanges.subscribe(() => this.inputWurf(3)));
+      this.subFields.push(this.wurf4.valueChanges.subscribe(() => this.inputWurf(4)));
+      this.subFields.push(this.wurf5.valueChanges.subscribe(() => this.inputWurf(5)));
+    }
+  }
+
+  searchTeilnehmer(event: AutoCompleteCompleteEvent) {
+    this.clearMeisterschaft();
+
+    this.lstFilteredAdressen = []
+    const lstString = event.query.split(" ");
     if (!lstString || lstString.length == 0)
       return;
 
-    const lstFindName = this.lstAdressen.filter(adr => {
+    this.lstFilteredAdressen = this.lstAdressen.filter(adr => {
       let match = false
       lstString.forEach(text => {
         const regex = new RegExp(text, "i")
@@ -259,40 +310,9 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
       })
       return match
     })
-    if (lstFindName.length == 1) {
-      // focus auf nächstes Objekt setzen
-      this.unsubscribeList();
-      this.setDisabled(false)
-      if (this.anlass.istkegeln)
-        this.renderer.selectRootElement('#wurf1').focus();
-      else
-        this.renderer.selectRootElement('#punkte').focus();
-      this.teilnehmername.setValue(lstFindName[0].vorname + ' ' + lstFindName[0].name);
-      // check if neuen Eintrag oder bestehender
-      this.newMeisterschaft = this.lstMeisterschaft.find(meist => meist.teilnehmer?.id === lstFindName[0].id!) || new Meisterschaft();
-      this.patchFields();
-      this.fgMeisterschaft.markAsUntouched({onlySelf: false});
-
-      if (this.newMeisterschaft.eventid == undefined) {
-        this.newMeisterschaft.eventid = this.anlass.id
-        this.newMeisterschaft.mitgliedid = lstFindName[0].id;
-        this.newMeisterschaft.punkte = this.anlass.punkte;
-        this.newMeisterschaft.teilnehmer = {id : lstFindName[0].id!, fullname : lstFindName[0].fullname!};
-        this.patchFields();
-        this.fgMeisterschaft.markAllAsTouched();
-      }
-
-      if (this.anlass.istkegeln) {
-        this.subFields.push(this.wurf1.valueChanges.subscribe(() => this.inputWurf(1)));
-        this.subFields.push(this.wurf2.valueChanges.subscribe(() => this.inputWurf(2)));
-        this.subFields.push(this.wurf3.valueChanges.subscribe(() => this.inputWurf(3)));
-        this.subFields.push(this.wurf4.valueChanges.subscribe(() => this.inputWurf(4)));
-        this.subFields.push(this.wurf5.valueChanges.subscribe(() => this.inputWurf(5)));
-      }
-
-      this.teilnehmername.disable();
+    if (this.lstFilteredAdressen.length == 1) {
+      this.selectTielnehmer(this.lstFilteredAdressen[0]);
     }
-    return
   }
 
   unsubscribeList() {
