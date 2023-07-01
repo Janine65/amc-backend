@@ -13,14 +13,14 @@ async function getData(req, res) {
 			],
 			where: Sequelize.where(sequelize.fn('YEAR', Sequelize.col('date')), req.query.jahr),
 			include: [
-				{ model: Account, as: 'fromAccount', required: true, attributes: ['id', 'order', 'name'] },
-				{ model: Account, as: 'toAccount', required: true, attributes: ['id', 'order', 'name'] },
+				{ model: Account, as: 'fromAccount', required: true, attributes: ['id', 'order', 'name', 'longname'] },
+				{ model: Account, as: 'toAccount', required: true, attributes: ['id', 'order', 'name', 'longname'] },
 				{ model: JournalReceipt, as: 'journal2receipt', required: false, attributes: [] }
 			],
 			group: ['journal.id', 'journal.date', 'journal.memo', 'journal.journalno',
 				'journal.amount', 'journal.status',
-				'fromAccount.id', 'fromAccount.order', 'fromAccount.name',
-				'toAccount.id', 'toAccount.order', 'toAccount.name'
+				'fromAccount.id', 'fromAccount.order', 'fromAccount.name', 'fromAccount.longname',
+				'toAccount.id', 'toAccount.order', 'toAccount.name', 'toAccount.longname'
 			],
 			order: [
 				['journalno', 'asc'],
@@ -40,9 +40,9 @@ async function getAllAttachment(req, res) {
 		Receipt.findAll(
 			{
 				logging: console.debug,
-				where: { 
+				where: {
 					[Op.and]: [
-						{jahr: req.query.jahr}, 
+						{ jahr: req.query.jahr },
 						Sequelize.literal("receipt.id not in (select receiptid from journal_receipt where journalid = " + req.query.journalid + ")")
 					]
 				},
@@ -52,13 +52,13 @@ async function getAllAttachment(req, res) {
 							Sequelize.literal("(SELECT COUNT(*) FROM journal_receipt as receipt2journal WHERE receiptid = receipt.id )"), 'cntjournal'
 						]
 					]
-				}				
+				}
 			}
 		)
 			.then(data => {
 				const pathname = global.documents + req.query.jahr + '/';
 				try {
-					fs.readdirSync(global.uploads + 'receipt/');					
+					fs.readdirSync(global.uploads + 'receipt/');
 				} catch (error) {
 					fs.mkdirSync(global.uploads + 'receipt/')
 				}
@@ -73,7 +73,7 @@ async function getAllAttachment(req, res) {
 				res.json(data);
 			})
 			.catch((e) => console.error(e));
-	
+
 	} else {
 		Receipt.findAll(
 			{
@@ -85,13 +85,13 @@ async function getAllAttachment(req, res) {
 				include: [
 					{ model: JournalReceipt, as: 'receipt2journal', required: false, attributes: [] }
 				],
-				group: ['id','receipt','bezeichnung','updatedAt','jahr','createdAt']
+				group: ['id', 'receipt', 'bezeichnung', 'updatedAt', 'jahr', 'createdAt']
 			}
 		)
 			.then(data => {
 				const pathname = global.documents + req.query.jahr + '/';
 				try {
-					fs.readdirSync(global.uploads + 'receipt/');					
+					fs.readdirSync(global.uploads + 'receipt/');
 				} catch (error) {
 					fs.mkdirSync(global.uploads + 'receipt/')
 				}
@@ -103,12 +103,12 @@ async function getAllAttachment(req, res) {
 						console.log(pathname + rec.receipt + ': File not found');
 						rec.receipt = 'File not found: ' + rec.receipt
 					}
-					
+
 				}
 				res.json(data);
 			})
 			.catch((e) => console.error(e));
-	
+
 	}
 
 
@@ -122,15 +122,15 @@ async function getAttachment(req, res) {
 				'id', 'receipt', 'bezeichnung'
 			],
 			include: [
-				{ model: JournalReceipt, as: 'receipt2journal', required: true, attributes: [], where: { 'journalid': req.query.id }}
-				
+				{ model: JournalReceipt, as: 'receipt2journal', required: true, attributes: [], where: { 'journalid': req.query.id } }
+
 			]
 		}
 	)
 		.then(data => {
 			const pathname = global.documents + req.query.jahr + '/';
 			try {
-				fs.readdirSync(global.uploads + 'receipt/');					
+				fs.readdirSync(global.uploads + 'receipt/');
 			} catch (error) {
 				fs.mkdirSync(global.uploads + 'receipt/')
 			}
@@ -149,15 +149,15 @@ async function getAttachment(req, res) {
 }
 async function uploadAtt(req, res, next) {
 	const filename = req.query.receipt;
-    const options = {
-        root: global.uploads
-    };
+	const options = {
+		root: global.uploads
+	};
 	res.sendFile(filename, options, function (err) {
-        if (err) {
-            next(err);
-        } else {
-            console.log('Sent:', filename);
-        }
+		if (err) {
+			next(err);
+		} else {
+			console.log('Sent:', filename);
+		}
 	})
 
 
@@ -172,14 +172,14 @@ async function getOneData(req, res) {
 				[Sequelize.fn("COUNT", Sequelize.col("journal2receipt.receiptid")), "receipts"]
 			],
 			include: [
-				{ model: Account, as: 'fromAccount', required: true, attributes: ['id', 'order', 'name'] },
-				{ model: Account, as: 'toAccount', required: true, attributes: ['id', 'order', 'name'] },
+				{ model: Account, as: 'fromAccount', required: true, attributes: ['id', 'order', 'name', 'longname'] },
+				{ model: Account, as: 'toAccount', required: true, attributes: ['id', 'order', 'name', 'longname'] },
 				{ model: JournalReceipt, as: 'journal2receipt', required: false, attributes: [] }
 			],
 			group: ['journal.id', 'journal.date', 'journal.memo', 'journal.journalno',
 				'journal.amount', 'journal.status',
-				'fromAccount.id', 'fromAccount.order', 'fromAccount.name',
-				'toAccount.id', 'toAccount.order', 'toAccount.name'
+				'fromAccount.id', 'fromAccount.order', 'fromAccount.name', 'fromAccount.longname',
+				'toAccount.id', 'toAccount.order', 'toAccount.name', "toAccount.longname"
 			]
 		}
 	)
@@ -230,7 +230,7 @@ async function addReceipt(req, res) {
 	}
 
 	const listUploadFiles = data.uploadFiles.split(',')
-	let sJahr = req.query.jahr;
+	let sJahr = data.jahr;
 	const path = global.documents + sJahr + '/';
 	let payload = {
 		type: 'info',
@@ -298,6 +298,61 @@ async function delReceipt(req, res) {
 		.catch(err => { console.log(err); payload.type = 'error'; payload.message = 'Konnte nicht gefunden werden' })
 }
 
+async function addFiles2Journal(req, res) {
+	const data = JSON.parse(req.body);
+	const journalid = req.query.journalid
+	const jahr = req.query.jahr
+	const listUploadFiles = data.uploadFiles.split(',')
+	const path = global.documents + jahr + '/';
+
+	let payload = {
+		type: 'ok',
+		message: '',
+		data: []
+	}
+	if (listUploadFiles.length > 0) {
+		for await (const file of listUploadFiles) {
+			let filename = global.uploads + file;
+			if (fs.existsSync(filename)) {
+				let newReceipt = Receipt.build({ receipt: file, jahr: jahr, bezeichnung: file })
+				await newReceipt.save({ fields: ['receipt', 'jahr', 'bezeichnung'] })
+					.then(async (result) => {
+						let newFilename = 'receipt/journal-' + result.id + '.pdf'
+						result.receipt = newFilename
+						await result.save({ fields: ['receipt'] })
+							.then(result2 => {
+								fs.copyFileSync(filename, path + newFilename);
+								fs.chmod(path + newFilename, '0640', err => {
+									if (err) {
+										console.log(err)
+										payload.message += "Error while changing the mode of the file - " + err.message + "; "
+									}
+								});
+
+								let journal = JournalReceipt.build({ journalid: journalid, receiptid: result2.id });
+								journal.save()
+									.then(jResp => {
+										console.log(jResp)
+										payload.data.push(file);
+									})
+									.catch(err => { console.log(err); payload.message += "Error while saving journal_receipt;" })
+							})
+					})
+					.catch(e => {
+						console.log(e)
+						payload.message += "Error while saving new receipt " + file + "; "
+						payload.type = 'error'
+					})
+			} else {
+				payload.message += "Error while reading the file " + filename + "; ";
+				payload.type = 'error'
+			}
+		}
+
+	}
+	res.json(payload)
+}
+
 async function addReceipt2Journal(req, res) {
 	const data = JSON.parse(req.body);
 	const journalid = req.query.journalid
@@ -310,12 +365,12 @@ async function addReceipt2Journal(req, res) {
 
 	let journAdd = []
 	data.forEach(async (rec) => {
-		journAdd.push({'journalid': journalid, 'receiptid': rec.id})
+		journAdd.push({ 'journalid': journalid, 'receiptid': rec.id })
 	})
 
 	await JournalReceipt.bulkCreate(journAdd)
 		.then(rec => payload.data = rec)
-		.catch(err => {console.log(err); payload.type = 'error'; payload.message = 'Konnte nicht gelöscht werden'; res.json(err); });
+		.catch(err => { console.log(err); payload.type = 'error'; payload.message = 'Konnte nicht gelöscht werden'; res.json(err); });
 
 	res.json(payload);
 }
@@ -352,12 +407,12 @@ async function addAttachment(req, res) {
 									payload.message += "Error while changing the mode of the file - " + err.message + "; "
 								}
 							});
-							let journal = JournalReceipt.build({ journalid: data.id, receiptid: result2.id});
+							let journal = JournalReceipt.build({ journalid: data.id, receiptid: result2.id });
 							journal.save()
-							.then(jResp => {
-								console.log(jResp)
-							})
-							.catch(err => { console.log(err); payload.message += "Error while saving journal_receipt;"})
+								.then(jResp => {
+									console.log(jResp)
+								})
+								.catch(err => { console.log(err); payload.message += "Error while saving journal_receipt;" })
 						})
 				})
 				.catch(e => {
@@ -470,7 +525,7 @@ async function importJournal(req, res) {
 
 	let Nr, Datum, Soll, Haben, Buchungstext, Betrag, idSoll, idHaben, Meldung, fSoll, fHaben;
 
-	worksheet.eachRow( function (row, rowNumber) {
+	worksheet.eachRow(function (row, rowNumber) {
 		if (rowNumber > 1) {
 			Nr = row.getCell(cNr).value;
 			Datum = row.getCell(cDatum).value;
@@ -546,6 +601,7 @@ module.exports = {
 	addData: addData,
 	updateData: updateData,
 	getAllAttachment: getAllAttachment,
+	addFiles2Journal: addFiles2Journal,
 	addReceipt2Journal: addReceipt2Journal,
 	addAttachment: addAttachment,
 	addReceipt: addReceipt,

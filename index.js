@@ -10,6 +10,7 @@ const { Sequelize } = require('sequelize');
 const errorHandler = require('./src/authorize/error-handler')
 const { exit } = require('process');
 const formidable = require('formidable');
+const fs = require("fs")
 
 // environment variables
 if (process.env.NODE_ENV == undefined)
@@ -56,11 +57,11 @@ app.post('/upload', function (req, res, next) {
     maxFileSize: 500 * 1024 * 1024,
     keepExtensions: true,
     uploadDir: global.uploads,
-    filename: function (name, ext, part, form) {
-      const originalFilename = part;
-      return originalFilename;
-    },
-     });
+        // Use it to control newFilename.              
+        filename: (name, ext, part, form) => {
+          return part.originalFilename; // Will be joined with options.uploadDir.
+      }
+   });
 
   form.parse(req, (err, fields, files) => {
     if (err) {

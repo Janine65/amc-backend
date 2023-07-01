@@ -391,7 +391,13 @@ Account.init({
   name: DataTypes.STRING,
   level: DataTypes.INTEGER,
   order: DataTypes.INTEGER,
-  status: DataTypes.INTEGER
+  status: DataTypes.INTEGER,
+  longname: {
+    type: DataTypes.STRING,
+    set(value) {
+      throw new Error('Do not try to set the `fullname` value!');
+    }
+  }
 },
   {
     sequelize,
@@ -500,7 +506,7 @@ Budget.init({
   },
   year: DataTypes.INTEGER,
   memo: DataTypes.STRING,
-  amount: DataTypes.DECIMAL(7, 2)
+  amount: DataTypes.DECIMAL(7, 2),
 },
   {
     sequelize,

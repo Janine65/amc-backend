@@ -39,6 +39,7 @@ router.post('/journal/import', authorize(), journalService.importJournal);
 router.get('/journal/getAccData', authorize(), journalService.getAccData);
 router.put('/journal/addR2J', authorize(), journalService.addReceipt2Journal)
 router.post('/journal/addAtt', authorize(), journalService.addAttachment);
+router.post('/journal/bulkAtt', authorize(), journalService.addFiles2Journal);
 router.post('/journal/addReceipt', authorize(), journalService.addReceipt);
 router.put('/journal/updReceipt', authorize(), journalService.updReceipt);
 router.post('/journal/delReceipt', authorize(), journalService.delReceipt);
