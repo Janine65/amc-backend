@@ -305,7 +305,6 @@ export class BackendService {
 
   uploadAtt(reciept: string): Observable<any> {
     const apiURL = environment.apiUrl + '/journal/journal/uploadAtt?receipt=' + reciept;
-    // return apiURL;
     return this.http.get(apiURL, {headers: this.header, responseType: 'blob'});
 
   }
@@ -313,14 +312,24 @@ export class BackendService {
     const apiURL = environment.apiUrl + '/journal/journal/delAtt';
     const body = {'journalid': journalid, 'receiptid': receipt.id}
     return this.http.delete(apiURL, {headers: this.header, body: JSON.stringify(body)});
+  }
 
+  addReceipt(jahr: string, files: string): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/addReceipt';
+    const body = {jahr: jahr,  uploadFiles: files};
+    return this.http.post(apiURL, JSON.stringify(body), {headers: this.header});
+  }
+
+  bulkAddReceipt(jahr: string, journalid: number, files: string): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/bulkAtt?jahr=' + jahr + '&journalid=' + journalid;
+    const body = {uploadFiles: files};
+    return this.http.post(apiURL, JSON.stringify(body), {headers: this.header});
   }
 
   addAtt(journalid: number, receipt: Receipt[]): Observable<any> {
     const apiURL = environment.apiUrl + '/journal/journal/addR2J?journalid=' + journalid;
     const body = JSON.stringify(receipt);
     return this.http.put(apiURL, body, {headers: this.header});
-
   }
 
   getBudget(jahr: number): Observable<Budget[]> {

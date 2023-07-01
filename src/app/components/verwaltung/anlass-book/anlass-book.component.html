@@ -127,8 +127,11 @@
                 </div>
                 <div class="field col-12 md:col-12 md:mb-0">
                     <button pButton type="submit" label="Sichern" icon="pi pi-save"
-                        [disabled]="!fgMeisterschaft.valid && fgMeisterschaft.dirty"
+                        [disabled]="teilnehmername.value === null"
                         class="p-button-primary p-button-outlined" id="save" (click)="save()"></button>
+                        <button pButton type="reset" label="Reset" icon="pi pi-reset"
+                        [disabled]="teilnehmername.value === null"
+                        class="p-button-secondary p-button-outlined" id="reset" (click)="reset()"></button>
                 </div>
             </form>
         </div>

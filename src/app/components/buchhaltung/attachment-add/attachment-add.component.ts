@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Receipt } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -12,6 +13,7 @@ import { Subscription } from 'rxjs';
 export class AttachmentAddComponent {
 
   journalid = 0;
+  jahr = '';
   uploadFiles: File[] = [];
   uploadProgress: number | null = null;
   uploadSub?: Subscription;
@@ -23,23 +25,28 @@ export class AttachmentAddComponent {
     private messageService: MessageService,
   ) {
     this.journalid = config.data.journalid;
+    this.jahr = config.data.jahr;
   }
 
   prepareFiles(files: File[]) {
     this.uploadProgress = 0;
     for (const f of files) {
         this.backendService.uploadFiles(f)
-        .subscribe(response => {
-          if (response.body) {
-            const body = response.body;
-            if (body['status'] == 'ok') {
-              this.uploadProgress = 100;
-              const files = body.files;
-              if (files.file.originalFilename == f.name)
-                this.uploadFiles.push(f)
-            }
+        .subscribe({
+          next: (response) => {
+            if (response.body) {
+              const body = response.body;
+              if (body['status'] == 'ok') {
+                const files = body.files;
+                if (files.file.originalFilename == f.name)
+                  this.uploadFiles.push(f)
+              }
+            }  
+          },
+          complete: () => {
+            this.uploadProgress = 100;
           }
-      })
+        })
     }
   }
 
@@ -59,6 +66,13 @@ export class AttachmentAddComponent {
   }
 
   save() {
-    this.ref.close();
+    const files = this.uploadFiles.map((value: File) => value.name).join(',')
+    if (files.length > 0)
+      this.backendService.bulkAddReceipt(this.jahr, this.journalid, files).subscribe({
+        complete: () => {
+          this.ref.close()
+        }
+      })
+      this.ref.close()
   }
 }

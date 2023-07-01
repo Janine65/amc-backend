@@ -149,6 +149,7 @@ export class Clubmeister extends TableData {
     level?: NumberEmpty;
     order?: NumberEmpty;
     status?: NumberEmpty;
+    longname?: StringEmpty;
 
     constructor() {
       super();
@@ -201,7 +202,4 @@ export class MeisterschaftAuswertung {
     public gaeste?: NumberEmpty;
     public meisterschafts?:{teilnehmer?: NumberEmpty};
 
-    constructor() {
-      return 
-    }
 }

@@ -209,12 +209,13 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     this.teilnehmername.reset(null)
     this.teilnehmerObject.focusInput();
     this.setDisabled(true)
+
   }
 
   saveGaeste() {
     this.backendService.updAnlaesseData(this.anlass).subscribe({
       complete: () => {
-        this.messageService.add({ detail: 'Die Daten wurden gespeicher. ', sticky: true, closable: true, severity: 'info', summary: 'Gäste speichern' });
+        this.messageService.add({ detail: 'Die Daten wurden gespeicher. ', sticky: false, closable: true, severity: 'info', summary: 'Gäste speichern' });
       }
     })
   }
@@ -223,6 +224,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     this.backendService.delMeisterschaft(this.selMeisterschaft).subscribe({
       complete: () => {
         this.lstMeisterschaft.splice(this.lstMeisterschaft.indexOf(this.selMeisterschaft),1)
+        this.messageService.add({ detail: 'Der Eintrag wurde gelöscht. ', sticky: false, closable: true, severity: 'info', summary: 'Meisterschaft löschen' });
       }
     })
     this.clearTeilnehmer();
@@ -259,19 +261,12 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
   }
 
   selectTielnehmer(adr: Adresse) {
-    this.clearMeisterschaft();
-    this.teilnehmername.setValue(adr);
     this.lstFilteredAdressen = []
+    this.teilnehmername.setValue(adr);
     this.unsubscribeList();
     this.setDisabled(false)
-    if (this.anlass.istkegeln)
-      this.renderer.selectRootElement('#wurf1').focus();
-    else
-      this.renderer.selectRootElement('#punkte').focus();
 
-    this.patchFields();
-    this.fgMeisterschaft.markAsUntouched({onlySelf: false});
-
+    this.newMeisterschaft = this.lstMeisterschaft.find(rec => rec.mitgliedid == adr.id) || new Meisterschaft();
     if (this.newMeisterschaft.eventid == undefined) {
       this.newMeisterschaft.eventid = this.anlass.id
       this.newMeisterschaft.mitgliedid = adr.id;
@@ -280,7 +275,15 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
       this.newMeisterschaft.zusatz = this.anlass.istkegeln && !this.anlass.nachkegeln ? 5 : undefined;
       this.patchFields();
       this.fgMeisterschaft.markAllAsTouched();
+    } else {
+      this.patchFields();
+      this.fgMeisterschaft.markAsUntouched({onlySelf: false});  
     }
+
+    if (this.anlass.istkegeln)
+      this.renderer.selectRootElement('#wurf1').focus();
+    else
+      this.renderer.selectRootElement('#punkte').focus();
 
     if (this.anlass.istkegeln) {
       this.subFields.push(this.wurf1.valueChanges.subscribe(() => this.inputWurf(1)));
@@ -289,6 +292,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
       this.subFields.push(this.wurf4.valueChanges.subscribe(() => this.inputWurf(4)));
       this.subFields.push(this.wurf5.valueChanges.subscribe(() => this.inputWurf(5)));
     }
+
   }
 
   searchTeilnehmer(event: AutoCompleteCompleteEvent) {
@@ -344,7 +348,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     }
 
     if (this.fgMeisterschaft.untouched) {
-      this.messageService.add({ detail: 'Die Daten wurden nicht geändert. Es ist kein Speichern notwendig', sticky: true, closable: true, severity: 'info', summary: 'Meisterschaft speichern' });
+      this.messageService.add({ detail: 'Die Daten wurden nicht geändert. Es ist kein Speichern notwendig', sticky: false, closable: true, severity: 'info', summary: 'Meisterschaft speichern' });
       return;
 
     }
@@ -371,5 +375,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
       }
     )
   }
-
+  reset() {
+    this.clearTeilnehmer();
+  }
 }
