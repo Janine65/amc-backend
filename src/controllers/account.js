@@ -3,7 +3,7 @@ const { Op, Sequelize } = require("sequelize");
 
 module.exports = {
 	getAllData: async function (req, res) {
-		arAccount = await Account.findAll(
+		const arAccount = await Account.findAll(
 			{
 				where: { "order": { [Op.gt]: 10 } },
 				order: [["level", "ASC"], ["order", "ASC"]]
