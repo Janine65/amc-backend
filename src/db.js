@@ -392,12 +392,7 @@ Account.init({
   level: DataTypes.INTEGER,
   order: DataTypes.INTEGER,
   status: DataTypes.INTEGER,
-  longname: {
-    type: DataTypes.STRING,
-    set(value) {
-      throw new Error('Do not try to set the `fullname` value!');
-    }
-  }
+  longname: DataTypes.STRING
 },
   {
     sequelize,

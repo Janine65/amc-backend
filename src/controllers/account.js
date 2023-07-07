@@ -75,7 +75,7 @@ module.exports = {
 	},
 
 	getOneDataByOrder: function (req, res) {
-		Account.count({ where: { "order": req.query.order } })
+		Account.findOne({ where: { "order": req.query.order } })
 			.then(data => res.json(data))
 			.catch((e) => console.error(e));
 	},
@@ -237,7 +237,6 @@ module.exports = {
 							} else {
 								record.diff = arData[ind2].budget - arData[ind2].amount;
 							}
-							//arData.splice(ind2, 1, record);
 						}
 
 						for (let ind2 = 0; ind2 < arBudget.length; ind2++) {
@@ -255,15 +254,18 @@ module.exports = {
 							arData.push(record);
 						}
 
-						arData.sort((a, b) => {
+						// Jetzt alle Datanesätze von inaktiven Konton ohne Betrag entfernen
+						const arFiltered = arData.filter(rec => rec.status === 1 || rec.amount !== 0 || rec.budget !== 0)
+
+						arFiltered.sort((a, b) => {
 							if (a.level < b.level)
 								return -1
 							if (a.level == b.level && a.order <= b.order)
 								return -1
 							return 1
 						});
-						console.log(arData);
-						res.json(arData);
+						console.log(arFiltered);
+						res.json(arFiltered);
 					})
 					.catch((e) => console.error(e));
 			})
