@@ -7,3 +7,15 @@
         [editable]="false">
     </app-basetable>
 </div>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{width: '50vw'}">
+    <ng-template pTemplate="header">
+        <span class="text-xl font-bold">Attachmenet {{selAtt.receipt}}: Bezeichnung ändern</span>
+    </ng-template>
+    <input pInputText type="text" [(ngModel)]="selAtt.bezeichnung" class="p-inputtext-lg" style="width: 100%;"/>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-save" (click)="editAttBez()" label="Speichern" styleClass="p-button-text"></p-button>
+        <p-button icon="pi pi-check" (click)="visible = false" label="Abbrechen" styleClass="p-button-text"></p-button>
+    </ng-template>
+
+</p-dialog>

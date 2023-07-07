@@ -96,12 +96,12 @@ export class JournalComponent implements OnInit {
         isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.addAtt, roleNeeded: 'admin'
       },
       {
-        label: "Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-upload",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.addNewAtt, roleNeeded: 'admin'
-      },
-      {
         label: "Alle Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-list",
         isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.showAllAtt, roleNeeded: 'admin'
+      },
+      {
+        label: "Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-upload",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.addNewAtt, roleNeeded: 'admin'
       },
     ];
     this.readJournal();
@@ -282,7 +282,7 @@ export class JournalComponent implements OnInit {
         jahr: this.selJahr,
         type: 'all'
       },
-      header: 'Alle Anhänge anzeigen für das Jahr ' + this.jahr,
+      header: 'Alle Anhänge anzeigen für das Jahr ' + this.selJahr,
       width: '90%',
       height: '90%',
       resizable: true,

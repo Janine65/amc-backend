@@ -1,1 +1,143 @@
-<p>kto-auswertung works!</p>
+<div class="card">
+    <p-toolbar>
+        <div>
+            <label class="mr-1">Jahr wählen</label>
+            <p-dropdown [options]="selJahre" [(ngModel)]="selJahr" (onChange)="chgJahr()"></p-dropdown>
+        </div>
+        <p-button icon="pi pi-export" (click)="export()" label="Exportieren"></p-button>
+    </p-toolbar>
+    <p-tabView>
+        <p-tabPanel header="Bilanz">
+            <p-splitter [panelSizes]="[50, 50]" styleClass="mb-1">
+                <ng-template pTemplate>
+                    <div class="card" style="width: 100%;">
+                        <h2>Aktiven</h2>
+                        <div class="grid">
+                            <div class="col-6 font-bold">Konto
+                            </div>
+                            <div class="col-6 font-bold" style="text-align: right;">Betrag
+                            </div>
+                            <p-dataView #aktiv [value]="lstAktivNodes" class="border-none" layout="list">
+                                <ng-template let-data pTemplate="listItem">
+                                    <div class="col-1">
+                                        <div *ngIf="data.order > 0" [class]="data.$css">{{ data.order }}</div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div [class]="data.$css">{{ data.name }}</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div style="text-align: right;" [class]="data.$css">{{ data.amount | number:
+                                            '1.2-2' }}</div>
+                                    </div>
+                                </ng-template>
+                            </p-dataView>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate=>
+                    <div class="card" style="width: 100%;">
+                        <h2>Passiven</h2>
+                        <div class="grid">
+                            <div class="col-6 font-bold">Konto
+                            </div>
+                            <div class="col-6 font-bold" style="text-align: right;">Betrag
+                            </div>
+                            <p-dataView #passiv [value]="lstPassivNodes" class="border-none" layout="list">
+                                <ng-template let-data pTemplate="listItem">
+                                    <div class="col-1">
+                                        <div *ngIf="data.order > 0" [class]="data.$css">{{ data.order }}</div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div [class]="data.$css">{{ data.name }}</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div style="text-align: right;" [class]="data.$css">{{ data.amount | number:
+                                            '1.2-2' }}</div>
+                                    </div>
+                                </ng-template>
+                            </p-dataView>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-splitter>
+        </p-tabPanel>
+        <p-tabPanel header="Erfolgsrechnung">
+            <p-splitter [panelSizes]="[50, 50]" styleClass="mb-1">
+                <ng-template pTemplate>
+                    <div class="card" style="width: 100%;">
+                        <h2>Aufwand</h2>
+                        <div class="grid">
+                            <div class="col-6 font-bold">Konto
+                            </div>
+                            <div class="col-2 font-bold" style="text-align: right;">Betrag
+                            </div>
+                            <div class="col-2 font-bold" style="text-align: right;">Budget
+                            </div>
+                            <div class="col-2 font-bold" style="text-align: right;">Diff
+                            </div>
+                            <p-dataView #aufwand [value]="lstAufwandNodes" class="border-none" layout="list">
+                                <ng-template let-data pTemplate="listItem">
+                                    <div class="col-1">
+                                        <div *ngIf="data.order > 0" [class]="data.$css">{{ data.order }}</div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div [class]="data.$css">{{ data.name }}</div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div style="text-align: right;" [class]="data.$css">{{ data.amount | number:
+                                            '1.2-2' }}</div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div style="text-align: right;" [class]="data.$css">{{ data.budget | number:
+                                            '1.2-2' }}</div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div style="text-align: right;" [class]="data.$css">{{ data.diff | number:
+                                            '1.2-2' }}</div>
+                                    </div>
+                                </ng-template>
+                            </p-dataView>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate=>
+                    <div class="card" style="width: 100%;">
+                        <h2>Ertrag</h2>
+                        <div class="grid">
+                            <div class="col-6 font-bold">Konto
+                            </div>
+                            <div class="col-2 font-bold" style="text-align: right;">Betrag
+                            </div>
+                            <div class="col-2 font-bold" style="text-align: right;">Budget
+                            </div>
+                            <div class="col-2 font-bold" style="text-align: right;">Diff
+                            </div>
+                            <p-dataView #ertrag [value]="lstErfolgNodes" class="border-none" layout="list">
+                                <ng-template let-data pTemplate="listItem">
+                                    <div class="col-1">
+                                        <div *ngIf="data.order > 0" [class]="data.$css">{{ data.order }}</div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div [class]="data.$css">{{ data.name }}</div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div style="text-align: right;" [class]="data.$css">{{ data.amount | number:
+                                            '1.2-2' }}</div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div style="text-align: right;" [class]="data.$css">{{ data.budget | number:
+                                            '1.2-2' }}</div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div style="text-align: right;" [class]="data.$css">{{ data.diff | number:
+                                            '1.2-2' }}</div>
+                                    </div>
+                                </ng-template>
+                            </p-dataView>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-splitter>
+        </p-tabPanel>
+    </p-tabView>
+</div>

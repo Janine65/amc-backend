@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Receipt } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';

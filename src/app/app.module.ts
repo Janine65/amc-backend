@@ -37,6 +37,7 @@ import { SplitterModule } from 'primeng/splitter';
 import { NgxEditorModule } from 'ngx-editor';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ChartModule } from 'primeng/chart';
+import { TabViewModule } from 'primeng/tabview';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -156,6 +157,8 @@ import { AttachmentAddComponent } from './components/buchhaltung/attachment-add/
     InputTextareaModule,
     ChartModule,
     AutoCompleteModule,
+    TabViewModule,
+    DataViewModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

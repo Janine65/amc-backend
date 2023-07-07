@@ -203,3 +203,15 @@ export class MeisterschaftAuswertung {
     public meisterschafts?:{teilnehmer?: NumberEmpty};
 
 }
+
+export class AccountAuswertung {
+  $css = '';
+  amount = 0
+  budget = 0;
+  diff = 0;
+  id = 0;
+  level = 0;
+  name = '';
+  order = 0;
+  status = 0;
+}

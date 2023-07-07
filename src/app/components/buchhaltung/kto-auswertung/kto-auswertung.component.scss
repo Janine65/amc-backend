@@ -1,0 +1,51 @@
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .alert-minus {
+    color: red;
+    font-weight: bold;
+  
+  }
+  
+  .alert-plus {
+    color: green;
+    font-weight: bold;
+  
+  }
+  .alert-total {
+    font-weight: bold;
+  
+  }
+
+  .inactive {
+    font-style: italic;
+    color: gray;
+  }
+
+  ::ng-deep .p-datatable .p-datatable-header {
+      background-color: transparent !important;
+  }
+  
+  ::ng-deep .p-datatable>.p-datatable-wrapper {
+      border: 1px solid #007ad9;
+      border-width: 1px 1px 0 1px;
+  }
+  
+  ::ng-deep .p-toolbar {
+      background-color: transparent !important;
+  }
+
+  ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    background-color: #007ad9;
+    color: white;
+
+  }
+  ::ng-deep .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    background-color: transparent;
+    color: black;
+  }
+  

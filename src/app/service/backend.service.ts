@@ -320,6 +320,18 @@ export class BackendService {
     return this.http.post(apiURL, JSON.stringify(body), {headers: this.header});
   }
 
+  updReceipt(receipt: Receipt): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/updReceipt';
+    const body = receipt;
+    return this.http.put(apiURL, JSON.stringify(body), {headers: this.header});
+  }
+
+  delReceipt(receipt: Receipt): Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/delReceipt';
+    const body = receipt
+    return this.http.delete(apiURL, {headers: this.header, body: JSON.stringify(body)});
+  }
+
   bulkAddReceipt(jahr: string, journalid: number, files: string): Observable<any> {
     const apiURL = environment.apiUrl + '/journal/journal/bulkAtt?jahr=' + jahr + '&journalid=' + journalid;
     const body = {uploadFiles: files};
@@ -354,5 +366,16 @@ export class BackendService {
   copyBudget(yearFrom: number, yearTo: number): Observable<any> {
     const apiURL = environment.apiUrl + '/journal/budget/copyyear?from='+yearFrom+'&to='+yearTo;
     return this.http.put(apiURL, {headers: this.header});
+  }
+
+  showAccData(jahr: number) : Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/account/showData?jahr='+jahr;
+    return this.http.get(apiURL, {headers: this.header});
+
+  }
+
+  exportAccData(jahr: number) : Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/fiscalyear/export?jahr='+jahr;
+    return this.http.get(apiURL, {headers: this.header});
   }
 }

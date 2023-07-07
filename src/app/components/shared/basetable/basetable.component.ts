@@ -11,7 +11,6 @@ export class TableOptions {
   public sorting?: string;
   public filtering = false;
   public filter?: string;
-
 }
 
 export class TableData {
