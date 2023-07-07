@@ -77,31 +77,31 @@ export class JournalComponent implements OnInit {
     this.toolbar = [
       {
         label: "Edit", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-file-edit",
-        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editJournal, roleNeeded: 'admin'
+        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editJournal, roleNeeded: 'admin', isEditFunc: true
       },
       {
         label: "Delete", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-minus",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delJournal, roleNeeded: 'admin'
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delJournal, roleNeeded: 'admin', isEditFunc: false
       },
       {
         label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
-        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addJournal, roleNeeded: 'admin'
+        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addJournal, roleNeeded: 'admin', isEditFunc: false
       },
       {
         label: "Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-list",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.showAtt, roleNeeded: 'admin'
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.showAtt, roleNeeded: '', isEditFunc: false
       },
       {
         label: "Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.addAtt, roleNeeded: 'admin'
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.addAtt, roleNeeded: 'admin', isEditFunc: false
       },
       {
         label: "Alle Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-list",
-        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.showAllAtt, roleNeeded: 'admin'
+        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.showAllAtt, roleNeeded: 'admin', isEditFunc: false
       },
       {
         label: "Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-upload",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.addNewAtt, roleNeeded: 'admin'
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.addNewAtt, roleNeeded: 'admin', isEditFunc: false
       },
     ];
     this.readJournal();
@@ -342,6 +342,7 @@ export class JournalComponent implements OnInit {
 
   }
   save() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let sub: Observable<any>;
 
     this.selJournal.from_account = this.selJournal.fromAccount?.id;

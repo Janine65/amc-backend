@@ -82,27 +82,27 @@ export class AdressenComponent implements OnInit {
     this.toolbar = [
       {
         label: "Email", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-send",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.emailSelected, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.emailSelected, roleNeeded: '', isEditFunc: false
       },
       {
         label: "Edit", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-file-edit",
-        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editAdresse, roleNeeded: ''
+        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editAdresse, roleNeeded: '', isEditFunc: true
       },
       {
         label: "Delete", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-minus",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delAdresse, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delAdresse, roleNeeded: '', isEditFunc: false
       },
       {
         label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
-        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAdress, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAdress, roleNeeded: '', isEditFunc: false
       },
       {
         label: "Export", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-excel",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportAdressen, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportAdressen, roleNeeded: '', isEditFunc: false
       },
       {
         label: "Billing", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-excel",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.billAdressen, roleNeeded: 'admin'
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.billAdressen, roleNeeded: 'admin', isEditFunc: false
       },
     ];
 

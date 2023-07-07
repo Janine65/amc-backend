@@ -50,35 +50,35 @@ export class AnlaesseComponent implements OnInit{
     this.toolbar = [
       {
         label: "Punkte vergeben", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-file-excel",
-        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.doAnlass, roleNeeded: ''
+        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.doAnlass, roleNeeded: '', isEditFunc: false
       },
       {
         label: "Datenblatt", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-excel",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportOne, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportOne, roleNeeded: '', isEditFunc: false
       },
       {
         label: "leer", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-excel",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportAllEmpty, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportAllEmpty, roleNeeded: '', isEditFunc: false
       },
       {
         label: "voll", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-excel",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportAllFull, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportAllFull, roleNeeded: '', isEditFunc: false
       },
       {
         label: "Edit", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-edit",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editAnlass, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editAnlass, roleNeeded: '', isEditFunc: true
       },
       {
         label: "Copy", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-copy",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.copyAnlass, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.copyAnlass, roleNeeded: '', isEditFunc: false
       },
       {
         label: "Delete", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-minus",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delAnlass, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delAnlass, roleNeeded: '', isEditFunc: false
       },
       {
         label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
-        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAnlass, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAnlass, roleNeeded: '', isEditFunc: false
       },
     ];
 

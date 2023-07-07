@@ -40,19 +40,19 @@ export class GeschaeftsjahrComponent implements OnInit {
     this.toolbar = [
       {
         label: "Edit", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-file-edit",
-        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editFiscalyear, roleNeeded: ''
+        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editFiscalyear, roleNeeded: '', isEditFunc: true
       },
       {
         label: "Delete", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-minus",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delFiscalyear, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delFiscalyear, roleNeeded: '', isEditFunc: false
       },
       {
         label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
-        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addFiscalyear, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addFiscalyear, roleNeeded: '', isEditFunc: false
       },
       {
         label: "Export", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-excel",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.exportFiscalyear, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.exportFiscalyear, roleNeeded: '', isEditFunc: false
       },
     ];
 
@@ -117,7 +117,7 @@ export class GeschaeftsjahrComponent implements OnInit {
     this.addMode = true;
   }
 
-  exportFiscalyear = (selRec?: Fiscalyear) => {
+  exportFiscalyear = () => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const thisRef: GeschaeftsjahrComponent = this;
     console.log("Export Fiscalyear");

@@ -41,15 +41,15 @@ export class KontenComponent implements OnInit {
     this.toolbar = [
       {
         label: "Edit", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-file-edit",
-        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editAccount, roleNeeded: ''
+        isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editAccount, roleNeeded: '', isEditFunc: true
       },
       {
         label: "Delete", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-minus",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delAccount, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delAccount, roleNeeded: '', isEditFunc: false
       },
       {
         label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
-        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAccount, roleNeeded: ''
+        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAccount, roleNeeded: '', isEditFunc: false
       },
     ];
 

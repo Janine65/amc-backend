@@ -43,10 +43,10 @@ export class AttachementListComponent {
     ];
 
     this.toolbar = [
-      { label: 'Schliessen', btnClass: 'p-button-secondary p-button-outlined', clickfnc: this.back, disabledNoSelection: false, disabledWhenEmpty: false, icon: '', isDefault: false, roleNeeded: '' },
-      { label: 'Anzeigen', btnClass: 'p-button-primary p-button-outlined', clickfnc: this.show, disabledNoSelection: true, disabledWhenEmpty: true, icon: '', isDefault: true, roleNeeded: 'admin' },
-      { label: 'Ändern', btnClass: 'p-button-secondary p-button-outlined', clickfnc: this.edit, disabledNoSelection: true, disabledWhenEmpty: true, icon: '', isDefault: false, roleNeeded: 'admin' },
-      { label: 'Löschen', btnClass: 'p-button-secondary p-button-outlined p-button-danger', clickfnc: this.del, disabledNoSelection: true, disabledWhenEmpty: true, icon: '', isDefault: false, roleNeeded: 'admin' }
+      { label: 'Schliessen', btnClass: 'p-button-secondary p-button-outlined', clickfnc: this.back, disabledNoSelection: false, disabledWhenEmpty: false, icon: '', isDefault: false, roleNeeded: '' , isEditFunc: false},
+      { label: 'Anzeigen', btnClass: 'p-button-primary p-button-outlined', clickfnc: this.show, disabledNoSelection: true, disabledWhenEmpty: true, icon: '', isDefault: true, roleNeeded: '' , isEditFunc: false },
+      { label: 'Ändern', btnClass: 'p-button-secondary p-button-outlined', clickfnc: this.edit, disabledNoSelection: true, disabledWhenEmpty: true, icon: '', isDefault: false, roleNeeded: 'admin' , isEditFunc: true },
+      { label: 'Löschen', btnClass: 'p-button-secondary p-button-outlined p-button-danger', clickfnc: this.del, disabledNoSelection: true, disabledWhenEmpty: true, icon: '', isDefault: false, roleNeeded: 'admin' , isEditFunc: false }
     ];
 
     if (this.configType == 'one' && this.journalid) {
@@ -62,7 +62,7 @@ export class AttachementListComponent {
         });
       if (this.configType == 'add' && this.journalid) {
         this.toolbar.splice(3, 1);
-        this.toolbar.push({ label: 'Hinzufügen', btnClass: 'p-button-secondary p-button-outlined', clickfnc: this.addAtt, disabledNoSelection: true, disabledWhenEmpty: true, icon: '', isDefault: false, roleNeeded: 'admin' })
+        this.toolbar.push({ label: 'Hinzufügen', btnClass: 'p-button-secondary p-button-outlined', clickfnc: this.addAtt, disabledNoSelection: true, disabledWhenEmpty: true, icon: '', isDefault: false, roleNeeded: 'admin' , isEditFunc: false })
       }
     }
   }

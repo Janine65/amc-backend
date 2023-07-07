@@ -41,11 +41,11 @@ export class ListComponent implements OnInit {
 
     this.toolbar = [
       { label: "Ändern", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-user-edit", 
-        isDefault: true, disabledWhenEmpty: true,  disabledNoSelection: true, clickfnc: this.editUser, roleNeeded: '' },
+        isDefault: true, disabledWhenEmpty: true,  disabledNoSelection: true, clickfnc: this.editUser, roleNeeded: '', isEditFunc: true },
       { label: "Register", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-user-plus", 
-        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addUser, roleNeeded: '' },
+        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addUser, roleNeeded: '', isEditFunc: false },
       { label: "Löschen", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-user-minus", 
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delUser, roleNeeded: '' },
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.delUser, roleNeeded: '', isEditFunc: false },
     ];
 
     this.accountService.getAll()

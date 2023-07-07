@@ -28,10 +28,11 @@ export class TableToolbar {
   public disabledWhenEmpty: boolean;
   public disabledNoSelection: boolean;
   public roleNeeded: string;
+  public isEditFunc: boolean;
   public clickfnc: ((selRec?: TableData, lstData?: TableData[]) => void);
   constructor(label: string, btnClass: string, icon: string, isDefault: boolean, 
       disabledWhenEmpty: boolean, disabledNoSelection: boolean, roleNeeded: string,
-      clickfnc: (selRec?: TableData | undefined, lstData?: TableData[] | undefined) => void) {
+      clickfnc: (selRec?: TableData | undefined, lstData?: TableData[] | undefined) => void, isEditFunc = false) {
     this.label = label;
     this.btnClass = btnClass;
     this.icon = icon;
@@ -40,6 +41,7 @@ export class TableToolbar {
     this.disabledWhenEmpty = disabledWhenEmpty;
     this.disabledNoSelection = disabledNoSelection;
     this.clickfnc = clickfnc;
+    this.isEditFunc = isEditFunc;
   }
 }
 
@@ -69,6 +71,8 @@ export class BaseTableComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getHeight();
+    if (!this.getEditFunc())
+      this.editable = false
   }
 
   ngOnDestroy() {
@@ -102,12 +106,23 @@ export class BaseTableComponent implements OnInit, OnDestroy {
     return retVal;
   }
 
+  getEditFunc() {
+    const funcEdit = this.tableToolbar?.find(entry => entry.isEditFunc)
+    if (funcEdit)
+      return funcEdit.clickfnc
+    
+      return false
+  }
+
   retDefaultFunc() {
     const funcDefault = this.tableToolbar?.find(entry => entry.isDefault)
-    if (funcDefault)
-      return funcDefault.clickfnc
-
-    return this.selectData
+    if (funcDefault) {
+      // check first the role
+      const ind = this.tableToolbar?.findIndex((value) => value.label == funcDefault.label)
+      if (ind && !this.isButtonDisabled(ind))
+        return funcDefault.clickfnc
+    }
+    return 
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -119,6 +134,14 @@ export class BaseTableComponent implements OnInit, OnDestroy {
     console.log('selectData: ', data);
     this.selectedRecord = data;
     const funcDefault = this.retDefaultFunc()
+    if (funcDefault && this.selectedRecord)
+      funcDefault(this.selectedRecord)
+  }
+
+  editData(data: TableData) {
+    console.log('editData: ', data);
+    this.selectedRecord = data;
+    const funcDefault = this.getEditFunc()
     if (funcDefault && this.selectedRecord)
       funcDefault(this.selectedRecord)
   }
