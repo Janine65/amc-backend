@@ -19,7 +19,7 @@
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-data let-columns="columns">
-        <tr [pSelectableRow]="data" (dblclick)="retDefaultFunc()!(data)">
+        <tr [pSelectableRow]="data" (dblclick)="selectData(data)">
             <td *ngFor="let col of columns">
                 <div *ngIf="col.format === false && col.filter === 'boolean'">
                     <i *ngIf="data[col.field]" class="pi pi-check mr-4 p-text-secondary"></i>

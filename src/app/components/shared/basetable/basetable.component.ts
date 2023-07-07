@@ -107,9 +107,10 @@ export class BaseTableComponent implements OnInit, OnDestroy {
   }
 
   getEditFunc() {
-    const funcEdit = this.tableToolbar?.find(entry => entry.isEditFunc)
-    if (funcEdit)
-      return funcEdit.clickfnc
+    const funcEdit = this.tableToolbar?.findIndex(entry => entry.isEditFunc)
+    if (funcEdit != undefined && funcEdit > -1)
+      if (this.isButtonAllowed(funcEdit))
+        return this.tableToolbar?.at(funcEdit)?.clickfnc;
     
       return false
   }
@@ -119,10 +120,10 @@ export class BaseTableComponent implements OnInit, OnDestroy {
     if (funcDefault) {
       // check first the role
       const ind = this.tableToolbar?.findIndex((value) => value.label == funcDefault.label)
-      if (ind && !this.isButtonDisabled(ind))
+      if (ind != undefined && !this.isButtonDisabled(ind))
         return funcDefault.clickfnc
     }
-    return 
+    return; 
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -146,16 +147,24 @@ export class BaseTableComponent implements OnInit, OnDestroy {
       funcDefault(this.selectedRecord)
   }
 
-  isButtonDisabled(ind: number) : boolean {
+  isButtonAllowed(ind: number) : boolean {
     if (this.tableToolbar) {
       if (this.tableToolbar[ind].roleNeeded != ''){
         const userStr = localStorage.getItem('user');
         if (userStr) {
           const user = JSON.parse(userStr);
           if (user.role != this.tableToolbar[ind].roleNeeded && user.role != 'admin')
-            return true;
+            return false;
         }
       }
+    }
+    return true;
+  }
+
+  isButtonDisabled(ind: number) : boolean {
+    if (this.tableToolbar) {
+      if (!this.isButtonAllowed(ind))
+          return true;
       if (this.filteredRows.length == 0 && this.checkFiltering()) 
         return this.tableToolbar[ind].disabledWhenEmpty;
       
