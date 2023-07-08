@@ -88,6 +88,10 @@ export class JournalComponent implements OnInit {
         isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addJournal, roleNeeded: 'admin', isEditFunc: false
       },
       {
+        label: "Copy", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.copyJournal, roleNeeded: 'admin', isEditFunc: false
+      },
+      {
         label: "Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-list",
         isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.showAtt, roleNeeded: '', isEditFunc: false
       },
@@ -330,6 +334,20 @@ export class JournalComponent implements OnInit {
     this.clearFields();
     thisRef.messageService.clear();
     this.addMode = true;
+  }
+
+  copyJournal = (selRec?: Journal) => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisRef: JournalComponent = this;
+    console.log("Copy Journal");
+    this.clearFields();
+    thisRef.messageService.clear();
+    this.addMode = true;
+
+    if (selRec) {
+      Object.assign(thisRef.selJournal, selRec);
+      thisRef.selJournal.id = undefined;
+    }
   }
 
   private clearFields() {
