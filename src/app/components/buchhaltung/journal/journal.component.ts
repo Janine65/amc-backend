@@ -117,6 +117,7 @@ export class JournalComponent implements OnInit {
         this.lstJournal = list;
         this.lstJournal.forEach(x => {
           x.date_date = new Date(x.date!);
+          x.date_date?.setTime(x.date_date?.getTime() - x.date_date?.getTimezoneOffset() *60 * 1000); //Adjust for Timezone
           x.fromAcc = x.fromAccount?.longname;
           x.from_account = x.fromAccount?.id;
           x.toAcc = x.toAccount?.longname;
@@ -363,6 +364,7 @@ export class JournalComponent implements OnInit {
     this.selJournal.from_account = this.selJournal.fromAccount?.id;
     this.selJournal.to_account = this.selJournal.toAccount?.id;
     this.selJournal.date = this.selJournal.date_date?.toISOString();
+    this.selJournal.date_date?.setTime(this.selJournal.date_date?.getTime() - this.selJournal.date_date?.getTimezoneOffset() *60 * 1000); //Adjust for Timezone
 
     if (this.addMode) {
       sub = this.backendService.addJournal(this.selJournal)
@@ -376,6 +378,7 @@ export class JournalComponent implements OnInit {
             {
               next: (result) => {
                 result.date_date = new Date(result.date!);
+                result.date_date?.setTime(result.date_date?.getTime() - result.date_date?.getTimezoneOffset() *60 * 1000); //Adjust for Timezone
                 result.fromAcc = result.fromAccount?.longname;
                 result.from_account = result.fromAccount?.id;
                 result.toAcc = result.toAccount?.longname;
