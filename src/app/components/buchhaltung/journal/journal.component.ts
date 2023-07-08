@@ -376,14 +376,14 @@ export class JournalComponent implements OnInit {
             {
               next: (result) => {
                 result.date_date = new Date(result.date!);
-                result.fromAcc = result.fromAccount?.name;
+                result.fromAcc = result.fromAccount?.longname;
                 result.from_account = result.fromAccount?.id;
-                result.toAcc = result.toAccount?.name;
+                result.toAcc = result.toAccount?.longname;
                 result.to_account = result.toAccount?.id;
 
                 if (this.addMode) {
                   this.lstJournal.push(result);
-                  this.lstJournal.sort((a: Journal, b: Journal) => (a.journalno ? a.journalno : 0) - (b.journalno ? b.journalno : 0))
+                  this.lstJournal.sort((a: Journal, b: Journal) => (a.journalno && b.journalno ? a.journalno - b.journalno : (a.date_date! < b.date_date! ? -1 : 1)))
                 }
                 else
                   this.lstJournal = this.lstJournal.map(obj => [result].find(o => o.id === obj.id) ?? obj);

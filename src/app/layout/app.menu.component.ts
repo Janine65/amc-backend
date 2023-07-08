@@ -1,9 +1,9 @@
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { LayoutService } from '../service/app.layout.service';
 import { MenuItem } from 'primeng/api';
 import { AccountService } from '@service/account.service';
 import { User } from '@model/user';
-import { ReplaySubject, takeUntil } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
     selector: 'app-menu',

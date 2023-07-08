@@ -4,6 +4,7 @@ import { LayoutService } from "../service/app.layout.service";
 import { User } from '@app/models';
 import { AccountService } from '@app/service';
 import { Router } from '@angular/router';
+import app from './../../../package.json';
 
 @Component({
     selector: 'app-topbar',
@@ -14,6 +15,7 @@ export class AppTopBarComponent implements OnInit {
     items!: MenuItem[];
     userItems!: MenuItem[];
     user?: User;
+    appVersion = '';
 
     @ViewChild('menubutton') menuButton!: ElementRef;
 
@@ -26,6 +28,7 @@ export class AppTopBarComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.appVersion = app.version
         this.userItems = [
             {
                 label: 'Ausloggen',
