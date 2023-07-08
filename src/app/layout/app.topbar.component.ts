@@ -17,8 +17,6 @@ export class AppTopBarComponent implements OnInit {
 
     @ViewChild('menubutton') menuButton!: ElementRef;
 
-    @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
-
     @ViewChild('topbarmenu') menu!: ElementRef;
 
     constructor(public layoutService: LayoutService,
@@ -48,11 +46,11 @@ export class AppTopBarComponent implements OnInit {
                     this.clearStorage();
                 }
             },
-            {
+            (this.isLoggedIn() && this.accountService.userValue.role === 'admin') ? {
                 label: 'Users',
                 icon: 'pi pi-fw pi-users',
                 routerLink: ['/users']
-            }
+            } : {}
         ];
     }
 

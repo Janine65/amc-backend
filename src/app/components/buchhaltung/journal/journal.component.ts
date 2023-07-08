@@ -164,8 +164,8 @@ export class JournalComponent implements OnInit {
       let match = false
       lstString.forEach(text => {
         const regex = new RegExp(text, "i")
-        const matchL = acc.name!.match(regex);
-        const matchV = String(acc.order!).match(regex);
+        const matchL = RegExp(regex).exec(acc.name!);
+        const matchV = RegExp(regex).exec(String(acc.order!));
         if (matchL || matchV)
           match = true
       })
@@ -187,8 +187,8 @@ export class JournalComponent implements OnInit {
       let match = false
       lstString.forEach(text => {
         const regex = new RegExp(text, "i")
-        const matchL = acc.name!.match(regex);
-        const matchV = String(acc.order!).match(regex);
+        const matchL = RegExp(regex).exec(acc.name!);
+        const matchV = RegExp(regex).exec(String(acc.order!));
         if (matchL || matchV)
           match = true
       })
@@ -318,9 +318,6 @@ export class JournalComponent implements OnInit {
         {
           complete: () => {
             thisRef.lstJournal.splice(thisRef.lstJournal.indexOf(selRec), 1)
-
-            // thisRef.messageService.add({ detail: 'Das Geschäftsjahr', closable: true, severity: 'info', sticky: false, summary: 'Anlass beenden' });
-
           }
         }
       )
@@ -347,6 +344,7 @@ export class JournalComponent implements OnInit {
 
     this.selJournal.from_account = this.selJournal.fromAccount?.id;
     this.selJournal.to_account = this.selJournal.toAccount?.id;
+    this.selJournal.date = this.selJournal.date_date?.toISOString();
 
     if (this.addMode) {
       sub = this.backendService.addJournal(this.selJournal)
@@ -370,7 +368,7 @@ export class JournalComponent implements OnInit {
                   this.lstJournal.sort((a: Journal, b: Journal) => (a.journalno ? a.journalno : 0) - (b.journalno ? b.journalno : 0))
                 }
                 else
-                  this.lstJournal = this.lstJournal.map(obj => [result].find(o => o.id === obj.id) || obj);
+                  this.lstJournal = this.lstJournal.map(obj => [result].find(o => o.id === obj.id) ?? obj);
 
                 this.clearFields();
 

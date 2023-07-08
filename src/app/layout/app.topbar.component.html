@@ -9,10 +9,6 @@
         <i class="pi pi-bars"></i>
     </button>
 
-    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
-        <i class="pi pi-ellipsis-v"></i>
-    </button>
-
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
         <span *ngIf="isLoggedIn()" class="mt-4">{{getLoggedinUser()}}</span>
         <button #accBtn class="p-link layout-topbar-button" (click)="clickUser()" >
