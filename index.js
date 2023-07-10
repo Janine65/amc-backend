@@ -37,9 +37,9 @@ const corsOptionsDelegate = function (req, callback) {
   callback(null, corsOptions) // callback expects two parameters: error and options
 }
 
-app.use(express.text({limit: '25mb'}));
-app.use(express.json({limit: '25mb'}));
-app.use(express.urlencoded({extended: true, limit: '25mb'}));
+app.use(express.text({extended: true, limit: 52428800}));
+app.use(express.json({extended: true, limit: 52428800}));
+app.use(express.urlencoded({extended: true, limit: 52428800}));
 
 app.use(cors(corsOptionsDelegate))
 app.use(function (req, res, next) {
@@ -54,7 +54,7 @@ app.use(function (req, res, next) {
 app.post('/upload', function (req, res, next) {
   const form = formidable({ 
     multiples: true,
-    maxFileSize: 500 * 1024 * 1024 * 1024,
+    maxFileSize: 500 * 1024 * 1024,
     keepExtensions: true,
     uploadDir: global.uploads,
         // Use it to control newFilename.              
