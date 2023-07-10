@@ -54,7 +54,7 @@ app.use(function (req, res, next) {
 app.post('/upload', function (req, res, next) {
   const form = formidable({ 
     multiples: true,
-    maxFileSize: 500 * 1024 * 1024,
+    maxFileSize: 1024 * 1024 * 1024,
     keepExtensions: true,
     uploadDir: global.uploads,
         // Use it to control newFilename.              
