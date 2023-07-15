@@ -1,72 +1,74 @@
+    <p-toolbar>
+        <button pButton icon="pi pi-back" (click)="back()" label="Abbruch" class="p-button-secondary p-button-outlined"></button>
+        <button pButton icon="pi pi-send" (click)="submit()" label="Senden" cass="p-button-primary p-button-outlined"></button>
+    </p-toolbar>
 <div class="card">
     <div class="field grid">
         <label for="to" class="col-12 md:col-2 md:mb-0">TO:</label>
         <div class="col-12 md:col-10">
             <textarea id="to" rows="1" cols="30" pInputTextarea [(ngModel)]="emailBody.email_an"
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
+                class="text-base text-color border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
         </div>
     </div>
     <div class="field grid">
         <label for="cc" class="col-12 md:col-2 md:mb-0">CC:</label>
         <div class="col-12 md:col-10">
             <textarea rows="1" cols="30" pInputTextarea id="cc" [(ngModel)]="emailBody.email_cc" name="cc"
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
+                class="text-base text-color border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
         </div>
     </div>
     <div class="field grid">
         <label for="bbc" class="col-12 md:col-2 md:mb-0">BBC:</label>
         <div class="col-12 md:col-10">
             <textarea rows="1" cols="30" pInputTextarea id="bbc" [(ngModel)]="emailBody.email_bcc" name="bcc"
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
+                class="text-base text-color border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
         </div>
     </div>
     <div class="field grid">
         <label for="from" class="col-12 md:col-2 md:mb-0">Absender:</label>
         <div class="col-12 md:col-10">
-            <input id="from" [(ngModel)]="emailBody.email_signature" name="from" [required]="true"
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+            <p-dropdown [options]="lstSignature" id="from" optionLabel="label" optionValue="value"
+                [(ngModel)]="emailBody.email_signature" name="from" [required]="true" [autoDisplayFirst]="false">
+            </p-dropdown>
         </div>
     </div>
     <div class="field grid">
         <label for="subject" class="col-12 md:col-2 md:mb-0">Subject:</label>
         <div class="col-12 md:col-10">
             <input id="subject" [(ngModel)]="emailBody.email_subject" name="subject" [required]="true"
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+                class="p-2 text-base text-color border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
         </div>
     </div>
-    <div class="field grid">
-        <label for="uploadfiles" class="col-12 md:col-2 md:mb-0">Anhänge:</label>
-        <div class="col-12 md:col-10">
-            <p-fileUpload id="uploadfiles" name="uploadfiles[]" [multiple]="true" [maxFileSize]="500 * 1024 * 1024"
-                [auto]="true" chooseLabel="Wählen" [showCancelButton]="false" [showUploadButton]="false"
-                accept="application/pdf" [customUpload]="true" (uploadHandler)="prepareFiles($event.files)">
-                <ng-template pTemplate="file">
-                    <div *ngFor="let file of uploadFiles; index as ind" class="p-fileupload-row ng-star-inserted">
-                        <div class="p-fileupload-filename">{{ file.name }}</div>
-                        <div>{{ file.size }}</div>
-                        <div>
-                            <button type="button" icon="pi pi-times" pbutton="" (click)="uploadFiles.splice(ind,1)"
-                                class="p-element p-button p-component p-button-icon-only"
-                                ng-reflect-icon="pi pi-times"><span class="p-button-icon pi pi-times"
-                                    aria-hidden="true"></span>
-                            </button>
+        <div class="field grid">
+            <div class="col-12 md:col-12 editor NgxEditor__Wrapper">
+                <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+                <ngx-editor pAutoFocus id="body" [editor]="editor" [(ngModel)]="emailBody.email_body" [disabled]="false"
+                    [placeholder]="'Hier kommt die Meldung'" name="body"
+                    class="text-base text-color surface-overlay p-2  appearance-none outline-none w-full"></ngx-editor>
+            </div>
+        </div>
+    <div class="card">
+        <div class="field grid">
+            <label for="uploadfiles" class="col-12 md:col-2 md:mb-0">Anhänge:</label>
+            <div class="col-12 md:col-10">
+                <p-fileUpload id="uploadfiles" name="uploadfiles[]" [multiple]="true" [maxFileSize]="500 * 1024 * 1024"
+                    [auto]="true" chooseLabel="Wählen" [showCancelButton]="false" [showUploadButton]="false"
+                    accept="application/pdf" [customUpload]="true" (uploadHandler)="prepareFiles($event.files)">
+                    <ng-template pTemplate="file">
+                        <div *ngFor="let file of uploadFiles; index as ind" class="p-fileupload-row ng-star-inserted">
+                            <div class="p-fileupload-filename">{{ file.name }}</div>
+                            <div>{{ file.size }}</div>
+                            <div>
+                                <button type="button" icon="pi pi-times" pbutton="" (click)="uploadFiles.splice(ind,1)"
+                                    class="p-element p-button p-component p-button-icon-only"
+                                    ng-reflect-icon="pi pi-times"><span class="p-button-icon pi pi-times"
+                                        aria-hidden="true"></span>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </ng-template>
-            </p-fileUpload>
-        </div>
-    </div>
-    <div class="field grid">
-        <div class="col-12 md:col-12">
-            <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
-            <ngx-editor id="body" [editor]="editor" [(ngModel)]="emailBody.email_body" [disabled]="false" 
-                [placeholder]="'Hier kommt die Meldung'" name="body"
-                [style]="{ height: '240px', border: 'round'}"
-                class="text-base text-color surface-overlay p-2  appearance-none outline-none w-full"></ngx-editor>
+                    </ng-template>
+                </p-fileUpload>
+            </div>
         </div>
     </div>
 </div>
-<p-toolbar>
-    <p-button icon="pi pi-back" (click)="back()" label="Abbruch" styleClass="p-button-text"></p-button>
-    <p-button icon="pi pi-send" (click)="submit()" label="Senden" styleClass="p-button-text"></p-button>
-</p-toolbar>

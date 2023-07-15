@@ -5,7 +5,7 @@ import { EmailBody, EmailSignature } from './email-dialog.types';
 import {  MessageService } from 'primeng/api';
 import { environment } from '@environments/environment';
 import { Subscription } from 'rxjs';
-import { Editor } from 'ngx-editor';
+import { DEFAULT_TOOLBAR, Editor, Toolbar } from 'ngx-editor';
 
 @Component({
   selector: 'app-email-dialog',
@@ -17,8 +17,12 @@ export class EmailDialogComponent implements OnInit, OnDestroy {
   uploadFiles: File[] = [];
   uploadProgress: number | null = null;
   uploadSub?: Subscription;
+  lstSignature = [{
+    label: "Hansjörg Dutler", value: EmailSignature.HansjoergDutler},
+    {label: "Janine Franken", value: EmailSignature.JanineFranken}]
 
   editor!: Editor;
+  toolbar: Toolbar = DEFAULT_TOOLBAR;
 
   constructor(
     private backendService: BackendService,
@@ -31,7 +35,16 @@ export class EmailDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.editor = new Editor();
+    this.editor = new Editor({
+      history: true,
+      keyboardShortcuts: true,
+      inputRules: true,
+      attributes: { enterkeyhint: 'enter' },
+      features: {
+        linkOnPaste: true,
+        resizeImage: true,
+      },
+    });
   }
 
   // make sure to destory the editor

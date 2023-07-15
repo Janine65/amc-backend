@@ -156,7 +156,7 @@ export class AdressenComponent implements OnInit {
       },
       header: 'Email senden',
       width: '70%',
-      height: '90%',
+      height: '80%',
       resizable: true,
       modal: true,
       maximizable: true,
@@ -232,7 +232,7 @@ export class AdressenComponent implements OnInit {
       if (adresse) {
         adresse.eintritt_date = new Date(adresse.eintritt!);
         adresse.austritt_date = new Date(adresse.austritt!);
-        thisRef.adressList = thisRef.adressList.map(obj => [adresse].find(o => o.id === obj.id) || obj);
+        thisRef.adressList = thisRef.adressList.map(obj => [adresse].find(o => o.id === obj.id) ?? obj);
         console.log(adresse)
       }
     });

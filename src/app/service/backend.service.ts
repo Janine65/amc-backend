@@ -242,6 +242,11 @@ export class BackendService {
     return this.http.get<Fiscalyear>(apiURL, {headers: this.header});
 
   }
+  // router.put('/fiscalyear/close', authorize(), fiscalyearService.updateData);
+  closeFiscalyear(jahr: string, status: number): Observable<any> {
+  const apiURL = environment.apiUrl + '/journal/fiscalyear/close?jahr=' + jahr + '&status=' + status;
+    return this.http.put(apiURL, null, {headers: this.header});
+  }
 
   getAccount(): Observable<Account[]> {
     const apiURL = environment.apiUrl + '/journal/account/alldata';
@@ -289,6 +294,11 @@ export class BackendService {
   getOneJournal(id: number) : Observable<Journal> {
     const apiURL = environment.apiUrl + '/journal/journal/onedata?id=' + id;
     return this.http.get<Journal>(apiURL, {headers: this.header});
+
+  }
+  exportJournal(jahr: number, receipt: number) : Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/export?jahr=' + jahr + '&receipt=' + receipt;
+    return this.http.get<any>(apiURL, {headers: this.header});
 
   }
   getAttachment(id: number, jahr: number) : Observable<Receipt[]> {
@@ -376,6 +386,10 @@ export class BackendService {
 
   exportAccData(jahr: number) : Observable<any> {
     const apiURL = environment.apiUrl + '/journal/fiscalyear/export?jahr='+jahr;
+    return this.http.get(apiURL, {headers: this.header});
+  }
+  exportAccountData(jahr: number) : Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/account/export?jahr='+jahr;
     return this.http.get(apiURL, {headers: this.header});
   }
 }

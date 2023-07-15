@@ -1,9 +1,9 @@
 <p-toast key="local"></p-toast>
-<div [style.height.px]="50">
-    <button pButton *ngIf="checkFiltering()" label="Clear" class="p-button-secondary p-button-outlined"
+<div class="mb-1">
+    <button pButton *ngIf="checkFiltering()" label="Clear" class="p-button-secondary p-button-outlined mb-1"
         icon="pi pi-filter-slash" (click)="clear(basetable)"></button>
     <button pButton *ngFor="let but of tableToolbar; index as ind" [label]="but.label!" [icon]="but.icon!"
-        [ngClass]="but.btnClass!" (click)="clickOnToolbar(ind)" [disabled]="isButtonDisabled(ind)"></button>
+        [ngClass]="but.btnClass! + ' mb-1'" (click)="clickOnToolbar(ind)" [disabled]="isButtonDisabled(ind)"></button>
 </div>
 <p-table #basetable [columns]="tableOptions" styleClass=" p-datatable-striped" [value]="tableData"
     selectionMode="single" [(selection)]="selectedRecord" (onFilter)="filterEvent($event)" dataKey="id"

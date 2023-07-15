@@ -38,6 +38,10 @@ import { NgxEditorModule } from 'ngx-editor';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ChartModule } from 'primeng/chart';
 import { TabViewModule } from 'primeng/tabview';
+import { StyleClassModule } from 'primeng/styleclass';
+import { AutoFocusModule } from 'primeng/autofocus';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { TagModule } from 'primeng/tag';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -159,6 +163,10 @@ import { AttachmentAddComponent } from './components/buchhaltung/attachment-add/
     AutoCompleteModule,
     TabViewModule,
     DataViewModule,
+    StyleClassModule,
+    AutoFocusModule,
+    ProgressBarModule,
+    TagModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

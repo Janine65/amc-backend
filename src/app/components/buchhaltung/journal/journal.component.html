@@ -1,19 +1,18 @@
-<div class="card">
-    <div class="mb-0">
-        <label class="mr-3">Jahr wählen</label>
-        <p-dropdown [options]="selJahre" [(ngModel)]="selJahr" (onChange)="chgJahr()"></p-dropdown>
-    </div>
-</div>
 <p-splitter [panelSizes]="[70, 30]" styleClass="mb-1">
     <ng-template pTemplate>
         <div class="card" style="width: 100%;">
             <app-basetable [tableOptions]="cols" [tableData]="lstJournal" [formatFunction]="formatField"
-                [tableToolbar]="toolbar" localStorage="journal" [diffCalcHight]="300">
+                [tableToolbar]="toolbar" localStorage="journal" [diffCalcHight]="200"
+                [editable]="isEditable()">
             </app-basetable>
         </div>
     </ng-template>
-    <ng-template pTemplate=>
+    <ng-template pTemplate>
         <div class="card" style="width: 100%;">
+            <div class="mb-2">
+                <label class="mr-3">Jahr wählen</label>
+                <p-dropdown [options]="selJahre" [(ngModel)]="selJahr" (onChange)="chgJahr()"></p-dropdown>
+            </div>
             <div>
                 <form autocomplete="off" (ngSubmit)="save()" (reset)="reset()">
                     <div class="field grid">
@@ -46,9 +45,8 @@
                     <div class="field grid">
                         <label for="memo" class="col-12 mb-2 md:col-2 md:mb-0">Text</label>
                         <div class="col-12 md:col-10">
-                            <input type="text" name="memo" pInputText minlength="5" required
-                            class="w-full"
-                            [(ngModel)]="selJournal.memo" [disabled]="!editMode && !addMode">
+                            <input type="text" name="memo" pInputText minlength="5" required class="w-full"
+                                [(ngModel)]="selJournal.memo" [disabled]="!editMode && !addMode">
                         </div>
                     </div>
                     <div class="field grid">

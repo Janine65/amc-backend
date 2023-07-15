@@ -45,11 +45,15 @@ export class MeisterschaftComponent implements OnInit {
   private getHeight() {
     let element = document.getElementById("table-boxc")
     if (element) {
-      this.objHeightc$ = (element.scrollHeight - 300).toString() + 'px';
+      this.objHeightc$ = (element.scrollHeight - 100).toString() + 'px';
+      console.log(element);
+      console.log(this.objHeightc$);
     }
     element = document.getElementById("table-boxk")
     if (element) {
-      this.objHeightk$ = (element.scrollHeight - 300).toString() + 'px';
+      this.objHeightk$ = (element.scrollHeight - 100).toString() + 'px';
+      console.log(element);
+      console.log(this.objHeightk$);
     }
   }
 

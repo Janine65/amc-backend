@@ -2,13 +2,14 @@
     <div class="mb-0">
         <label class="mr-3">Jahr wählen</label>
         <p-dropdown [options]="selJahre" [(ngModel)]="selJahr" (onChange)="chgJahr()"></p-dropdown>
-        <button pButton pRipple type="button" icon="pi pi-plus" (click)=onAddNewRow()
+        <button pButton pRipple type="button" icon="pi pi-plus" (click)=onAddNewRow() [disabled]="!isEditable()"
             class="ml-5 p-button-secondary p-button-outline">Neuen Eintrag hinzufügen</button>
-        <button pButton pRipple type="button" icon="pi pi-copy" (click)=copyYear()
+        <button pButton pRipple type="button" icon="pi pi-copy" (click)=copyYear() [disabled]="!isEditable()"
             class="ml-5 p-button-secondary p-button-outline">Auf nächstes Jahr kopieren</button>
         <hr />
     </div>
-    <p-table [value]="lstBudget" dataKey="id" editMode="row" *ngIf="!loading">
+    <p-table [value]="lstBudget" dataKey="id" editMode="row" *ngIf="!loading" [scrollHeight]="objHeight$" [scrollable]="true" 
+    (window:resize)="onResizeHandler()" >
         <ng-template pTemplate="header">
             <tr>
                 <th style="width:10%">No.</th>
@@ -65,16 +66,17 @@
                 </td>
                 <td>
                     <button *ngIf="!rowIsEditing(data)" pButton pRipple type="button" pInitEditableRow
-                        icon="pi pi-pencil" (click)="onRowEditInit(data)"
+                        icon="pi pi-pencil" (click)="onRowEditInit(data)" [disabled]="!isEditable()"
                         class="p-button-rounded p-button-text"></button>
                     <button *ngIf="rowIsEditing(data)" pButton pRipple type="button" pSaveEditableRow
-                        icon="pi pi-check" (click)="onRowEditSave(data)"
+                        icon="pi pi-check" (click)="onRowEditSave(data)" [disabled]="!isEditable()"
                         class="p-button-rounded p-button-text p-button-success mr-2"></button>
                     <button *ngIf="rowIsEditing(data)" pButton pRipple type="button" pCancelEditableRow
                         icon="pi pi-times" (click)="onRowEditCancel(data, ri)"
                         class="p-button-rounded p-button-text p-button-danger"></button>
-                    <button *ngIf="!rowIsEditing(data)" pButton pRipple type="button" icon="pi pi-times"
-                        (click)="onRowEditDelete(data)" class="p-button-rounded p-button-text"></button>
+                    <button *ngIf="!rowIsEditing(data)" pButton pRipple type="button" [disabled]="!isEditable()"
+                        icon="pi pi-times" (click)="onRowEditDelete(data)" 
+                        class="p-button-rounded p-button-text"></button>
                 </td>
             </tr>
         </ng-template>

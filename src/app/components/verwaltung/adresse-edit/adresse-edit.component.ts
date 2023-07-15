@@ -64,7 +64,7 @@ export class AdresseEditComponent {
       },
       header: 'Email senden',
       width: '70%',
-      height: '90%',
+      height: '80%',
       resizable: true, 
       modal: true, 
       maximizable: true, 

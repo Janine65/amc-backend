@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component } from '@angular/core';
-import { Account, Budget, ParamData } from '@model/datatypes';
+import { Account, Budget, Fiscalyear, ParamData } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-budget',
@@ -21,6 +22,9 @@ export class BudgetComponent {
   lstAccounts: Account[] = []
   loading = true;
   addRow = false;
+  selFiscalyear: Fiscalyear = {};
+  public objHeight$ = '500px';
+
 
   constructor(
     private backendService: BackendService, 
@@ -45,6 +49,18 @@ export class BudgetComponent {
     }})
 
     this.readBudget()
+    this.getHeight()
+  }
+
+  private getHeight() { 
+    const element = document.getElementById("main-container")
+    if (element) {
+      this.objHeight$ = (element.scrollHeight - 150).toString() + 'px'; 
+    }
+  }
+
+  public onResizeHandler(): void {
+    this.getHeight();
   }
 
   readBudget() {
@@ -57,6 +73,10 @@ export class BudgetComponent {
           rec.acc_name = rec.acc?.name
           rec.acc_order = rec.acc?.order
         })
+        from(this.backendService.getOneFiscalyear(this.selJahr.toString()))
+        .subscribe((result) => {
+          this.selFiscalyear = result;
+        })
         this.loading = false;
       },
       error: (err) => {
@@ -67,6 +87,12 @@ export class BudgetComponent {
 
   chgJahr() {
     this.readBudget()
+  }
+
+  isEditable() {
+    if (this.selFiscalyear)
+      return this.selFiscalyear.state! < 3
+    else return false
   }
 
   copyYear() {

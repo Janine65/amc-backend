@@ -58,7 +58,7 @@ export class BaseTableComponent implements OnInit, OnDestroy {
   @Input() formatFunction: ((field: string, value: string | number | boolean | null) => string | number | boolean | null) | undefined;
   @Input() tableToolbar?: TableToolbar[] = []
   @Input() localStorage = 'basetable'
-  @Input() diffCalcHight = 150;
+  @Input() diffCalcHight = 100;
   @Input() editable = true;
 
   selectedRecord?: TableData;

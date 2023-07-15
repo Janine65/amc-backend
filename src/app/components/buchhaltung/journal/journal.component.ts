@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, OnInit } from '@angular/core';
-import { Account, Journal, ParamData } from '@model/datatypes';
+import { Account, Fiscalyear, Journal, ParamData } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
@@ -32,6 +32,8 @@ export class JournalComponent implements OnInit {
   loading = true;
   cols: TableOptions[] = [];
   toolbar: TableToolbar[] = [];
+  toolbarRW: TableToolbar[] = [];
+  toolbarRO: TableToolbar[] = [];
   editMode = false;
   addMode = false;
 
@@ -47,6 +49,7 @@ export class JournalComponent implements OnInit {
   lstToAccounts: Account[] = [];
   selFromAccount: Account = {};
   selToAccount: Account = {};
+  selFiscalyear: Fiscalyear = {};
 
   constructor(
     private backendService: BackendService,
@@ -74,7 +77,7 @@ export class JournalComponent implements OnInit {
       { field: 'amount', header: 'Betrag', format: false, sortable: false, filtering: false, filter: undefined },
     ];
 
-    this.toolbar = [
+    this.toolbarRW = [
       {
         label: "Edit", btnClass: "p-button-primary p-button-outlined", icon: "pi pi-file-edit",
         isDefault: true, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.editJournal, roleNeeded: 'admin', isEditFunc: true
@@ -107,10 +110,41 @@ export class JournalComponent implements OnInit {
         label: "Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-upload",
         isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.addNewAtt, roleNeeded: 'admin', isEditFunc: false
       },
+      {
+        label: "Export", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-download",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportJournal, roleNeeded: '', isEditFunc: false
+      },
+      {
+        label: "Export +", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-download",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportJournalAll, roleNeeded: '', isEditFunc: false
+      },
+    ];
+    this.toolbarRO = [
+      {
+        label: "Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-list",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.showAtt, roleNeeded: '', isEditFunc: false
+      },
+      {
+        label: "Alle Anhänge", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-list",
+        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.showAllAtt, roleNeeded: 'admin', isEditFunc: false
+      },
+      {
+        label: "Export", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-download",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportJournal, roleNeeded: '', isEditFunc: false
+      },
+      {
+        label: "Export +", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-download",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportJournalAll, roleNeeded: '', isEditFunc: false
+      },
     ];
     this.readJournal();
   }
 
+  isEditable() {
+    if (this.selFiscalyear)
+      return this.selFiscalyear.state! < 3
+    else return false
+  }
   private readJournal() {
     from(this.backendService.getJournal(this.selJahr))
       .subscribe(list => {
@@ -125,6 +159,14 @@ export class JournalComponent implements OnInit {
         from(this.backendService.getAccount())
           .subscribe(list2 => {
             this.lstAccounts = list2;
+            from(this.backendService.getOneFiscalyear(this.selJahr.toString()))
+              .subscribe((result) => {
+                this.selFiscalyear = result;
+                if (!this.selFiscalyear || this.selFiscalyear.state == 3)
+                  this.toolbar = this.toolbarRO
+                else
+                  this.toolbar = this.toolbarRW
+              })
           })
         this.loading = false;
       });
@@ -134,7 +176,7 @@ export class JournalComponent implements OnInit {
   formatField(field: string, value: string | number | boolean | null): string | number | boolean | null {
 
     if (field == 'date') {
-      const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "2-digit", day: "2-digit" };  
+      const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "2-digit", day: "2-digit" };
       return new Intl.DateTimeFormat('de-CH', options).format(new Date(value as string))
       //return new Date((value as string)).toLocaleDateString('de-CH', options)
     }
@@ -159,7 +201,7 @@ export class JournalComponent implements OnInit {
 
   fromAccountSearch(event: AutoCompleteCompleteEvent) {
     // TODO document why this method 'fromAccountSel' is empty
-  this.lstFromAccounts = []
+    this.lstFromAccounts = []
     const lstString = event.query.split(" ");
     if (!lstString || lstString.length == 0)
       return;
@@ -203,6 +245,61 @@ export class JournalComponent implements OnInit {
     }
   }
 
+  exportJournal = () => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisRef: JournalComponent = this;
+    thisRef.messageService.add({ severity: 'info', detail: 'Der Download startet gleich. Bitte warten.', sticky: true, closable: false });
+    thisRef.backendService.exportJournal(thisRef.selJahr, 0).subscribe({
+      next: (result) => {
+        if (result.type == 'info') {
+          thisRef.backendService.downloadFile(result.filename).subscribe(
+            {
+              next(data) {
+                if (data.body) {
+                  const blob = new Blob([data.body]);
+                  const downloadURL = window.URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = downloadURL;
+                  link.download = result.filename;
+                  link.click();
+                  thisRef.messageService.clear();
+                }
+              },
+            }
+          )
+        }
+      }
+    })
+  }
+
+  exportJournalAll = () => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisRef: JournalComponent = this;
+    thisRef.messageService.add({ severity: 'info', detail: 'Der Download startet gleich. Bitte warten.', sticky: true, closable: false });
+
+    thisRef.backendService.exportJournal(thisRef.selJahr, 1).subscribe({
+      next: (result) => {
+        if (result.type == 'info') {
+          thisRef.backendService.downloadFile(result.filename).subscribe(
+            {
+              next(data) {
+                if (data.body) {
+                  const blob = new Blob([data.body]);
+                  const downloadURL = window.URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = downloadURL;
+                  link.download = result.filename;
+                  link.click();
+                  thisRef.messageService.clear();
+                }
+              },
+            }
+          )
+        }
+      }
+    })
+  }
+
   addNewAtt = (selRec?: Journal) => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const thisRef: JournalComponent = this;
@@ -232,7 +329,8 @@ export class JournalComponent implements OnInit {
         data: {
           journalid: selRec.id,
           jahr: thisRef.selJahr,
-          type: 'add'
+          type: 'add',
+          editable: this.isEditable()
         },
         header: 'Anhänge zu Journaleintrag ' + selRec.memo + ' hinzufügen',
         width: '90%',
@@ -259,7 +357,8 @@ export class JournalComponent implements OnInit {
         data: {
           journalid: selRec.id,
           jahr: this.selJahr,
-          type: 'one'
+          type: 'one',
+          editable: this.isEditable()
         },
         header: 'Anhänge anzeigen für den Journaleintrag ' + selRec.memo,
         width: '90%',
@@ -284,7 +383,8 @@ export class JournalComponent implements OnInit {
       data: {
         journalid: undefined,
         jahr: this.selJahr,
-        type: 'all'
+        type: 'all',
+        editable: this.isEditable()
       },
       header: 'Alle Anhänge anzeigen für das Jahr ' + this.selJahr,
       width: '90%',

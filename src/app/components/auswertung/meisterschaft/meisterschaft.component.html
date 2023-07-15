@@ -10,7 +10,7 @@
 </div>
 <p-splitter [panelSizes]="[50, 50]" styleClass="mb-1">
     <ng-template pTemplate>
-        <div class="card" style="width: 100%; " id="table-boxc">
+        <div class="card" style="width: 100%; height: 100%;" id="table-boxc">
             <div class="row col-md-12">
                 <h2>Clubmeisterschaft</h2>
                 <p-table styleClass=" p-datatable-striped" [value]="lstClubmeister" dataKey="id"
@@ -42,7 +42,7 @@
         </div>
     </ng-template>
     <ng-template pTemplate>
-        <div class="card" style="width: 100%;" id="table-boxk">
+        <div class="card" style="width: 100%; height: 100%;" id="table-boxk">
             <h2>Kegelmeisterschaft</h2>
             <p-table styleClass=" p-datatable-striped" [value]="lstKegelmeister" dataKey="id"
                 [scrollHeight]="objHeightk$" [virtualScroll]="true" [virtualScrollItemSize]="36"
