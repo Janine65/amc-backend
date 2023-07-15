@@ -336,6 +336,7 @@ module.exports = {
                     type: "error",
                     message: e,
                 });
+                return;
             });
 
         const workbook = new ExcelJS.Workbook();

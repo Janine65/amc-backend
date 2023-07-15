@@ -17,7 +17,7 @@ router.delete('/fiscalyear/data', authorize(), fiscalyearService.removeData);
 router.get('/fiscalyear/getFkData', authorize(), fiscalyearService.getFKData);
 router.get('/fiscalyear/getOneData', fiscalyearService.getOneData);
 router.get('/fiscalyear/export', authorize(), exportService.writeExcelData);
-router.post('/fiscalyear/close', authorize(), fiscalyearService.closeYear);
+router.put('/fiscalyear/close', authorize(), fiscalyearService.closeYear);
 
 router.get('/account/data', authorize(), accountService.getData);
 router.get('/account/alldata', authorize(), accountService.getAllData);
