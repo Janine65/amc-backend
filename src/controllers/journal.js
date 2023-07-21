@@ -453,14 +453,14 @@ async function getAccData(req, res) {
 				"id", "journalno", "date", "memo", "amount"],
 			where: [{ "from_account": req.query.acc },
 			Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('date')), req.query.jahr)],
-			include: { model: Account, as: 'fromAccount', required: true }
+			include: [{ model: Account, as: 'fromAccount', required: true }, { model: Account, as: 'toAccount', required: true }]
 		}),
 		Journal.findAll({
 			attributes: [
 				"id", "journalno", "date", "memo", "amount"],
 			where: [{ "to_account": req.query.acc },
 			Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('date')), req.query.jahr)],
-			include: { model: Account, as: 'toAccount', required: true }
+			include: [{ model: Account, as: 'fromAccount', required: true }, { model: Account, as: 'toAccount', required: true }]
 		})
 	])
 		.then((modelReturn) => {
@@ -468,19 +468,18 @@ async function getAccData(req, res) {
 			let arData = [];
 			for (let index = 0; index < arPreData.length; index++) {
 				const element = arPreData[index];
-				let record = { id: element.id, journalno: element.journalno, date: element.date, memo: element.memo }
+				let record = { id: element.id, journalno: element.journalno, date: element.date, memo: element.memo, fromAcc: element.fromAccount.longname, toAcc: element.toAccount.longname }
 
-				if (element.fromAccount == null) {
-					record.account = element.toAccount.order + " " + element.toAccount.name
-					record.haben = element.amount
+				if (element.toAccount.id == req.query.acc) {
+					record.haben = Number(element.amount)
 					record.soll = 0
 				} else {
-					record.account = element.fromAccount.order + " " + element.fromAccount.name
-					record.soll = element.amount
+					record.soll = Number(element.amount)
 					record.haben = 0
 				}
 				arData.push(record);
 			}
+			console.log(arData);
 			res.json(arData);
 		})
 		.catch((err) => console.error(err));
