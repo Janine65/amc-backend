@@ -8,6 +8,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Observable, from } from 'rxjs';
 import { AttachementListComponent } from '../attachement-list/attachement-list.component';
 import { AttachmentAddComponent } from '../attachment-add/attachment-add.component';
+import { DatePipe, DecimalPipe } from '@angular/common';
 
 interface AutoCompleteCompleteEvent {
   originalEvent: Event;
@@ -69,12 +70,12 @@ export class JournalComponent implements OnInit {
 
   ngOnInit(): void {
     this.cols = [
-      { field: 'journalno', header: 'No.', format: false, sortable: false, filtering: false, filter: undefined },
-      { field: 'date', header: 'Datum', format: true, sortable: false, filtering: false, filter: undefined },
+      { field: 'journalno', header: 'No.', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.0-0' },
+      { field: 'date', header: 'Datum', format: false, sortable: false, filtering: false, filter: undefined, pipe: DatePipe, args: 'dd.mm.yyyy' },
       { field: 'fromAcc', header: 'Konto Soll', format: false, sortable: false, filtering: false, filter: undefined },
       { field: 'toAcc', header: 'Konto Haben', format: false, sortable: false, filtering: false, filter: undefined },
       { field: 'memo', header: 'text', format: false, sortable: false, filtering: false, filter: undefined },
-      { field: 'amount', header: 'Betrag', format: false, sortable: false, filtering: false, filter: undefined },
+      { field: 'amount', header: 'Betrag', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.2-2' },
     ];
 
     this.toolbarRW = [

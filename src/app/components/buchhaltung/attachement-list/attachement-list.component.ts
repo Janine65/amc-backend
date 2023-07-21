@@ -6,6 +6,7 @@ import { TableOptions, TableToolbar } from '@shared/basetable/basetable.componen
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AttachementShowComponent } from '../attachement-show/attachement-show.component';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-attachement-list',
@@ -62,7 +63,7 @@ export class AttachementListComponent {
       this.backendService.getAllAttachment(this.jahr, this.journalid)
         .subscribe(list => {
           this.lstReceipts = list;
-          this.cols.push({ field: 'cntjournal', header: 'Anzahl Journaleinträge', format: false, sortable: true, filtering: false, filter: undefined })
+          this.cols.push({ field: 'cntjournal', header: 'Anzahl Journaleinträge', format: false, sortable: true, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.0-0' })
         });
       if (this.configType == 'add' && this.journalid) {
         if (config.data.editable) {

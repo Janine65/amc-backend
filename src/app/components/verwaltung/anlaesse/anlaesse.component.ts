@@ -9,6 +9,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { AnlaesseEditComponent } from '../anlaesse-edit/anlaesse-edit.component';
 import { AnlassBookComponent } from '../anlass-book/anlass-book.component';
+import { DatePipe, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-anlaesse',
@@ -36,11 +37,11 @@ export class AnlaesseComponent implements OnInit{
   ngOnInit(): void {
 
     this.cols = [
-      { field: 'datum_date', header: 'Datum', format: false, sortable: true, filtering: true, filter: 'date' },
+      { field: 'datum_date', header: 'Datum', format: false, sortable: true, filtering: true, filter: 'date', pipe: DatePipe, args: 'dd.MM.yyyy' },
       { field: 'name', header: 'Name', format: false, sortable: true, filtering: true, filter: 'text' },
       { field: 'status', header: 'Status', format: true, sortable: true, filtering: true, filter: 'text' },
-      { field: 'punkte', header: 'Punkte', format: false, sortable: true, filtering: true, filter: 'numeric' },
-      { field: 'gaeste', header: 'Gäste', format: false, sortable: true, filtering: true, filter: 'numeric' },
+      { field: 'punkte', header: 'Punkte', format: false, sortable: true, filtering: true, filter: 'numeric', pipe: DecimalPipe, args: '1.0-0' },
+      { field: 'gaeste', header: 'Gäste', format: false, sortable: true, filtering: true, filter: 'numeric', pipe: DecimalPipe, args: '1.0-0' },
       { field: 'istkegeln', header: 'Kegeln?', format: false, sortable: true, filtering: true, filter: 'boolean' },
       { field: 'nachkegeln', header: 'Nachkegeln?', format: false, sortable: false, filtering: true, filter: 'boolean' },
       { field: "istsamanlass", header: 'SAM-Anlass?', format: true, sortable: true, filtering: true, filter: 'boolean' },

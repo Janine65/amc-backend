@@ -179,6 +179,8 @@ export class Clubmeister extends TableData {
     toAcc?: StringEmpty;
     fromAccount?: Account;
     toAccount?: Account;
+    haben?: NumberEmpty;
+    soll?: NumberEmpty;
     journal2receipt? : JournalReceipt;
 
     constructor() {
@@ -186,6 +188,16 @@ export class Clubmeister extends TableData {
     }
   }
 
+  /**
+   * date: '2023-01-01'
+    fromAcc: '1001 Postkonto'
+    haben: 0
+    id: 548
+    journalno: 2
+    memo: 'Kontoeröffnung (Saldovortrag)'
+    soll: '7087.69'
+    toAcc: '2100 Vermögen Vorjahr'
+   */
   export class Budget extends TableData {
     account? : NumberEmpty;
     year?: NumberEmpty;

@@ -217,37 +217,36 @@ export class BackendService {
     return this.http.get<Fiscalyear[]>(apiURL, {headers: this.header});
   }
 
-  // router.post('/fiscalyear/data', authorize(), fiscalyearService.addData);
   addFiscalyear(data: Fiscalyear): Observable<any> {
     const apiURL = environment.apiUrl + '/journal/fiscalyear/data';
     const body = JSON.stringify(data)
     return this.http.post(apiURL, body, {headers: this.header});
   }
 
-  // router.put('/fiscalyear/data', authorize(), fiscalyearService.updateData);
   updFiscalyear(data: Fiscalyear): Observable<any> {
     const apiURL = environment.apiUrl + '/journal/fiscalyear/data';
     const body = JSON.stringify(data)
     return this.http.put(apiURL, body, {headers: this.header});
   }
-  // router.delete('/fiscalyear/data', authorize(), fiscalyearService.removeData);
   delFiscalyear(data: Fiscalyear): Observable<any> {
     const apiURL = environment.apiUrl + '/journal/fiscalyear/data';
     const body = JSON.stringify(data)
     return this.http.delete(apiURL, {headers: this.header, body: body});
   }
-  // router.get('/fiscalyear/getOneData', fiscalyearService.getOneData);
   getOneFiscalyear(year: string) : Observable<Fiscalyear> {
     const apiURL = environment.apiUrl + '/journal/fiscalyear/getOneData?jahr=' + year;
     return this.http.get<Fiscalyear>(apiURL, {headers: this.header});
 
   }
-  // router.put('/fiscalyear/close', authorize(), fiscalyearService.updateData);
   closeFiscalyear(jahr: string, status: number): Observable<any> {
   const apiURL = environment.apiUrl + '/journal/fiscalyear/close?jahr=' + jahr + '&status=' + status;
     return this.http.put(apiURL, null, {headers: this.header});
   }
 
+  getOneAccount(jahr: number, accountid: number): Observable<Journal[]> {
+    const apiURL = environment.apiUrl + '/journal/journal/getAccData?jahr=' + jahr + '&acc=' + accountid;
+    return this.http.get<Journal[]>(apiURL, {headers: this.header});
+  }
   getAccount(): Observable<Account[]> {
     const apiURL = environment.apiUrl + '/journal/account/alldata';
     return this.http.get<Account[]>(apiURL, {headers: this.header});

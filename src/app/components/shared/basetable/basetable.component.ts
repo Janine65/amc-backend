@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit, Type } from '@angular/core';
 import { AccountService } from '@app/service';
 import { Table } from 'primeng/table';
 
 export class TableOptions {
   public header?: string;
   public field?: string;
+  public pipe?: Type<any>;
+  public args?: [any] | any;
   public format = false;
   public sortable = false;
   public sorting?: string;
@@ -66,6 +69,7 @@ export class BaseTableComponent implements OnInit, OnDestroy {
   public getScreenWidth: any;
   public getScreenHeight: any;
   public objHeight$ = '500px';
+  DecimalPipe?: DecimalPipe;
 
   constructor(private accountService : AccountService) {}
 

@@ -7,6 +7,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { AddEditComponent } from '../add-edit/add-edit.component';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-list',
@@ -32,7 +33,7 @@ export class ListComponent implements OnInit {
   ngOnInit(): void {
 
     this.cols = [
-      { field: 'id', header: 'ID', format: false, sortable: false, filtering: false, filter: '' },
+      { field: 'id', header: 'ID', format: false, sortable: false, filtering: false, filter: '', pipe: DecimalPipe, args: '1.0-0' },
       { field: 'name', header: 'Name', format: false, sortable: true, filtering: true, filter: 'text' },
       { field: 'email', header: 'Email', format: false, sortable: true, filtering: true, filter: 'text' },
       { field: 'role', header: 'Rolle', format: false, sortable: true, filtering: true, filter: 'text' },

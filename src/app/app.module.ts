@@ -1,5 +1,5 @@
 import { ErrorHandler, NgModule } from '@angular/core';
-import { HashLocationStrategy, LocationStrategy, CommonModule } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy, CommonModule, DecimalPipe, DatePipe, PercentPipe } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -43,6 +43,7 @@ import { AutoFocusModule } from 'primeng/autofocus';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TagModule } from 'primeng/tag';
 
+import { DynamicPipe } from '@shared/basetable/dynamicpipe';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppMenuComponent } from './layout/app.menu.component';
@@ -82,6 +83,7 @@ import { AttachementListComponent } from './components/buchhaltung/attachement-l
 import { AttachementShowComponent } from './components/buchhaltung/attachement-show/attachement-show.component';
 import { SafePipe } from './components/shared/safe.pipe';
 import { AttachmentAddComponent } from './components/buchhaltung/attachment-add/attachment-add.component';
+import { KontoBewegungenComponent } from './components/buchhaltung/konto-bewegungen/konto-bewegungen.component';
 
 @NgModule({
   declarations: [
@@ -118,8 +120,9 @@ import { AttachmentAddComponent } from './components/buchhaltung/attachment-add/
     BudgetComponent,
     AttachementListComponent,
     AttachementShowComponent,
-    SafePipe,
+    SafePipe, DynamicPipe,
     AttachmentAddComponent,
+    KontoBewegungenComponent,
   ],
   imports: [
     BrowserModule,
@@ -167,6 +170,9 @@ import { AttachmentAddComponent } from './components/buchhaltung/attachment-add/
     AutoFocusModule,
     ProgressBarModule,
     TagModule,
+    DecimalPipe,
+    DatePipe,
+    PercentPipe,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

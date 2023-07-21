@@ -4,12 +4,16 @@ import { Account } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Observable, from } from 'rxjs';
+import { KontoBewegungenComponent } from '../konto-bewegungen/konto-bewegungen.component';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-konten',
   templateUrl: './konten.component.html',
-  styleUrls: ['./konten.component.scss']
+  styleUrls: ['./konten.component.scss'],
+  providers: [DialogService]
 })
 export class KontenComponent implements OnInit {
 
@@ -28,13 +32,16 @@ export class KontenComponent implements OnInit {
   ]
   selState = 1
 
-  constructor(private backendService: BackendService, private messageService: MessageService) {}
+  constructor(
+    private backendService: BackendService, 
+    private dialogService: DialogService,
+    private messageService: MessageService) {}
 
   ngOnInit(): void {
     this.cols = [
       { field: 'name', header: 'Name', format: false, sortable: false, filtering: false, filter: undefined },
-      { field: 'level', header: 'Level', format: false, sortable: false, filtering: false, filter: undefined },
-      { field: 'order', header: 'Order', format: false, sortable: false, filtering: false, filter: undefined },
+      { field: 'level', header: 'Level', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.0-0' },
+      { field: 'order', header: 'Order', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.0-0' },
       { field: 'status', header: 'Status', format: true, sortable: false, filtering: false, filter: undefined },
     ];
 
@@ -50,6 +57,10 @@ export class KontenComponent implements OnInit {
       {
         label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
         isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAccount, roleNeeded: '', isEditFunc: false
+      },
+      {
+        label: "Bewegungen", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.showProcess, roleNeeded: '', isEditFunc: false
       },
     ];
 
@@ -107,7 +118,7 @@ export class KontenComponent implements OnInit {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const thisRef: KontenComponent = this;
     console.log("New Account");
-    this.clearFields();
+    thisRef.clearFields();
     thisRef.messageService.clear();
     this.addMode = true;
   }
@@ -118,6 +129,30 @@ export class KontenComponent implements OnInit {
     this.selAccount = {}
 
   }
+
+  showProcess = (selRec?: Account) => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisRef: KontenComponent = this;
+    console.log("Show Process");
+    thisRef.clearFields();
+
+    if (selRec) {
+      thisRef.dialogService.open(KontoBewegungenComponent, {
+        data: {
+          accountid: selRec.id,
+        },
+        header: 'Kontoauszug ' + selRec.longname,
+        width: '90%',
+        height: '90%',
+        resizable: true,
+        modal: true,
+        maximizable: true,
+        draggable: true
+      });
+    }
+    
+  };
+
   save() {
     let sub : Observable<any>;
 

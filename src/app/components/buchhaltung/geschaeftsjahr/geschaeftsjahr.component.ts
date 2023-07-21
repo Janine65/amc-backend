@@ -6,7 +6,7 @@ import { BackendService } from '@service/backend.service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { Observable, forkJoin, from, of, timer, zip, zipAll } from 'rxjs';
+import { Observable, from, timer } from 'rxjs';
 
 @Component({
   selector: 'app-geschaeftsjahr',

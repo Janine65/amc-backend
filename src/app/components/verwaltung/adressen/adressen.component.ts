@@ -10,6 +10,7 @@ import { EmailBody, EmailSignature } from '@app/components/shared/email-dialog/e
 import { EmailDialogComponent } from '@app/components/shared/email-dialog/email-dialog.component';
 import { environment } from '@environments/environment';
 import { MessageService } from 'primeng/api';
+import { DatePipe, DecimalPipe } from '@angular/common';
 
 
 export class AdresseFilter {
@@ -64,19 +65,19 @@ export class AdressenComponent implements OnInit {
   ngOnInit(): void {
 
     this.cols = [
-      { field: 'mnr', header: 'MNR', format: false, sortable: false, filtering: false, filter: '' },
+      { field: 'mnr', header: 'MNR', format: false, sortable: false, filtering: false, filter: '', pipe: DecimalPipe, args: '1.0-0' },
       { field: 'name', header: 'Nachname', format: false, sortable: true, filtering: true, filter: 'text' },
       { field: 'vorname', header: 'Vorname', format: false, sortable: true, filtering: true, filter: 'text' },
       { field: 'adresse', header: 'Strasse', format: false, sortable: true, filtering: true, filter: 'text' },
-      { field: 'plz', header: 'PLZ', format: false, sortable: true, filtering: true, filter: 'numeric' },
+      { field: 'plz', header: 'PLZ', format: false, sortable: true, filtering: true, filter: 'text' },
       { field: 'ort', header: 'Ort', format: false, sortable: true, filtering: true, filter: 'text' },
       { field: 'land', header: 'Land', format: false, sortable: false, filtering: true, filter: 'text' },
-      { field: "eintritt", header: 'Eintritt', format: true, sortable: true, filtering: true, filter: 'numeric' },
+      { field: "eintritt", header: 'Eintritt', format: false, sortable: true, filtering: true, filter: 'text', pipe: DatePipe, args: 'yyyy' },
       { field: 'sam_mitglied', header: 'SAM', format: false, sortable: true, filtering: true, filter: 'boolean' },
       { field: 'vorstand', header: 'Vorstand', format: false, sortable: true, filtering: true, filter: 'boolean' },
       { field: 'revisor', header: 'Revisor', format: false, sortable: true, filtering: true, filter: 'boolean' },
       { field: 'allianz', header: 'Allianz', format: false, sortable: true, filtering: true, filter: 'boolean' },
-      { field: "austritt", header: 'Austritt', format: true, sortable: true, filtering: true, filter: 'numeric' },
+      { field: "austritt", header: 'Austritt', format: false, sortable: true, filtering: true, filter: 'text', pipe: DatePipe, args: 'yyyy' },
     ];
 
     this.toolbar = [

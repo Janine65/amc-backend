@@ -21,7 +21,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-data let-editing="editing" let-ri="rowIndex">
             <tr [pEditableRow]="data" [pEditableRowDisabled]="rowIsEditing(data)">
-                <td>
+                <td class="text-right">
                     {{ data.acc_order }}
                 </td>
                 <td [pEditableColumn]="data.acc_id" pEditableColumnField="acc_id">
@@ -38,16 +38,16 @@
                         </ng-template>
                     </p-cellEditor>
                 </td>
-                <td [pEditableColumn]="data.amount" pEditableColumnField="amount">
+                <td [pEditableColumn]="data.amount" pEditableColumnField="amount" class="text-right">
                     <div *ngIf="!rowIsEditing(data)">
-                        {{ data.amount }}
+                        {{ data.amount | number : '1.2-2' }}
                     </div>
                     <p-cellEditor *ngIf="rowIsEditing(data)">
                         <ng-template pTemplate="input">
                             <p-inputNumber [(ngModel)]="data.amount" [required]="true"></p-inputNumber>
                         </ng-template>
                         <ng-template pTemplate="output">
-                            {{ data.amount }}
+                            {{ data.amount | number : '1.2-2' }}
                         </ng-template>
                     </p-cellEditor>
                 </td>
