@@ -1475,7 +1475,20 @@ function writeArray(sheet, arData, firstRow, fBudget = false, fBudgetVergleich =
             setCellValueFormat(sheet, 'D' + row, element.amount, true, '', font);
             setCellValueFormat(sheet, 'E' + row, element.amountVJ, true, '', font);
 
-            setCellValueFormat(sheet, 'F' + row, { formula: 'D' + row + '-E' + row }, true, '', font);
+            switch (element.level) {
+                case 2:
+                case 4:
+                    setCellValueFormat(sheet, 'F' + row, { formula: 'E' + row + '-D' + row }, true, '', font);
+                    break;
+            
+                case 1:
+                case 6:
+                    setCellValueFormat(sheet, 'F' + row, { formula: 'D' + row + '-E' + row }, true, '', font);                    
+                    break;
+
+                default:
+                    break;
+            }
 
             sheet.getCell('D' + cellLevel).value = { formula: '=SUM(D' + eval(cellLevel + 1) + ':' + 'D' + row + ')' };
             sheet.getCell('E' + cellLevel).value = { formula: '=SUM(E' + eval(cellLevel + 1) + ':' + 'E' + row + ')' };
@@ -1498,7 +1511,20 @@ function writeArray(sheet, arData, firstRow, fBudget = false, fBudgetVergleich =
             if (fBudget) {
                 setCellValueFormat(sheet, 'G' + row, eval(element.budget * 1), true, '', font);
 
-                setCellValueFormat(sheet, 'H' + row, { formula: 'G' + row + '-D' + row }, true, '', font);
+                switch (element.level) {
+                    case 2:
+                    case 4:
+                        setCellValueFormat(sheet, 'H' + row, { formula: 'G' + row + '-D' + row }, true, '', font);
+                        break;
+                
+                    case 1:
+                    case 6:
+                        setCellValueFormat(sheet, 'H' + row, { formula: 'D' + row + '-G' + row }, true, '', font);
+                        break;
+    
+                    default:
+                        break;
+                }
 
                 sheet.getCell('G' + cellLevel).value = { formula: '=SUM(G' + eval(cellLevel + 1) + ':' + 'G' + row + ')' };
                 sheet.getCell('H' + cellLevel).value = { formula: '=SUM(H' + eval(cellLevel + 1) + ':' + 'H' + row + ')' };

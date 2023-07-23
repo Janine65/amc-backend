@@ -216,7 +216,7 @@ module.exports = {
 							switch (data2[ind2].toAccount.level) {
 								case 1:
 								case 4:
-									record.amount = eval(data2[ind2].amount * -11);
+									record.amount = eval(data2[ind2].amount * -1);
 									break;
 								case 2:
 								case 6:
@@ -232,11 +232,16 @@ module.exports = {
 							if (found >= 0) {
 								const acc = arBudget[found];
 								record.budget = eval(acc.amount * 1);
-								record.diff = record.budget - record.amount;
 								arBudget.splice(found, 1);
-							} else {
-								record.diff = arData[ind2].budget - arData[ind2].amount;
 							}
+							switch (record.level) {
+								case 4:
+									record.diff = record.budget - record.amount;
+									break;
+								case 6:
+									record.diff = record.amount - record.budget;
+									break;
+							}									
 						}
 
 						for (let ind2 = 0; ind2 < arBudget.length; ind2++) {
@@ -250,7 +255,14 @@ module.exports = {
 
 							record.amount = 0;
 							record.budget = eval(arBudget[ind2].amount * 1)
-							record.diff = record.budget;
+							switch (record.level) {
+								case 4:
+									record.diff = record.budget - record.amount;
+									break;
+								case 6:
+									record.diff = record.amount - record.budget;
+									break;
+							}									
 							arData.push(record);
 						}
 
