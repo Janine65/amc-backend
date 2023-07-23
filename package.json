@@ -1,6 +1,6 @@
 {
   "name": "amc-administration",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "Auto-Moto-Club Administration",
   "main": "index.js",
   "private": "true",
