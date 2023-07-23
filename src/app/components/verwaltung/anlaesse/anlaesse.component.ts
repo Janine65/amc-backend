@@ -96,6 +96,8 @@ export class AnlaesseComponent implements OnInit{
         this.anlaesseListAll.forEach(anl => {
           anl.datum_date = new Date(anl.datum ? anl.datum : '');
           anl.vorjahr = (anl.linkedEvent ? anl.linkedEvent.vorjahr : '');
+          if (anl.status == 0)
+            anl.classRow = 'inactive';
         })
         this.chgJahr()
         this.loading = false;

@@ -63,7 +63,7 @@ export class KtoAuswertungComponent {
                 iTotalAktiv += rec.amount;
                 break;
 
-              case 2:-
+              case 2:
                 this.lstPassivNodes.push(rec);
                 iTotalPassiv += rec.amount;
                 break;
@@ -106,6 +106,21 @@ export class KtoAuswertungComponent {
           TotalRec.$css = 'alert-total';
           this.lstPassivNodes.push(TotalRec)
 
+          TotalRec = new AccountAuswertung();
+          TotalRec.amount = iTotalErfolg;
+          TotalRec.budget = iBudgetErfolg;
+          TotalRec.diff = TotalRec.amount - TotalRec.budget;
+          TotalRec.name = 'Erfolg';
+          TotalRec.$css = 'alert-total';
+          this.lstErfolgNodes.push(TotalRec);
+          TotalRec = new AccountAuswertung();
+          TotalRec.amount = iTotalAufwand;
+          TotalRec.budget = iBudgetAufwand;
+          TotalRec.diff = TotalRec.amount - TotalRec.budget;
+          TotalRec.name = 'Aufwand';
+          TotalRec.$css = 'alert-total';
+          this.lstAufwandNodes.push(TotalRec);
+
           iDiffTotal = iTotalErfolg - iTotalAufwand;
           TotalRec = new AccountAuswertung();
           TotalRec.amount = iDiffTotal;
@@ -118,20 +133,6 @@ export class KtoAuswertungComponent {
           } else {
             this.lstAufwandNodes.push(TotalRec);
           }
-          TotalRec = new AccountAuswertung();
-          TotalRec.amount = Math.max(iTotalAufwand, iTotalErfolg);
-          TotalRec.budget = Math.max(iBudgetAufwand, iBudgetErfolg);
-          TotalRec.diff = TotalRec.amount - TotalRec.budget;
-          TotalRec.name = 'Erfolg';
-          TotalRec.$css = 'alert-total';
-          this.lstErfolgNodes.push(TotalRec);
-          TotalRec = new AccountAuswertung();
-          TotalRec.amount = Math.max(iTotalAufwand, iTotalErfolg);
-          TotalRec.budget = Math.max(iBudgetAufwand, iBudgetErfolg);
-          TotalRec.diff = TotalRec.amount - TotalRec.budget;
-          TotalRec.name = 'Aufwand';
-          TotalRec.$css = 'alert-total';
-          this.lstAufwandNodes.push(TotalRec);
         }
       }
     })

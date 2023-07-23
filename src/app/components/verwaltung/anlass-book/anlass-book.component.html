@@ -1,7 +1,7 @@
 <p-toast key="local"></p-toast>
 <p-splitter [panelSizes]="[40, 60]" styleClass="mb-1">
     <ng-template pTemplate>
-        <div class="card" style="width: 100%; " id="table-box">
+        <div class="card border-0" style="width: 100%; height: 100%;" id="table-box">
             <div class="row col-md-12 mb-3 p-1 border-1 border-round">
                 <label for="gaeste" class="mr-2 mb-1">Gäste</label>
                 <input type="number" id="gaeste" class="wurf mb-1" [(ngModel)]="anlass.gaeste">
@@ -40,7 +40,7 @@
         </div>
     </ng-template>
     <ng-template pTemplate>
-        <div class="card" style="width: 100%;">
+        <div class="card" style="width: 100%; height: 100%;">
             <form [formGroup]="fgMeisterschaft" autocomplete="off">
                 <div class="formgroup-inline">
                     <div class="field pb-2">

@@ -21,10 +21,10 @@
         </ng-template>
         <ng-template pTemplate="body" let-data let-editing="editing" let-ri="rowIndex">
             <tr [pEditableRow]="data" [pEditableRowDisabled]="rowIsEditing(data)">
-                <td class="text-right">
+                <td class="text-right" [class]="data.classRow">
                     {{ data.acc_order }}
                 </td>
-                <td [pEditableColumn]="data.acc_id" pEditableColumnField="acc_id">
+                <td [pEditableColumn]="data.acc_id" pEditableColumnField="acc_id" [class]="data.classRow">
                     <div *ngIf="!rowIsEditing(data)">
                         {{ data.acc_name }}
                     </div>
@@ -38,7 +38,7 @@
                         </ng-template>
                     </p-cellEditor>
                 </td>
-                <td [pEditableColumn]="data.amount" pEditableColumnField="amount" class="text-right">
+                <td [pEditableColumn]="data.amount" pEditableColumnField="amount" class="text-right" [class]="data.classRow">
                     <div *ngIf="!rowIsEditing(data)">
                         {{ data.amount | number : '1.2-2' }}
                     </div>
@@ -51,7 +51,7 @@
                         </ng-template>
                     </p-cellEditor>
                 </td>
-                <td [pEditableColumn]="data.memo" pEditableColumnField="memo">
+                <td [pEditableColumn]="data.memo" pEditableColumnField="memo" [class]="data.classRow">
                     <div *ngIf="!rowIsEditing(data)">
                         {{ data.memo }}
                     </div>

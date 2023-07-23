@@ -1,16 +1,13 @@
 <p-toast key="local"></p-toast>
 <div class="card" style="width: 100%; " id="table-box">
-    <div class="row col-md-12 mb-3 p-1 border-1 border-round">
         <label for="jahr" class="mr-2 ">Jahr auswählen</label>
         <p-dropdown id="jahr" [options]="selJahre" optionLabel="label" optionValue="value" [(ngModel)]="selJahr"
             class="mr-2 mb-1" (onChange)="readMeisterschaft()"></p-dropdown>
         <button pButton type="button" label="Refresh" icon="pi pi-spin" class="p-button-primary p-button-outlined ml-8"
             (click)="refresh()"></button>
-    </div>
-</div>
-<p-splitter [panelSizes]="[50, 50]" styleClass="mb-1">
+<p-splitter [panelSizes]="[50, 50]">
     <ng-template pTemplate>
-        <div class="card" style="width: 100%; height: 100%;" id="table-boxc">
+        <div class="card border-0" style="width: 100%; height: 100%;" id="table-boxc">
             <div class="row col-md-12">
                 <h2>Clubmeisterschaft</h2>
                 <p-table styleClass=" p-datatable-striped" [value]="lstClubmeister" dataKey="id"
@@ -26,10 +23,10 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-data>
                         <tr style="height:36px">
-                            <td>{{data.rang}}</td>
-                            <td>{{data.vorname}}</td>
-                            <td>{{data.nachname}}</td>
-                            <td>{{data.punkte}}</td>
+                            <td [class]="data.status ? '' : 'inactive' ">{{data.rang}}</td>
+                            <td [class]="data.status ? '' : 'inactive' ">{{data.vorname}}</td>
+                            <td [class]="data.status ? '' : 'inactive' ">{{data.nachname}}</td>
+                            <td [class]="data.status ? '' : 'inactive' ">{{data.punkte}}</td>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="summary">
@@ -42,7 +39,7 @@
         </div>
     </ng-template>
     <ng-template pTemplate>
-        <div class="card" style="width: 100%; height: 100%;" id="table-boxk">
+        <div class="card border-0" style="width: 100%; height: 100%;" id="table-boxk">
             <h2>Kegelmeisterschaft</h2>
             <p-table styleClass=" p-datatable-striped" [value]="lstKegelmeister" dataKey="id"
                 [scrollHeight]="objHeightk$" [virtualScroll]="true" [virtualScrollItemSize]="36"
@@ -57,10 +54,10 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-data>
                     <tr style="height:36px">
-                        <td>{{data.rang}}</td>
-                        <td>{{data.vorname}}</td>
-                        <td>{{data.nachname}}</td>
-                        <td>{{data.punkte}}</td>
+                        <td [class]="data.status ? '' : 'inactive' ">{{data.rang}}</td>
+                        <td [class]="data.status ? '' : 'inactive' ">{{data.vorname}}</td>
+                        <td [class]="data.status ? '' : 'inactive' ">{{data.nachname}}</td>
+                        <td [class]="data.status ? '' : 'inactive' ">{{data.punkte}}</td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="summary">
@@ -72,3 +69,4 @@
         </div>
     </ng-template>
 </p-splitter>
+</div>

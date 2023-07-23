@@ -71,7 +71,7 @@ export class JournalComponent implements OnInit {
   ngOnInit(): void {
     this.cols = [
       { field: 'journalno', header: 'No.', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.0-0' },
-      { field: 'date', header: 'Datum', format: false, sortable: false, filtering: false, filter: undefined, pipe: DatePipe, args: 'dd.mm.yyyy' },
+      { field: 'date', header: 'Datum', format: false, sortable: false, filtering: false, filter: undefined, pipe: DatePipe, args: 'dd.MM.yyyy' },
       { field: 'fromAcc', header: 'Konto Soll', format: false, sortable: false, filtering: false, filter: undefined },
       { field: 'toAcc', header: 'Konto Haben', format: false, sortable: false, filtering: false, filter: undefined },
       { field: 'memo', header: 'text', format: false, sortable: false, filtering: false, filter: undefined },

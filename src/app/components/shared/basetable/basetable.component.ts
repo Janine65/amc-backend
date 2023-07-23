@@ -14,12 +14,14 @@ export class TableOptions {
   public sorting?: string;
   public filtering = false;
   public filter?: string;
+  public class?: string;
 }
 
 export class TableData {
   public id?: number;
   public createdAt?: Date;
   public updatedAt?: Date;
+  public classRow?: string;
 
 }
 
@@ -63,6 +65,7 @@ export class BaseTableComponent implements OnInit, OnDestroy {
   @Input() localStorage = 'basetable'
   @Input() diffCalcHight = 100;
   @Input() editable = true;
+  @Input() rowClassField = ''
 
   selectedRecord?: TableData;
   filteredRows = this.tableData;

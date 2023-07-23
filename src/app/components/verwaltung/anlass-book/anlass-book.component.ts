@@ -139,7 +139,8 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
   private getHeight() { 
     const element = document.getElementById("table-box")
     if (element) {
-      this.objHeight$ = (element.scrollHeight - 250).toString() + 'px'; 
+      console.log(element.scrollHeight)
+      this.objHeight$ = (element.scrollHeight - 1500).toString() + 'px'; 
     }
   }
 

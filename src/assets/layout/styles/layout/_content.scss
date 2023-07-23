@@ -10,3 +10,76 @@
 .layout-main {
     flex: 1 1 auto;
 }
+// dashboard
+.open {
+    background-color: #91e991;
+}
+.prov-closed {
+    background-color: #fafaac;
+}
+
+.closed {
+    background-color: #fdbebe;
+}
+
+// basetable
+.p-datatable .p-datatable-header {
+    background-color: transparent !important;
+}
+
+.p-datatable>.p-datatable-wrapper {
+    border: 1px solid #007ad9;
+    border-width: 1px 1px 0 1px;
+}
+
+.p-toolbar {
+    background-color: transparent !important;
+}
+
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+background-color: #007ad9;
+color: white;
+
+}
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+background-color: transparent;
+color: black;
+}
+
+.inactive {
+    background-color: lightgray;
+    font-style: italic;
+}
+
+// Geschäftsjahr
+.offen {
+    color: #91e991;
+}
+
+.provisorisch {
+    color: #fafaac;
+}
+
+.abgeschlossen {
+    color: #fdbebe;
+    font-style: italic;
+}
+
+// Kontoauswertung
+  
+  .alert-minus {
+    color: red;
+    font-weight: bold;
+  
+  }
+  
+  .alert-plus {
+    color: green;
+    font-weight: bold;
+  
+  }
+  .alert-total {
+    font-weight: bold;
+  
+  }
+

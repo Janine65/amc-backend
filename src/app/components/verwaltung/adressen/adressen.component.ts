@@ -113,6 +113,8 @@ export class AdressenComponent implements OnInit {
         this.adressList.forEach(adr => {
           adr.eintritt_date = new Date(adr.eintritt!);
           adr.austritt_date = new Date(adr.austritt!);
+          if (adr.austritt !== '3000-01-01')
+            adr.classRow = 'inactive';
         })
         this.loading = false;
       });

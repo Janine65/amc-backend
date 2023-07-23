@@ -79,6 +79,19 @@ export class GeschaeftsjahrComponent implements OnInit {
     from(this.backendService.getFiscalyear())
       .subscribe(list => {
         this.lstFiscalyear = list;
+        this.lstFiscalyear.forEach(rec => {
+          switch(rec.state) {
+            case 1:
+              rec.classRow = 'offen';
+              break;
+            case 2:
+              rec.classRow = 'provisorisch';
+              break;
+            case 3:
+              rec.classRow = 'abgeschlossen';
+              break;
+            }
+        })
         this.loading = false;
       });
   }

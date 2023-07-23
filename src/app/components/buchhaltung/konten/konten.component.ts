@@ -67,6 +67,10 @@ export class KontenComponent implements OnInit {
     from(this.backendService.getAccount())
     .subscribe(list => {
       this.lstAccount = list;
+      this.lstAccount.forEach(rec => {
+        if (rec.status === 0)
+          rec.classRow = 'inactive'
+      })
       this.loading = false;
     });
   }

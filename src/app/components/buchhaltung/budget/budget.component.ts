@@ -72,6 +72,8 @@ export class BudgetComponent {
           rec.acc_id = rec.acc?.id
           rec.acc_name = rec.acc?.name
           rec.acc_order = rec.acc?.order
+          if (rec.acc?.status == 0)
+            rec.classRow = 'inactive';
         })
         from(this.backendService.getOneFiscalyear(this.selJahr.toString()))
         .subscribe((result) => {
