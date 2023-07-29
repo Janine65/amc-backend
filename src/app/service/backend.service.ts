@@ -269,7 +269,10 @@ export class BackendService {
   getOneDataByOrder(order: number) : Observable<Account> {
     const apiURL = environment.apiUrl + '/journal/account/getOneDataByOrder?order=' + order;
     return this.http.get<Account>(apiURL, {headers: this.header});
-
+  }
+  getAmountOneAcc(jahr: number, order: number) : Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/account/getAmountOneAcc?jahr=' + jahr + '&order=' + order;
+    return this.http.get<any>(apiURL, {headers: this.header});
   }
   getJournal(jahr: number): Observable<Journal[]> {
     const apiURL = environment.apiUrl + '/journal/journal/data?jahr=' + jahr;

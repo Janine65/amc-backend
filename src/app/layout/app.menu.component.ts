@@ -61,20 +61,19 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
                     }
                 )
             }
-            if (user.role === 'revisor' || user.role === 'admin') {
-                this.model.push(
-                    {
-                        label: 'Buchhaltung',
-                        items: [
-                            { label: 'Journal', icon: 'pi pi-fw pi-money-bill', routerLink: ['/buchhaltung/journal'] },
-                            { label: 'Auswertung', icon: 'pi pi-fw pi-percentage', routerLink: ['/buchhaltung/kto-auswertung'] },
-                            user.role === 'admin' ? { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-book', routerLink: ['/buchhaltung/geschaeftsjahr'] } : {},
-                            user.role === 'admin' ? { label: 'Budget', disabled: true, icon: 'pi pi-fw pi-calculator', routerLink: ['/buchhaltung/budget'] } : {},
-                            user.role === 'admin' ? { label: 'Konten', icon: 'pi pi-fw pi-bitcoin', routerLink: ['/buchhaltung/konten'] } : {},
-                        ]
-                    }
-                )
-            }
+            this.model.push(
+                {
+                    label: 'Buchhaltung',
+                    items: [
+                        (user.role === 'admin' || user.role === 'revisor') ? { label: 'Journal', icon: 'pi pi-fw pi-money-bill', routerLink: ['/buchhaltung/journal'] } : {},
+                        { label: 'Kegelkasse', icon: 'pi pi-dollar', routerLink: ['/buchhaltung/kegelkasse'] },
+                        (user.role === 'admin' || user.role === 'revisor') ? { label: 'Auswertung', icon: 'pi pi-fw pi-percentage', routerLink: ['/buchhaltung/kto-auswertung'] } : {},
+                        user.role === 'admin' ? { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-book', routerLink: ['/buchhaltung/geschaeftsjahr'] } : {},
+                        user.role === 'admin' ? { label: 'Budget', disabled: true, icon: 'pi pi-fw pi-calculator', routerLink: ['/buchhaltung/budget'] } : {},
+                        user.role === 'admin' ? { label: 'Konten', icon: 'pi pi-fw pi-bitcoin', routerLink: ['/buchhaltung/konten'] } : {},
+                    ]
+                }
+            )
         }
     }
 

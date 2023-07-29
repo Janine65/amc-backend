@@ -16,7 +16,7 @@ import { KontenComponent } from './components/buchhaltung/konten/konten.componen
 import { GeschaeftsjahrComponent } from './components/buchhaltung/geschaeftsjahr/geschaeftsjahr.component';
 import { KtoAuswertungComponent } from './components/buchhaltung/kto-auswertung/kto-auswertung.component';
 import { BudgetComponent } from './components/buchhaltung/budget/budget.component';
-
+import { KegelkasseComponent } from './components/buchhaltung/kegelkasse/kegelkasse.component';
 
 @NgModule({
   imports: [RouterModule.forRoot([
@@ -41,6 +41,7 @@ import { BudgetComponent } from './components/buchhaltung/budget/budget.componen
           path: 'buchhaltung',
           children: [
             { path: 'journal', component: JournalComponent, canActivate: [AuthGuard], data: { role: 'revisor' } },
+            { path: 'kegelkasse', component: KegelkasseComponent, canActivate: [AuthGuard], data: {role: 'user'}},
             { path: 'konten', component: KontenComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
             { path: 'geschaeftsjahr', component: GeschaeftsjahrComponent, canActivate: [AuthGuard], data: { role: 'admin' } },
             { path: 'budget', component: BudgetComponent, canActivate: [AuthGuard], data: { role: 'admin' } },

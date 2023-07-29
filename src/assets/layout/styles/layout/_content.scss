@@ -10,10 +10,12 @@
 .layout-main {
     flex: 1 1 auto;
 }
+
 // dashboard
 .open {
     background-color: #91e991;
 }
+
 .prov-closed {
     background-color: #fafaac;
 }
@@ -37,13 +39,14 @@
 }
 
 .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
-background-color: #007ad9;
-color: white;
+    background-color: #007ad9;
+    color: white;
 
 }
+
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
-background-color: transparent;
-color: black;
+    background-color: transparent;
+    color: black;
 }
 
 .inactive {
@@ -66,20 +69,20 @@ color: black;
 }
 
 // Kontoauswertung
-  
-  .alert-minus {
+
+.alert-minus {
     color: red;
     font-weight: bold;
-  
-  }
-  
-  .alert-plus {
+
+}
+
+.alert-plus {
     color: green;
     font-weight: bold;
-  
-  }
-  .alert-total {
-    font-weight: bold;
-  
-  }
 
+}
+
+.alert-total {
+    font-weight: bold;
+
+}

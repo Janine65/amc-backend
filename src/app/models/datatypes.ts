@@ -150,7 +150,7 @@ export class Clubmeister extends TableData {
     order?: NumberEmpty;
     status?: NumberEmpty;
     longname?: StringEmpty;
-
+    amount?: NumberEmpty;
     constructor() {
       super();
     }

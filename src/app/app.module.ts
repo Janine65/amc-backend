@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import {MatIconModule} from '@angular/material/icon';
 
 import { SidebarModule } from 'primeng/sidebar';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -84,6 +85,7 @@ import { AttachementShowComponent } from './components/buchhaltung/attachement-s
 import { SafePipe } from './components/shared/safe.pipe';
 import { AttachmentAddComponent } from './components/buchhaltung/attachment-add/attachment-add.component';
 import { KontoBewegungenComponent } from './components/buchhaltung/konto-bewegungen/konto-bewegungen.component';
+import { KegelkasseComponent } from './components/buchhaltung/kegelkasse/kegelkasse.component';
 
 @NgModule({
   declarations: [
@@ -123,6 +125,7 @@ import { KontoBewegungenComponent } from './components/buchhaltung/konto-bewegun
     SafePipe, DynamicPipe,
     AttachmentAddComponent,
     KontoBewegungenComponent,
+    KegelkasseComponent,
   ],
   imports: [
     BrowserModule,
@@ -173,6 +176,7 @@ import { KontoBewegungenComponent } from './components/buchhaltung/konto-bewegun
     DecimalPipe,
     DatePipe,
     PercentPipe,
+    MatIconModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },
