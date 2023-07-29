@@ -80,6 +80,48 @@ module.exports = {
 			.catch((e) => console.error(e));
 	},
 
+	getAmountOneAcc: function (req, res) {
+		let amount = 0
+		Account.findOne({ where: { "order": req.query.order } })
+			.then(data => {
+				Journal.findAll({
+					attributes: [[Sequelize.fn('sum', Sequelize.col("amount")), "amount"]],
+					where: Sequelize.where(Sequelize.fn('year', Sequelize.col("date")), req.query.jahr),
+					include: [
+						{
+							model: Account, as: 'fromAccount', required: true,
+							attributes: ["id"],
+							where: { "id": data.id }
+						}],
+					group: ["fromAccount.id"],
+				})
+				.then(from => {
+					if (from.length == 1)
+						amount = from[0].amount
+					Journal.findAll({
+						attributes: [[Sequelize.fn('sum', Sequelize.col("amount")), "amount"]],
+						where: Sequelize.where(Sequelize.fn('year', Sequelize.col("date")), req.query.jahr),
+						include: [
+							{
+								model: Account, as: 'toAccount', required: true,
+								attributes: ["id"],
+								where: { "id": data.id }
+							}],
+						group: ["toAccount.id"],
+					})
+					.then(to => {
+						if (to.length == 1)
+							amount -= to[0].amount
+						res.json({amount: amount, id: data.id})
+					})	
+					.catch((e) => console.error(e))
+				})
+				.catch((e) => console.error(e))
+				
+			})
+			.catch((e) => console.error(e))
+	},
+
 	getFKData: function (req, res) {
 		Account.findAll({
 			attributes: ["id", [Sequelize.fn('CONCAT', Sequelize.col("name"), ' ', Sequelize.col("order")), "name"]],

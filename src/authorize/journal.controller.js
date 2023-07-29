@@ -28,7 +28,7 @@ router.get('/account/getFkData', authorize(), accountService.getFKData);
 router.get('/account/showData', authorize(), accountService.getAccountSummary);
 router.get('/account/export', authorize(), exportService.writeAccountToExcel);
 router.get('/account/getOneDataByOrder', authorize(), accountService.getOneDataByOrder);
-
+router.get('/account/getAmountOneAcc', authorize(), accountService.getAmountOneAcc);
 
 router.get('/journal/data', authorize(), journalService.getData);
 router.get('/journal/onedata', authorize(), journalService.getOneData);
