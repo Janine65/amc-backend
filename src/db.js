@@ -535,7 +535,40 @@ const User = sequelize.define('User', {
 
     });
 
+class Kegelkasse extends Model {
+}
+Kegelkasse.init({
+  id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  datum: DataTypes.DATEONLY,
+  kasse: DataTypes.DECIMAL(7, 2),
+  rappen5: DataTypes.INTEGER,
+  rappen10: DataTypes.INTEGER,
+  rappen20: DataTypes.INTEGER,
+  rappen50: DataTypes.INTEGER,
+  franken1: DataTypes.INTEGER,
+  franken2: DataTypes.INTEGER,
+  franken5: DataTypes.INTEGER,
+  franken10: DataTypes.INTEGER,
+  franken20: DataTypes.INTEGER,
+  franken50: DataTypes.INTEGER,
+  franken100: DataTypes.INTEGER,
+  total: DataTypes.DECIMAL(7, 2),
+  differenz: DataTypes.DECIMAL(7, 2),
+},
+  {
+    sequelize,
+    tableName: 'kegelkasse',
+    modelName: 'kegelkasse'
+    
+})
+Kegelkasse.belongsTo(Journal, { as: "journal", constraints: true, foreignKey: 'journalid' })
+
 module.exports = {User,
-  Adressen, Anlaesse, Parameter, Meisterschaft, Clubmeister, Kegelmeister, Account, Journal, FiscalYear, Budget, Receipt, JournalReceipt,
+  Adressen, Anlaesse, Parameter, Meisterschaft, Clubmeister, Kegelkasse, Kegelmeister, Account, Journal, FiscalYear, Budget, Receipt, JournalReceipt,
 };
 

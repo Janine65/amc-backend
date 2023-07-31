@@ -81,7 +81,7 @@ app.get('/download', function(req, res) {
 const winston = require('winston')
 
 const logger = winston.createLogger({
-  level: 'info',
+  level: 'warning',
   format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   transports: [
@@ -98,7 +98,6 @@ const logger = winston.createLogger({
     host: global.gConfig.dbhost,
     port: global.gConfig.port,
     dialect: global.gConfig.dbtype,
-    logging: (msg) => logger.info(msg),
   });
   global.sequelize = conn;
 

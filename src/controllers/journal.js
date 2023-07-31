@@ -1,4 +1,4 @@
-const { Journal, Account, Receipt, JournalReceipt } = require("../db");
+const { Journal, Account, Receipt, JournalReceipt, Kegelkasse } = require("../db");
 const { Op, Sequelize, QueryInterface } = require("sequelize");
 const ExcelJS = require("exceljs");
 const fs = require("fs");
@@ -11,7 +11,7 @@ async function getData(req, res) {
 				'id', 'date', 'memo', 'journalno', 'amount', 'status',
 				[Sequelize.fn("COUNT", Sequelize.col("journal2receipt.receiptid")), "receipts"]
 			],
-			where: Sequelize.where(sequelize.fn('YEAR', Sequelize.col('date')), req.query.jahr),
+			where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('date')), req.query.jahr),
 			include: [
 				{ model: Account, as: 'fromAccount', required: true, attributes: ['id', 'order', 'name', 'longname'] },
 				{ model: Account, as: 'toAccount', required: true, attributes: ['id', 'order', 'name', 'longname'] },
@@ -218,6 +218,64 @@ async function updateData(req, res) {
 			.then((obj) => res.json(obj))
 			.catch((e) => console.error(e)))
 		.catch((e) => console.error(e));
+}
+
+async function getKegelkasse(req, res) {
+	Kegelkasse.findAll({
+		logging: console.log,
+		where: Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('datum')), req.query.monat),
+		include: [
+			{
+				model: Journal, as: 'journal', required: false,
+				include: [
+					{ model: Account, as: 'fromAccount', required: true, attributes: ['id', 'order', 'name', 'longname'] },
+					{ model: Account, as: 'toAccount', required: true, attributes: ['id', 'order', 'name', 'longname'] }
+				]
+			}
+		]
+	})
+		.then(obj => res.json(obj))
+		.catch(e => console.error(e));
+}
+
+async function addKegelkasse(req, res) {
+	let data = JSON.parse(req.body);
+	data.id = null;
+	console.info('insert: ', data);
+	Kegelkasse.create(data)
+		.then(async (obj) => {
+			if (data.journal && data.journal.id > 0)
+				await obj.setJournal(data.journal)
+			res.json(obj)
+		})
+		.catch((e) => console.error(e));
+}
+
+async function updateKegelkasse(req, res) {
+	let data = JSON.parse(req.body);
+	if (data.id) {
+		console.info('update: ', data);
+
+		Kegelkasse.findByPk(data.id)
+			.then((kegelkasse) => kegelkasse.update(data)
+				.then(async (obj) => {
+					if (data.journal && data.journal.id > 0)
+						await obj.setJournal(data.journal.id)
+					res.json(obj)
+				})
+				.catch((e) => console.error(e)))
+			.catch((e) => console.error(e));
+	} else {
+		data.id = null;
+		console.info('insert: ', data);
+		Kegelkasse.create(data)
+			.then(async (obj) => {
+				if (data.journal && data.journal.id > 0)
+					await obj.setJournal(data.journal)
+				res.json(obj)
+			})
+			.catch((e) => console.error(e));
+	}
 }
 
 async function addReceipt(req, res) {
@@ -599,6 +657,9 @@ module.exports = {
 	removeData: removeData,
 	addData: addData,
 	updateData: updateData,
+	getKegelkasse: getKegelkasse,
+	addKegelkasse: addKegelkasse,
+	updateKegelkasse: updateKegelkasse,
 	getAllAttachment: getAllAttachment,
 	addFiles2Journal: addFiles2Journal,
 	addReceipt2Journal: addReceipt2Journal,

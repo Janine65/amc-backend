@@ -82,11 +82,13 @@ module.exports = {
 
 	getAmountOneAcc: function (req, res) {
 		let amount = 0
+		let date = new Date(req.query.datum)
 		Account.findOne({ where: { "order": req.query.order } })
 			.then(data => {
 				Journal.findAll({
-					attributes: [[Sequelize.fn('sum', Sequelize.col("amount")), "amount"]],
-					where: Sequelize.where(Sequelize.fn('year', Sequelize.col("date")), req.query.jahr),
+					attributes: [[Sequelize.fn('sum', Sequelize.col("amount")), "amount"]],					
+					where: [{ "date": { [Op.lt]: date } },
+							Sequelize.where(Sequelize.fn('year', Sequelize.col("date")), date.getFullYear())],
 					include: [
 						{
 							model: Account, as: 'fromAccount', required: true,
@@ -100,7 +102,8 @@ module.exports = {
 						amount = from[0].amount
 					Journal.findAll({
 						attributes: [[Sequelize.fn('sum', Sequelize.col("amount")), "amount"]],
-						where: Sequelize.where(Sequelize.fn('year', Sequelize.col("date")), req.query.jahr),
+						where: [{ "date": { [Op.lt]: date } },
+						Sequelize.where(Sequelize.fn('year', Sequelize.col("date")), date.getFullYear())],
 						include: [
 							{
 								model: Account, as: 'toAccount', required: true,
