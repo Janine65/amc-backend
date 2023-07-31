@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Journal } from '@model/datatypes';
+import { Journal, Kegelkasse } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-kegelkasse',
@@ -43,8 +44,11 @@ export class KegelkasseComponent implements OnInit {
     differenz: new FormControl<number | null>({ value: 0.00, disabled: true }),
   })
 
+  decimalPipe = DecimalPipe;
+
   subFields!: Subscription[];
   fromAcc = 0;
+  kegelkasse: Kegelkasse = {};
 
   get date() { return this.fgKasse.get('date')! }
   get kasse() { return this.fgKasse.get('kasse')! }
@@ -79,6 +83,21 @@ export class KegelkasseComponent implements OnInit {
 
   ngOnInit(): void {
     this.subFields = [];
+    this.subscribeFields();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    this.date.setValue(yesterday);
+  }
+
+  unsubscribeFields() {
+    this.subFields.forEach(sub => {
+      sub.unsubscribe()
+    });
+    this.subFields = [];
+
+  }
+
+  subscribeFields() {
     this.subFields.push(this.rappen5.valueChanges.subscribe(() => this.calculate(this.rappen5.value, 'rappen5_sum', 0.05)));
     this.subFields.push(this.rappen10.valueChanges.subscribe(() => this.calculate(this.rappen10.value, 'rappen10_sum', 0.1)));
     this.subFields.push(this.rappen20.valueChanges.subscribe(() => this.calculate(this.rappen20.value, 'rappen20_sum', 0.2)));
@@ -92,21 +111,69 @@ export class KegelkasseComponent implements OnInit {
     this.subFields.push(this.franken100.valueChanges.subscribe(() => this.calculate(this.franken100.value, 'franken100_sum', 100)));
 
     this.subFields.push(this.date.valueChanges.subscribe(() => this.changeDate(this.date.value)));
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    this.date.setValue(yesterday);
+
   }
 
+  unsubscribeDatum() {
+    const sub = this.subFields[this.subFields.length - 1]
+    sub.unsubscribe();
+    this.subFields.pop();
+  }
+
+  subscribeDatum() {
+    this.subFields.push(this.date.valueChanges.subscribe(() => this.changeDate(this.date.value)));
+
+  }
+
+  isButtonAllowed(role: string): boolean {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      if (user.role == role || user.role == 'admin')
+        return false;
+    }
+    return true;
+  }
+
+
   changeDate(date: Date | null) {
-    if (date)
-      this.backendService.getAmountOneAcc(date.getFullYear(), 1002).subscribe({
-        next: (result) => {
-          const amount = Number(result.amount);
-          this.fromAcc = Number(result.id);
-          this.kasse.setValue( amount );
-          this.calculate(null, null, 0);
+    if (date) {
+      this.kegelkasse = {}
+      this.backendService.getKegelkasse(date.getMonth() + 1).subscribe({
+        next: (kegelkasse) => {
+          if (kegelkasse.length > 0) {
+            this.kegelkasse = kegelkasse[0];
+            this.kasse.setValue(this.kegelkasse.kasse ?? 0);
+            this.rappen5.setValue(this.kegelkasse.rappen5 ?? 0);
+            this.rappen10.setValue(this.kegelkasse.rappen10 ?? 0);
+            this.rappen20.setValue(this.kegelkasse.rappen20 ?? 0);
+            this.rappen50.setValue(this.kegelkasse.rappen50 ?? 0);
+            this.franken1.setValue(this.kegelkasse.franken1 ?? 0);
+            this.franken2.setValue(this.kegelkasse.franken2 ?? 0);
+            this.franken5.setValue(this.kegelkasse.franken5 ?? 0);
+            this.franken10.setValue(this.kegelkasse.franken10 ?? 0);
+            this.franken20.setValue(this.kegelkasse.franken20 ?? 0);
+            this.franken50.setValue(this.kegelkasse.franken50 ?? 0);
+            this.franken100.setValue(this.kegelkasse.franken100 ?? 0);
+            this.unsubscribeDatum();
+            date = new Date(this.kegelkasse.datum!)
+            this.date.setValue(date);
+            this.subscribeDatum();
+          }
+        },
+        complete: () => {
+          this.backendService.getAmountOneAcc(date!.toLocaleDateString("fr-CA"), 1002).subscribe({
+            next: (result) => {
+              const amount = Number(result.amount);
+              this.fromAcc = Number(result.id);
+              this.kasse.setValue(amount);
+              this.kegelkasse.kasse = amount;
+              this.calculate(null, null, 0);
+            }
+          })
         }
       })
+    }
   }
 
   calculate(value: number | null, sum: string | null, summand: number) {
@@ -117,7 +184,7 @@ export class KegelkasseComponent implements OnInit {
         if (value)
           calc = value * summand;
         fieldSum.setValue(calc);
-      }  
+      }
     }
 
     this.total.setValue(
@@ -135,31 +202,81 @@ export class KegelkasseComponent implements OnInit {
     )
 
     this.differenz.setValue(
-      this.kasse.getRawValue() - this.total.getRawValue()
+      Number((this.kasse.getRawValue() - this.total.getRawValue()).toFixed(2))
     )
 
   }
-  saveJournal() {
-    const journal = new Journal();
-    journal.amount = this.differenz.getRawValue() ?? 0;
-    if (journal.amount != 0) {
-      const date : Date = this.date.getRawValue()
-      if (!date)
-        return
-      journal.date = date.toLocaleDateString("fr-CA")
-      journal.from_account = this.fromAcc;
-      this.backendService.getOneDataByOrder(6002).subscribe({
-        next: (acc) => {
-          journal.to_account = acc.id!
-          journal.memo = 'Kegeln ' + date.toLocaleString("de-CH", { month: "long" })
-    
-          this.backendService.addJournal(journal).subscribe({
+  async saveJournal(mitJournal: boolean) {
+    const date: Date = this.date.getRawValue()
+    if (!date)
+      return
+    this.kegelkasse.datum = date.toLocaleDateString("fr-CA")
+    this.kegelkasse.kasse = this.kasse.getRawValue() ?? 0;
+    this.kegelkasse.rappen5 = this.rappen5.getRawValue() ?? 0;
+    this.kegelkasse.rappen10 = this.rappen10.getRawValue() ?? 0;
+    this.kegelkasse.rappen20 = this.rappen20.getRawValue() ?? 0;
+    this.kegelkasse.rappen50 = this.rappen50.getRawValue() ?? 0;
+    this.kegelkasse.franken1 = this.franken1.getRawValue() ?? 0;
+    this.kegelkasse.franken2 = this.franken2.getRawValue() ?? 0;
+    this.kegelkasse.franken5 = this.franken5.getRawValue() ?? 0;
+    this.kegelkasse.franken10 = this.franken10.getRawValue() ?? 0;
+    this.kegelkasse.franken20 = this.franken20.getRawValue() ?? 0;
+    this.kegelkasse.franken50 = this.franken50.getRawValue() ?? 0;
+    this.kegelkasse.franken100 = this.franken100.getRawValue() ?? 0;
+    this.kegelkasse.total = this.total.getRawValue() ?? 0;
+    this.kegelkasse.differenz = this.differenz.getRawValue() ?? 0;
+
+    if (mitJournal) {
+      if (this.kegelkasse.journal) {
+        // Update Journal
+        this.kegelkasse.journal.amount = this.differenz.getRawValue() ?? 0;
+        if (this.kegelkasse.journal.amount != 0) {
+          this.kegelkasse.journal.date = date.toLocaleDateString("fr-CA");
+          this.backendService.updJournal(this.kegelkasse.journal).subscribe({
             next: () => {
-              this.messageService.add({detail: "Journaleintrag wurde gespeichert", sticky: false, closable: true, summary: 'Kegelneintrag speichern'})
+              this.backendService.updKegelkasse(this.kegelkasse).subscribe({
+                next: () => {
+                  this.messageService.add({severity: 'info', detail: "Journaleintrag wurde aktualisiert", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
+                }
+              });
             }
-          })
+          });
         }
-      });
+      } else {
+        // add Journal
+        const journal = new Journal();
+        journal.amount = this.differenz.getRawValue() ?? 0;
+        if (journal.amount != 0) {
+          journal.date = date.toLocaleDateString("fr-CA");
+          journal.from_account = this.fromAcc;
+          this.backendService.getOneDataByOrder(6002).subscribe({
+            next: (acc) => {
+              journal.to_account = acc.id!;
+              journal.memo = 'Kegeln ' + date.toLocaleString("de-CH", { month: "long" });
+              this.backendService.addJournal(journal).subscribe({
+                next: (saveJournal) => {
+                  this.backendService.getOneJournal(saveJournal.id!).subscribe({
+                    next: (oneJournal) => {
+                      this.kegelkasse.journal = oneJournal
+                      this.backendService.updKegelkasse(this.kegelkasse).subscribe({
+                        next: () => {
+                          this.messageService.add({severity: 'info', detail: "Journaleintrag wurde erstellt", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
+                        }
+                      })
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      }
+    } else {
+      this.backendService.updKegelkasse(this.kegelkasse).subscribe({
+        next: () => {
+          this.messageService.add({severity: 'info', detail: "Kegelkasse wurde gespeichert", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
+        }
+      })
     }
   }
 }

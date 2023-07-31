@@ -188,6 +188,29 @@ export class Clubmeister extends TableData {
     }
   }
 
+  export class Kegelkasse extends TableData {
+    datum?: StringEmpty;
+    kasse?: NumberEmpty;
+    rappen5?: NumberEmpty;
+    rappen10?: NumberEmpty;
+    rappen20?: NumberEmpty;
+    rappen50?: NumberEmpty;
+    franken1?: NumberEmpty;
+    franken2?: NumberEmpty;
+    franken5?: NumberEmpty;
+    franken10?: NumberEmpty;
+    franken20?: NumberEmpty;
+    franken50?: NumberEmpty;
+    franken100?: NumberEmpty;
+    total?: NumberEmpty;
+    differenz?: NumberEmpty;
+    journal?: Journal;
+
+    constructor() {
+      super();
+    }
+  }
+
   /**
    * date: '2023-01-01'
     fromAcc: '1001 Postkonto'

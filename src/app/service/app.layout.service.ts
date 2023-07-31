@@ -66,6 +66,7 @@ export class LayoutService {
 
             if (this.state.staticMenuMobileActive) {
                 this.overlayOpen.next(null);
+                this.showProfileSidebar();
             }
         }
     }

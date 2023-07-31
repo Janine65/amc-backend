@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Account, Adresse, Anlass, Budget, Clubmeister, Fiscalyear, Journal, Kegelmeister, Meisterschaft, MeisterschaftAuswertung, OverviewData, ParamData, Receipt } from '../models/datatypes';
+import { Account, Adresse, Anlass, Budget, Clubmeister, Fiscalyear, Journal, Kegelkasse, Kegelmeister, Meisterschaft, MeisterschaftAuswertung, OverviewData, ParamData, Receipt } from '../models/datatypes';
 import { environment } from '@environments/environment';
 
 @Injectable({
@@ -270,8 +270,8 @@ export class BackendService {
     const apiURL = environment.apiUrl + '/journal/account/getOneDataByOrder?order=' + order;
     return this.http.get<Account>(apiURL, {headers: this.header});
   }
-  getAmountOneAcc(jahr: number, order: number) : Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/account/getAmountOneAcc?jahr=' + jahr + '&order=' + order;
+  getAmountOneAcc(datum: string, order: number) : Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/account/getAmountOneAcc?datum=' + datum + '&order=' + order;
     return this.http.get<any>(apiURL, {headers: this.header});
   }
   getJournal(jahr: number): Observable<Journal[]> {
@@ -293,6 +293,21 @@ export class BackendService {
     const body = JSON.stringify(data)
     return this.http.delete(apiURL, {headers: this.header, body: body});
   }
+  getKegelkasse(monat: number): Observable<Kegelkasse[]> {
+    const apiURL = environment.apiUrl + '/journal/journal/kegelkasse?monat=' + monat;
+    return this.http.get<Kegelkasse[]>(apiURL, {headers: this.header});
+  }
+  addKegelkasse(data: Journal): Observable<Kegelkasse> {
+    const apiURL = environment.apiUrl + '/journal/keglkasse/data';
+    const body = JSON.stringify(data)
+    return this.http.post<Kegelkasse>(apiURL, body, {headers: this.header});
+  }
+  updKegelkasse(data: Journal): Observable<Kegelkasse> {
+    const apiURL = environment.apiUrl + '/journal/journal/kegelkasse';
+    const body = JSON.stringify(data)
+    return this.http.put<Kegelkasse>(apiURL, body, {headers: this.header});
+  }
+
   getOneJournal(id: number) : Observable<Journal> {
     const apiURL = environment.apiUrl + '/journal/journal/onedata?id=' + id;
     return this.http.get<Journal>(apiURL, {headers: this.header});
