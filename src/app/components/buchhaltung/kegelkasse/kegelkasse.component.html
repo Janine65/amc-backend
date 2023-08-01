@@ -6,7 +6,7 @@
                 <button pButton label="Journaleintrag erstellen" class="p-button-primary p-button-outlined"
                     (click)="saveJournal(true)" [disabled]="isButtonAllowed('admin')"></button>
                 <button pButton label="Zwischenspeichern" class="p-button-secondary  p-button-outlined"
-                    (cick)="saveJournal(false)" [disabled]="isButtonAllowed('user') || kegelkasse.journal"></button>
+                    (click)="saveJournal(false)" [disabled]="isButtonAllowed('user') || kegelkasse.journal"></button>
             </p-toolbar>
         </div>
         <form [formGroup]="fgKasse" autocomplete="off">
