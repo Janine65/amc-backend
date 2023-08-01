@@ -7,7 +7,7 @@ import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Observable, from } from 'rxjs';
 import { KontoBewegungenComponent } from '../konto-bewegungen/konto-bewegungen.component';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, LowerCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-konten',
@@ -40,8 +40,8 @@ export class KontenComponent implements OnInit {
   ngOnInit(): void {
     this.cols = [
       { field: 'name', header: 'Name', format: false, sortable: false, filtering: false, filter: undefined },
-      { field: 'level', header: 'Level', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.0-0' },
-      { field: 'order', header: 'Order', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.0-0' },
+      { field: 'level', header: 'Level', format: false, sortable: false, filtering: false, filter: undefined },
+      { field: 'order', header: 'Order', format: false, sortable: false, filtering: false, filter: undefined },
       { field: 'status', header: 'Status', format: true, sortable: false, filtering: false, filter: undefined },
     ];
 

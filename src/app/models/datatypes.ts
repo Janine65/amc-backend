@@ -182,7 +182,6 @@ export class Clubmeister extends TableData {
     haben?: NumberEmpty;
     soll?: NumberEmpty;
     journal2receipt? : JournalReceipt;
-
     constructor() {
       super();
     }
@@ -190,6 +189,7 @@ export class Clubmeister extends TableData {
 
   export class Kegelkasse extends TableData {
     datum?: StringEmpty;
+    datum_date?: DateEmpty;
     kasse?: NumberEmpty;
     rappen5?: NumberEmpty;
     rappen10?: NumberEmpty;
@@ -205,6 +205,9 @@ export class Clubmeister extends TableData {
     total?: NumberEmpty;
     differenz?: NumberEmpty;
     journal?: Journal;
+    journalid?: NumberEmpty;
+    amountProUser? : NumberEmpty;
+    cntUsers? : NumberEmpty;
 
     constructor() {
       super();

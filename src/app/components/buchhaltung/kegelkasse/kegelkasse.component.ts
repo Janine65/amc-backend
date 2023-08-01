@@ -5,7 +5,8 @@ import { Journal, Kegelkasse } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 
 @Component({
   selector: 'app-kegelkasse',
@@ -49,6 +50,12 @@ export class KegelkasseComponent implements OnInit {
   subFields!: Subscription[];
   fromAcc = 0;
   kegelkasse: Kegelkasse = {};
+  lstKegelkasse: Kegelkasse[] = [];
+
+  cols: TableOptions[] = [];
+  toolbar: TableToolbar[] = [];
+
+
 
   get date() { return this.fgKasse.get('date')! }
   get kasse() { return this.fgKasse.get('kasse')! }
@@ -87,6 +94,15 @@ export class KegelkasseComponent implements OnInit {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     this.date.setValue(yesterday);
+
+    this.cols = [
+      { field: 'datum', header: 'Datum', format: false, sortable: false, filtering: false, filter: undefined, pipe: DatePipe, args: 'dd.MM.yyyy' },
+      { field: 'differenz', header: 'Einnahmen', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.2-2' },
+      { field: 'cntUsers', header: 'Anzahl Teilnehmer', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.0-0' },
+      { field: 'amountProUser', header: 'Einnahmen pro Teilnehmer', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.2-2' },
+      { field: 'journalid', header: 'verbucht', format: false, sortable: false, filtering: false, filter: 'boolean' },
+    ];
+
   }
 
   unsubscribeFields() {
@@ -219,6 +235,20 @@ export class KegelkasseComponent implements OnInit {
     )
 
   }
+
+  createReceipt() {
+    //TODO
+    if (this.kegelkasse.id)
+      this.backendService.createReceipt(this.kegelkasse.id).subscribe({
+        next: (result) => {
+          if (result.type == 'info')
+            this.messageService.add({severity: 'info', detail: 'Beleg wurde ertellt', summary: 'Beleg erstellen', sticky: false, closable: true});
+          else
+            this.messageService.add({severity: 'error', detail: result.message, summary: 'Beleg erstellen', sticky: true, closable: true});
+        }
+      })
+  }
+
   async saveJournal(mitJournal: boolean) {
     const date: Date = this.date.getRawValue()
     if (!date)
@@ -249,7 +279,7 @@ export class KegelkasseComponent implements OnInit {
             next: () => {
               this.backendService.updKegelkasse(this.kegelkasse).subscribe({
                 next: () => {
-                  this.messageService.add({severity: 'info', detail: "Journaleintrag wurde aktualisiert", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
+                  this.messageService.add({ severity: 'info', detail: "Journaleintrag wurde aktualisiert", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
                 }
               });
             }
@@ -273,7 +303,7 @@ export class KegelkasseComponent implements OnInit {
                       this.kegelkasse.journal = oneJournal
                       this.backendService.updKegelkasse(this.kegelkasse).subscribe({
                         next: () => {
-                          this.messageService.add({severity: 'info', detail: "Journaleintrag wurde erstellt", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
+                          this.messageService.add({ severity: 'info', detail: "Journaleintrag wurde erstellt", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
                         }
                       })
                     }
@@ -287,9 +317,26 @@ export class KegelkasseComponent implements OnInit {
     } else {
       this.backendService.updKegelkasse(this.kegelkasse).subscribe({
         next: () => {
-          this.messageService.add({severity: 'info', detail: "Kegelkasse wurde gespeichert", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
+          this.messageService.add({ severity: 'info', detail: "Kegelkasse wurde gespeichert", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
         }
       })
     }
   }
+  tabChanged(tabIndex: number) {
+    if (tabIndex == 1) {
+      this.backendService.getAllKegelkasse(this.date.getRawValue().getFullYear()).subscribe({
+        next: (list) => {
+          this.lstKegelkasse = list
+          for (const entry of this.lstKegelkasse) {
+            entry.datum_date = new Date(entry.datum!);
+            if (entry.cntUsers && entry.cntUsers > 0)
+              entry.amountProUser = entry.differenz! / entry.cntUsers
+            else
+              entry.amountProUser = 0
+          }
+        }
+      })
+    }
+  }
+
 }

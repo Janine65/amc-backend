@@ -19,7 +19,8 @@
                         pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,5})+$">
                     <app-input-validation [control]="email" [errDef]="{ required: 'A email is required',
                                 pattern:  'Enter a valid email address',
-                                minlength: 'The email should be at least 5 characteres'}"></app-input-validation>
+                                minlength: 'The email should be at least 5 characteres'}">
+                    </app-input-validation>
                 </div>
                 <div *ngIf="withRole" class="formgroup-inline field col-12">
                     <div class="field-radiobutton">
@@ -62,7 +63,7 @@
         (click)="back(f)"></button>
     <button *ngIf="!wihtPwd && user.id! > 0" pButton type="button" label="Neues Passwort" icon="pi pi-slack"
         class="p-button-secondary p-button-outlined" (click)="newPwd(f)"></button>
-    <button pButton type="button" label="Sicher" icon="pi pi-save" class="p-button-primary p-button-outlined"
+    <button pButton type="button" label="Sichern" icon="pi pi-save" class="p-button-primary p-button-outlined"
         (click)="save(f)"></button>
 </p-toolbar>
 <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>

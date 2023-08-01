@@ -21,8 +21,8 @@
     <ng-template pTemplate="body" let-data let-columns="columns">
         <tr [pSelectableRow]="data" (dblclick)="selectData(data)">
             <td *ngFor="let col of columns" [class]="data.classRow">
-                <div *ngIf="col.format === false && col.filter === 'boolean'">
-                    <i *ngIf="data[col.field]" class="pi pi-check mr-4 p-text-secondary"></i>
+                <div *ngIf="col.filter === 'boolean'" class="p-text-secondary text-center font-bold">
+                    <i *ngIf="data[col.field]" class="pi pi-check"></i>
                 </div>
                 <div *ngIf="col.pipe" class="text-right">{{data[col.field] | dynamicPipe:col.pipe:col.args}}</div>
                 <div *ngIf="col.format && formatFunction">{{formatFunction(col.field,data[col.field])}}</div>

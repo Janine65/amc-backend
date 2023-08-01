@@ -297,6 +297,10 @@ export class BackendService {
     const apiURL = environment.apiUrl + '/journal/journal/kegelkasse?monat=' + monat;
     return this.http.get<Kegelkasse[]>(apiURL, {headers: this.header});
   }
+  getAllKegelkasse(jahr: number): Observable<Kegelkasse[]> {
+    const apiURL = environment.apiUrl + '/journal/journal/allkegelkasse?jahr=' + jahr;
+    return this.http.get<Kegelkasse[]>(apiURL, {headers: this.header});
+  }
   addKegelkasse(data: Journal): Observable<Kegelkasse> {
     const apiURL = environment.apiUrl + '/journal/keglkasse/data';
     const body = JSON.stringify(data)
@@ -306,6 +310,11 @@ export class BackendService {
     const apiURL = environment.apiUrl + '/journal/journal/kegelkasse';
     const body = JSON.stringify(data)
     return this.http.put<Kegelkasse>(apiURL, body, {headers: this.header});
+  }
+
+  createReceipt(id: number) : Observable<any> {
+    const apiURL = environment.apiUrl + '/journal/journal/kegelR2J?kegelid=' + id;
+    return this.http.get<any>(apiURL, {headers: this.header});
   }
 
   getOneJournal(id: number) : Observable<Journal> {
