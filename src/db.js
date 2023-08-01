@@ -320,42 +320,6 @@ Parameter.init({
   }
 );
 
-// class Session extends Model {
-// }
-// Session.init({
-//   sid: {
-//     type: DataTypes.STRING
-//   },
-//   userid: DataTypes.STRING,
-//   expires: DataTypes.DATE,
-//   data: DataTypes.STRING(50000),
-// },
-//   {
-//     sequelize,
-//     tableName: 'sessions',
-//     modelName: 'Session'
-//   });
-
-
-// class User extends Model {
-// }
-// User.init({
-//   userid: {
-//     type: DataTypes.UUID,
-//     allowNull: false
-//   },
-//   name: DataTypes.STRING,
-//   email: DataTypes.STRING,
-//   salt: DataTypes.STRING,
-//   password: DataTypes.STRING,
-//   role: { type: DataTypes.ENUM('user', 'admin', 'revisor'), default: 'user' },
-//   last_login: DataTypes.DATE
-// },
-//   {
-//     sequelize,
-//     tableName: 'user',
-//     modelName: 'user'
-//   });
 
 class FiscalYear extends Model {
 
@@ -559,6 +523,7 @@ Kegelkasse.init({
   franken100: DataTypes.INTEGER,
   total: DataTypes.DECIMAL(7, 2),
   differenz: DataTypes.DECIMAL(7, 2),
+  cntUsers: DataTypes.VIRTUAL
 },
   {
     sequelize,

@@ -1,4 +1,4 @@
-const { Meisterschaft, Adressen, Kegelmeister, Clubmeister, Account, Budget, Journal, Anlaesse, Receipt, JournalReceipt } = require("../db");
+const { Meisterschaft, Adressen, Kegelmeister, Clubmeister, Account, Budget, Journal, Anlaesse, Receipt, JournalReceipt, Kegelkasse } = require("../db");
 const {
     Op, QueryTypes, Sequelize
 } = require("sequelize");
@@ -7,7 +7,7 @@ const fs = require("fs");
 const path = require("path");
 const Archiver = require("archiver");
 const ExcelJS = require("exceljs");
-const PDFDocument = require('pdfkit');
+const PDFDocument = require('pdfkit-table');
 const PdfTable = require('voilab-pdf-table')
 const numeral = require('numeral');
 const nodemailer = require("nodemailer");
@@ -1431,8 +1431,269 @@ module.exports = {
             filename: filename
         });
 
+    },
+
+    /**
+     * Erstellt ein PDF mit der Kegelkasse und hängt es an den entsprechenden Journaleintrag
+     * @param {Request} req 
+     * @param {Response} res 
+     */
+    generateReceiptKegelkasse: async function (req, res) {
+        console.log("generateReceiptKegelkasse");
+        const sKegelId = req.query.kegelid;
+        // load a locale
+        try {
+            let locale = numeral.localeData('ch')
+            
+            locale.delimiters = {
+                thousands: ' ',
+                decimal: '.'
+            };
+        } catch (error) {
+            numeral.register('locale', 'ch', {
+                delimiters: {
+                    thousands: ' ',
+                    decimal: '.'
+                },
+                abbreviations: {
+                    thousand: 'k',
+                    million: 'm',
+                    billion: 'b',
+                    trillion: 't'
+                },
+                ordinal : function (number) {
+                    return '.';
+                },
+                currency: {
+                    symbol: 'Fr.'
+                }
+            });
+
+        }
+        numeral.locale('ch'); 
+
+        const kegelkasse = await Kegelkasse.findByPk(sKegelId);
+        console.log(kegelkasse);
+
+        if (kegelkasse.journalid  > 0) {
+            const workbook = new ExcelJS.Workbook();
+
+            // Force workbook calculation on load
+            workbook.calcProperties.fullCalcOnLoad = true;
+    
+            let sSheetName = "Kegelkasse";
+            let sheet = workbook.addWorksheet(sSheetName.substring(0, 31), {
+                pageSetup: {
+                    fitToPage: true,
+                    fitToHeight: 1,
+                    fitToWidth: 1,
+                },
+                properties: {
+                    defaultRowHeight: 18
+                },
+                headerFooter: {
+                    oddHeader: "&18Auto-Moto-Club Swissair",
+                    oddFooter: "&14erstellt am " + new Date().toLocaleDateString('de-CH')
+                }
+            });
+
+            sheet.getColumn('A').width = 17;
+            sheet.getColumn('B').width = 17;
+            sheet.getColumn('C').width = 17;
+
+            const kegelDate = new Date(kegelkasse.datum)
+            setCellValueFormat(sheet, 'A1', "Kegelkasse " + kegelDate.toLocaleDateString('de-CH'), false, "A1:C1", { bold: true, size: iFontSizeHeader, name: 'Tahoma' });
+
+            const tHeaders = [
+                    {property: 'value', label: 'Einheit', width: 100, align: "right"}, 
+                    {property: 'field', label: 'Anzahl', width: 50, align: "right"},
+                    {property: 'sum', label: 'Total', width: 100, align: "right"}];
+
+            setCellValueFormat(sheet, 'A3', "Einheit", true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
+            setCellValueFormat(sheet, 'B3', "Anzahl", true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
+            setCellValueFormat(sheet, 'C3', "Total", true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
+
+            let tRows = [];
+            let sumTotal = 0
+            let row = 4
+            let record = writeKegelLine(sheet, row, 0.05, kegelkasse.rappen5);
+            sumTotal += record['sum'];
+            tRows.push(record);
+            row++;
+            record = writeKegelLine(sheet, row, 0.10, kegelkasse.rappen10);
+            sumTotal += record['sum'];
+            tRows.push(record);
+            row++;
+            record = writeKegelLine(sheet, row, 0.20, kegelkasse.rappen20);
+            sumTotal += record['sum'];
+            tRows.push(record);
+            row++;
+            record = writeKegelLine(sheet, row, 0.50, kegelkasse.rappen50);
+            sumTotal += record['sum'];
+            tRows.push(record);
+            row++;
+            record = writeKegelLine(sheet, row, 1, kegelkasse.franken1);
+            sumTotal += record['sum'];
+            tRows.push(record);
+            row++;
+            record = writeKegelLine(sheet, row, 2, kegelkasse.franken2);
+            sumTotal += record['sum'];
+            tRows.push(record);
+            row++;
+            record = writeKegelLine(sheet, row, 5, kegelkasse.franken5);
+            sumTotal += record['sum'];
+            tRows.push(record);
+            row++;
+            record = writeKegelLine(sheet, row, 10, kegelkasse.franken10);
+            sumTotal += record['sum'];
+            tRows.push(record);
+            row++;
+            record = writeKegelLine(sheet, row, 20, kegelkasse.franken20);
+            sumTotal += record['sum'];
+            tRows.push(record);
+            row++;
+            record = writeKegelLine(sheet, row, 50, kegelkasse.franken50);
+            sumTotal += record['sum'];
+            tRows.push(record);
+            row++;
+            record = writeKegelLine(sheet, row, 100, kegelkasse.franken100);
+            sumTotal += record['sum'];
+            tRows.push(record);
+            row++;
+            row++;
+            setCellValueFormat(sheet, 'A' + row, "Total", true, "A" + row + ":B" + row, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
+            setCellValueFormat(sheet, 'C' + row, sumTotal, true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
+            sheet.getCell('C' + row).numFmt = '#,##0.00;[Red]\-#,##0.00';
+            tRows.push({value: 'bold:Total', sum: `bold:${sumTotal}`, field: ''});
+            row++;
+            row++;
+            setCellValueFormat(sheet, 'A' + row, "Kasse", true, "A" + row + ":B" + row, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
+            setCellValueFormat(sheet, 'C' + row, Number(kegelkasse.kasse), true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
+            sheet.getCell('C' + row).numFmt = '#,##0.00;[Red]\-#,##0.00';
+            tRows.push({value: '', sum: '', field: ''});
+            tRows.push({options: {separation: true}, value: 'bold:Kasse', sum: `bold:${kegelkasse.kasse}`, field: ''});
+            row++;
+            setCellValueFormat(sheet, 'A' + row, "Differenz", true, "A" + row + ":B" + row, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
+            setCellValueFormat(sheet, 'C' + row, Number(kegelkasse.differenz), true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma', color: { argb: 'CD143C' }});
+            sheet.getCell('C' + row).numFmt = '#,##0.00;[Red]\-#,##0.00';
+            tRows.push({value: 'bold:Differenz', sum: `bold:${kegelkasse.differenz}`, field: ''});
+            row++;
+            row++;
+            setCellValueFormat(sheet, 'A' + row, "Glattbrugg, den " + formatDateLong(kegelDate), false, "A" + row + ":C" + row, { bold: false, italic: true, size: iFontSizeTitel, name: 'Tahoma' });
+
+            const filename = "Kegelkasse-" + kegelkasse.datum + ".xlsx";
+            await workbook.xlsx.writeFile("./public/exports/" + filename)
+                .catch((e) => {
+                    console.error(e);
+                    res.json({
+                        type: "error",
+                        message: e,
+                    });
+                });
+    
+            const table = {
+                headers: tHeaders,
+                datas: tRows
+            };
+
+            const filenamePDF = filename.replace('.xlsx', '.pdf')
+                let pdf = new PDFDocument({
+                    autoFirstPage: true,
+                    bufferPages: true,
+                    layout: 'portrait',
+                    size: 'A4',
+                    info: {
+                        Title: 'Kegelkasse ' + kegelDate.toLocaleDateString('de-CH'),
+                        Author: 'AutoMoto-Club Swissair, Janine Franken'
+                    }
+                });
+                // Embed a font, set the font size, and render some text
+                pdf
+                    .font('Helvetica-Bold')
+                    .fontSize(18)
+                    .text('Kegelkasse ' + kegelDate.toLocaleDateString('de-CH'))
+                    .moveDown(2);
+    
+                // draw content, by passing data to the addBody method
+                pdf.table(table, {
+                    divider: {
+                        header: { disabled: false, width: 2, opacity: 1 },
+                        horizontal: { disabled: false, width: 0.5, opacity: 0.5 },
+                        vertical: { disabled: false, width: 0.5, opacity: 0.5 },
+                    },
+                    padding: 5, // {Number} default: 0
+                    columnSpacing: 5,
+                    prepareHeader: () => pdf.font("Helvetica-Bold").fontSize(11),
+                    prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                        pdf.font("Helvetica").fontSize(11);
+                    }
+                })
+                    
+                pdf
+                    .moveDown(2)
+                    .fontSize(12)
+                    .text('Glattbrugg, den ' + formatDateLong(kegelDate), pdf.page.margins.left + 5)
+                    .fontSize(10)
+
+                // see the range of buffered pages            
+                let gedrucktAm = 'Erstellt am: ' + new Date().toLocaleDateString('de-CH');
+                const range = pdf.bufferedPageRange(); // => { start: 0, count: 1 ... }
+                for (let i = range.start, end = range.start + range.count; i < end; i++) {
+                    pdf.switchToPage(i);
+    
+                    let x = pdf.page.margins.left + 5;
+                    let y = pdf.page.height - pdf.heightOfString(gedrucktAm) - pdf.page.margins.bottom;
+                    console.log(gedrucktAm + ' ' + x + '/' + y);
+                    pdf.text(gedrucktAm, x, y);
+    
+                    let text = `Seite ${i + 1} von ${range.count}`
+                    x = pdf.page.width - pdf.widthOfString(text) - pdf.page.margins.right - 5;
+                    console.log(text + ' ' + x + '/' + y);
+                    pdf.text(text, x, y);
+                }
+    
+                // Pipe its output somewhere, like to a file or HTTP response
+                // See below for browser usage
+                pdf.pipe(fs.createWriteStream(global.exports + filenamePDF));
+    
+                // Finalize PDF file
+                pdf.end();
+    
+                
+            return res.json({
+                type: "info",
+                message: "PDFDatei erstellt",
+                filename: filenamePDF
+            });
+    
+    
+        } else {
+            return res.json({
+                type: "error",
+                message: "Kegelkasse nicht mit Journal verbunden"
+            });    
+        }
+
     }
 };
+
+/**
+ * 
+ * @param {ExcelJS.Worksheet} sheet 
+ * @param {number} row
+ * @param {number} value
+ * @param {number} field
+ * @return {Object}
+ */
+function writeKegelLine(sheet, row, value, field) {
+    setCellValueFormat(sheet, 'A' + row, value, true, false, { bold: false, size: iFontSizeRow, name: 'Tahoma' });
+    sheet.getCell('A' + row).numFmt = '#,##0.00';
+    setCellValueFormat(sheet, 'B' + row, field, true, false, { bold: false, size: iFontSizeRow, name: 'Tahoma' });
+    sheet.getCell('B' + row).numFmt = '#,##0';
+    setCellValueFormat(sheet, 'C' + row, field * value, true, false, { bold: false, size: iFontSizeRow, name: 'Tahoma' });
+    sheet.getCell('C' + row).numFmt = '#,##0.00;[Red]\-#,##0.00';
+    return {sum: field * value, value: value, field: field};
+}
 
 /**
  * 
@@ -1832,4 +2093,34 @@ function setCellValueFormat(sheet, range, value, border, merge, font) {
     if (font)
         cell.font = font;
 
+}
+
+/**
+ * Function to format a date in a long German date
+ * 
+ * @param {Date} date The date
+ * @returns {string} The formatted date
+ */
+function formatDateLong(date) {
+    let retString = ''
+
+    const months = [
+        'Januar',
+        'Februar',
+        'März',
+        'April',
+        'Mai',
+        'Juni',
+        'Juli',
+        'August',
+        'September',
+        'Oktober',
+        'November',
+        'Dezember'
+      ];
+    
+    const monthName = months[date.getMonth()]
+
+    retString = `${date.getDay()}. ${monthName} ${date.getFullYear()}`
+    return retString
 }

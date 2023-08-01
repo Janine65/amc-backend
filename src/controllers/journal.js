@@ -1,4 +1,4 @@
-const { Journal, Account, Receipt, JournalReceipt, Kegelkasse } = require("../db");
+const { Journal, Account, Receipt, JournalReceipt, Kegelkasse, Meisterschaft, Anlaesse } = require("../db");
 const { Op, Sequelize, QueryInterface } = require("sequelize");
 const ExcelJS = require("exceljs");
 const fs = require("fs");
@@ -238,6 +238,34 @@ async function getKegelkasse(req, res) {
 		.catch(e => console.error(e));
 }
 
+async function getAllKegelkasse(req, res) {
+	Kegelkasse.findAll({
+		logging: console.log,
+		where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('datum')), req.query.jahr),
+		include: [
+			{
+				model: Journal, as: 'journal', required: false,
+				include: [
+					{ model: Account, as: 'fromAccount', required: true, attributes: ['id', 'order', 'name', 'longname'] },
+					{ model: Account, as: 'toAccount', required: true, attributes: ['id', 'order', 'name', 'longname'] }
+				]
+			}
+		],
+		order: ["datum"]
+	})
+		.then(async obj => {
+			for (let index = 0; index < obj.length; index++) {
+				const element = obj[index];
+				const { count, rows } = await Meisterschaft.findAndCountAll({
+					where: {total_kegel: {[Op.gt] : 5} },
+					include: [{model: Anlaesse, as: 'linkedEvent', where: {datum: element.datum}}]
+				});
+				element.cntUsers = count;
+			}
+			res.json(obj);
+		})
+		.catch(e => console.error(e));
+}
 async function addKegelkasse(req, res) {
 	let data = JSON.parse(req.body);
 	data.id = null;
@@ -658,6 +686,7 @@ module.exports = {
 	addData: addData,
 	updateData: updateData,
 	getKegelkasse: getKegelkasse,
+	getAllKegelkasse: getAllKegelkasse,
 	addKegelkasse: addKegelkasse,
 	updateKegelkasse: updateKegelkasse,
 	getAllAttachment: getAllAttachment,
