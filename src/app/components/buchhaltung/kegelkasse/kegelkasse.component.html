@@ -3,10 +3,12 @@
     <p-tabPanel header="Kegelkasse berechnen">
         <div class="pb-2">
             <p-toolbar>
-                <button pButton label="Journaleintrag erstellen" class="p-button-primary p-button-outlined"
+                <button pButton [label]="kegelkasse.journal ? 'Journaleintrag ändern' : 'Journaleintrag erstellen'" class="p-button-primary p-button-outlined"
                     (click)="saveJournal(true)" [disabled]="isButtonAllowed('admin')"></button>
+                <button pButton label="Leeren" class="p-button-secondary  p-button-outlined"
+                    (click)="clearTotal()" [disabled]="isButtonAllowed('user') || kegelkasse.journal"></button>
                 <button pButton label="Zwischenspeichern" class="p-button-secondary  p-button-outlined"
-                    (click)="saveJournal(false)" [disabled]="isButtonAllowed('user') || kegelkasse.journal"></button>
+                (click)="saveJournal(false)" [disabled]="isButtonAllowed('user') || kegelkasse.journal"></button>
             </p-toolbar>
         </div>
         <form [formGroup]="fgKasse" autocomplete="off">

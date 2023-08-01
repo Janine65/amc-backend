@@ -135,6 +135,19 @@ export class KegelkasseComponent implements OnInit {
     return true;
   }
 
+  clearTotal() {
+    this.rappen5.setValue(0);
+    this.rappen10.setValue(0);
+    this.rappen20.setValue(0);
+    this.rappen50.setValue(0);
+    this.franken1.setValue(0);
+    this.franken2.setValue(0);
+    this.franken5.setValue(0);
+    this.franken10.setValue(0);
+    this.franken20.setValue(0);
+    this.franken50.setValue(0);
+    this.franken100.setValue(0);
+  }
 
   changeDate(date: Date | null) {
     if (date) {

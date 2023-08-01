@@ -41,7 +41,7 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
                 ]
             }];
 
-        if (user) {
+        if (user?.role) {
             if (user.role === 'user' || user.role === 'admin') {
                 this.model.push(
                     {
@@ -49,7 +49,7 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
                         items: [
                             { label: 'Adressen', icon: 'pi pi-fw pi-id-card', routerLink: ['/verwaltung/adressen'] },
                             { label: 'Anlässe', icon: 'pi pi-fw pi-calendar', routerLink: ['/verwaltung/anlaesse'] },
-                            user.role === 'admin' ? { label: 'Parameters', icon: 'pi pi-fw pi-bookmark', routerLink: ['/verwaltung/parameter'] } : {},
+                            user.role === 'admin' ? { label: 'Parameters', icon: 'pi pi-fw pi-bookmark', routerLink: ['/verwaltung/parameter'] } : {visible: false},
                         ]
                     },
                     {
@@ -65,12 +65,12 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
                 {
                     label: 'Buchhaltung',
                     items: [
-                        (user.role === 'admin' || user.role === 'revisor') ? { label: 'Journal', icon: 'pi pi-fw pi-money-bill', routerLink: ['/buchhaltung/journal'] } : {},
-                        { label: 'Kegelkasse', icon: 'pi pi-dollar', routerLink: ['/buchhaltung/kegelkasse'] },
-                        (user.role === 'admin' || user.role === 'revisor') ? { label: 'Auswertung', icon: 'pi pi-fw pi-percentage', routerLink: ['/buchhaltung/kto-auswertung'] } : {},
-                        user.role === 'admin' ? { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-book', routerLink: ['/buchhaltung/geschaeftsjahr'] } : {},
-                        user.role === 'admin' ? { label: 'Budget', disabled: true, icon: 'pi pi-fw pi-calculator', routerLink: ['/buchhaltung/budget'] } : {},
-                        user.role === 'admin' ? { label: 'Konten', icon: 'pi pi-fw pi-bitcoin', routerLink: ['/buchhaltung/konten'] } : {},
+                        (user.role === 'admin' || user.role === 'revisor') ? { label: 'Journal', icon: 'pi pi-fw pi-money-bill', routerLink: ['/buchhaltung/journal'] } : { visible: false },
+                        (user.role === 'admin' || user.role === 'user') ? { label: 'Kegelkasse', icon: 'pi pi-dollar', routerLink: ['/buchhaltung/kegelkasse'] } : { visible: false },
+                        (user.role === 'admin' || user.role === 'revisor') ? { label: 'Auswertung', icon: 'pi pi-fw pi-percentage', routerLink: ['/buchhaltung/kto-auswertung'] } : { visible: false },
+                        user.role === 'admin' ? { label: 'Geschäftsjahr', icon: 'pi pi-fw pi-book', routerLink: ['/buchhaltung/geschaeftsjahr'] } : { visible: false },
+                        user.role === 'admin' ? { label: 'Budget', disabled: true, icon: 'pi pi-fw pi-calculator', routerLink: ['/buchhaltung/budget'] } : { visible: false },
+                        user.role === 'admin' ? { label: 'Konten', icon: 'pi pi-fw pi-bitcoin', routerLink: ['/buchhaltung/konten'] } : { visible: false },
                     ]
                 }
             )
