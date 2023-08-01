@@ -202,7 +202,7 @@ export class KegelkasseComponent implements OnInit {
     )
 
     this.differenz.setValue(
-      Number((this.kasse.getRawValue() - this.total.getRawValue()).toFixed(2))
+      Number((this.total.getRawValue() - this.kasse.getRawValue()).toFixed(2))
     )
 
   }
