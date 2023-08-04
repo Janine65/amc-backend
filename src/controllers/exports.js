@@ -11,6 +11,7 @@ const PDFDocument = require('pdfkit-table');
 const PdfTable = require('voilab-pdf-table')
 const numeral = require('numeral');
 const nodemailer = require("nodemailer");
+const { type } = require("os");
 
 const cName = "C6";
 const cVorname = "C7";
@@ -27,30 +28,29 @@ module.exports = {
      * @param {Response} res 
      * @returns 
      */
-    sendEmail: async function (req, res) {
+    sendEmail: async function (req, res, next) {
         console.log("sendEmail");
 
         let emailBody = {};
 
         try {
             emailBody = JSON.parse(req.body);
-            
+
         } catch (error) {
             emailBody = req.body;
         }
-        let email_from = global.gConfig.userEmail;
         if (emailBody.email_signature == "") {
             emailBody.email_signature = global.gConfig.defaultEmail;
         }
-        email_from = emailBody.email_signature;
+        let email_from = emailBody.email_signature;
         try {
-            let email_signature = fs.readFileSync(global.assets + emailBody.email_signature + ".html")                
+            let email_signature = fs.readFileSync(global.assets + emailBody.email_signature + ".html")
             emailBody.email_body += "<p>" + email_signature + "</p>";
         } catch (error) {
             return res.json(error)
         }
         let emailConfig = global.gConfig[email_from];
-        
+
         // create reusable transporter object using the default SMTP transport
         const transporter = nodemailer.createTransport({
             host: emailConfig.smtp,
@@ -61,19 +61,19 @@ module.exports = {
                 pass: global.cipher.decrypt(emailConfig.smtp_pwd),
             }
         });
-    
+
         // verify connection configuration
         transporter.verify(function (error, success) {
             if (error) {
                 return { type: "error", message: "SMTP Connection can not be verified" };
-            } 
+            }
             if (success) {
                 console.log("Server is ready to take our messages");
             }
         });
-    
+
         let attachments = []
-    
+
         if (emailBody.uploadFiles) {
             let files = emailBody.uploadFiles.split(',');
             for (let ind2 = 0; ind2 < files.length; ind2++) {
@@ -81,7 +81,7 @@ module.exports = {
                 attachments.push({ filename: file, path: path.join(global.uploads, file) });
             }
         }
-    
+
         await transporter.sendMail({
             from: emailConfig.email_from, // sender address
             to: emailBody.email_an, // list of receivers
@@ -107,7 +107,7 @@ module.exports = {
             transporter.close();
             res.json(info);
         });
-    
+
     },
 
     /**
@@ -115,7 +115,7 @@ module.exports = {
      * @param {Request} req 
      * @param {Response} res 
      */
-    writeAdresses: async function (req, res) {
+    writeAdresses: async function (req, res, next) {
         console.log("writeAdresses");
 
         // filter einbauen aus body.filter
@@ -148,13 +148,10 @@ module.exports = {
                 order: ["name", "vorname"]
             }
         )
-        .catch((e) => {
-            console.error(e);
-            res.json({
-                type: "error",
-                message: e,
+            .catch((e) => {
+                console.error(e);
+                next(e);
             });
-        });
 
         const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
         let fmtToday = new Date().toLocaleDateString("de-CH", { year: 'numeric', month: "2-digit", day: "2-digit" });
@@ -263,10 +260,7 @@ module.exports = {
         await workbook.xlsx.writeFile("./public/exports/" + filename)
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+                next(e);
             });
 
         return res.json({
@@ -281,14 +275,14 @@ module.exports = {
      * @param {Request} req 
      * @param {Response} res 
      */
-    writeJournal: async function (req, res) {
+    writeJournal: async function (req, res, next) {
         console.log("writeJournal");
         const sjahr = eval(req.query.jahr * 1);
         let fReceipt = (req.query.receipt == '1');
         // load a locale
         try {
             let locale = numeral.localeData('ch')
-            
+
             locale.delimiters = {
                 thousands: ' ',
                 decimal: '.'
@@ -305,7 +299,7 @@ module.exports = {
                     billion: 'b',
                     trillion: 't'
                 },
-                ordinal : function (number) {
+                ordinal: function (number) {
                     return '.';
                 },
                 currency: {
@@ -314,8 +308,8 @@ module.exports = {
             });
 
         }
-        numeral.locale('ch'); 
-        
+        numeral.locale('ch');
+
         let arData = await Journal.findAll(
             {
                 where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('date')), sjahr),
@@ -332,11 +326,7 @@ module.exports = {
         )
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
-                return;
+next(e)
             });
 
         const workbook = new ExcelJS.Workbook();
@@ -364,13 +354,13 @@ module.exports = {
         // Schreibe Journal
         setCellValueFormat(sheet, 'B1', "Journal " + sjahr, false, '', { bold: true, size: iFontSizeHeader, name: 'Tahoma' });
 
-        const tHeaders = [{id: 'no', header: 'No.', valign: 'top', align: 'right', width: 50}, 
-                        {id: 'date', header: 'Date', valign: 'top', width: 100},
-                        {id: 'from', header: 'From', valign: 'top', width: 30},
-                        {id: 'to', header: 'To', valign: 'top', width: 30},
-                        {id: 'text', header: 'Booking Text', valign: 'top', width: 150},
-                        {id: 'amount', header: 'Amount', valign: 'top', align: 'right', width: 100},
-                        {id: 'receipt', header: 'Receipt', valign: 'top', width: 250}];
+        const tHeaders = [{ id: 'no', header: 'No.', valign: 'top', align: 'right', width: 50 },
+        { id: 'date', header: 'Date', valign: 'top', width: 100 },
+        { id: 'from', header: 'From', valign: 'top', width: 30 },
+        { id: 'to', header: 'To', valign: 'top', width: 30 },
+        { id: 'text', header: 'Booking Text', valign: 'top', width: 150 },
+        { id: 'amount', header: 'Amount', valign: 'top', align: 'right', width: 100 },
+        { id: 'receipt', header: 'Receipt', valign: 'top', width: 250 }];
 
         setCellValueFormat(sheet, 'B3', "No", true, '', { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
         sheet.getCell('B3').alignment = { vertical: "top" };
@@ -397,8 +387,10 @@ module.exports = {
             let dateFmt = date.toLocaleDateString('de-DE', options);
             let num = numeral(element.amount * 1)
 
-            let rowRecord = {no: (element.journalno == null ? '' : element.journalno),  date: dateFmt, from: element.fromAccount.order, to: element.toAccount.order, 
-            text: element.memo, amount: num.format('0,0.00'), receipt: ''};
+            let rowRecord = {
+                no: (element.journalno == null ? '' : element.journalno), date: dateFmt, from: element.fromAccount.order, to: element.toAccount.order,
+                text: element.memo, amount: num.format('0,0.00'), receipt: ''
+            };
 
             sheet.getRow(row).height = 22;
             setCellValueFormat(sheet, 'B' + row, element.journalno, true, '', { size: iFontSizeRow, name: 'Tahoma' });
@@ -416,24 +408,24 @@ module.exports = {
             sheet.getCell('G' + row).alignment = { vertical: "top" };
             sheet.getCell('H' + row).alignment = { vertical: "top", wrapText: true };
             let linkAdress = ""
-            await Receipt.findAll( {
+            await Receipt.findAll({
                 logging: console.debug,
                 include: [
-                    { model: JournalReceipt, as: 'receipt2journal', required: true, attributes: [], where: {'journalid': element.id} }
+                    { model: JournalReceipt, as: 'receipt2journal', required: true, attributes: [], where: { 'journalid': element.id } }
                 ],
                 order: ['bezeichnung']
-                }
+            }
             )
-            .then(recLst => {
-                for (let indR = 0; indR < recLst.length; indR++) {
-                    if (indR == 0)
-                        linkAdress = recLst[indR].bezeichnung + ": " + recLst[indR].receipt
-                    else
-                    linkAdress += "\r\n" + recLst[indR].bezeichnung + ": " + recLst[indR].receipt
-                }
-                setCellValueFormat(sheet, 'H' + row, linkAdress, true, '', { size: iFontSizeRow, name: 'Tahoma' });                 
-            })
-            .catch(err => console.log(err))
+                .then(recLst => {
+                    for (let indR = 0; indR < recLst.length; indR++) {
+                        if (indR == 0)
+                            linkAdress = recLst[indR].bezeichnung + ": " + recLst[indR].receipt
+                        else
+                            linkAdress += "\r\n" + recLst[indR].bezeichnung + ": " + recLst[indR].receipt
+                    }
+                    setCellValueFormat(sheet, 'H' + row, linkAdress, true, '', { size: iFontSizeRow, name: 'Tahoma' });
+                })
+                .catch(err => next(err))
             rowRecord.receipt = linkAdress;
             tRows.push(rowRecord);
             row++;
@@ -452,10 +444,7 @@ module.exports = {
         await workbook.xlsx.writeFile(global.exports + filename + ".xlsx")
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
 
 
@@ -482,39 +471,39 @@ module.exports = {
             });
 
             table
-            // add some plugins (here, a 'fit-to-width' for a column)
-            // .addPlugin(new (require('voilab-pdf-table/plugins/fitcolumn'))({
-            //     column: 'text'
-            // }))
-            .onHeaderAdd(tb => {
-                // set header color
-                pdf
-                .font('Helvetica-Bold')
-                .fontSize(10)
-            })
-            .onHeaderAdded(tb => {
-                // reset to standard color
-                pdf
-                .font('Helvetica')
-                .fontSize(10)
-            }) // set defaults to your columns
-            .setColumnsDefaults({
-                headerBorder: ['T','B'],
-                border: ['B'],
-                headerBorderOpacity : 1,
-                borderOpacity : 0.5,
-                padding: [5, 25, 5, 5],
-                align: 'left'
-            })
-            // add table columns
-            .addColumns(tHeaders)
-            
-            .onPageAdd(function(tab, row, ev){
-                pdf.addPage();
-                tab.addHeader();
-                // page already added
-                ev.cancel = true;
-            });
+                // add some plugins (here, a 'fit-to-width' for a column)
+                // .addPlugin(new (require('voilab-pdf-table/plugins/fitcolumn'))({
+                //     column: 'text'
+                // }))
+                .onHeaderAdd(tb => {
+                    // set header color
+                    pdf
+                        .font('Helvetica-Bold')
+                        .fontSize(10)
+                })
+                .onHeaderAdded(tb => {
+                    // reset to standard color
+                    pdf
+                        .font('Helvetica')
+                        .fontSize(10)
+                }) // set defaults to your columns
+                .setColumnsDefaults({
+                    headerBorder: ['T', 'B'],
+                    border: ['B'],
+                    headerBorderOpacity: 1,
+                    borderOpacity: 0.5,
+                    padding: [5, 25, 5, 5],
+                    align: 'left'
+                })
+                // add table columns
+                .addColumns(tHeaders)
+
+                .onPageAdd(function (tab, row, ev) {
+                    pdf.addPage();
+                    tab.addHeader();
+                    // page already added
+                    ev.cancel = true;
+                });
 
             // if no page already exists in your PDF, do not forget to add one
             pdf.addPage();
@@ -561,7 +550,7 @@ module.exports = {
             output.on('close', function () {
                 console.log(archive.pointer() + ' total bytes');
                 console.log('archiver has been finalized and the output file descriptor has closed.');
-                return res.json({
+                res.json({
                     type: "info",
                     message: "Datei erstellt",
                     filename: filename + sExt
@@ -617,7 +606,7 @@ module.exports = {
    * @param {Request} req 
    * @param {Response} res 
    */
-    writeAuswertung: async function (req, res) {
+    writeAuswertung: async function (req, res, next) {
         console.log("writeAuswertung");
 
         let objSave = JSON.parse(req.body);
@@ -634,19 +623,13 @@ module.exports = {
         })
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
 
         Promise.resolve(dbMeister)
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
 
         let worksheet = workbook.getWorksheet('Clubmeisterschaft');
@@ -670,19 +653,13 @@ module.exports = {
         })
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
 
         Promise.resolve(dbMeister)
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
 
 
@@ -703,10 +680,7 @@ module.exports = {
         await workbook.xlsx.writeFile("./public/exports/" + filename)
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
 
         return res.json({
@@ -722,7 +696,7 @@ module.exports = {
      * @param {Request} req 
      * @param {Response} res 
      */
-    writeExcelTemplate: async function (req, res) {
+    writeExcelTemplate: async function (req, res, next) {
         console.log("writeExcelTemplate");
 
         const workbook = new ExcelJS.Workbook();
@@ -893,10 +867,7 @@ module.exports = {
         await workbook.xlsx.writeFile("./public/exports/" + filename)
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
 
         return res.json({
@@ -911,7 +882,7 @@ module.exports = {
      * @param {Request} req 
      * @param {Response} res 
      */
-    writeExcelData: async function (req, res) {
+    writeExcelData: async function (req, res, next) {
         // TODO #38
         console.log("writeExcelData");
         let sjahr = req.query.jahr;
@@ -979,10 +950,7 @@ module.exports = {
         })
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
 
         let accBudget = await Budget.findAll({
@@ -992,10 +960,7 @@ module.exports = {
         })
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
 
         for (let index = 0; index < accBudget.length; index++) {
@@ -1024,10 +989,7 @@ module.exports = {
         })
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
         for (let ind2 = 0; ind2 < arrAmount.length; ind2++) {
             const element = arrAmount[ind2];
@@ -1042,10 +1004,7 @@ module.exports = {
         })
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
         for (let ind2 = 0; ind2 < arrAmount.length; ind2++) {
             const element = arrAmount[ind2];
@@ -1068,10 +1027,7 @@ module.exports = {
         })
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
         for (let ind2 = 0; ind2 < arrAmount.length; ind2++) {
             const element = arrAmount[ind2];
@@ -1086,10 +1042,7 @@ module.exports = {
         })
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
         for (let ind2 = 0; ind2 < arrAmount.length; ind2++) {
             const element = arrAmount[ind2];
@@ -1241,10 +1194,7 @@ module.exports = {
         await workbook.xlsx.writeFile("./public/exports/" + filename)
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
 
         return res.json({
@@ -1259,7 +1209,7 @@ module.exports = {
      * @param {Request} req 
      * @param {Response} res 
      */
-    writeAccountToExcel: async function (req, res) {
+    writeAccountToExcel: async function (req, res, next) {
         console.log("writeAccountToExcel");
         const sJahr = req.query.jahr;
         let arData = [];
@@ -1419,10 +1369,7 @@ module.exports = {
         await workbook.xlsx.writeFile("./public/exports/" + filename)
             .catch((e) => {
                 console.error(e);
-                res.json({
-                    type: "error",
-                    message: e,
-                });
+next(e)
             });
 
         return res.json({
@@ -1438,13 +1385,13 @@ module.exports = {
      * @param {Request} req 
      * @param {Response} res 
      */
-    generateReceiptKegelkasse: async function (req, res) {
+    generateReceiptKegelkasse: async function (req, res, next) {
         console.log("generateReceiptKegelkasse");
         const sKegelId = req.query.kegelid;
         // load a locale
         try {
             let locale = numeral.localeData('ch')
-            
+
             locale.delimiters = {
                 thousands: ' ',
                 decimal: '.'
@@ -1461,7 +1408,7 @@ module.exports = {
                     billion: 'b',
                     trillion: 't'
                 },
-                ordinal : function (number) {
+                ordinal: function (number) {
                     return '.';
                 },
                 currency: {
@@ -1470,17 +1417,23 @@ module.exports = {
             });
 
         }
-        numeral.locale('ch'); 
+        numeral.locale('ch');
+
+        const payload = {
+            type: 'info',
+            message: '',
+            file: ''
+        }
 
         const kegelkasse = await Kegelkasse.findByPk(sKegelId);
         console.log(kegelkasse);
 
-        if (kegelkasse.journalid  > 0) {
+        if (kegelkasse.journalid > 0) {
             const workbook = new ExcelJS.Workbook();
 
             // Force workbook calculation on load
             workbook.calcProperties.fullCalcOnLoad = true;
-    
+
             let sSheetName = "Kegelkasse";
             let sheet = workbook.addWorksheet(sSheetName.substring(0, 31), {
                 pageSetup: {
@@ -1493,7 +1446,7 @@ module.exports = {
                 },
                 headerFooter: {
                     oddHeader: "&18Auto-Moto-Club Swissair",
-                    oddFooter: "&14erstellt am " + new Date().toLocaleDateString('de-CH')
+                    oddFooter: "&14erstellt am " + new Date().toLocaleDateString('de-CH', { year: 'numeric', month: '2-digit', day: '2-digit' })
                 }
             });
 
@@ -1502,12 +1455,19 @@ module.exports = {
             sheet.getColumn('C').width = 17;
 
             const kegelDate = new Date(kegelkasse.datum)
-            setCellValueFormat(sheet, 'A1', "Kegelkasse " + kegelDate.toLocaleDateString('de-CH'), false, "A1:C1", { bold: true, size: iFontSizeHeader, name: 'Tahoma' });
+            const kegelDateFormat = kegelDate.toLocaleDateString('de-CH', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            setCellValueFormat(sheet, 'A1', "Kegelkasse " + kegelDateFormat, false, "A1:C1", { bold: true, size: iFontSizeHeader, name: 'Tahoma' });
 
             const tHeaders = [
-                    {property: 'value', label: 'Einheit', width: 100, align: "right"}, 
-                    {property: 'field', label: 'Anzahl', width: 50, align: "right"},
-                    {property: 'sum', label: 'Total', width: 100, align: "right"}];
+                {
+                    property: 'value', label: 'Einheit', width: 80, align: "right",
+                    renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { return typeof value == 'number' ? Number(value).toFixed(2) : value }
+                },
+                { property: 'field', label: 'Anzahl', width: 80, align: "right" },
+                {
+                    property: 'sum', label: 'Total', width: 80, align: "right",
+                    renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { return typeof value == 'number' ? Number(value).toFixed(2) : value }
+                }];
 
             setCellValueFormat(sheet, 'A3', "Einheit", true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
             setCellValueFormat(sheet, 'B3', "Anzahl", true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
@@ -1564,19 +1524,19 @@ module.exports = {
             setCellValueFormat(sheet, 'A' + row, "Total", true, "A" + row + ":B" + row, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
             setCellValueFormat(sheet, 'C' + row, sumTotal, true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
             sheet.getCell('C' + row).numFmt = '#,##0.00;[Red]\-#,##0.00';
-            tRows.push({value: 'bold:Total', sum: `bold:${sumTotal}`, field: ''});
+            tRows.push({ value: 'bold:Total', sum: `bold:${sumTotal.toFixed(2)}`, field: '' });
             row++;
             row++;
             setCellValueFormat(sheet, 'A' + row, "Kasse", true, "A" + row + ":B" + row, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
             setCellValueFormat(sheet, 'C' + row, Number(kegelkasse.kasse), true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
             sheet.getCell('C' + row).numFmt = '#,##0.00;[Red]\-#,##0.00';
-            tRows.push({value: '', sum: '', field: ''});
-            tRows.push({options: {separation: true}, value: 'bold:Kasse', sum: `bold:${kegelkasse.kasse}`, field: ''});
+            tRows.push({ value: '', sum: '', field: '' });
+            tRows.push({ options: { separation: true }, value: 'bold:Kasse', sum: `bold:${kegelkasse.kasse}`, field: '' });
             row++;
             setCellValueFormat(sheet, 'A' + row, "Differenz", true, "A" + row + ":B" + row, { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
-            setCellValueFormat(sheet, 'C' + row, Number(kegelkasse.differenz), true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma', color: { argb: 'CD143C' }});
+            setCellValueFormat(sheet, 'C' + row, Number(kegelkasse.differenz), true, false, { bold: true, size: iFontSizeTitel, name: 'Tahoma', color: { argb: 'CD143C' } });
             sheet.getCell('C' + row).numFmt = '#,##0.00;[Red]\-#,##0.00';
-            tRows.push({value: 'bold:Differenz', sum: `bold:${kegelkasse.differenz}`, field: ''});
+            tRows.push({ value: 'bold:Differenz', sum: `bold:${kegelkasse.differenz}`, field: '' });
             row++;
             row++;
             setCellValueFormat(sheet, 'A' + row, "Glattbrugg, den " + formatDateLong(kegelDate), false, "A" + row + ":C" + row, { bold: false, italic: true, size: iFontSizeTitel, name: 'Tahoma' });
@@ -1590,88 +1550,120 @@ module.exports = {
                         message: e,
                     });
                 });
-    
+
             const table = {
                 headers: tHeaders,
                 datas: tRows
             };
 
             const filenamePDF = filename.replace('.xlsx', '.pdf')
-                let pdf = new PDFDocument({
-                    autoFirstPage: true,
-                    bufferPages: true,
-                    layout: 'portrait',
-                    size: 'A4',
-                    info: {
-                        Title: 'Kegelkasse ' + kegelDate.toLocaleDateString('de-CH'),
-                        Author: 'AutoMoto-Club Swissair, Janine Franken'
-                    }
-                });
-                // Embed a font, set the font size, and render some text
-                pdf
-                    .font('Helvetica-Bold')
-                    .fontSize(18)
-                    .text('Kegelkasse ' + kegelDate.toLocaleDateString('de-CH'))
-                    .moveDown(2);
-    
-                // draw content, by passing data to the addBody method
-                pdf.table(table, {
-                    divider: {
-                        header: { disabled: false, width: 2, opacity: 1 },
-                        horizontal: { disabled: false, width: 0.5, opacity: 0.5 },
-                        vertical: { disabled: false, width: 0.5, opacity: 0.5 },
-                    },
-                    padding: 5, // {Number} default: 0
-                    columnSpacing: 5,
-                    prepareHeader: () => pdf.font("Helvetica-Bold").fontSize(11),
-                    prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
-                        pdf.font("Helvetica").fontSize(11);
-                    }
-                })
-                    
-                pdf
-                    .moveDown(2)
-                    .fontSize(12)
-                    .text('Glattbrugg, den ' + formatDateLong(kegelDate), pdf.page.margins.left + 5)
-                    .fontSize(10)
-
-                // see the range of buffered pages            
-                let gedrucktAm = 'Erstellt am: ' + new Date().toLocaleDateString('de-CH');
-                const range = pdf.bufferedPageRange(); // => { start: 0, count: 1 ... }
-                for (let i = range.start, end = range.start + range.count; i < end; i++) {
-                    pdf.switchToPage(i);
-    
-                    let x = pdf.page.margins.left + 5;
-                    let y = pdf.page.height - pdf.heightOfString(gedrucktAm) - pdf.page.margins.bottom;
-                    console.log(gedrucktAm + ' ' + x + '/' + y);
-                    pdf.text(gedrucktAm, x, y);
-    
-                    let text = `Seite ${i + 1} von ${range.count}`
-                    x = pdf.page.width - pdf.widthOfString(text) - pdf.page.margins.right - 5;
-                    console.log(text + ' ' + x + '/' + y);
-                    pdf.text(text, x, y);
+            let pdf = new PDFDocument({
+                autoFirstPage: true,
+                bufferPages: true,
+                layout: 'portrait',
+                size: 'A4',
+                info: {
+                    Title: 'Kegelkasse ' + kegelDateFormat,
+                    Author: 'AutoMoto-Club Swissair, Janine Franken'
                 }
-    
-                // Pipe its output somewhere, like to a file or HTTP response
-                // See below for browser usage
-                pdf.pipe(fs.createWriteStream(global.exports + filenamePDF));
-    
-                // Finalize PDF file
-                pdf.end();
-    
-                
-            return res.json({
-                type: "info",
-                message: "PDFDatei erstellt",
-                filename: filenamePDF
             });
-    
-    
+            // Embed a font, set the font size, and render some text
+            pdf
+                .font('Helvetica-Bold')
+                .fontSize(18)
+                .text('Kegelkasse ' + kegelDateFormat)
+                .moveDown(2);
+
+            // draw content, by passing data to the addBody method
+            pdf.table(table, {
+                divider: {
+                    header: { disabled: false, width: 2, opacity: 1 },
+                    horizontal: { disabled: false, width: 0.5, opacity: 1 },
+                    vertical: { disabled: false, width: 0.5, opacity: 1 },
+                },
+                padding: 5, // {Number} default: 0
+                columnSpacing: 5,
+                prepareHeader: () => pdf.font("Helvetica-Bold").fontSize(11),
+                prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                    pdf.font("Helvetica").fontSize(11);
+                }
+            })
+
+            pdf
+                .moveDown(2)
+                .fontSize(12)
+                .text('Glattbrugg, den ' + formatDateLong(kegelDate), pdf.page.margins.left + 5)
+                .fontSize(10)
+
+            // see the range of buffered pages            
+            let gedrucktAm = 'Erstellt am: ' + new Date().toLocaleDateString('de-CH', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            const range = pdf.bufferedPageRange(); // => { start: 0, count: 1 ... }
+            for (let i = range.start, end = range.start + range.count; i < end; i++) {
+                pdf.switchToPage(i);
+
+                let x = pdf.page.margins.left + 5;
+                let y = pdf.page.height - pdf.heightOfString(gedrucktAm) - pdf.page.margins.bottom;
+                console.log(gedrucktAm + ' ' + x + '/' + y);
+                pdf.text(gedrucktAm, x, y);
+
+                let text = `Seite ${i + 1} von ${range.count}`
+                x = pdf.page.width - pdf.widthOfString(text) - pdf.page.margins.right - 5;
+                console.log(text + ' ' + x + '/' + y);
+                pdf.text(text, x, y);
+            }
+
+            // Pipe its output somewhere, like to a file or HTTP response
+            // See below for browser usage
+            pdf.pipe(fs.createWriteStream(global.exports + filenamePDF));
+
+            // Finalize PDF file
+            pdf.end();
+
+            // PDF an Journaleintrag hängen
+            const receipt = 'receipt/' + filenamePDF
+            const path = global.documents + kegelDate.getFullYear() + '/';
+            let newReceipt = Receipt.build({ receipt: receipt, jahr: kegelDate.getFullYear(), bezeichnung: 'Kegelkasse ' + kegelDateFormat })
+            await newReceipt.save({ fields: ['receipt', 'jahr', 'bezeichnung'] })
+                .then(async (result) => {
+                    let newFilename = 'receipt/journal-' + result.id + '.pdf'
+                    result.receipt = newFilename
+                    payload.file = newFilename
+                    await result.save({ fields: ['receipt'] })
+                        .then(result2 => {
+                            fs.copyFileSync(global.exports + filenamePDF, path + newFilename);
+                            fs.chmod(path + newFilename, '0640', err => {
+                                if (err) {
+                                    console.log(err)
+                                    payload.message += "Error while changing the mode of the file - " + err.message + "; "
+                                }
+                            });
+                            let journal = JournalReceipt.build({ journalid: kegelkasse.journalid, receiptid: result.id });
+                            journal.save()
+                                .then(jResp => {
+                                    console.log(jResp)
+                                })
+                                .catch(err => { 
+                                    console.log(err); 
+                                    payload.message += "Error while saving journal_receipt;";
+                                    payload.type = 'error';
+                                 })
+                        })
+                })
+                .catch(e => {
+                    console.log(e)
+                    payload.message += "Error while saving new receipt " + element + "; "
+                    payload.type = 'error'
+                })
+
+
+            return res.json(payload);
+
+
         } else {
             return res.json({
                 type: "error",
                 message: "Kegelkasse nicht mit Journal verbunden"
-            });    
+            });
         }
 
     }
@@ -1692,7 +1684,7 @@ function writeKegelLine(sheet, row, value, field) {
     sheet.getCell('B' + row).numFmt = '#,##0';
     setCellValueFormat(sheet, 'C' + row, field * value, true, false, { bold: false, size: iFontSizeRow, name: 'Tahoma' });
     sheet.getCell('C' + row).numFmt = '#,##0.00;[Red]\-#,##0.00';
-    return {sum: field * value, value: value, field: field};
+    return { sum: field * value, value: value, field: field };
 }
 
 /**
@@ -1741,10 +1733,10 @@ function writeArray(sheet, arData, firstRow, fBudget = false, fBudgetVergleich =
                 case 4:
                     setCellValueFormat(sheet, 'F' + row, { formula: 'E' + row + '-D' + row }, true, '', font);
                     break;
-            
+
                 case 1:
                 case 6:
-                    setCellValueFormat(sheet, 'F' + row, { formula: 'D' + row + '-E' + row }, true, '', font);                    
+                    setCellValueFormat(sheet, 'F' + row, { formula: 'D' + row + '-E' + row }, true, '', font);
                     break;
 
                 default:
@@ -1777,12 +1769,12 @@ function writeArray(sheet, arData, firstRow, fBudget = false, fBudgetVergleich =
                     case 4:
                         setCellValueFormat(sheet, 'H' + row, { formula: 'G' + row + '-D' + row }, true, '', font);
                         break;
-                
+
                     case 1:
                     case 6:
                         setCellValueFormat(sheet, 'H' + row, { formula: 'D' + row + '-G' + row }, true, '', font);
                         break;
-    
+
                     default:
                         break;
                 }
@@ -1823,7 +1815,7 @@ function writeArray(sheet, arData, firstRow, fBudget = false, fBudgetVergleich =
  */
 async function fillTemplate(sheet, id, syear) {
     const sqlstring = "select m.* from meisterschaft as m join anlaesse as a on m.eventid = a.id and year(a.datum) = " + syear + " where m.mitgliedid = " + id + " order by m.id"
-    const data = await Sequelize.query(sqlstring, { type: QueryTypes.SELECT, logging: console.debug, raw: false, model: Meisterschaft } )
+    const data = await Sequelize.query(sqlstring, { type: QueryTypes.SELECT, logging: console.debug, raw: false, model: Meisterschaft })
 
     if (data != undefined && data.length > 0) {
         let cols = sheet.getColumn('K');
@@ -1856,7 +1848,7 @@ async function fillTemplate(sheet, id, syear) {
                                     formatCell.style.fill = {
                                         type: 'pattern',
                                         pattern: 'solid',
-                                        bgColor: { argb: '96C8FB'}
+                                        bgColor: { argb: '96C8FB' }
                                     };
                                     formatCell.style.border = {
                                         diagonal: {
@@ -2117,8 +2109,8 @@ function formatDateLong(date) {
         'Oktober',
         'November',
         'Dezember'
-      ];
-    
+    ];
+
     const monthName = months[date.getMonth()]
 
     retString = `${date.getDay()}. ${monthName} ${date.getFullYear()}`

@@ -2,7 +2,7 @@ let { Meisterschaft, Adressen, Anlaesse } = require("../db");
 const { Op, Sequelize } = require("sequelize");
 
 module.exports = {
-	getData: function (req, res) {
+	getData: function (req, res, next) {
 
 		Meisterschaft.findAll({
 			where: { eventid: { [Op.eq]: req.query.eventid } },
@@ -15,7 +15,7 @@ module.exports = {
 		}).then(data => res.json(data));
 	},
 
-	getOneData: function (req, res) {
+	getOneData: function (req, res, next) {
 		Meisterschaft.findOne({
 			where: { id: { [Op.eq]: req.query.id } },
 			include: [
@@ -24,7 +24,7 @@ module.exports = {
 		}).then(data => res.json(data));
 	},
 
-	getMitgliedData: function (req, res) {
+	getMitgliedData: function (req, res, next) {
 		Meisterschaft.findAll({
 			attributes: ["punkte", ["total_kegel", "total_kegeln"], "streichresultat"],
 			where: { "mitgliedid": req.query.id },
@@ -46,11 +46,11 @@ module.exports = {
 				// console.log(data);
 				res.json(data)
 			})
-			.catch(error => console.error(error));
+			.catch(error => next(error));
 
 	},
 
-	getChartData: function (req, res) {
+	getChartData: function (req, res, next) {
 
 		Anlaesse.findAll({
 			attributes: ["datum", "name", "gaeste", "anlaesseid"],
@@ -90,17 +90,17 @@ module.exports = {
 					}
 					res.json(data);
 				})
-				.catch(err2 => console.error(err2));
+				.catch(err2 => next(err2));
 			} else {
 				res.json(data);
 			}
 		})
-		.catch(err => console.error(err));
+		.catch(err => next(err));
 
 
 	},
 
-	checkJahr: function (req, res) {
+	checkJahr: function (req, res, next) {
 		Meisterschaft.count({
 			where: {"streichresultat": true},
 			include: {model: Anlaesse, as: "linkedEvent", 
@@ -108,10 +108,10 @@ module.exports = {
 				where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("datum")), req.query.jahr)}
 		})
 		.then(data => res.json({AnzStreich: data}))
-		.catch(err => console.error(err));
+		.catch(err => next(err));
 	},
 
-	removeData: function (req, res) {
+	removeData: function (req, res, next) {
 		const data = JSON.parse(req.body);
 		if (data == undefined) {
 			throw Error("Record not correct");
@@ -120,20 +120,20 @@ module.exports = {
 		Meisterschaft.findByPk(data.id)
 			.then((eintrag) => eintrag.destroy()
 				.then((obj) => res.json({ id: obj.id }))
-				.catch((e) => console.error(e)))
-			.catch((e) => console.error(e));
+				.catch(e => next(e)))
+			.catch(e => next(e));
 	},
 
-	addData: function (req, res) {
+	addData: function (req, res, next) {
 		let data = JSON.parse(req.body);
 		data.id = null;
 		console.info('insert: ', data);
 		Meisterschaft.create(data)
 			.then((obj) => res.json(obj.id))
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 	},
 
-	updateData: function (req, res) {
+	updateData: function (req, res, next) {
 		let data = JSON.parse(req.body);
 		// update
 
@@ -143,8 +143,8 @@ module.exports = {
 			Meisterschaft.findByPk(data.id)
 			.then((eintrag) => eintrag.update(data)
 				.then((obj) => res.json(obj))
-				.catch((e) => console.error(e)))
-			.catch((e) => console.error(e));
+				.catch(e => next(e)))
+			.catch(e => next(e));
 
 		} else {
 			data.id = null;
@@ -152,7 +152,7 @@ module.exports = {
 			console.info('insert: ', data);
 			Meisterschaft.create(data)
 				.then((obj) => res.json(obj.id))
-				.catch((e) => console.error(e));
+				.catch(e => next(e));
 			}
 	},
 

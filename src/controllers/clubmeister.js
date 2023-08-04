@@ -2,7 +2,7 @@ const { Clubmeister, Meisterschaft, Adressen, Anlaesse } = require("../db");
 const { Op, Sequelize } = require("sequelize");
 
 module.exports = {
-	getData: async function (req, res) {	
+	getData: async function (req, res, next) {	
 		console.log("clubmeister.js/getData");	
 		await Clubmeister.findAll({
 			where: {jahr: req.query.jahr},
@@ -12,7 +12,7 @@ module.exports = {
 		}).then(data => res.json(data));		
 	},
 
-	getOverviewData: async function (req, res) {
+	getOverviewData: async function (req, res, next) {
 		let arResult = [{label: 'Clubmeisterschaft', value: 0}]
 		let anzahl = await Clubmeister.count({
 			where: [{"jahr" : global.Parameter.get('CLUBJAHR')},
@@ -22,7 +22,7 @@ module.exports = {
 		res.json(arResult);
 	},
 
-	calcMeister: async function (req, res) {
+	calcMeister: async function (req, res, next) {
 		// berechnet den Clubmeister für das Jahr req.query.jahr
 
 		let arMeister = []

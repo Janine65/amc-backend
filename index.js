@@ -12,6 +12,8 @@ const { exit } = require('process');
 const formidable = require('formidable');
 const fs = require("fs")
 
+const pkg = require("./package.json")
+
 // environment variables
 if (process.env.NODE_ENV == undefined)
   process.env.NODE_ENV = 'development';
@@ -73,11 +75,15 @@ app.post('/upload', function (req, res, next) {
   }
 );
 
-app.get('/download', function(req, res) {
+app.get('/download', function(req, res, next) {
   const filename = global.exports + '/' + req.query.filename;  
   res.sendFile(filename);
 });
 
+app.get('/about', function(req, res, next) {
+  res.json(pkg);
+
+})
 const winston = require('winston')
 
 const logger = winston.createLogger({
@@ -136,11 +142,11 @@ app.use('/journal', require('./src/authorize/journal.controller'));
 
 app.use(errorHandler);
 
-app.get('/', function (req, res) {
+app.get('/', function (req, res, next) {
   res.json({ status: 'ok', message: 'alive' });
 })
 
-app.get('/system/env', function (req, res) {
+app.get('/system/env', function (req, res, next) {
   res.json({ env: process.env.NODE_ENV });
 })
 const exportData = require("./src/controllers/exports");

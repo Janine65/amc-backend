@@ -2,16 +2,16 @@ const { Adressen } = require("../db");
 const { Op, Sequelize } = require("sequelize");
 
 module.exports = {
-	getData: function (req, res) {		
+	getData: function (req, res, next) {		
 		Adressen.findAll({ where: { 			
 			austritt: { [Op.gte]: new Date() }
 			 },
 			order:[['name', 'asc'],['vorname', 'asc']]})
 		.then(data => res.json(data))
-		.catch((e) => console.error(e));		
+		.catch(e => next(e));		
 	},
 
-	getOverviewData: async function (req, res) {
+	getOverviewData: async function (req, res, next) {
 		// get a json file with the following information to display on first page:
 		// count of active adressen
 		// count of SAM_Mitglieder
@@ -39,13 +39,13 @@ module.exports = {
 		res.json(arResult);
 	},
 
-	getOneData: function (req, res) {
+	getOneData: function (req, res, next) {
 		Adressen.findByPk(req.query.id)
 			.then(data => res.json(data))
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 	},
 
-	getFKData: function(req, res) {
+	getFKData: function(req, res, next) {
 		Adressen.findAll({ 
 			attributes: ["id", ["fullname", "value"]],
 			where: [
@@ -54,10 +54,10 @@ module.exports = {
 			order: ["fullname"]
 			 })
 		.then(data => res.json(data))
-		.catch((e) => console.error(e));		
+		.catch(e => next(e));		
 	},
 
-	removeData: function (req, res) {
+	removeData: function (req, res, next) {
 		const data = JSON.parse(req.body);
 		console.info('delete: ',data);
 		let endDate = new Date();
@@ -68,12 +68,12 @@ module.exports = {
 			adresse.austritt = endDate;
 			adresse.update({austritt: endDate})
 			.then((obj) => res.json(obj))
-			.catch((e) => console.error(e))
+			.catch(e => next(e))
 			})
-		.catch((e) => console.error(e));
+		.catch(e => next(e));
 	},
 
-	addData: function (req, res) {
+	addData: function (req, res, next) {
 		let data = JSON.parse(req.body);
 		data.id = null;
 		if (data.austritt == "" || data.austritt == null) {
@@ -85,10 +85,10 @@ module.exports = {
 		console.info('insert: ',data);
 		Adressen.create(data)
 			.then((obj) => res.json(obj))
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 	},
 	
-	updateData: function (req, res) {
+	updateData: function (req, res, next) {
 		let data = JSON.parse(req.body);
 		if (data.austritt == "" || data.austritt == null) {
 			data.austritt = "3000-01-01T00:00:00";
@@ -102,7 +102,7 @@ module.exports = {
 			console.info('insert: ',data);
 			Adressen.create(data)
 			.then((obj) => res.json(obj))
-			.catch((e) => console.error(e))
+			.catch(e => next(e))
 		} else {
 			// update
 			console.info('update: ',data);
@@ -110,8 +110,8 @@ module.exports = {
 			Adressen.findByPk(data.id)
 			.then((adresse) => adresse.update(data)
 				.then((obj) => res.json(obj))
-				.catch((e) => console.error(e)))
-			.catch((e) => console.error(e));
+				.catch(e => next(e)))
+			.catch(e => next(e));
 		}
 	},
 

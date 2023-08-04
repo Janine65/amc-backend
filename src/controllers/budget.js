@@ -14,13 +14,13 @@ module.exports = {
 		.then(data => {
 			res.json(data);
 		})
-		.catch((e) => next(e.parent));
+		.catch((e) => next(e));
 	},
 
 	getOneData: function (req, res, next) {
 		Budget.findByPk(req.param.id)
 			.then(data => res.json(data))
-			.catch((e) => next(e.parent));
+			.catch((e) => next(e));
 	},
 
 	removeData: function (req, res, next) {
@@ -30,8 +30,8 @@ module.exports = {
 			.then((budget) =>
 				budget.destroy()
 					.then((obj) => res.json({ id: obj.id }))
-					.catch((e) => next(e.parent)))
-			.catch((e) => next(e.parent));
+					.catch((e) => next(e)))
+			.catch((e) => next(e));
 	},
 
 	addData: async function (req, res, next) {
@@ -41,7 +41,7 @@ module.exports = {
 
 		Budget.create(data)
 			.then((obj) => res.json(obj))
-			.catch((e) => next(e.parent));
+			.catch((e) => next(e));
 			
 	},
 
@@ -52,8 +52,8 @@ module.exports = {
 		Budget.findByPk(data.id)
 			.then((budget) => budget.update(data)
 				.then((obj) => res.json(obj))
-				.catch((e) => next(e.parent)))
-			.catch((e) => next(e.parent));
+				.catch((e) => next(e)))
+			.catch((e) => next(e));
 	},
 
 	copyYear: async function (req, res, next) {

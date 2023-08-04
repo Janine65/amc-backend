@@ -3,21 +3,21 @@ const {FiscalYear, Journal} = require("../db");
 const fs = require('fs');
 
 module.exports = {
-	getData: function (req, res) {		
+	getData: function (req, res, next) {		
 		FiscalYear.findAll({order: [['year', 'desc']]})
 		.then(data => res.json(data))
-		.catch((e) => console.error(e));		
+		.catch(e => next(e));		
 	},
 
-	getOneData: function (req, res) {
+	getOneData: function (req, res, next) {
 		FiscalYear.findOne({ where: { 			
 			year: req.query.jahr }
 			})
 			.then(data => res.json(data))
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 	},
 
-	getFKData: function(req, res) {
+	getFKData: function(req, res, next) {
 		FiscalYear.findAll({
 			attributes: [["year", "id"],
 			[Sequelize.fn("CONCAT", Sequelize.col("name"), " - ", Sequelize.literal("(CASE \"state\" WHEN 1 THEN 'offen' WHEN 2 THEN 'prov. abgeschlossen' ELSE 'abgeschlossen' END)")), 'value'],
@@ -26,21 +26,21 @@ module.exports = {
 			order: ["year"]
 		})
 		.then(data => res.json(data))
-		.catch((e) => console.error(e));					
+		.catch(e => next(e));					
 	},
 
-	removeData: function (req, res) {
+	removeData: function (req, res, next) {
 		const data = JSON.parse(req.body);
 		console.info('delete: ',data);
 		FiscalYear.findOne({where: {year: data.year}})
 		.then((fiscalyear) =>
 			fiscalyear.destroy()
 			.then((obj) => res.json())
-			.catch((e) => console.log(e)))
-		.catch((e) => console.log(e));
+			.catch((e) => next(e)))
+		.catch((e) => next(e));
 	},
 
-	addData: function (req, res) {
+	addData: function (req, res, next) {
 		let data = JSON.parse(req.body);
 		data.id = null;
 		console.info('insert: ',data);
@@ -48,10 +48,10 @@ module.exports = {
 			.then((obj) => {
 				res.json({ id: obj.id })
 			} )
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 	},
 	
-	updateData: function (req, res) {
+	updateData: function (req, res, next) {
 		let data = JSON.parse(req.body);
 		console.info('update: ',data);
 			
@@ -60,11 +60,11 @@ module.exports = {
 		)
 		.then((fiscalyear) => fiscalyear.update(data)
 			.then((obj) => res.json(obj))
-			.catch((e) => console.error(e)))
-		.catch((e) => console.error(e));
+			.catch(e => next(e)))
+		.catch(e => next(e));
 	},
 
-	closeYear: async function (req, res) {
+	closeYear: async function (req, res, next) {
 		let sJahr = req.query.jahr;
 		let sNextJahr = parseInt(sJahr) + 1;
 		let iStatus = req.query.status;
@@ -310,11 +310,7 @@ module.exports = {
 				raw: false
 			}
 		).catch((err) => {
-			console.error(err);
-			res.json({
-				type: "error",
-				message: err
-			});
+			next(err);
 		});	
 
 		// Buchungsnummern setzten
@@ -331,18 +327,14 @@ module.exports = {
                 logging: console.debug,
                 raw: false
             }
-		).catch((e) => console.error(e));
+		).catch(e => next(e));
 		let rownum = 1;
         for (let ind2 = 0; ind2 < arJournal.length; ind2++) {
             const record = arJournal[ind2];
 			await Journal.update({"journalno": rownum++},
 					{where: {"id" : record.id}})
 			.catch(err => {
-				console.error(err);
-				res.json({
-					type: "error",
-					message: err
-				});
+				next(err);
 			});
 		}
 

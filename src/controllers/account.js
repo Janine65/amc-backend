@@ -2,16 +2,16 @@ let {Journal, Account, Budget} = require("../db");
 const { Op, Sequelize } = require("sequelize");
 
 module.exports = {
-	getAllData: async function (req, res) {
+	getAllData: async function (req, res, next) {
 		const arAccount = await Account.findAll(
 			{
 				where: { "order": { [Op.gt]: 10 } },
 				order: [["level", "ASC"], ["order", "ASC"]]
-			}).catch((e) => console.error(e));
+			}).catch(e => next(e));
 		res.json(arAccount);
 	},
 
-	getData: async function (req, res) {
+	getData: async function (req, res, next) {
 		let arJournalIds = [];
 
 		let arfromAcc = await global.sequelize.query("SELECT DISTINCT from_account FROM journal WHERE year(date) = ?",
@@ -23,7 +23,7 @@ module.exports = {
 				raw: false
 			}
 		)
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 
 		for (let index = 0; index < arfromAcc.length; index++) {
 			const element = arfromAcc[index];
@@ -38,7 +38,7 @@ module.exports = {
 				logging: console.debug,
 				raw: false
 			}
-		).catch((e) => console.error(e));
+		).catch(e => next(e));
 		for (let index = 0; index < arfromAcc.length; index++) {
 			const element = arfromAcc[index];
 			arJournalIds.push(element.to_account);
@@ -57,30 +57,30 @@ module.exports = {
 						]
 					},
 					order: [["level", "ASC"], ["order", "ASC"]]
-				}).catch((e) => console.error(e));
+				}).catch(e => next(e));
 		} else {
 			arAccount = await Account.findAll(
 				{
 					where: { "order": { [Op.gt]: 10 } },
 					order: [["level", "ASC"], ["order", "ASC"]]
-				}).catch((e) => console.error(e));
+				}).catch(e => next(e));
 		}
 		res.json(arAccount);
 	},
 
-	getOneData: function (req, res) {
+	getOneData: function (req, res, next) {
 		Account.findByPk(req.param.id)
 			.then(data => res.json(data))
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 	},
 
-	getOneDataByOrder: function (req, res) {
+	getOneDataByOrder: function (req, res, next) {
 		Account.findOne({ where: { "order": req.query.order } })
 			.then(data => res.json(data))
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 	},
 
-	getAmountOneAcc: function (req, res) {
+	getAmountOneAcc: function (req, res, next) {
 		let amount = 0
 		let date = new Date(req.query.datum)
 		Account.findOne({ where: { "order": req.query.order } })
@@ -117,15 +117,15 @@ module.exports = {
 							amount -= to[0].amount
 						res.json({amount: amount, id: data.id})
 					})	
-					.catch((e) => console.error(e))
+					.catch(e => next(e))
 				})
-				.catch((e) => console.error(e))
+				.catch(e => next(e))
 				
 			})
-			.catch((e) => console.error(e))
+			.catch(e => next(e))
 	},
 
-	getFKData: function (req, res) {
+	getFKData: function (req, res, next) {
 		Account.findAll({
 			attributes: ["id", [Sequelize.fn('CONCAT', Sequelize.col("name"), ' ', Sequelize.col("order")), "name"]],
 			where: [
@@ -143,41 +143,41 @@ module.exports = {
 				}
 				res.json(arReturn);
 			})
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 	},
 
-	addData: function (req, res) {
+	addData: function (req, res, next) {
 		let data = JSON.parse(req.body);
 		data.id = null;
 		console.info('insert: ', data);
 		Account.create(data)
-			.then((obj) => res.json(obj))
-			.catch((e) => res.json({ type: "error", message: e }));
+			.then(obj => res.json(obj))
+			.catch((e => next(e)))
 	},
 
-	updateData: function (req, res) {
+	updateData: function (req, res, next) {
 		let data = JSON.parse(req.body);
 		console.info('update: ', data);
 
 		Account.findByPk(data.id)
 			.then((account) => account.update(data)
 				.then((obj) => res.json(obj))
-				.catch((e) => console.error(e)))
-			.catch((e) => console.error(e));
+				.catch(e => next(e)))
+			.catch(e => next(e));
 	},
 
-	removeData: function (req, res) {
+	removeData: function (req, res, next) {
 		let data = JSON.parse(req.body);
 		console.info('delete: ', data);
 
 		Account.findByPk(data.id)
 			.then((account) => account.destroy()
 				.then((obj) => res.json())
-				.catch((e) => console.error(e)))
-			.catch((e) => console.error(e));
+				.catch(e => next(e)))
+			.catch(e => next(e));
 	},
 
-	getAccountSummary: async function (req, res) {
+	getAccountSummary: async function (req, res, next) {
 		let arData = [];
 		let arBudget = await Budget.findAll({
 			attributes: ["amount"],
@@ -186,7 +186,7 @@ module.exports = {
 				{ model: Account, as: 'acc', required: true, attributes: ["id", "level", "order", "name", "status"] }
 			]
 		})
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 
 		Journal.findAll({
 			attributes: [[Sequelize.fn('sum', Sequelize.col("amount")), "amount"]],
@@ -324,9 +324,9 @@ module.exports = {
 						console.log(arFiltered);
 						res.json(arFiltered);
 					})
-					.catch((e) => console.error(e));
+					.catch(e => next(e));
 			})
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 	},
 
 };

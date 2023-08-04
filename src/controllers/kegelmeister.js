@@ -2,7 +2,7 @@ const { Kegelmeister, Anlaesse, Meisterschaft, Adressen } = require("../db");
 const { Op, Sequelize } = require("sequelize");
 
 module.exports = {
-	getData: function (req, res) {
+	getData: function (req, res, next) {
 		console.log("kegelmeister.js/getData");
 		Kegelmeister.findAll({
 			where: { jahr: req.query.jahr },
@@ -12,7 +12,7 @@ module.exports = {
 		}).then(data => res.json(data));
 	},
 
-	getOverviewData: async function (req, res) {
+	getOverviewData: async function (req, res, next) {
 		let arResult = [{ label: 'Kegelmeisterschaft', value: 0 }]
 		let anzahl = await Kegelmeister.count({
 			where: [{ "jahr": global.Parameter.get('CLUBJAHR') },
@@ -22,7 +22,7 @@ module.exports = {
 		res.json(arResult);
 	},
 
-	calcMeister: async function (req, res) {
+	calcMeister: async function (req, res, next) {
 		// berechnet den Kegelmeister für das Jahr req.query.jahr
 
 		let arMeister = []

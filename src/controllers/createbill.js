@@ -14,7 +14,7 @@ module.exports = {
      * @param {Request} req 
      * @param {Response} res 
      */
-    createQRBill: async function (req, res) {
+    createQRBill: async function (req, res, next) {
         console.log("createQRBill");
 
         const adresse = JSON.parse(req.body);
@@ -168,7 +168,7 @@ module.exports = {
                                 message: "QR-Rechnung erstellt und versendet"
                             });                
                         })
-                        .catch(e => console.error(e));						
+                        .catch(e => next(e));						
                 } else {
                     res.json({
                         type: "error",
@@ -188,7 +188,7 @@ module.exports = {
             });
     },
 
-    sendEmail: async function (req, res) {
+    sendEmail: async function (req, res, next) {
         const email = JSON.parse(req.body);
 
         const retVal = await fncSendEmail(email);

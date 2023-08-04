@@ -5,7 +5,7 @@ const { Op,
 
 
 module.exports = {
-  getData: function (req, res) {
+  getData: function (req, res, next) {
     Anlaesse.findAll({
       where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("anlaesse.datum")), { [Op.gte]: global.Parameter.get("CLUBJAHR") - 1 }),
       include: [
@@ -15,7 +15,7 @@ module.exports = {
       .then((data) => res.json(data));
   },
 
-  getOverviewData: async function (req, res) {
+  getOverviewData: async function (req, res, next) {
     // get a json file with the following information to display on first page:
     // count of anlaesse im system_param jahr
     // count of SAM_Mitglieder
@@ -41,11 +41,11 @@ module.exports = {
     res.json(arResult);
   },
 
-  getOneData: function (req, res) {
+  getOneData: function (req, res, next) {
     Anlaesse.findByPk(req.param.id).then((data) => res.json(data));
   },
 
-  getFKData: function (req, res) {
+  getFKData: function (req, res, next) {
 		Anlaesse.findAll({ 
 			attributes: ["id", ["longname", "value"]],
 			where: [
@@ -54,10 +54,10 @@ module.exports = {
 			order: [["datum","DESC"]]
 			 })
 		.then(data => res.json(data))
-		.catch((e) => console.error(e));		
+		.catch(e => next(e));		
   },
 
-  removeData: function (req, res) {
+  removeData: function (req, res, next) {
     const data = JSON.parse(req.body);
     if (data == undefined) {
       throw Error("Record not correct");
@@ -71,12 +71,12 @@ module.exports = {
               id: obj.id,
             })
           )
-          .catch((e) => console.error(e))
+          .catch(e => next(e))
       )
-      .catch((e) => console.log(e));
+      .catch((e) => next(e));
   },
 
-  addData: async function (req, res) {
+  addData: async function (req, res, next) {
     let data = JSON.parse(req.body);
 		data.id = null;
     console.info("insert: ", data);
@@ -84,7 +84,7 @@ module.exports = {
     res.json(obj)
   },
 
-  updateData: async function (req, res) {
+  updateData: async function (req, res, next) {
     let data = JSON.parse(req.body);
     if (data.id == 0 || data.id == null) {
       // insert
@@ -109,9 +109,9 @@ module.exports = {
             .then((obj) =>
               res.json(obj)
             )
-            .catch((e) => console.error(e))
+            .catch(e => next(e))
         )
-        .catch((e) => console.error(e));
+        .catch(e => next(e));
     }
   },
 

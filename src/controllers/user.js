@@ -26,7 +26,7 @@ passport.use(new LocalStrategy({
         // fillup lastlogin
         return done(null, user);
       })
-      .catch((e) => console.error(e));
+      .catch(e => next(e));
   }
 ));
 
@@ -44,7 +44,7 @@ module.exports = {
   getData: function (req, res, next) {
     User.findAll({ attributes: ["id", "name", "email", "role", "last_login"] })
       .then(data => res.json(data))
-      .catch(error => console.log(error));
+      .catch(error => next(error));
   },
 
   updateData: function (req, res, next) {
@@ -54,9 +54,9 @@ module.exports = {
       .then((user) => {
         user.update(data)
           .then((obj) => res.json({ obj }))
-          .catch((e) => console.error(e))
+          .catch(e => next(e))
       })
-      .catch((e) => console.error(e));
+      .catch(e => next(e));
 
   },
 
@@ -67,9 +67,9 @@ module.exports = {
       .then((user) => {
         user.destroy()
           .then((obj) => res.json({ status: "ok" }))
-          .catch((e) => console.error(e))
+          .catch(e => next(e))
       })
-      .catch((e) => console.error(e));
+      .catch(e => next(e));
 
   },
 
@@ -80,7 +80,7 @@ module.exports = {
       .then((user) => {
         res.json(user)
       })
-      .catch((e) => console.error(e));
+      .catch(e => next(e));
 
   },
 
@@ -91,7 +91,7 @@ module.exports = {
       .then((user) => {
         res.json(user)
       })
-      .catch((e) => console.error(e));
+      .catch(e => next(e));
 
   },
 
@@ -133,13 +133,13 @@ module.exports = {
         if (hasChange) {
           user.update(update)
             .then(obj => res.json(obj))
-            .catch(error => console.log(error));
+            .catch(error => next(error));
         } else {
           res.json({ status: 'error', message: 'Profile not changed' });
           console.error('Profile not changed.', res);
         }
       })
-      .catch((e) => console.error(e));
+      .catch(e => next(e));
 
   },
 
@@ -158,7 +158,7 @@ module.exports = {
         user.last_login = Date.now();
 
         user.update({ last_login: user.last_login })
-          .catch((e) => console.error(e));
+          .catch(e => next(e));
         req.session.user = user;
         return res.json(user);
       });
@@ -192,7 +192,7 @@ module.exports = {
       salt: salt
     })
       .then((obj) => res.json({ id: obj.id }))
-      .catch((err) => res.json({ status: 'error', message: err.toString() }));
+      .catch((err) => next(err));
 
   }
 };

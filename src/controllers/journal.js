@@ -2,9 +2,10 @@ const { Journal, Account, Receipt, JournalReceipt, Kegelkasse, Meisterschaft, An
 const { Op, Sequelize, QueryInterface } = require("sequelize");
 const ExcelJS = require("exceljs");
 const fs = require("fs");
+const { error } = require("console");
 
 
-async function getData(req, res) {
+async function getData(req, res, next) {
 	Journal.findAll(
 		{
 			attributes: [
@@ -32,10 +33,10 @@ async function getData(req, res) {
 		.then(data => {
 			res.json(data);
 		})
-		.catch((e) => console.error(e));
+		.catch(e => next(e));
 }
 
-async function getAllAttachment(req, res) {
+async function getAllAttachment(req, res, next) {
 	if (req.query.journalid != null) {
 		Receipt.findAll(
 			{
@@ -72,7 +73,7 @@ async function getAllAttachment(req, res) {
 				});
 				res.json(data);
 			})
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 
 	} else {
 		Receipt.findAll(
@@ -107,14 +108,14 @@ async function getAllAttachment(req, res) {
 				}
 				res.json(data);
 			})
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 
 	}
 
 
 }
 
-async function getAttachment(req, res) {
+async function getAttachment(req, res, next) {
 	// Hier müssen nun die Belege gelesen werden und nicht nur das Attribut auf dem Journal
 	Receipt.findAll(
 		{
@@ -144,7 +145,7 @@ async function getAttachment(req, res) {
 			});
 			res.json(data);
 		})
-		.catch((e) => console.error(e));
+		.catch(e => next(e));
 
 }
 async function uploadAtt(req, res, next) {
@@ -164,7 +165,7 @@ async function uploadAtt(req, res, next) {
 }
 
 
-async function getOneData(req, res) {
+async function getOneData(req, res, next) {
 	Journal.findByPk(req.query.id,
 		{
 			attributes: [
@@ -186,41 +187,41 @@ async function getOneData(req, res) {
 		.then(data => {
 			res.json(data);
 		})
-		.catch((e) => console.error(e));
+		.catch(e => next(e));
 }
 
-async function removeData(req, res) {
+async function removeData(req, res, next) {
 	const data = JSON.parse(req.body);
 	console.info('delete: ', data);
 	Journal.findByPk(data.id)
 		.then((journal) =>
 			journal.destroy()
 				.then((obj) => res.json({ id: obj.id }))
-				.catch((e) => console.error(e)))
-		.catch((e) => console.error(e));
+				.catch(e => next(e)))
+		.catch(e => next(e));
 }
 
-async function addData(req, res) {
+async function addData(req, res, next) {
 	let data = JSON.parse(req.body);
 	data.id = null;
 	console.info('insert: ', data);
 	Journal.create(data)
 		.then((obj) => res.json(obj))
-		.catch((e) => console.error(e));
+		.catch(e => next(e));
 }
 
-async function updateData(req, res) {
+async function updateData(req, res, next) {
 	let data = JSON.parse(req.body);
 	console.info('update: ', data);
 
 	Journal.findByPk(data.id)
 		.then((journal) => journal.update(data, { fields: ["from_account", "to_account", "journalno", "date", "memo", "amount", "status"] })
 			.then((obj) => res.json(obj))
-			.catch((e) => console.error(e)))
-		.catch((e) => console.error(e));
+			.catch(e => next(e)))
+		.catch(e => next(e));
 }
 
-async function getKegelkasse(req, res) {
+async function getKegelkasse(req, res, next) {
 	Kegelkasse.findAll({
 		logging: console.log,
 		where: Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('datum')), req.query.monat),
@@ -235,10 +236,10 @@ async function getKegelkasse(req, res) {
 		]
 	})
 		.then(obj => res.json(obj))
-		.catch(e => console.error(e));
+		.catch(e => next(e));
 }
 
-async function getAllKegelkasse(req, res) {
+async function getAllKegelkasse(req, res, next) {
 	Kegelkasse.findAll({
 		logging: console.log,
 		where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('datum')), req.query.jahr),
@@ -256,7 +257,7 @@ async function getAllKegelkasse(req, res) {
 		.then(async obj => {
 			for (let index = 0; index < obj.length; index++) {
 				const element = obj[index];
-				const { count, rows } = await Meisterschaft.findAndCountAll({
+				const { count } = await Meisterschaft.findAndCountAll({
 					where: {total_kegel: {[Op.gt] : 5} },
 					include: [{model: Anlaesse, as: 'linkedEvent', where: {datum: element.datum}}]
 				});
@@ -264,9 +265,9 @@ async function getAllKegelkasse(req, res) {
 			}
 			res.json(obj);
 		})
-		.catch(e => console.error(e));
+		.catch(e => next(e));
 }
-async function addKegelkasse(req, res) {
+async function addKegelkasse(req, res, next) {
 	let data = JSON.parse(req.body);
 	data.id = null;
 	console.info('insert: ', data);
@@ -276,10 +277,10 @@ async function addKegelkasse(req, res) {
 				await obj.setJournal(data.journal)
 			res.json(obj)
 		})
-		.catch((e) => console.error(e));
+		.catch(e => next(e));
 }
 
-async function updateKegelkasse(req, res) {
+async function updateKegelkasse(req, res, next) {
 	let data = JSON.parse(req.body);
 	if (data.id) {
 		console.info('update: ', data);
@@ -291,8 +292,8 @@ async function updateKegelkasse(req, res) {
 						await obj.setJournal(data.journal.id)
 					res.json(obj)
 				})
-				.catch((e) => console.error(e)))
-			.catch((e) => console.error(e));
+				.catch(e => next(e)))
+			.catch(e => next(e));
 	} else {
 		data.id = null;
 		console.info('insert: ', data);
@@ -302,11 +303,11 @@ async function updateKegelkasse(req, res) {
 					await obj.setJournal(data.journal)
 				res.json(obj)
 			})
-			.catch((e) => console.error(e));
+			.catch(e => next(e));
 	}
 }
 
-async function addReceipt(req, res) {
+async function addReceipt(req, res, next) {
 	const data = JSON.parse(req.body);
 
 	if (data.uploadFiles == undefined) {
@@ -358,33 +359,40 @@ async function addReceipt(req, res) {
 		}
 	};
 
-	res.json(payload);
+	if (payload.error)
+		next(payload);
+	else
+		res.json(payload);
 }
 
-async function updReceipt(req, res) {
+async function updReceipt(req, res, next) {
 
 	Receipt.findByPk(JSON.parse(req.body).id)
 		.then(rec => {
 			rec.bezeichnung = JSON.parse(req.body).bezeichnung
 			rec.save({ fields: ['bezeichnung'] })
 				.then(resp => res.json(resp))
-				.catch(err => { console.log(err); payload.type = 'error'; payload.message = 'Konnte nicht gespeichert werden' })
+				.catch(err => next(err))
 		})
-		.catch(err => { console.log(err); payload.type = 'error'; payload.message = 'Konnte nicht gefunden werden'; res.json(err); })
+		.catch(err => { console.log(err); next(err); })
 
 }
 
-async function delReceipt(req, res) {
+async function delReceipt(req, res, next) {
 	Receipt.findByPk(JSON.parse(req.body).id)
 		.then(rec => {
-			rec.destroy()
-				.then(resp => res.json(resp))
-				.catch(err => { console.log(err); payload.type = 'error'; payload.message = 'Konnte nicht gelöscht werden'; res.json(err); })
+			if (rec)
+				rec.destroy()
+					.then(resp => res.json(resp))
+					.catch(err => { console.log(err); next(err); })
+			else
+				next({type: 'error', message: 'Attachment konnte nicht gefunden werden.'})
+				// res.json({type: 'error', message: 'Attachment konnte nicht gefunden werden.'})
 		})
-		.catch(err => { console.log(err); payload.type = 'error'; payload.message = 'Konnte nicht gefunden werden' })
+		.catch(err => { console.log(err); next(err) })
 }
 
-async function addFiles2Journal(req, res) {
+async function addFiles2Journal(req, res, next) {
 	const data = JSON.parse(req.body);
 	const journalid = req.query.journalid
 	const jahr = req.query.jahr
@@ -439,7 +447,7 @@ async function addFiles2Journal(req, res) {
 	res.json(payload)
 }
 
-async function addReceipt2Journal(req, res) {
+async function addReceipt2Journal(req, res, next) {
 	const data = JSON.parse(req.body);
 	const journalid = req.query.journalid
 
@@ -456,12 +464,12 @@ async function addReceipt2Journal(req, res) {
 
 	await JournalReceipt.bulkCreate(journAdd)
 		.then(rec => payload.data = rec)
-		.catch(err => { console.log(err); payload.type = 'error'; payload.message = 'Konnte nicht gelöscht werden'; res.json(err); });
+		.catch(err => { console.log(err); payload.type = 'error'; payload.message = 'Konnte nicht gelöscht werden'; next(err); });
 
 	res.json(payload);
 }
 
-async function addAttachment(req, res) {
+async function addAttachment(req, res, next) {
 	const data = JSON.parse(req.body);
 
 	let sJahr = new Date(data.date).getFullYear();
@@ -518,7 +526,7 @@ async function addAttachment(req, res) {
 	res.json(payload);
 }
 
-async function delAttachment(req, res) {
+async function delAttachment(req, res, next) {
 	const data = JSON.parse(req.body);
 
 	JournalReceipt.findOne({
@@ -528,11 +536,11 @@ async function delAttachment(req, res) {
 		]
 	}).then(resp => resp.destroy()
 		.then(ret => res.json({ type: "info", message: "Attachment deleted" }))
-		.catch(e => console.error(e)))
-		.catch(e => console.error(e))
+		.catch(e => next(e)))
+		.catch(e => next(e))
 }
 
-async function getAccData(req, res) {
+async function getAccData(req, res, next) {
 	Promise.all([
 		Journal.findAll({
 			attributes: [
@@ -568,10 +576,10 @@ async function getAccData(req, res) {
 			console.log(arData);
 			res.json(arData);
 		})
-		.catch((err) => console.error(err));
+		.catch((err) => next(err));
 }
 
-async function importJournal(req, res) {
+async function importJournal(req, res, next) {
 	let data = JSON.parse(req.body);
 	let filename = data.sname.replace(process.cwd(), ".");
 	console.log(filename);

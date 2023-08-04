@@ -19,7 +19,7 @@ module.exports = router;
 function authenticate(req, res, next) {
     userService.authenticate(req.body)
         .then(user => res.json(user))
-        .catch(next);
+        .catch(err => next(err));
 }
 
 function newPass(req, res, next) {
@@ -38,10 +38,10 @@ function newPass(req, res, next) {
             req.body = emailBody
             exportsFnc.sendEmail(req, res, next)
                 .then(() => res.json({ message: 'Passwort erfolgreich gesetzt und Mail gesendet' }))
-                .catch(next);
+                .catch(err => next(err));
 
         })
-        .catch(next);
+        .catch(err => next(err));
 }
 
 function register(req, res, next) {
@@ -68,7 +68,7 @@ function register(req, res, next) {
                     req.body = emailBody
                     exportsFnc.sendEmail(req, res, next)
                         .then(() => res.json({ message: 'Registrierung erfolgreich und Mail an ' + user.email + ' gesendet' }))
-                        .catch(next);
+                        .catch(err => next(err));
                 })
         })
         .catch(next);
@@ -77,7 +77,7 @@ function register(req, res, next) {
 function getAll(req, res, next) {
     userService.getAll()
         .then(users => res.json(users))
-        .catch(next);
+        .catch(err => next(err));
 }
 
 function getCurrent(req, res, next) {
@@ -87,17 +87,17 @@ function getCurrent(req, res, next) {
 function getById(req, res, next) {
     userService.getById(req.params.id)
         .then(user => res.json(user))
-        .catch(next);
+        .catch(err => next(err));
 }
 
 function update(req, res, next) {
     userService.update(req.params.id, req.body)
         .then(user => res.json(user))
-        .catch(next);
+        .catch(err => next(err));
 }
 
 function _delete(req, res, next) {
     userService.delete(req.params.id)
         .then(() => res.json({ message: 'User deleted successfully' }))
-        .catch(next);
+        .catch(err => next(err));
 }
