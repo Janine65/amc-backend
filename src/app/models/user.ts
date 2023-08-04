@@ -8,3 +8,14 @@ export class User extends TableData {
     role!: string;
     last_login!: Date;
 }
+
+export class Package {
+    name?: string;
+    version?: string;
+    main?: string;
+    license?: string;
+    description?: string;
+    keywords?: string[];
+    author?: string;
+    dependencies? : Map<string,string>[]
+}

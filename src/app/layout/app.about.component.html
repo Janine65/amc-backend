@@ -1,0 +1,38 @@
+<div class="card">
+    <h2>About</h2>
+    <p-tabView>
+        <p-tabPanel header="Frontend">
+            <div class="grid">
+                <span class="col-4 font-bold">Name:</span><span class="col-8">{{pkgFrontend.name}}</span>
+                <span class="col-4 font-bold">Version:</span><span class="col-8">{{pkgFrontend.version}}</span>
+                <span class="col-4 font-bold">Licence:</span><span class="col-8">{{pkgFrontend.license}}</span>
+                <span class="col-4 font-bold">Description:</span><span class="col-8">{{pkgFrontend.description}}</span>
+                <span class="col-4 font-bold">author:</span><span class="col-8">{{pkgFrontend.author}}</span>
+                <span class="col-12 font-bold">Dependencies:</span>
+                <div class="grid p-1 ml-2">
+                    <div *ngFor="let entry of pkgFrontend.dependencies | keyvalue" class="col-3 grid p-1">
+                        <span class="col-8">{{entry.key}}:</span>
+                        <span class="col-2">{{entry.value}}</span>
+                    </div>
+                </div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel header="Backend">
+            <div class="grid">
+                <span class="col-4 font-bold">Name:</span><span class="col-8">{{pkgBackend.name}}</span>
+                <span class="col-4 font-bold">Version:</span><span class="col-8">{{pkgBackend.version}}</span>
+                <span class="col-4 font-bold">Licence:</span><span class="col-8">{{pkgBackend.license}}</span>
+                <span class="col-4 font-bold">Description:</span><span class="col-8">{{pkgBackend.description}}</span>
+                <span class="col-4 font-bold">author:</span><span class="col-8">{{pkgBackend.author}}</span>
+                <span class="col-12 font-bold">Dependencies:</span>
+                <div class="grid p-1 ml-2">
+                    <div *ngFor="let entry of pkgBackend.dependencies | keyvalue" class="col-3 grid p-1">
+                        <span class="col-8">{{entry.key}}:</span>
+                        <span class="col-2">{{entry.value}}</span>
+                    </div>
+                </div>
+            </div>
+
+        </p-tabPanel>
+    </p-tabView>
+</div>

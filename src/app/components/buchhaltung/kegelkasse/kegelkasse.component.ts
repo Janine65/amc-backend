@@ -242,7 +242,7 @@ export class KegelkasseComponent implements OnInit {
       this.backendService.createReceipt(this.kegelkasse.id).subscribe({
         next: (result) => {
           if (result.type == 'info')
-            this.messageService.add({severity: 'info', detail: 'Beleg wurde ertellt', summary: 'Beleg erstellen', sticky: false, closable: true});
+            this.messageService.add({severity: 'info', detail: 'Beleg wurde ertellt.\n' + result.message, summary: 'Beleg erstellen', sticky: false, closable: true});
           else
             this.messageService.add({severity: 'error', detail: result.message, summary: 'Beleg erstellen', sticky: true, closable: true});
         }

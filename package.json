@@ -1,6 +1,7 @@
 {
   "name": "amc-interna",
   "version": "2.1.6",
+  "description": "Auto-Moto-Club Administration: Frontend für die interne Applikation des Vereins.",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -11,6 +12,7 @@
     "postversion": "git push && git push --tags"
   },
   "author": "Janine Franken",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@angular-devkit/build-angular": "^15.2.8",

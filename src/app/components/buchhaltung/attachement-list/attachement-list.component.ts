@@ -144,7 +144,8 @@ export class AttachementListComponent {
             accept: () => {
               thisRef.backendService.delReceipt(selRec).subscribe(
                 {
-                  next: () => {
+                  next: (result) => {
+                    console.log(result);
                     thisRef.lstReceipts.splice(thisRef.lstReceipts.indexOf(selRec), 1)
                     thisRef.messageService.add({ summary: "Attachment löschen", detail: "Das Attachment wurde gelöscht", severity: "info", sticky: false })
                   }
@@ -152,6 +153,16 @@ export class AttachementListComponent {
               )
             }
           });
+        } else {
+          thisRef.backendService.delReceipt(selRec).subscribe(
+            {
+              next: () => {
+                thisRef.lstReceipts.splice(thisRef.lstReceipts.indexOf(selRec), 1)
+                thisRef.messageService.add({ summary: "Attachment löschen", detail: "Das Attachment wurde gelöscht", severity: "info", sticky: false })
+              }
+            }
+          )
+
         }
       }
     }

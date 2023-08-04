@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Account, Adresse, Anlass, Budget, Clubmeister, Fiscalyear, Journal, Kegelkasse, Kegelmeister, Meisterschaft, MeisterschaftAuswertung, OverviewData, ParamData, Receipt } from '../models/datatypes';
 import { environment } from '@environments/environment';
+import { Package } from '@model/user';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,11 @@ export class BackendService {
     console.log(this.header);   
   }
 
+  getAbout(): Observable<Package> {
+    const apiURL = environment.apiUrl + '/about';
+    return this.http.get<Package>(apiURL, {headers: this.header});
+  }
+  
   getParameterData(): Observable<ParamData[]> {
     const apiURL = environment.apiUrl + '/parameter/data';
     return this.http.get<ParamData[]>(apiURL, {headers: this.header});

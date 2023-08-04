@@ -86,6 +86,7 @@ import { SafePipe } from './components/shared/safe.pipe';
 import { AttachmentAddComponent } from './components/buchhaltung/attachment-add/attachment-add.component';
 import { KontoBewegungenComponent } from './components/buchhaltung/konto-bewegungen/konto-bewegungen.component';
 import { KegelkasseComponent } from './components/buchhaltung/kegelkasse/kegelkasse.component';
+import { AppAboutComponent } from './layout/app.about.component';
 
 @NgModule({
   declarations: [
@@ -126,6 +127,7 @@ import { KegelkasseComponent } from './components/buchhaltung/kegelkasse/kegelka
     AttachmentAddComponent,
     KontoBewegungenComponent,
     KegelkasseComponent,
+    AppAboutComponent,
   ],
   imports: [
     BrowserModule,
