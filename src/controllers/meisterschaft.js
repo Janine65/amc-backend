@@ -1,4 +1,4 @@
-let { Meisterschaft, Adressen, Anlaesse } = require("../db");
+let { Meisterschaft, Adressen, Anlaesse, Clubmeister, Kegelmeister } = require("../db");
 const { Op, Sequelize } = require("sequelize");
 
 module.exports = {
@@ -24,9 +24,10 @@ module.exports = {
 		}).then(data => res.json(data));
 	},
 
-	getMitgliedData: function (req, res, next) {
+	getMitgliedData: async function (req, res, next) {
+		if (req.query.type == 1) {
 		Meisterschaft.findAll({
-			attributes: ["punkte", ["total_kegel", "total_kegeln"], "streichresultat"],
+			attributes: ["id", "punkte", ["total_kegel", "total_kegeln"], "streichresultat"],
 			where: { "mitgliedid": req.query.id },
 			include: {
 				model: Anlaesse, as: "linkedEvent",
@@ -47,7 +48,65 @@ module.exports = {
 				res.json(data)
 			})
 			.catch(error => next(error));
+		}
+	else {
+		const lstClubFirst = await Clubmeister.findAll({
+			where: {"rang": 1},
+			order: [["jahr", "desc"]]
+		})
 
+		const lstKegelFirst = await Kegelmeister.findAll({
+			where: {"rang": 1},
+			order: [["jahr", "desc"]]
+		})
+
+		Clubmeister.findAll({
+			where: { "mitgliedid": req.query.id},
+			attributes: ["jahr", "rang", "punkte", "anlaesse", "werbungen", "mitglieddauer", "status"],
+			order: [["jahr", "desc"]]
+		})
+		.then(club => {
+			Kegelmeister.findAll({
+				where: { "mitgliedid": req.query.id},
+				attributes: ["jahr", "rang", "punkte", "anlaesse", "babeli", "status"],
+				order: [["jahr", "desc"]]
+			})
+			.then(kegel => {
+				const ldata = []
+				let data = {}
+				for (let index = 0; index < club.length; index++) {
+					const crec = club[index];
+					const ikrec = kegel.findIndex(k => k.jahr == crec.jahr)
+					if (ikrec >= 0) {
+						data = copyData(crec, kegel[ikrec])
+						kegel.splice(ikrec, 1);
+					} else {
+						data = copyData(crec, undefined)
+					}
+					const cfirst = lstClubFirst.find(rec => rec.jahr == crec.jahr);
+					if (cfirst) {
+						data.diffErsterC = cfirst.punkte - data.punkteC					
+					}
+					const kfirst = lstKegelFirst.find(rec => rec.jahr == data.jahr)
+					if (kfirst && data.punkteK > 0) {
+						data.diffErsterK = kfirst.punkte - data.punkteK					
+					}
+					ldata.push(data);
+				}
+				for (let index = 0; index < kegel.length; index++) {
+					const krec = kegel[index];
+					data = copyData(undefined, krec)
+					const kfirst = lstKegelFirst.find(rec => rec.jahr == data.jahr)
+					if (kfirst && data.punkteK > 0) {
+						data.diffErsterK = kfirst.punkte - data.punkteK					
+					}
+					ldata.push(data);
+				}
+				res.json(ldata);
+			})
+	
+		})
+	}
 	},
 
 	getChartData: function (req, res, next) {
@@ -157,3 +216,42 @@ module.exports = {
 	},
 
 };
+
+function copyData(club = undefined, kegel = undefined) {
+	let data = {
+		jahr: 0, 
+		rangC: undefined,
+		punkteC: undefined,
+		anlaesseC: undefined,
+		werbungenC: undefined,
+		mitglieddauerC: undefined,
+		statusC: undefined,
+		rangK: undefined,
+		punkteK: undefined,
+		anlaesseK: undefined,
+		babeliK: undefined,
+		statusK: undefined,
+		diffErsterK: undefined
+	}
+
+	if (club) {
+		data.jahr = club.jahr
+		data.rangC = club.rang
+		data.punkteC = club.punkte
+		data.anlaesseC = club.anlaesse
+		data.mitglieddauerC = club.mitglieddauer
+		data.werbungenC = club.werbungen
+		data.statusC = club.status
+	}
+
+	if (kegel) {
+		data.jahr = kegel.jahr
+		data.rangK = kegel.rang
+		data.punkteK = kegel.punkte
+		data.anlaesseK = kegel.anlaesse
+		data.babeliK = kegel.babeli
+		data.statusK = kegel.status
+	}
+
+	return data
+}
