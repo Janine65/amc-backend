@@ -18,8 +18,12 @@ export class AttachementShowComponent {
     this.receipt = config.data.receipt;
     this.backendService.uploadAtt(this.receipt).subscribe(
       { next: (file) => {
-        // path to save file: src/assets/downloads
+        const filename = 'journal.pdf'
         const url = window.URL.createObjectURL(file);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.click();
         this.pdfFile = url;        
       }
     })

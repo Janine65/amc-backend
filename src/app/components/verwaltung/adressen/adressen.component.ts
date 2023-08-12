@@ -11,6 +11,7 @@ import { EmailDialogComponent } from '@app/components/shared/email-dialog/email-
 import { environment } from '@environments/environment';
 import { MessageService } from 'primeng/api';
 import { DatePipe, DecimalPipe } from '@angular/common';
+import { AdresseShowComponent } from '../adresse-show/adresse-show.component';
 
 
 export class AdresseFilter {
@@ -96,6 +97,10 @@ export class AdressenComponent implements OnInit {
       {
         label: "New", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
         isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.addAdress, roleNeeded: '', isEditFunc: false
+      },
+      {
+        label: "Beteiligung", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-search",
+        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.showAdresse, roleNeeded: '', isEditFunc: false
       },
       {
         label: "Export", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-excel",
@@ -193,8 +198,8 @@ export class AdressenComponent implements OnInit {
         adresse: newAdr
       },
       header: 'Neue Adresse erfassen',
-      width: '70%',
-      height: '70%',
+      width: '100%',
+      height: '100%',
       resizable: true,
       modal: true,
       maximizable: true,
@@ -224,8 +229,8 @@ export class AdressenComponent implements OnInit {
         adresse: selRec
       },
       header: 'Adresse ändern',
-      width: '70%',
-      height: '70%',
+      width: '100%',
+      height: '100%',
       resizable: true,
       modal: true,
       maximizable: true,
@@ -241,6 +246,26 @@ export class AdressenComponent implements OnInit {
     });
   }
 
+
+  showAdresse = (selRec?: Adresse) => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisRef: AdressenComponent = this;
+    console.log("Show Adresse", selRec);
+    thisRef.messageService.clear();
+
+    thisRef.dialogRef = thisRef.dialogService.open(AdresseShowComponent, {
+      data: {
+        adresseid: selRec?.id
+      },
+      header: selRec?.vorname + ' ' + selRec?.name + ' - Anlässe',
+      width: '100%',
+      height: '70%',
+      resizable: true,
+      modal: true,
+      maximizable: true,
+      draggable: true
+    });
+  }
 
   delAdresse = (selRec?: Adresse) => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias

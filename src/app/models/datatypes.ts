@@ -55,10 +55,6 @@ export class Adresse extends TableData {
     public adressenid?: NumberEmpty;
     public allianz?: BooleanEmpty;
     public notes?: StringEmpty;
-
-    constructor() {
-      super();
-    }
 }
 
 export class Anlass extends TableData {
@@ -76,11 +72,7 @@ export class Anlass extends TableData {
     public status?: NumberEmpty;
     public vorjahr?: StringEmpty;
     public linkedEvent?: {vorjahr?: StringEmpty};
-
-    constructor() {
-      super();
-    }
-}
+  }
 
 export class Meisterschaft extends TableData {
     public mitgliedid?: NumberEmpty;
@@ -95,10 +87,11 @@ export class Meisterschaft extends TableData {
     public streichresultat?: NumberEmpty;
     public total_kegel?: NumberEmpty;
     public teilnehmer?: {id?: NumberEmpty; fullname?: StringEmpty};
-
-    constructor() {
-      super();
-    }
+    public jahr?: NumberEmpty;
+    public datum?: StringEmpty;
+    public event_datum_date?: DateEmpty;
+    public name?: StringEmpty;
+    public total_kegeln?: NumberEmpty;
 }
 
 export class Clubmeister extends TableData {
@@ -112,10 +105,6 @@ export class Clubmeister extends TableData {
     werbungen?: NumberEmpty;
     mitglieddauer?: NumberEmpty;
     status?: NumberEmpty;
-
-    constructor() {
-      super();
-    }
   }  
   
   export class Kegelmeister extends TableData {
@@ -128,20 +117,29 @@ export class Clubmeister extends TableData {
     anlaesse?: NumberEmpty;
     babeli?: NumberEmpty;
     status?: NumberEmpty;
+  }  
 
-    constructor() {
-      super();
-    }
+  export class MeisterAdresse extends TableData {
+    jahr?: NumberEmpty;
+    rangC?: NumberEmpty;
+    punkteC?: NumberEmpty;
+    anlaesseC?: NumberEmpty;
+    werbungenC?: NumberEmpty;
+    mitglieddauerC?: NumberEmpty;
+    statusC?: NumberEmpty;
+    diffErsterC?: NumberEmpty;
+    rangK?: NumberEmpty;
+    punkteK?: NumberEmpty;
+    anlaesseK?: NumberEmpty;
+    babeliK?: NumberEmpty;
+    statusK?: NumberEmpty;
+    diffErsterK?: NumberEmpty;
   }  
 
   export class Fiscalyear extends TableData {
     year?: StringEmpty;
     name?: StringEmpty;
     state?: NumberEmpty;
-
-    constructor() {
-      super();
-    }
   }
 
   export class Account extends TableData {
@@ -151,9 +149,7 @@ export class Clubmeister extends TableData {
     status?: NumberEmpty;
     longname?: StringEmpty;
     amount?: NumberEmpty;
-    constructor() {
-      super();
-    }
+    
   }
 
   export class Receipt extends TableData {
@@ -182,9 +178,6 @@ export class Clubmeister extends TableData {
     haben?: NumberEmpty;
     soll?: NumberEmpty;
     journal2receipt? : JournalReceipt;
-    constructor() {
-      super();
-    }
   }
 
   export class Kegelkasse extends TableData {
@@ -208,10 +201,6 @@ export class Clubmeister extends TableData {
     journalid?: NumberEmpty;
     amountProUser? : NumberEmpty;
     cntUsers? : NumberEmpty;
-
-    constructor() {
-      super();
-    }
   }
 
   /**

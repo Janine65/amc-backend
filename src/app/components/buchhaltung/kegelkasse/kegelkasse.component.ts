@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Journal, Kegelkasse } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { Subscription, map, zip } from 'rxjs';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 
@@ -168,40 +168,36 @@ export class KegelkasseComponent implements OnInit {
   changeDate(date: Date | null) {
     if (date) {
       this.kegelkasse = {}
-      this.backendService.getKegelkasse(date.getMonth() + 1).subscribe({
-        next: (kegelkasse) => {
-          if (kegelkasse.length > 0) {
-            this.kegelkasse = kegelkasse[0];
-            this.kasse.setValue(this.kegelkasse.kasse ?? 0);
-            this.rappen5.setValue(this.kegelkasse.rappen5 ?? 0);
-            this.rappen10.setValue(this.kegelkasse.rappen10 ?? 0);
-            this.rappen20.setValue(this.kegelkasse.rappen20 ?? 0);
-            this.rappen50.setValue(this.kegelkasse.rappen50 ?? 0);
-            this.franken1.setValue(this.kegelkasse.franken1 ?? 0);
-            this.franken2.setValue(this.kegelkasse.franken2 ?? 0);
-            this.franken5.setValue(this.kegelkasse.franken5 ?? 0);
-            this.franken10.setValue(this.kegelkasse.franken10 ?? 0);
-            this.franken20.setValue(this.kegelkasse.franken20 ?? 0);
-            this.franken50.setValue(this.kegelkasse.franken50 ?? 0);
-            this.franken100.setValue(this.kegelkasse.franken100 ?? 0);
-            this.unsubscribeDatum();
-            date = new Date(this.kegelkasse.datum!)
-            this.date.setValue(date);
-            this.subscribeDatum();
-          }
-        },
-        complete: () => {
-          this.backendService.getAmountOneAcc(date!.toLocaleDateString("fr-CA"), 1002).subscribe({
-            next: (result) => {
-              const amount = Number(result.amount);
-              this.fromAcc = Number(result.id);
-              this.kasse.setValue(amount);
-              this.kegelkasse.kasse = amount;
-              this.calculate(null, null, 0);
-            }
-          })
+      zip(this.backendService.getKegelkasse(date.getMonth() + 1),
+      this.backendService.getAmountOneAcc(date.toLocaleDateString("fr-CA"), 1002)
+      ).pipe(map(([kegelkasse, result]) => {
+        if (kegelkasse.length > 0) {
+          this.kegelkasse = kegelkasse[0];
+          this.kasse.setValue(this.kegelkasse.kasse ?? 0);
+          this.rappen5.setValue(this.kegelkasse.rappen5 ?? 0);
+          this.rappen10.setValue(this.kegelkasse.rappen10 ?? 0);
+          this.rappen20.setValue(this.kegelkasse.rappen20 ?? 0);
+          this.rappen50.setValue(this.kegelkasse.rappen50 ?? 0);
+          this.franken1.setValue(this.kegelkasse.franken1 ?? 0);
+          this.franken2.setValue(this.kegelkasse.franken2 ?? 0);
+          this.franken5.setValue(this.kegelkasse.franken5 ?? 0);
+          this.franken10.setValue(this.kegelkasse.franken10 ?? 0);
+          this.franken20.setValue(this.kegelkasse.franken20 ?? 0);
+          this.franken50.setValue(this.kegelkasse.franken50 ?? 0);
+          this.franken100.setValue(this.kegelkasse.franken100 ?? 0);
+          this.unsubscribeDatum();
+          date = new Date(this.kegelkasse.datum!)
+          this.date.setValue(date);
+          this.subscribeDatum();
         }
-      })
+        const amount = Number(result.amount);
+        this.fromAcc = Number(result.id);
+        this.kasse.setValue(amount);
+        this.kegelkasse.kasse = amount;
+        this.calculate(null, null, 0);
+
+      }))
+      .subscribe();      
     }
   }
 
@@ -275,15 +271,11 @@ export class KegelkasseComponent implements OnInit {
         this.kegelkasse.journal.amount = this.differenz.getRawValue() ?? 0;
         if (this.kegelkasse.journal.amount != 0) {
           this.kegelkasse.journal.date = date.toLocaleDateString("fr-CA");
-          this.backendService.updJournal(this.kegelkasse.journal).subscribe({
-            next: () => {
-              this.backendService.updKegelkasse(this.kegelkasse).subscribe({
-                next: () => {
-                  this.messageService.add({ severity: 'info', detail: "Journaleintrag wurde aktualisiert", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
-                }
-              });
-            }
-          });
+          zip(this.backendService.updJournal(this.kegelkasse.journal),
+          this.backendService.updKegelkasse(this.kegelkasse)
+          ).pipe(map(() => {
+            this.messageService.add({ severity: 'info', detail: "Journaleintrag wurde aktualisiert", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
+          }))
         }
       } else {
         // add Journal

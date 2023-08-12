@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { Account, Budget, Fiscalyear, ParamData } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { from } from 'rxjs';
+import { from, map, zip } from 'rxjs';
 
 @Component({
   selector: 'app-budget',
@@ -65,26 +65,21 @@ export class BudgetComponent {
 
   readBudget() {
     this.loading = true;
-    this.backendService.getBudget(this.selJahr).subscribe({
-      next: (list) => {
-        this.lstBudget = list;
-        this.lstBudget.forEach( rec => {
-          rec.acc_id = rec.acc?.id
-          rec.acc_name = rec.acc?.name
-          rec.acc_order = rec.acc?.order
-          if (rec.acc?.status == 0)
-            rec.classRow = 'inactive';
-        })
-        from(this.backendService.getOneFiscalyear(this.selJahr.toString()))
-        .subscribe((result) => {
-          this.selFiscalyear = result;
-        })
-        this.loading = false;
-      },
-      error: (err) => {
-        this.messageService.add({ severity: 'error', summary: 'Fehler', detail: err.message });
-      }
-    })
+    zip(this.backendService.getBudget(this.selJahr),
+    this.backendService.getOneFiscalyear(this.selJahr.toFixed(0))
+    ).pipe(map(([list, result]) => {
+      this.lstBudget = list;
+      this.lstBudget.forEach( rec => {
+        rec.acc_id = rec.acc?.id
+        rec.acc_name = rec.acc?.name
+        rec.acc_order = rec.acc?.order
+        if (rec.acc?.status == 0)
+          rec.classRow = 'inactive';
+      })
+      this.selFiscalyear = result;
+      this.loading = false;
+
+    })).subscribe();
   }
 
   chgJahr() {

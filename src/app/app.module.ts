@@ -87,6 +87,7 @@ import { AttachmentAddComponent } from './components/buchhaltung/attachment-add/
 import { KontoBewegungenComponent } from './components/buchhaltung/konto-bewegungen/konto-bewegungen.component';
 import { KegelkasseComponent } from './components/buchhaltung/kegelkasse/kegelkasse.component';
 import { AppAboutComponent } from './layout/app.about.component';
+import { AdresseShowComponent } from './components/verwaltung/adresse-show/adresse-show.component';
 
 @NgModule({
   declarations: [
@@ -128,6 +129,7 @@ import { AppAboutComponent } from './layout/app.about.component';
     KontoBewegungenComponent,
     KegelkasseComponent,
     AppAboutComponent,
+    AdresseShowComponent,
   ],
   imports: [
     BrowserModule,

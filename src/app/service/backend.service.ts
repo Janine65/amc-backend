@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Account, Adresse, Anlass, Budget, Clubmeister, Fiscalyear, Journal, Kegelkasse, Kegelmeister, Meisterschaft, MeisterschaftAuswertung, OverviewData, ParamData, Receipt } from '../models/datatypes';
+import { Account, Adresse, Anlass, Budget, Clubmeister, Fiscalyear, Journal, Kegelkasse, Kegelmeister, MeisterAdresse, Meisterschaft, MeisterschaftAuswertung, OverviewData, ParamData, Receipt } from '../models/datatypes';
 import { environment } from '@environments/environment';
 import { Package } from '@model/user';
 
@@ -168,6 +168,16 @@ export class BackendService {
   getOneAnlass(id: number): Observable<Anlass> {
     const apiURL = environment.apiUrl + '/club/anlaesse/data/' + id;
     return this.http.get(apiURL, {headers: this.header});
+  }
+
+  getAdresseMeisterschaft(adresseid: number): Observable<Meisterschaft[]> {
+    const apiURL = environment.apiUrl + '/club//meisterschaft/mitglied?id=' + adresseid + '&type=1';
+    return this.http.get<Meisterschaft[]>(apiURL, {headers: this.header});
+  }
+
+  getAdresseMeister(adresseid: number): Observable<MeisterAdresse[]> {
+    const apiURL = environment.apiUrl + '/club//meisterschaft/mitglied?id=' + adresseid + '&type=2';
+    return this.http.get<MeisterAdresse[]>(apiURL, {headers: this.header});
   }
 
   getMeisterschaft(eventid: number): Observable<Meisterschaft[]> {

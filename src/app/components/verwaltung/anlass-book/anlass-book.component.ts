@@ -8,7 +8,7 @@ import { BackendService } from '@service/backend.service';
 import { MessageService } from 'primeng/api';
 import { AutoComplete } from 'primeng/autocomplete';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Subscription, from } from 'rxjs';
+import { Subscription, from, map, zip } from 'rxjs';
 
 interface AutoCompleteCompleteEvent {
   originalEvent: Event;
@@ -102,16 +102,16 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     private renderer: Renderer2) {
     this.anlass = config.data.anlass
 
-    this.subs = from(this.backendService.getMeisterschaft(this.anlass.id!))
-      .subscribe(list => {
-        this.lstMeisterschaft = list;
-      });
-    this.subs = from(this.backendService.getAdressenData())
-      .subscribe(list => {
-        this.lstAdressen = list;
-        this.lstAdressen.forEach(adr => adr.fullname = adr.vorname + ' ' + adr.name);
-        console.log(this.lstAdressen);
-      });
+    zip(this.backendService.getMeisterschaft(this.anlass.id!),
+    this.backendService.getAdressenData()
+    ).pipe(map(([list1, list2]) => {
+      this.lstMeisterschaft = list1;
+      this.lstAdressen = list2;
+      this.lstAdressen.forEach(adr => adr.fullname = adr.vorname + ' ' + adr.name);
+      console.log(this.lstAdressen);
+
+    }))
+    .subscribe();
   }
   ngAfterViewInit(): void {
     setTimeout(() =>

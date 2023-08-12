@@ -5,7 +5,7 @@ import { BackendService } from '@service/backend.service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Observable, from } from 'rxjs';
+import { Observable, from, map, zip } from 'rxjs';
 import { AttachementListComponent } from '../attachement-list/attachement-list.component';
 import { AttachmentAddComponent } from '../attachment-add/attachment-add.component';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -147,31 +147,28 @@ export class JournalComponent implements OnInit {
     else return false
   }
   private readJournal() {
-    from(this.backendService.getJournal(this.selJahr))
-      .subscribe(list => {
-        this.lstJournal = list;
-        this.lstJournal.forEach(x => {
-          x.date_date = new Date(x.date!);
-          x.fromAcc = x.fromAccount?.longname;
-          x.from_account = x.fromAccount?.id;
-          x.toAcc = x.toAccount?.longname;
-          x.to_account = x.toAccount?.id;
-        })
-        from(this.backendService.getAccount())
-          .subscribe(list2 => {
-            this.lstAccounts = list2;
-            from(this.backendService.getOneFiscalyear(this.selJahr.toString()))
-              .subscribe((result) => {
-                this.selFiscalyear = result;
-                if (!this.selFiscalyear || this.selFiscalyear.state == 3)
-                  this.toolbar = this.toolbarRO
-                else
-                  this.toolbar = this.toolbarRW
-              })
-          })
-        this.loading = false;
-      });
-
+    zip(this.backendService.getJournal(this.selJahr),
+      this.backendService.getAccount(),
+      this.backendService.getOneFiscalyear(this.selJahr.toString())
+    ).pipe(map(([list1, list2, result]) => {
+      this.lstJournal = list1;
+      this.lstJournal.forEach(x => {
+        x.date_date = new Date(x.date!);
+        x.fromAcc = x.fromAccount?.longname;
+        x.from_account = x.fromAccount?.id;
+        x.toAcc = x.toAccount?.longname;
+        x.to_account = x.toAccount?.id;
+      })
+      this.lstAccounts = list2;
+      this.selFiscalyear = result;
+      if (!this.selFiscalyear || this.selFiscalyear.state == 3)
+        this.toolbar = this.toolbarRO
+      else
+        this.toolbar = this.toolbarRW;
+      this.loading = false;
+    }))
+    .subscribe();
+    
   }
 
   formatField(field: string, value: string | number | boolean | null): string | number | boolean | null {
@@ -351,9 +348,6 @@ export class JournalComponent implements OnInit {
     thisRef.messageService.clear();
 
     if (selRec) {
-      // thisRef.backendService.getAttachment(selRec.id!).subscribe({
-      //   next: (att) => console.log(att)
-      // })
       thisRef.dialogRef = thisRef.dialogService.open(AttachementListComponent, {
         data: {
           journalid: selRec.id,
@@ -377,9 +371,6 @@ export class JournalComponent implements OnInit {
     const thisRef: JournalComponent = this;
     console.log("Show All Attachement");
     thisRef.messageService.clear();
-    // thisRef.backendService.getAttachment(selRec.id!).subscribe({
-    //   next: (att) => console.log(att)
-    // })
     thisRef.dialogRef = thisRef.dialogService.open(AttachementListComponent, {
       data: {
         journalid: undefined,

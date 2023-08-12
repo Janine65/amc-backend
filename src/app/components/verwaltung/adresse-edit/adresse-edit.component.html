@@ -91,6 +91,9 @@
                         <input type="checkbox" id="sam" [(ngModel)]="adresse.sam_mitglied" name="sam">
                         <label for="sam">SAM-Mitglied</label>
                     </div>
+                    <div class="field" *ngIf="adresse.sam_mitglied">
+                        <input type="text" pInputText [(ngModel)]="adresse.mnr_sam" name="samnr">
+                    </div>
                     <div class="field-checkbox">
                         <input type="checkbox" id="allianz" [(ngModel)]="adresse.allianz" name="allianz">
                         <label for="allianz">Allianz</label>

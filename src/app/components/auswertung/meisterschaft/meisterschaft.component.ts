@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Clubmeister, Kegelmeister, ParamData } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { MessageService } from 'primeng/api';
+import { map, zip } from 'rxjs';
 
 @Component({
   selector: 'app-meisterschaft',
@@ -64,15 +65,13 @@ export class MeisterschaftComponent implements OnInit {
   public refresh() {
     this.loading = true;
 
-    this.backendService.refreshClubmeister(this.selJahr).subscribe({
+    zip(this.backendService.refreshClubmeister(this.selJahr),
+    this.backendService.refreshKegelmeister(this.selJahr))
+    .subscribe({
       complete: () => {
-        this.backendService.refreshKegelmeister(this.selJahr).subscribe({
-          complete: () => {
             this.readMeisterschaft();
             this.messageService.add({ detail: 'Die Daten wurden aktualisiert', closable: true, severity: 'info', 
               summary: 'Meisterschaft aktualisieren', sticky: false });
-          }
-        })
       }
     })
   }
@@ -80,15 +79,15 @@ export class MeisterschaftComponent implements OnInit {
   public readMeisterschaft() {
     this.loading = true;
 
-    this.backendService.getClubmeister(this.selJahr).subscribe({
-      next: (list) => this.lstClubmeister = list,
-      complete: () => {
-        this.backendService.getKegelmeister(this.selJahr).subscribe({
-          next: (list) => this.lstKegelmeister = list,
-          complete: () => { this.loading = false; this.getHeight(); }
-        })
-      }
-    })
+    zip(this.backendService.getClubmeister(this.selJahr),
+    this.backendService.getKegelmeister(this.selJahr))
+    .pipe(map(([list1, list2]) => {
+      this.lstClubmeister = list1;
+      this.lstKegelmeister = list2;
+      this.loading = false; 
+      this.getHeight();
+    }))
+    .subscribe();
   }
 
 }

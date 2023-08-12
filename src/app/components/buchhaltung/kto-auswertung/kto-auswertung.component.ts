@@ -137,6 +137,7 @@ export class KtoAuswertungComponent {
       }
     })
   }
+  
   export() {
     this.backendService.exportAccData(this.selJahr).subscribe({
       next: (result) => {

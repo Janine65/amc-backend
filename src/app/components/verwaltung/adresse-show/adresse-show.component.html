@@ -1,0 +1,23 @@
+
+    <p-tabView>
+        <p-tabPanel header="Beteiligung">
+            <app-basetable
+            [tableOptions]="cols"
+            [tableData]="lstEvents"
+            [tableToolbar]="toolbar"
+            localStorage="adresse_events"
+            [editable]="false"
+            [diffCalcHight]="300">
+        </app-basetable>
+        </p-tabPanel>
+        <p-tabPanel header="Meisterschaft">
+            <app-basetable
+            [tableOptions]="colsM"
+            [tableData]="lstMeister"
+            [tableToolbar]="toolbarM"
+            localStorage="adresse_meister"
+            [editable]="false"
+            [diffCalcHight]="300">
+        </app-basetable>
+        </p-tabPanel>
+    </p-tabView>
