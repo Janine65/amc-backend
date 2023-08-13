@@ -100,7 +100,7 @@ export class AdressenComponent implements OnInit {
       },
       {
         label: "Beteiligung", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-search",
-        isDefault: false, disabledWhenEmpty: false, disabledNoSelection: false, clickfnc: this.showAdresse, roleNeeded: '', isEditFunc: false
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.showAdresse, roleNeeded: '', isEditFunc: false
       },
       {
         label: "Export", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-file-excel",

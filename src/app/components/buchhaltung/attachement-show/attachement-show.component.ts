@@ -1,32 +1,33 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { BackendService } from '@service/backend.service';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+
 
 @Component({
   selector: 'app-attachement-show',
   templateUrl: './attachement-show.component.html',
   styleUrls: ['./attachement-show.component.scss']
 })
-export class AttachementShowComponent {
+export class AttachementShowComponent implements AfterViewInit, OnDestroy {
 
   receipt = ''
   pdfFile = '';
+  documentBlobObjectUrl = ''
   
   constructor(private backendService: BackendService,
-    public config: DynamicDialogConfig
-  ) {
+    public config: DynamicDialogConfig ) {
     this.receipt = config.data.receipt;
+  }
+  ngOnDestroy(): void {
+    URL.revokeObjectURL(this.documentBlobObjectUrl);
+  }
+  ngAfterViewInit(): void {
     this.backendService.uploadAtt(this.receipt).subscribe(
       { next: (file) => {
-        const filename = 'journal.pdf'
-        const url = window.URL.createObjectURL(file);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        link.click();
-        this.pdfFile = url;        
+        this.documentBlobObjectUrl = URL.createObjectURL(file);
+        this.pdfFile = this.documentBlobObjectUrl;                
       }
-    })
+     });
   }
 
 }
