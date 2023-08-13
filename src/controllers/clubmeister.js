@@ -1,5 +1,5 @@
 const { Clubmeister, Meisterschaft, Adressen, Anlaesse } = require("../db");
-const { Op, Sequelize } = require("sequelize");
+const { Op, Sequelize, DataTypes } = require("sequelize");
 
 module.exports = {
 	getData: async function (req, res, next) {	
@@ -50,19 +50,21 @@ module.exports = {
 			arMeister.push(meister);
 		}
 
+		//data = await Sequelize.query('SELECT "adressenid", COUNT("id") AS "anzahl" FROM "adressen" WHERE (year("eintritt") = ' + req.query.jahr + ' AND "adressen"."austritt" = \'3000-01-01\') GROUP BY "adressenid"');
 		data = await Adressen.findAll({
-			attributes: ["adressenid", [Sequelize.fn('COUNT', Sequelize.col("id")), "anzahl"]],
+			attributes: ["adressenid", [Sequelize.fn('COUNT', '*'), "anzahl"]],
 			where: [Sequelize.where(Sequelize.fn('year', Sequelize.col("eintritt")), req.query.jahr),
 				{"austritt": "3000-01-01T00:00:00"}],
-			group: "adressenid"
+			group: "adressenid",
+			mapToModel: false
 		})
 		
 		for (let ind = 0; ind < data.length; ind++) {
-			let lPunkte = data[ind].anzahl * 50
+			let lPunkte = eval(data[ind].dataValues.anzahl * 1) * 50
 				let ifound = arMeister.findIndex((element) => element.mitgliedid == data[ind].adressenid)
 				if (ifound > -1) {
 					let meister = arMeister[ifound]
-					meister.werbungen = Number(data[ind].anzahl)
+					meister.werbungen = eval(data[ind].dataValues.anzahl * 1);
 					meister.punkte = meister.punkte + lPunkte
 					arMeister[ifound] = meister
 				}
