@@ -4,9 +4,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Journal, Kegelkasse } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { MessageService } from 'primeng/api';
-import { Subscription, map, zip } from 'rxjs';
+import { BehaviorSubject, Subscription, map, zip } from 'rxjs';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
+import { User } from '@model/user';
 
 @Component({
   selector: 'app-kegelkasse',
@@ -101,6 +102,7 @@ export class KegelkasseComponent implements OnInit {
       { field: 'cntUsers', header: 'Anzahl Teilnehmer', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.0-0' },
       { field: 'amountProUser', header: 'Einnahmen pro Teilnehmer', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.2-2' },
       { field: 'journalid', header: 'verbucht', format: false, sortable: false, filtering: false, filter: 'boolean' },
+      { field: 'userName', header: 'User', format: false, sortable: false, filtering: false, filter: undefined },
     ];
 
   }
@@ -189,6 +191,13 @@ export class KegelkasseComponent implements OnInit {
           date = new Date(this.kegelkasse.datum!)
           this.date.setValue(date);
           this.subscribeDatum();
+        } else {
+          const user = localStorage.getItem('user')
+          if (user) {
+            this.kegelkasse.user = new BehaviorSubject<User>(JSON.parse(user)).value;
+            this.kegelkasse.userid = this.kegelkasse.user.id;
+          }
+        
         }
         const amount = Number(result.amount);
         this.fromAcc = Number(result.id);
@@ -321,6 +330,10 @@ export class KegelkasseComponent implements OnInit {
           this.lstKegelkasse = list
           for (const entry of this.lstKegelkasse) {
             entry.datum_date = new Date(entry.datum!);
+            if (entry.user)
+              entry.userName = entry.user.name
+            else
+              entry.userName = ''
             if (entry.cntUsers && entry.cntUsers > 0)
               entry.amountProUser = entry.differenz! / entry.cntUsers
             else

@@ -1,4 +1,5 @@
 import { TableData } from "../components/shared/basetable/basetable.component";
+import { User } from "./user";
 
 type NumberEmpty = number | null | undefined;
 type StringEmpty = string | null | undefined;
@@ -199,6 +200,9 @@ export class Clubmeister extends TableData {
     differenz?: NumberEmpty;
     journal?: Journal;
     journalid?: NumberEmpty;
+    user?: User;
+    userid?: NumberEmpty;
+    userName?: StringEmpty;
     amountProUser? : NumberEmpty;
     cntUsers? : NumberEmpty;
   }

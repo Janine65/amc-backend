@@ -258,16 +258,15 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
       this.subFields.push(this.wurf4.valueChanges.subscribe(() => this.inputWurf(4)));
       this.subFields.push(this.wurf5.valueChanges.subscribe(() => this.inputWurf(5)));
     }
-
   }
 
-  selectTielnehmer(adr: Adresse) {
+  selectTeilnehmer(adr: Adresse) {
     this.lstFilteredAdressen = []
     this.teilnehmername.setValue(adr);
     this.unsubscribeList();
     this.setDisabled(false)
 
-    this.newMeisterschaft = this.lstMeisterschaft.find(rec => rec.mitgliedid == adr.id) || new Meisterschaft();
+    this.newMeisterschaft = this.lstMeisterschaft.find(rec => rec.mitgliedid == adr.id) ?? new Meisterschaft();
     if (this.newMeisterschaft.eventid == undefined) {
       this.newMeisterschaft.eventid = this.anlass.id
       this.newMeisterschaft.mitgliedid = adr.id;
@@ -316,7 +315,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
       return match
     })
     if (this.lstFilteredAdressen.length == 1) {
-      this.selectTielnehmer(this.lstFilteredAdressen[0]);
+      this.teilnehmername.patchValue({fullname: this.lstFilteredAdressen[0].fullname}, {onlySelf: true,  emitEvent: true, emitModelToViewChange: true});
     }
   }
 
