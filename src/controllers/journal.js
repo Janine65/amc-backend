@@ -1,4 +1,4 @@
-const { Journal, Account, Receipt, JournalReceipt, Kegelkasse, Meisterschaft, Anlaesse } = require("../db");
+const { Journal, Account, Receipt, JournalReceipt, Kegelkasse, Meisterschaft, Anlaesse, User } = require("../db");
 const { Op, Sequelize, QueryInterface } = require("sequelize");
 const ExcelJS = require("exceljs");
 const fs = require("fs");
@@ -244,6 +244,9 @@ async function getAllKegelkasse(req, res, next) {
 		logging: console.log,
 		where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('datum')), req.query.jahr),
 		include: [
+			{
+				model: User, as: 'user', required: true
+			},
 			{
 				model: Journal, as: 'journal', required: false,
 				include: [

@@ -1,4 +1,4 @@
-const { Meisterschaft, Adressen, Kegelmeister, Clubmeister, Account, Budget, Journal, Anlaesse, Receipt, JournalReceipt, Kegelkasse } = require("../db");
+const { Meisterschaft, Adressen, Kegelmeister, Clubmeister, Account, Budget, Journal, Anlaesse, Receipt, JournalReceipt, Kegelkasse, User } = require("../db");
 const {
     Op, QueryTypes, Sequelize
 } = require("sequelize");
@@ -1425,7 +1425,11 @@ next(e)
             file: ''
         }
 
-        const kegelkasse = await Kegelkasse.findByPk(sKegelId);
+        const kegelkasse = await Kegelkasse.findByPk(sKegelId, {
+            include: [{
+                model: User, as: 'user', required: true
+            }]
+        });
         console.log(kegelkasse);
 
         if (kegelkasse.journalid > 0) {
@@ -1593,6 +1597,8 @@ next(e)
                 .moveDown(2)
                 .fontSize(12)
                 .text('Glattbrugg, den ' + formatDateLong(kegelDate), pdf.page.margins.left + 5)
+                .moveDown(1)
+                .text('Kegelkasse erfasst durch ' + kegelkasse.user.name, pdf.page.margins.left + 5)
                 .fontSize(10)
 
             // see the range of buffered pages            
@@ -2113,6 +2119,6 @@ function formatDateLong(date) {
 
     const monthName = months[date.getMonth()]
 
-    retString = `${date.getDay()}. ${monthName} ${date.getFullYear()}`
+    retString = date.getDate() + '. ' + monthName + ' ' + date.getFullYear()
     return retString
 }

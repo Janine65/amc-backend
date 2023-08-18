@@ -533,6 +533,9 @@ Kegelkasse.init({
 })
 Kegelkasse.belongsTo(Journal, { as: "journal", constraints: true, foreignKey: 'journalid' })
 
+Kegelkasse.belongsTo(User, { as: "user", constraints: true, foreignKey: 'userid' });
+User.hasMany(Kegelkasse, { constraints: true, foreignKey: 'userid' });
+
 module.exports = {User,
   Adressen, Anlaesse, Parameter, Meisterschaft, Clubmeister, Kegelkasse, Kegelmeister, Account, Journal, FiscalYear, Budget, Receipt, JournalReceipt,
 };
