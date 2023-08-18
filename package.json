@@ -1,6 +1,6 @@
 {
   "name": "amc-interna",
-  "version": "2.1.9",
+  "version": "2.1.10",
   "description": "Auto-Moto-Club Administration: Frontend für die interne Applikation des Vereins.",
   "scripts": {
     "ng": "ng",
