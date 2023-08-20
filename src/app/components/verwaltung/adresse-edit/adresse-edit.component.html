@@ -5,8 +5,10 @@
                 <div class="field col-12 md:col-6">
                     <label for="geschlecht">Geschlecht</label>
                     <p-selectButton [options]="lstGeschlecht" [(ngModel)]="adresse.geschlecht" optionLabel="name"
-                        optionValue="code" name="geschlecht" id="geschlecht" #geschlect="ngModel" required></p-selectButton>
-                    <app-input-validation [control]="geschlect" [errDef]="{ required: 'Geschlecht muss ausgewählt sein'}">
+                        optionValue="code" name="geschlecht" id="geschlecht" #geschlect="ngModel"
+                        required></p-selectButton>
+                    <app-input-validation [control]="geschlect"
+                        [errDef]="{ required: 'Geschlecht muss ausgewählt sein'}">
                     </app-input-validation>
                 </div>
                 <div class="field col-12 md:col-6">
@@ -63,8 +65,8 @@
                 </div>
                 <div class="field col-12 md:col-3">
                     <label for="email" class="p-2">Email</label>
-                    <button *ngIf="adresse.email" pButton type="button" icon="pi pi-send" class="p-button-secondary p-button-outlined" 
-                        styleClass="p-button-sm p-button-icon"
+                    <button *ngIf="adresse.email" pButton type="button" icon="pi pi-send"
+                        class="p-button-secondary p-button-outlined" styleClass="p-button-sm p-button-icon"
                         (click)="sendEmail()" [disabled]="!adresse.email"></button>
                     <input type="text" name="email" id="email" pInputText minlength="5"
                         class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
@@ -138,6 +140,11 @@
 <p-toolbar>
     <button pButton type="button" label="Zurück" icon="pi pi-back" class="p-button-secondary p-button-outlined"
         (click)="back()"></button>
+    <button *ngIf="adresse.sam_mitglied" pButton type="button" label="SAM Adressänderung" icon="pi pi-send"
+        class="p-button-secondary p-button-outlined" (click)="emailSAM(f)"></button>
+    <button *ngIf="adresse.sam_mitglied && adresse.austritt_date?.getFullYear() !== 3000" pButton type="button"
+        label="SAM Austritt" icon="pi pi-send" class="p-button-secondary p-button-outlined"
+        (click)="emailSAMAustritt(f)"></button>
     <button pButton type="button" label="Sichern" icon="pi pi-save" class="p-button-primary p-button-outlined"
         (click)="save(f)"></button>
 </p-toolbar>

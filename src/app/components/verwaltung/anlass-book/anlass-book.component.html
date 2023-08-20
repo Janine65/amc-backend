@@ -1,7 +1,7 @@
 <p-toast key="local"></p-toast>
 <p-splitter [panelSizes]="[40, 60]" styleClass="mb-1">
     <ng-template pTemplate>
-        <div class="card border-0" style="width: 100%; height: 100%;" id="table-box">
+        <div class="card border-0" [style]="'width: 100%; height: ' + objHeightE$ + ';'" id="table-box">
             <div class="row col-md-12 mb-3 p-1 border-1 border-round">
                 <label for="gaeste" class="mr-2 mb-1">Gäste</label>
                 <input type="number" id="gaeste" class="wurf mb-1" [(ngModel)]="anlass.gaeste">
@@ -11,12 +11,12 @@
             <div class="row col-md-12">
                 <p-table styleClass=" p-datatable-striped" [value]="lstMeisterschaft" selectionMode="single"
                     [(selection)]="selMeisterschaft" dataKey="id" [scrollHeight]="objHeight$" [virtualScroll]="true"
-                    [virtualScrollItemSize]="36" (window:resize)="onResizeHandler()"
+                    [virtualScrollItemSize]="36" 
                     [tableStyle]="{'min-width': '100%'}" (onRowSelect)="selTeilnehmerTable()">
                     <ng-template pTemplate="header">
                         <tr>
                             <th>
-                                Teilnehmer
+                                {{lstMeisterschaft ? lstMeisterschaft.length : 0 }} Teilnehmer
                             </th>
                         </tr>
                     </ng-template>
@@ -24,11 +24,6 @@
                         <tr style="height:36px" [pSelectableRow]="data">
                             <td>{{data.punkte}} - {{data.teilnehmer.fullname}}</td>
                         </tr>
-                    </ng-template>
-                    <ng-template pTemplate="summary">
-                        <div class="flex align-items-center justify-content-between">
-                            {{lstMeisterschaft ? lstMeisterschaft.length : 0 }} Teilnehmer
-                        </div>
                     </ng-template>
                 </p-table>
             </div>
@@ -40,7 +35,7 @@
         </div>
     </ng-template>
     <ng-template pTemplate>
-        <div class="card" style="width: 100%; height: 100%;">
+        <div class="card" [style]="'width: 100%; height: ' + objHeightE$ + ';'">
             <form [formGroup]="fgMeisterschaft" autocomplete="off">
                 <div class="formgroup-inline">
                     <div class="field pb-2">

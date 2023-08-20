@@ -75,6 +75,99 @@ export class AdresseEditComponent {
     });
   }
 
+  async emailSAM(f: NgForm) {
+    if (f.dirty) {
+      if (f.invalid) {
+        this.messageService.add({detail: 'Die Daten sind noch nicht korrekt und können nicht gespeichert werden', closable: true, severity: 'error', summary: 'Adresse speichern' } );
+        return;
+      }
+  
+      if (this.adresse.eintritt != this.adresse.eintritt_date?.toISOString())
+        this.adresse.eintritt = this.adresse.eintritt_date?.toISOString()
+      if (this.adresse.austritt != this.adresse.austritt_date?.toISOString())
+        this.adresse.austritt = this.adresse.austritt_date?.toISOString()
+  
+      this.backendService.updateData(this.adresse).subscribe();      
+    }
+
+    const body = '<p>Neue Adresse per sofort:</br>' + 
+        this.adresse.adresse + '</br>' + this.adresse.plz + ' ' + this.adresse.ort + '</br></p>' +
+        '<p>Mit freundlichen Grüssen</p>'
+
+    const emailBody = new EmailBody ({
+      email_an: environment.samEmail,
+      email_cc: '',
+      email_bcc: '',
+      email_subject: this.adresse.mnr_sam + ' - ' + this.adresse.vorname + ' ' + this.adresse.name,
+      email_body: body,
+      email_signature: (Object.keys(EmailSignature)[Object.values(EmailSignature).indexOf(environment.defaultSignature as unknown as EmailSignature)] as unknown as EmailSignature)
+    })
+
+    this.dialogRef = this.dialogService.open(EmailDialogComponent, {
+      data: {
+        emailBody: emailBody
+      },
+      header: 'Email senden',
+      width: '70%',
+      height: '80%',
+      resizable: true, 
+      modal: true, 
+      maximizable: true, 
+      draggable: true
+    });
+    this.dialogRef.onClose.subscribe(() => {
+      return
+    });
+
+
+  }
+  async emailSAMAustritt(f: NgForm) {
+    if (f.dirty) {
+      if (f.invalid) {
+        this.messageService.add({detail: 'Die Daten sind noch nicht korrekt und können nicht gespeichert werden', closable: true, severity: 'error', summary: 'Adresse speichern' } );
+        return;
+      }
+  
+      if (this.adresse.eintritt != this.adresse.eintritt_date?.toISOString())
+        this.adresse.eintritt = this.adresse.eintritt_date?.toISOString()
+      if (this.adresse.austritt != this.adresse.austritt_date?.toISOString())
+        this.adresse.austritt = this.adresse.austritt_date?.toISOString()
+  
+      this.backendService.updateData(this.adresse).subscribe();      
+    }
+
+    const body = '<p>Austrittsmeldung per Ende Jahr für:</br>' + 
+        this.adresse.mnr_sam + ' - ' + this.adresse.vorname + ' ' + this.adresse.name + '</p>' +
+        '<p>Mit freundlichen Grüssen</p>'
+
+    const emailBody = new EmailBody ({
+      email_an: environment.samEmail,
+      email_cc: '',
+      email_bcc: '',
+      email_subject: this.adresse.mnr_sam + ' - ' + this.adresse.vorname + ' ' + this.adresse.name,
+      email_body: body,
+      email_signature: (Object.keys(EmailSignature)[Object.values(EmailSignature).indexOf(environment.defaultSignature as unknown as EmailSignature)] as unknown as EmailSignature)
+    })
+
+    this.dialogRef = this.dialogService.open(EmailDialogComponent, {
+      data: {
+        emailBody: emailBody
+      },
+      header: 'Email senden',
+      width: '70%',
+      height: '80%',
+      resizable: true, 
+      modal: true, 
+      maximizable: true, 
+      draggable: true
+    });
+    this.dialogRef.onClose.subscribe(() => {
+      return
+    });
+
+
+  }
+
   save(f: NgForm) {
     if (f.invalid) {
       this.messageService.add({detail: 'Die Daten sind noch nicht korrekt und können nicht gespeichert werden', closable: true, severity: 'error', summary: 'Adresse speichern' } );

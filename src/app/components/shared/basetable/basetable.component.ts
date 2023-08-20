@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DecimalPipe } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, Type } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit, Type } from '@angular/core';
 import { AccountService } from '@app/service';
 import { Table } from 'primeng/table';
 
@@ -63,20 +63,30 @@ export class BaseTableComponent implements OnInit, OnDestroy {
   @Input() formatFunction: ((field: string, value: string | number | boolean | null) => string | number | boolean | null) | undefined;
   @Input() tableToolbar?: TableToolbar[] = []
   @Input() localStorage = 'basetable'
-  @Input() diffCalcHight = 100;
+  @Input() diffCalcHight = 300;
   @Input() editable = true;
   @Input() rowClassField = ''
 
   selectedRecord?: TableData;
   filteredRows = this.tableData;
-  public getScreenWidth: any;
-  public getScreenHeight: any;
   public objHeight$ = '500px';
+  getScreenWidth = 0;
+  getScreenHeight = 0;
   DecimalPipe?: DecimalPipe;
 
   constructor(private accountService : AccountService) {}
 
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
+    console.log(this.getScreenWidth, this.getScreenHeight);
+    this.getHeight();
+  }
+
   ngOnInit(): void {
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
     this.getHeight();
     if (!this.getEditFunc())
       this.editable = false
@@ -87,15 +97,9 @@ export class BaseTableComponent implements OnInit, OnDestroy {
   }
 
   private getHeight() { 
-    const element = document.getElementById("main-container")
-    if (element) {
-      this.objHeight$ = (element.scrollHeight - this.diffCalcHight).toString() + 'px'; 
-    }
+    this.objHeight$ = (this.getScreenHeight - this.diffCalcHight).toFixed(0) + 'px';
   }
 
-  public onResizeHandler(): void {
-    this.getHeight();
-  }
   clear(table: Table) {
     table.clear();
     localStorage.removeItem(this.localStorage);

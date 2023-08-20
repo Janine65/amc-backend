@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Account, Budget, Fiscalyear, ParamData } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -24,6 +24,8 @@ export class BudgetComponent {
   addRow = false;
   selFiscalyear: Fiscalyear = {};
   public objHeight$ = '500px';
+  getScreenWidth = 0;
+  getScreenHeight = 0;
 
 
   constructor(
@@ -49,18 +51,21 @@ export class BudgetComponent {
     }})
 
     this.readBudget()
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
     this.getHeight()
   }
 
-  private getHeight() { 
-    const element = document.getElementById("main-container")
-    if (element) {
-      this.objHeight$ = (element.scrollHeight - 150).toString() + 'px'; 
-    }
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
+    this.getHeight();
   }
 
-  public onResizeHandler(): void {
-    this.getHeight();
+
+  private getHeight() { 
+    this.objHeight$ = (this.getScreenHeight - 300).toFixed(0) + 'px';
   }
 
   readBudget() {

@@ -8,8 +8,7 @@
             class="ml-5 p-button-secondary p-button-outline">Auf nächstes Jahr kopieren</button>
         <hr />
     </div>
-    <p-table [value]="lstBudget" dataKey="id" editMode="row" *ngIf="!loading" [scrollHeight]="objHeight$" [scrollable]="true" 
-    (window:resize)="onResizeHandler()" >
+    <p-table [value]="lstBudget" dataKey="id" editMode="row" *ngIf="!loading" [scrollHeight]="objHeight$" [scrollable]="true">
         <ng-template pTemplate="header">
             <tr>
                 <th style="width:10%">No.</th>

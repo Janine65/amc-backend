@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {  AfterContentInit, AfterViewInit, Component, OnInit, Renderer2, ViewChild } from '@angular/core';
+import {  AfterContentInit, AfterViewInit, Component, HostListener, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Adresse, Anlass, Meisterschaft } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
@@ -75,9 +75,10 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
   dialogRef!: DynamicDialogRef;
   subFields: Subscription[] = []
 
-  public getScreenWidth: any;
-  public getScreenHeight: any;
-  public objHeight$ = '300px';
+  public objHeight$ = '0px';
+  public objHeightE$ = '0px';
+  getScreenWidth = 0;
+  getScreenHeight = 0;
 
   @ViewChild('teilnehmername') private teilnehmerObject!: AutoComplete;
 
@@ -92,6 +93,14 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     zusatz: new FormControl<number | null>({ value: null, disabled: true }),
     total: new FormControl<number | null>({ value: null, disabled: true })
   });
+
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
+    console.log(this.getScreenWidth, this.getScreenHeight);
+    this.getHeight();
+  }
 
   constructor(
     private backendService: BackendService,
@@ -119,6 +128,8 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
     this.getHeight();
   }
 
@@ -137,17 +148,10 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
   get total() { return this.fgMeisterschaft.get('total')!}
 
   private getHeight() { 
-    const element = document.getElementById("table-box")
-    if (element) {
-      console.log(element.scrollHeight)
-      this.objHeight$ = (element.scrollHeight - 1500).toString() + 'px'; 
-    }
+    this.objHeight$ = (this.getScreenHeight - 550).toFixed(0) + 'px';
+    this.objHeightE$ = (this.getScreenHeight - 400).toFixed(0) + 'px';
   }
 
-  public onResizeHandler(): void {
-    this.getHeight();
-  }
- 
   inputWurf(wurfControl: number) {
     const value = this.fgMeisterschaft.get("wurf" + wurfControl)?.value
 

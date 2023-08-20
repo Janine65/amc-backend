@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Clubmeister, Kegelmeister, ParamData } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { MessageService } from 'primeng/api';
@@ -20,6 +20,8 @@ export class MeisterschaftComponent implements OnInit {
   loading = true;
   public objHeightc$ = '400px';
   public objHeightk$ = '400px';
+  getScreenWidth = 0;
+  getScreenHeight = 0;
 
 
   constructor(private backendService: BackendService, private messageService: MessageService) {
@@ -29,7 +31,19 @@ export class MeisterschaftComponent implements OnInit {
     this.jahr = Number(paramJahr?.value)
   }
 
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
+    console.log(this.getScreenWidth, this.getScreenHeight);
+    this.getHeight();
+  }
+
   ngOnInit(): void {
+    this.getScreenWidth = window.innerWidth;
+    this.getScreenHeight = window.innerHeight;
+    console.log(this.getScreenWidth, this.getScreenHeight);
+
     this.getHeight();
 
     if (this.jahr) {
@@ -44,22 +58,9 @@ export class MeisterschaftComponent implements OnInit {
   }
 
   private getHeight() {
-    let element = document.getElementById("table-boxc")
-    if (element) {
-      this.objHeightc$ = (element.scrollHeight - 150).toString() + 'px';
-      console.log(element);
-      console.log(this.objHeightc$);
-    }
-    element = document.getElementById("table-boxk")
-    if (element) {
-      this.objHeightk$ = (element.scrollHeight - 150).toString() + 'px';
-      console.log(element);
-      console.log(this.objHeightk$);
-    }
-  }
-
-  public onResizeHandler(): void {
-    this.getHeight();
+    this.objHeightc$ = (this.getScreenHeight - 400).toFixed(0) + 'px';
+    this.objHeightk$ = this.objHeightc$;
+    console.log(this.objHeightc$, this.objHeightk$);
   }
 
   public refresh() {

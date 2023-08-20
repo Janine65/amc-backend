@@ -7,8 +7,8 @@ export const environment = {
   apiUrl: 'http://localhost:8000',
   apiUrlSelf: 'http://localhost:4200',
   defaultSignature: 'JanineFranken',
-  defaultEmail: 'janine@automoto-sr.info'
-};
+  defaultEmail: 'janine@automoto-sr.info',
+  samEmail: 'info@s-a-m.ch'};
 
 /*
  * For easier debugging in development mode, you can import the following file
