@@ -8,7 +8,6 @@ const path = require("path");
 const Archiver = require("archiver");
 const ExcelJS = require("exceljs");
 const PDFDocument = require('pdfkit-table');
-const PdfTable = require('voilab-pdf-table')
 const numeral = require('numeral');
 const nodemailer = require("nodemailer");
 const { type } = require("os");
@@ -326,7 +325,7 @@ module.exports = {
         )
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
         const workbook = new ExcelJS.Workbook();
@@ -354,14 +353,16 @@ next(e)
         // Schreibe Journal
         setCellValueFormat(sheet, 'B1', "Journal " + sjahr, false, '', { bold: true, size: iFontSizeHeader, name: 'Tahoma' });
 
-        const tHeaders = [{ id: 'no', header: 'No.', valign: 'top', align: 'right', width: 50 },
-        { id: 'date', header: 'Date', valign: 'top', width: 100 },
-        { id: 'from', header: 'From', valign: 'top', width: 30 },
-        { id: 'to', header: 'To', valign: 'top', width: 30 },
-        { id: 'text', header: 'Booking Text', valign: 'top', width: 150 },
-        { id: 'amount', header: 'Amount', valign: 'top', align: 'right', width: 100 },
-        { id: 'receipt', header: 'Receipt', valign: 'top', width: 250 }];
-
+        const tHeaders = [
+            {property: 'no', label: 'No.', width: 50, align: "right"},
+            { property: 'date', label: 'Date', valign: 'top', width: 80 },
+            { property: 'from', label: 'From', valign: 'top', width: 50 },
+            { property: 'to', label: 'To', valign: 'top', width: 50 },
+            { property: 'text', label: 'Booking Text', valign: 'top', width: 150 },
+            { property: 'amount', label: 'Amount', valign: 'top', align: 'right', width: 100,
+            renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { return typeof value == 'number' ? Number(value).toFixed(2) : value } },
+            { property: 'receipt', label: 'Receipt', valign: 'top', width: 250 }
+        ]
         setCellValueFormat(sheet, 'B3', "No", true, '', { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
         sheet.getCell('B3').alignment = { vertical: "top" };
         setCellValueFormat(sheet, 'C3', "Date", true, '', { bold: true, size: iFontSizeTitel, name: 'Tahoma' });
@@ -385,11 +386,11 @@ next(e)
             const element = arData[index];
             const date = new Date(element.date);
             let dateFmt = date.toLocaleDateString('de-DE', options);
-            let num = numeral(element.amount * 1)
+            let num = eval(element.amount * 1)
 
             let rowRecord = {
                 no: (element.journalno == null ? '' : element.journalno), date: dateFmt, from: element.fromAccount.order, to: element.toAccount.order,
-                text: element.memo, amount: num.format('0,0.00'), receipt: ''
+                text: element.memo, amount: num, receipt: ''
             };
 
             sheet.getRow(row).height = 22;
@@ -444,7 +445,7 @@ next(e)
         await workbook.xlsx.writeFile(global.exports + filename + ".xlsx")
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
 
@@ -462,49 +463,13 @@ next(e)
                     Author: 'AutoMoto-Club Swissair, Janine Franken'
                 }
             });
-            let table = new PdfTable(pdf, {
-                bottomMargin: 50,
-                topargin: 50,
-                leftMargin: 50,
-                rightMargin: 50,
-                columnSpacing: 10
-            });
 
-            table
-                // add some plugins (here, a 'fit-to-width' for a column)
-                // .addPlugin(new (require('voilab-pdf-table/plugins/fitcolumn'))({
-                //     column: 'text'
-                // }))
-                .onHeaderAdd(tb => {
-                    // set header color
-                    pdf
-                        .font('Helvetica-Bold')
-                        .fontSize(10)
-                })
-                .onHeaderAdded(tb => {
-                    // reset to standard color
-                    pdf
-                        .font('Helvetica')
-                        .fontSize(10)
-                }) // set defaults to your columns
-                .setColumnsDefaults({
-                    headerBorder: ['T', 'B'],
-                    border: ['B'],
-                    headerBorderOpacity: 1,
-                    borderOpacity: 0.5,
-                    padding: [5, 25, 5, 5],
-                    align: 'left'
-                })
-                // add table columns
-                .addColumns(tHeaders)
+            const table = {
+                headers: tHeaders,
+                datas: tRows
+            }
 
-                .onPageAdd(function (tab, row, ev) {
-                    pdf.addPage();
-                    tab.addHeader();
-                    // page already added
-                    ev.cancel = true;
-                });
-
+            
             // if no page already exists in your PDF, do not forget to add one
             pdf.addPage();
             // Embed a font, set the font size, and render some text
@@ -515,7 +480,20 @@ next(e)
                 .moveDown(1);
 
             // draw content, by passing data to the addBody method
-            table.addBody(tRows);
+            pdf.table(table, {
+                divider: {
+                    header: { disabled: false, width: 2, opacity: 1 },
+                    horizontal: { disabled: false, width: 0.5, opacity: 1 },
+                    vertical: { disabled: false, width: 0.5, opacity: 1 },
+                },
+                padding: 5, // {Number} default: 0
+                columnSpacing: 5,
+                prepareHeader: () => pdf.font("Helvetica-Bold").fontSize(10),
+                prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                    pdf.font("Helvetica").fontSize(10);
+                }
+
+            })
 
             // see the range of buffered pages            
             let gedrucktAm = 'Erstellt am: ' + new Date().toLocaleDateString('de-DE', options);
@@ -623,13 +601,13 @@ next(e)
         })
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
         Promise.resolve(dbMeister)
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
         let worksheet = workbook.getWorksheet('Clubmeisterschaft');
@@ -653,13 +631,13 @@ next(e)
         })
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
         Promise.resolve(dbMeister)
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
 
@@ -680,7 +658,7 @@ next(e)
         await workbook.xlsx.writeFile("./public/exports/" + filename)
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
         return res.json({
@@ -867,7 +845,7 @@ next(e)
         await workbook.xlsx.writeFile("./public/exports/" + filename)
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
         return res.json({
@@ -950,7 +928,7 @@ next(e)
         })
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
         let accBudget = await Budget.findAll({
@@ -960,7 +938,7 @@ next(e)
         })
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
         for (let index = 0; index < accBudget.length; index++) {
@@ -989,7 +967,7 @@ next(e)
         })
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
         for (let ind2 = 0; ind2 < arrAmount.length; ind2++) {
             const element = arrAmount[ind2];
@@ -1004,7 +982,7 @@ next(e)
         })
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
         for (let ind2 = 0; ind2 < arrAmount.length; ind2++) {
             const element = arrAmount[ind2];
@@ -1027,7 +1005,7 @@ next(e)
         })
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
         for (let ind2 = 0; ind2 < arrAmount.length; ind2++) {
             const element = arrAmount[ind2];
@@ -1042,7 +1020,7 @@ next(e)
         })
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
         for (let ind2 = 0; ind2 < arrAmount.length; ind2++) {
             const element = arrAmount[ind2];
@@ -1194,7 +1172,7 @@ next(e)
         await workbook.xlsx.writeFile("./public/exports/" + filename)
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
         return res.json({
@@ -1369,7 +1347,7 @@ next(e)
         await workbook.xlsx.writeFile("./public/exports/" + filename)
             .catch((e) => {
                 console.error(e);
-next(e)
+                next(e)
             });
 
         return res.json({
@@ -1598,7 +1576,9 @@ next(e)
                 .fontSize(12)
                 .text('Glattbrugg, den ' + formatDateLong(kegelDate), pdf.page.margins.left + 5)
                 .moveDown(1)
+                .font('Helvetica-Italic')
                 .text('Kegelkasse erfasst durch ' + kegelkasse.user.name, pdf.page.margins.left + 5)
+                .font("Helvetica")
                 .fontSize(10)
 
             // see the range of buffered pages            
@@ -1648,11 +1628,11 @@ next(e)
                                 .then(jResp => {
                                     console.log(jResp)
                                 })
-                                .catch(err => { 
-                                    console.log(err); 
+                                .catch(err => {
+                                    console.log(err);
                                     payload.message += "Error while saving journal_receipt;";
                                     payload.type = 'error';
-                                 })
+                                })
                         })
                 })
                 .catch(e => {
