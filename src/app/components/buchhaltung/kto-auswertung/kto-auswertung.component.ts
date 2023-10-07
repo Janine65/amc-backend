@@ -110,7 +110,7 @@ export class KtoAuswertungComponent {
           TotalRec.amount = iTotalErfolg;
           TotalRec.budget = iBudgetErfolg;
           TotalRec.diff = TotalRec.amount - TotalRec.budget;
-          TotalRec.name = 'Erfolg';
+          TotalRec.name = 'Ertrag';
           TotalRec.$css = 'alert-total';
           this.lstErfolgNodes.push(TotalRec);
           TotalRec = new AccountAuswertung();
