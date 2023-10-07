@@ -4,6 +4,7 @@ services:
   amcbackend:
     container_name: amcbackend
     image: janine65/amcbackend:latest
+    platform: linux/amd64
     build:
       context: ../amc-backend/
       dockerfile: ../amc-backend/Dockerfile
@@ -20,6 +21,7 @@ services:
   amcinternal:
     container_name: amcinternal
     image: janine65/amcinternal:latest
+    platform: linux/amd64
     build:
       context: ./
       dockerfile: ./Dockerfile
