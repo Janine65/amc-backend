@@ -1576,7 +1576,7 @@ module.exports = {
                 .fontSize(12)
                 .text('Glattbrugg, den ' + formatDateLong(kegelDate), pdf.page.margins.left + 5)
                 .moveDown(1)
-                .font('Helvetica-Italic')
+                .font('Helvetica-Oblique')
                 .text('Kegelkasse erfasst durch ' + kegelkasse.user.name, pdf.page.margins.left + 5)
                 .font("Helvetica")
                 .fontSize(10)
