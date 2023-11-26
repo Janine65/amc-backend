@@ -1,0 +1,21 @@
+{
+  "run": {
+    "command": "nx build",
+    "startTime": "2023-11-26T13:42:35.931Z",
+    "endTime": "2023-11-26T13:42:47.854Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "amc-interna:build:production",
+      "target": "build",
+      "projectName": "amc-interna",
+      "hash": "5862528307604916966",
+      "startTime": "2023-11-26T13:42:35.934Z",
+      "endTime": "2023-11-26T13:42:47.852Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    }
+  ]
+}
