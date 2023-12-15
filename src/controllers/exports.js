@@ -783,9 +783,13 @@ module.exports = {
                         include: {
                             model: Meisterschaft, required: true,
                             attributes: [],
-                            where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("datum")), objSave.year)
+                            include: {
+                                model: Anlaesse, as: 'linkedEvent', required: true,
+                                attributes: [],
+                                where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("datum")), objSave.year)
+                            }
                         },
-                        order: ["adressen.name", "vorname"]
+                        order: ["name", "vorname"]
                     });
 
                     for (let index = 0; index < dbAdressen.length; index++) {
@@ -861,7 +865,6 @@ module.exports = {
      * @param {Response} res 
      */
     writeExcelData: async function (req, res, next) {
-        // TODO #38
         console.log("writeExcelData");
         let sjahr = req.query.jahr;
 
@@ -1801,7 +1804,7 @@ function writeArray(sheet, arData, firstRow, fBudget = false, fBudgetVergleich =
  */
 async function fillTemplate(sheet, id, syear) {
     const sqlstring = "select m.* from meisterschaft as m join anlaesse as a on m.eventid = a.id and year(a.datum) = " + syear + " where m.mitgliedid = " + id + " order by m.id"
-    const data = await Sequelize.query(sqlstring, { type: QueryTypes.SELECT, logging: console.debug, raw: false, model: Meisterschaft })
+    const data = await sequelize.query(sqlstring, { type: QueryTypes.SELECT, logging: console.debug, raw: false, model: Meisterschaft })
 
     if (data != undefined && data.length > 0) {
         let cols = sheet.getColumn('K');
