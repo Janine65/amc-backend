@@ -42,7 +42,7 @@
                         <label for="teilnehmer" class="pr-2">Teilnehmer wählen</label>
                         <p-autoComplete #teilnehmername id="teilnehmername" formControlName="teilnehmername" 
                             [suggestions]="lstFilteredAdressen" (completeMethod)="searchTeilnehmer($event)"
-                            field="fullname" dataKey="fullname" [dropdown]="true" (onSelect)="selectTeilnehmer($event)" [forceSelection]="true" >
+                            field="fullname" dataKey="fullname" [dropdown]="true" (onSelect)="selectTeilnehmer($event.value)" [forceSelection]="true" >
                         </p-autoComplete>
                     </div>
                     <div class="field pb-2 col-12 md:col-12">

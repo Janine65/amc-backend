@@ -28,7 +28,7 @@
                             <p-autoComplete name="fromAcc" [(ngModel)]="selJournal.fromAccount"
                                 [disabled]="!editMode && !addMode" [suggestions]="lstFromAccounts"
                                 (completeMethod)="fromAccountSearch($event)" field="longname" [dropdown]="false"
-                                (onSelect)="fromAccountSel($event)" [forceSelection]="true">
+                                (onSelect)="fromAccountSel($event.value)" [forceSelection]="true">
                             </p-autoComplete>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                             <p-autoComplete name="toAcc" [(ngModel)]="selJournal.toAccount"
                                 [disabled]="!editMode && !addMode" [suggestions]="lstToAccounts"
                                 (completeMethod)="toAccountSearch($event)" field="longname" [dropdown]="false"
-                                (onSelect)="toAccountSel($event)" [forceSelection]="true">
+                                (onSelect)="toAccountSel($event.value)" [forceSelection]="true">
                             </p-autoComplete>
                         </div>
                     </div>

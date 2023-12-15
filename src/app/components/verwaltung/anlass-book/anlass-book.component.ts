@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {  AfterContentInit, AfterViewInit, Component, HostListener, OnInit, Renderer2, ViewChild } from '@angular/core';
+import {  AfterViewInit, Component, HostListener, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Adresse, Anlass, Meisterschaft } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
@@ -124,7 +124,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(): void {
     setTimeout(() =>
-    this.teilnehmerObject.focusInput(), 500);
+    this.teilnehmerObject.focused = true);
   }
 
   ngOnInit(): void {
@@ -212,7 +212,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     this.lstFilteredAdressen = []
 
     this.teilnehmername.reset(null)
-    this.teilnehmerObject.focusInput();
+    this.teilnehmerObject.focused = true;
     this.setDisabled(true)
 
   }
@@ -245,7 +245,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
       return;
     }
     this.teilnehmername.setValue(adr);
-    this.teilnehmerObject.focusInput();
+    this.teilnehmerObject.focused = true;
     this.patchFields()
     this.fgMeisterschaft.markAsUntouched({onlySelf: false});
 
