@@ -53,6 +53,12 @@ module.exports = {
 				// Anzahl Ergebnisse = global.Parameter.get('ANZAHL_KEGEL')
 
 				// alle Ergebnisse auf Streichresultat = 0
+				await Meisterschaft.update({ "zusatz": 0 },
+					{ where: [{ "eventid": { [Op.in]: arAnlaesse } },
+						{ "zusatz": {[Op.is]: null}}]
+				 });
+
+				// alle Ergebnisse auf Streichresultat = 0
 				await Meisterschaft.update({ "streichresultat": false },
 					{ where: { "eventid": { [Op.in]: arAnlaesse } } });
 
@@ -61,6 +67,12 @@ module.exports = {
 					{
 						where: [{ "eventid": { [Op.in]: arAnlaesse } },
 						{ "total_kegel": { [Op.lte]: 5 } }]
+					});
+
+				await Meisterschaft.update({ "streichresultat": true },
+					{
+						where: [{ "eventid": { [Op.in]: arAnlaesse } },
+						{ "total_kegel": { [Op.is]: null} }]
 					});
 
 				// alle Ergebnisse, die weniger als 'Anzahl Ergebnisse' haben, Streichresultat = 1
@@ -108,7 +120,7 @@ module.exports = {
 					await Meisterschaft.update({ "streichresultat": true },
 						{
 							where: [{ "eventid": { [Op.in]: arAnlaesse } },
-							{ "mitgliedid": { [Op.in]: allMitgliedId } }]
+							{ "id": { [Op.in]: allMitgliedId } }]
 						});
 					allMitgliedId = []
 				}
