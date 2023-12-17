@@ -1,6 +1,6 @@
 {
   "name": "amc-backend",
-  "version": "4.1.11",
+  "version": "4.1.12",
   "description": "Auto-Moto-Club Administration: Backend für die interne Applikation des Vereins.",
   "main": "index.js",
   "private": "true",
