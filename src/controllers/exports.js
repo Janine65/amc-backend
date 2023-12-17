@@ -1834,19 +1834,20 @@ async function fillTemplate(sheet, id, syear) {
                             } else {
                                 // setzte diagonale Linie - > Streichresultat                                
                                 sheet.getRow(row).eachCell({ includeEmpty: false }, function (formatCell, colNumber) {
-                                    formatCell.style.fill = {
-                                        type: 'pattern',
-                                        pattern: 'solid',
-                                        bgColor: { argb: '96C8FB' }
-                                    };
+                                    // formatCell.style.fill = {
+                                    //     type: 'pattern',
+                                    //     pattern: 'solid',
+                                    //     bgColor: { argb: '96C8FB' }
+                                    // };
                                     formatCell.style.border = {
+                                        bottom: { style: 'thin'},
+                                        left: { style: 'thin'},
+                                        right: { style: 'thin'},
+                                        top: { style: 'thin'},
                                         diagonal: {
                                             up: true,
                                             down: true,
                                             style: 'thin',
-                                            color: {
-                                                argb: '999999'
-                                            }
                                         }
                                     };
                                 });
