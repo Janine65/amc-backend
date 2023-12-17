@@ -145,6 +145,12 @@
     <button *ngIf="adresse.sam_mitglied && adresse.austritt_date?.getFullYear() !== 3000" pButton type="button"
         label="SAM Austritt" icon="pi pi-send" class="p-button-secondary p-button-outlined"
         (click)="emailSAMAustritt(f)"></button>
+    <button *ngIf=" adresse.austritt_date?.getFullYear() === 3000" pButton type="button"
+        label="leeres Datenblatt" icon="pi pi-file-excel" class="p-button-secondary p-button-outlined"
+        (click)="exportEmpty()"></button>
+    <button *ngIf=" adresse.austritt_date?.getFullYear() === 3000" pButton type="button"
+        label="volles Datenblatt" icon="pi pi-file-export" class="p-button-secondary p-button-outlined"
+        (click)="exportFull()"></button>
     <button pButton type="button" label="Sichern" icon="pi pi-save" class="p-button-primary p-button-outlined"
         (click)="save(f)"></button>
 </p-toolbar>

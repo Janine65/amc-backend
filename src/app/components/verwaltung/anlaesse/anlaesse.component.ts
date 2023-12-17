@@ -106,13 +106,10 @@ export class AnlaesseComponent implements OnInit{
   }
 
   formatField(field: string, value: string | number | boolean | null): string | number | boolean | null {
-    switch (field) {
-      case 'status': 
+    if (field == 'status')
         return (value && (value as number) == 1 ? 'Aktiv' : 'Inaktiv')
       
-      default:
-        return value;
-    }
+    return value;
   }
 
   chgJahr() {

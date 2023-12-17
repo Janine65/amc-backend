@@ -4,7 +4,7 @@ import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription, from } from 'rxjs';
 import { BackendService } from '@app/service/backend.service';
-import { Adresse } from 'src/app/models/datatypes';
+import { Adresse, ParamData } from 'src/app/models/datatypes';
 import { EmailDialogComponent } from '@app/components/shared/email-dialog/email-dialog.component';
 import { EmailBody, EmailSignature } from '@app/components/shared/email-dialog/email-dialog.types';
 import { environment } from '@environments/environment';
@@ -166,6 +166,60 @@ export class AdresseEditComponent {
     });
 
 
+  }
+  exportEmpty = () => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias, @typescript-eslint/no-unused-vars
+    console.log("Datenblatt leer für Adresse erstellen");
+    const str = localStorage.getItem('parameter');
+    const parameter = str ? JSON.parse(str) : [];
+    const paramJahr = parameter.find((param:ParamData) => param.key === 'CLUBJAHR');
+    from(this.backendService.getSheet({year: Number(paramJahr?.value), type: 1, id: this.adresse.id})).subscribe(
+      (response) => {
+        if (response.type == 'info') {
+          this.backendService.downloadFile(response.filename).subscribe(
+            {
+              next(data) {
+                if (data.body) {
+                  const blob = new Blob([data.body]);
+                  const downloadURL = window.URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = downloadURL;
+                  link.download = response.filename;
+                  link.click();
+                }
+              },
+            }
+          )
+        }
+      }
+    )
+  }
+  exportFull = () => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias, @typescript-eslint/no-unused-vars
+    console.log("Datenblatt voll für alle erstellen");
+    const str = localStorage.getItem('parameter');
+    const parameter = str ? JSON.parse(str) : [];
+    const paramJahr = parameter.find((param:ParamData) => param.key === 'CLUBJAHR');
+    from(this.backendService.getSheet({year: Number(paramJahr?.value), type: 2, id: this.adresse.id})).subscribe(
+      (response) => {
+        if (response.type == 'info') {
+          this.backendService.downloadFile(response.filename).subscribe(
+            {
+              next(data) {
+                if (data.body) {
+                  const blob = new Blob([data.body]);
+                  const downloadURL = window.URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = downloadURL;
+                  link.download = response.filename;
+                  link.click();
+                }
+              },
+            }
+          )
+        }
+      }
+    )
   }
 
   save(f: NgForm) {
