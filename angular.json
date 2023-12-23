@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "verbose": true,
             "outputPath": "dist/amc-interna",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -42,7 +43,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1mb",
+                  "maximumWarning": "4mb",
                   "maximumError": "5mb"
                 },
                 {

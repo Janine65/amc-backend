@@ -190,6 +190,7 @@ export class GeschaeftsjahrComponent implements OnInit {
     const thisRef: GeschaeftsjahrComponent = this;
     console.log("New Fiscalyear");
     this.clearFields();
+    this.selFiscalyear.state = 1;
     thisRef.messageService.clear();
     this.addMode = true;
   }
