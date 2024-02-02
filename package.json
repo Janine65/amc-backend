@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": "true",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "pm2": "pm2 start processes.json --no-daemon",
     "start": "node index.js",
     "test": "jest",
