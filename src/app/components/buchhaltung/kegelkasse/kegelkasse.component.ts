@@ -242,7 +242,6 @@ export class KegelkasseComponent implements OnInit {
   }
 
   createReceipt() {
-    //TODO
     if (this.kegelkasse.id)
       this.backendService.createReceipt(this.kegelkasse.id).subscribe({
         next: (result) => {
