@@ -309,8 +309,8 @@ export class BackendService {
     const body = JSON.stringify(data)
     return this.http.delete(apiURL, {headers: this.header, body: body});
   }
-  getKegelkasse(monat: number): Observable<Kegelkasse[]> {
-    const apiURL = environment.apiUrl + '/journal/journal/kegelkasse?monat=' + monat;
+  getKegelkasse(monat: number, jahr: number): Observable<Kegelkasse[]> {
+    const apiURL = environment.apiUrl + '/journal/journal/kegelkasse?monat=' + monat + '&jahr=' + jahr;
     return this.http.get<Kegelkasse[]>(apiURL, {headers: this.header});
   }
   getAllKegelkasse(jahr: number): Observable<Kegelkasse[]> {
