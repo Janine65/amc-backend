@@ -647,12 +647,12 @@ async function importJournal(req, res, next) {
 			}
 
 			if (!fSoll) {
-				Meldung = "Konto " + Soll + " konnte nicht gefunden werden"
+				Meldung = `Konto ${Soll} konnte nicht gefunden werden`
 				logWorksheet.addRow({ 'timestamp': new Date().toISOString(), 'type': 'Warnung', 'message': Meldung });
 				idSoll = 43;
 			}
 			if (!fHaben) {
-				Meldung = "Konto " + Haben + " konnte nicht gefunden werden"
+				Meldung = `Konto ${Haben} konnte nicht gefunden werden`
 				logWorksheet.addRow({ 'timestamp': new TDate().toISOString(), 'type': 'Warnung', 'message': Meldung });
 				idHaben = 43;
 			}
