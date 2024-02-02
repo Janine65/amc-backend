@@ -170,7 +170,7 @@ export class KegelkasseComponent implements OnInit {
   changeDate(date: Date | null) {
     if (date) {
       this.kegelkasse = {}
-      zip(this.backendService.getKegelkasse(date.getMonth() + 1),
+      zip(this.backendService.getKegelkasse(date.getMonth() + 1, date.getFullYear()),
       this.backendService.getAmountOneAcc(date.toLocaleDateString("fr-CA"), 1002)
       ).pipe(map(([kegelkasse, result]) => {
         if (kegelkasse.length > 0) {
