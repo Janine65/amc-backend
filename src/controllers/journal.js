@@ -224,7 +224,8 @@ async function updateData(req, res, next) {
 async function getKegelkasse(req, res, next) {
 	Kegelkasse.findAll({
 		logging: console.log,
-		where: Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('datum')), req.query.monat),
+		where: [Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('datum')), req.query.monat),
+			Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('datum')), req.query.jahr)],
 		include: [
 			{
 				model: Journal, as: 'journal', required: false,
