@@ -43,3 +43,6 @@ Thumbs.db
 *.log
 package-lock.json
 .nx/*
+
+
+.nx/cache

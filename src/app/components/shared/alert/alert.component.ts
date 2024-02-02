@@ -81,7 +81,7 @@ export class AlertComponent implements OnInit, OnDestroy {
   }
 
   cssButtonClass(alert: Alert) {
-    if (!alert) return;
+    if (!alert) return '';
 
     const classes = ['p-button-rounded', 'p-button-text'];
             
@@ -102,7 +102,7 @@ export class AlertComponent implements OnInit, OnDestroy {
   }
 
   cssClass(alert: Alert) {
-      if (!alert) return;
+      if (!alert) return '';
 
       const classes = ['alert', 'alert-dismissable', 'mt-4', 'container'];
               

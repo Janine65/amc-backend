@@ -1,17 +1,19 @@
-FROM node:18-alpine AS build
+FROM guergeiro/pnpm:18-8 AS build
+#FROM node:18-slim AS build
 ENV NODE_ENV=production
 
 # set working directory
 WORKDIR /usr/local/app
 
-COPY ./ /usr/local/app/
-RUN rm -f package-lock.json
-RUN rm -fr /usr/local/app/dist
+COPY package.json pnpm-lock.yaml /usr/local/app/
 # install package.json (o sea las dependencies)
-RUN npm install
+# RUN pnpm fetch --prod
+RUN pnpm install --frozen-lockfile 
+
+COPY ./ /usr/local/app/
 
 # start app
-RUN npm run build
+#RUN pnpm run build --output-path=dist
 
 # Stage 1, for copying the compiled app from the previous step and making it ready for production with Nginx
 FROM nginx:alpine

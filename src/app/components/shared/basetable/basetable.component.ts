@@ -42,7 +42,7 @@ export class TableToolbar {
     this.btnClass = btnClass;
     this.icon = icon;
     this.isDefault = isDefault;
-    this.roleNeeded = (roleNeeded === undefined ? '' : roleNeeded);
+    this.roleNeeded = (roleNeeded ?? roleNeeded);
     this.disabledWhenEmpty = disabledWhenEmpty;
     this.disabledNoSelection = disabledNoSelection;
     this.clickfnc = clickfnc;
@@ -126,7 +126,7 @@ export class BaseTableComponent implements OnInit, OnDestroy {
       return false
   }
 
-  retDefaultFunc() {
+  retDefaultFunc() : any {
     const funcDefault = this.tableToolbar?.find(entry => entry.isDefault)
     if (funcDefault) {
       // check first the role
@@ -134,7 +134,7 @@ export class BaseTableComponent implements OnInit, OnDestroy {
       if (ind != undefined && !this.isButtonDisabled(ind))
         return funcDefault.clickfnc
     }
-    return; 
+    return ; 
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
