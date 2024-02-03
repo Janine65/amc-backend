@@ -5,7 +5,7 @@ import { BackendService } from '@service/backend.service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Observable, from, map, zip } from 'rxjs';
+import { Observable, map, zip } from 'rxjs';
 import { AttachementListComponent } from '../attachement-list/attachement-list.component';
 import { AttachmentAddComponent } from '../attachment-add/attachment-add.component';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -143,7 +143,7 @@ export class JournalComponent implements OnInit {
 
   isEditable() {
     if (this.selFiscalyear)
-      return this.selFiscalyear.state! < 3
+      return this.selFiscalyear.state < 3
     else return false
   }
   private readJournal() {
@@ -153,7 +153,7 @@ export class JournalComponent implements OnInit {
     ).pipe(map(([list1, list2, result]) => {
       this.lstJournal = list1;
       this.lstJournal.forEach(x => {
-        x.date_date = new Date(x.date!);
+        x.date_date = new Date(x.date);
         x.fromAcc = x.fromAccount?.longname;
         x.from_account = x.fromAccount?.id;
         x.toAcc = x.toAccount?.longname;
@@ -186,19 +186,19 @@ export class JournalComponent implements OnInit {
   }
 
   fromAccountSel(acc: Account) {
-    // TODO document why this method 'fromAccountSel' is empty
+    // document why this method 'fromAccountSel' is empty
     this.lstFromAccounts = []
     this.selJournal.fromAccount = acc;
   }
 
   toAccountSel(acc: Account) {
-    // TODO document why this method 'fromAccountSel' is empty
+    // document why this method 'fromAccountSel' is empty
     this.lstToAccounts = []
     this.selJournal.toAccount = acc;
   }
 
   fromAccountSearch(event: AutoCompleteCompleteEvent) {
-    // TODO document why this method 'fromAccountSel' is empty
+    // document why this method 'fromAccountSel' is empty
     this.lstFromAccounts = []
     const lstString = event.query.split(" ");
     if (!lstString || lstString.length == 0)
@@ -208,8 +208,8 @@ export class JournalComponent implements OnInit {
       let match = false
       lstString.forEach(text => {
         const regex = new RegExp(text, "i")
-        const matchL = RegExp(regex).exec(acc.name!);
-        const matchV = RegExp(regex).exec(String(acc.order!));
+        const matchL = RegExp(regex).exec(acc.name);
+        const matchV = RegExp(regex).exec(String(acc.order));
         if (matchL || matchV)
           match = true
       })
@@ -221,7 +221,7 @@ export class JournalComponent implements OnInit {
   }
 
   toAccountSearch(event: AutoCompleteCompleteEvent) {
-    // TODO document why this method 'toAccountSel' is empty
+    // document why this method 'toAccountSel' is empty
     this.lstToAccounts = []
     const lstString = event.query.split(" ");
     if (!lstString || lstString.length == 0)
@@ -231,8 +231,8 @@ export class JournalComponent implements OnInit {
       let match = false
       lstString.forEach(text => {
         const regex = new RegExp(text, "i")
-        const matchL = RegExp(regex).exec(acc.name!);
-        const matchV = RegExp(regex).exec(String(acc.order!));
+        const matchL = RegExp(regex).exec(acc.name);
+        const matchV = RegExp(regex).exec(String(acc.order));
         if (matchL || matchV)
           match = true
       })
@@ -437,7 +437,8 @@ export class JournalComponent implements OnInit {
     this.addMode = true;
 
     if (selRec) {
-      Object.assign(thisRef.selJournal, selRec);
+
+      thisRef.selJournal = structuredClone(selRec);
       thisRef.selJournal.id = undefined;
     }
   }
@@ -454,7 +455,7 @@ export class JournalComponent implements OnInit {
 
     this.selJournal.from_account = this.selJournal.fromAccount?.id;
     this.selJournal.to_account = this.selJournal.toAccount?.id;
-    this.selJournal.date = `${this.selJournal.date_date!.getFullYear()}-${this.selJournal.date_date!.toLocaleString('default', { month: '2-digit' })}-${this.selJournal.date_date!.toLocaleString('default', { day: '2-digit' })}`;
+    this.selJournal.date = `${this.selJournal.date_date.getFullYear()}-${this.selJournal.date_date.toLocaleString('default', { month: '2-digit' })}-${this.selJournal.date_date.toLocaleString('default', { day: '2-digit' })}`;
 
     if (this.addMode) {
       sub = this.backendService.addJournal(this.selJournal)
@@ -467,7 +468,7 @@ export class JournalComponent implements OnInit {
           this.backendService.getOneJournal(record.id).subscribe(
             {
               next: (result) => {
-                result.date_date = new Date(result.date!);
+                result.date_date = new Date(result.date);
                 result.fromAcc = result.fromAccount?.longname;
                 result.from_account = result.fromAccount?.id;
                 result.toAcc = result.toAccount?.longname;
@@ -475,7 +476,7 @@ export class JournalComponent implements OnInit {
 
                 if (this.addMode) {
                   this.lstJournal.push(result);
-                  this.lstJournal.sort((a: Journal, b: Journal) => (a.journalno && b.journalno ? a.journalno - b.journalno : (a.date_date! < b.date_date! ? -1 : 1)))
+                  this.lstJournal.sort((a: Journal, b: Journal) => (a.journalno && b.journalno ? a.journalno - b.journalno : (a.date_date < b.date_date ? -1 : 1)))
                 }
                 else
                   this.lstJournal = this.lstJournal.map(obj => [result].find(o => o.id === obj.id) ?? obj);

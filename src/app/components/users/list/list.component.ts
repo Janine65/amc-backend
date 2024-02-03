@@ -90,8 +90,7 @@ export class ListComponent implements OnInit {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       const thisRef: ListComponent = this;
       console.log("Benutzer anpassen", selRec);
-      const newUser = new User();
-      Object.assign(newUser, (selRec as User));
+      const newUser = structuredClone(selRec);
   
       thisRef.dialogRef = thisRef.dialogService.open(AddEditComponent, {
         data: {

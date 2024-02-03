@@ -116,8 +116,8 @@ export class AdressenComponent implements OnInit {
       .subscribe(list => {
         this.adressList = list;
         this.adressList.forEach(adr => {
-          adr.eintritt_date = new Date(adr.eintritt!);
-          adr.austritt_date = new Date(adr.austritt!);
+          adr.eintritt_date = new Date(adr.eintritt);
+          adr.austritt_date = new Date(adr.austritt);
           if (adr.austritt !== '3000-01-01')
             adr.classRow = 'inactive';
         })
@@ -129,14 +129,15 @@ export class AdressenComponent implements OnInit {
   formatField(field: string, value: string | number | boolean | null): string | number | boolean | null {
     switch (field) {
       case 'eintritt':
-      case 'austritt':
+      case 'austritt': {
         // eslint-disable-next-line no-case-declarations
-        const dt: Date = new Date((value as string));
+        const dt: Date = new Date(value as string);
         // eslint-disable-next-line no-case-declarations
         const retValue = dt.getFullYear()
         if (retValue === 3000)
           return null
         return retValue;
+      }
 
       default:
         return value;
@@ -207,8 +208,8 @@ export class AdressenComponent implements OnInit {
     });
     thisRef.dialogRef.onClose.subscribe((adresse: Adresse) => {
       if (adresse) {
-        adresse.eintritt_date = new Date(adresse.eintritt!);
-        adresse.austritt_date = new Date(adresse.austritt!);
+        adresse.eintritt_date = new Date(adresse.eintritt);
+        adresse.austritt_date = new Date(adresse.austritt);
 
         this.adressList.push(adresse)
         console.log(adresse)
@@ -220,9 +221,6 @@ export class AdressenComponent implements OnInit {
     const thisRef: AdressenComponent = this;
     console.log("Edit Adresse", selRec);
     thisRef.messageService.clear();
-
-    const newAdr = new Adresse();
-    Object.assign(newAdr, selRec);
 
     thisRef.dialogRef = thisRef.dialogService.open(AdresseEditComponent, {
       data: {
@@ -238,8 +236,8 @@ export class AdressenComponent implements OnInit {
     });
     thisRef.dialogRef.onClose.subscribe((adresse: Adresse) => {
       if (adresse) {
-        adresse.eintritt_date = new Date(adresse.eintritt!);
-        adresse.austritt_date = new Date(adresse.austritt!);
+        adresse.eintritt_date = new Date(adresse.eintritt);
+        adresse.austritt_date = new Date(adresse.austritt);
         thisRef.adressList = thisRef.adressList.map(obj => [adresse].find(o => o.id === obj.id) ?? obj);
         console.log(adresse)
       }
@@ -281,11 +279,11 @@ export class AdressenComponent implements OnInit {
     thisRef.backendService.removeData(selRec).subscribe(
       {
         complete: () => {
-          thisRef.backendService.getOneAdress(selRec.id!).subscribe(
+          thisRef.backendService.getOneAdress(selRec.id).subscribe(
             {
               next: (adresse) => {
-                adresse.eintritt_date = new Date(adresse.eintritt!);
-                adresse.austritt_date = new Date(adresse.austritt!);
+                adresse.eintritt_date = new Date(adresse.eintritt);
+                adresse.austritt_date = new Date(adresse.austritt);
                 thisRef.adressList = thisRef.adressList.map(obj => adresse.id === obj.id ? adresse : obj);
                 thisRef.messageService.add({ detail: 'Das Austrittsdatum wurde auf den 31.12. gesetz', closable: true, severity: 'info', summary: 'Adresse beenden' });
               }

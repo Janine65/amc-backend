@@ -3,7 +3,7 @@ import { Component, HostListener } from '@angular/core';
 import { Account, Budget, Fiscalyear, ParamData } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { from, map, zip } from 'rxjs';
+import { map, zip } from 'rxjs';
 
 @Component({
   selector: 'app-budget',
@@ -93,7 +93,7 @@ export class BudgetComponent {
 
   isEditable() {
     if (this.selFiscalyear)
-      return this.selFiscalyear.state! < 3
+      return this.selFiscalyear.state < 3
     else return false
   }
 
@@ -116,7 +116,7 @@ export class BudgetComponent {
   }
 
   rowIsEditing(data:Budget) : boolean {
-    if (this.clonedlstBudget[data.id!])
+    if (this.clonedlstBudget[data.id])
       return true;
     else
       return false;
@@ -131,7 +131,7 @@ export class BudgetComponent {
   }
 
   onRowEditInit(budget: Budget) {
-    this.clonedlstBudget[budget.id!] = { ...budget };
+    this.clonedlstBudget[budget.id] = { ...budget };
     this.addRow = false
   }
 
@@ -146,7 +146,7 @@ export class BudgetComponent {
     sub.subscribe({
         next: (rec) => {
           this.addRow = false
-          delete this.clonedlstBudget[budget.id!];
+          delete this.clonedlstBudget[budget.id];
           const ind: Budget | undefined = this.lstBudget.find(rec => rec.id == budget.id)
           if (ind) {
             Object.assign(ind, rec)
@@ -168,7 +168,7 @@ export class BudgetComponent {
   onRowEditDelete(budget: Budget) {
     this.backendService.delBudget(budget).subscribe({
       next: () => {
-        delete this.clonedlstBudget[budget.id!];
+        delete this.clonedlstBudget[budget.id];
         const ind = this.lstBudget.findIndex(rec => rec.id == budget.id)
         this.lstBudget.splice(ind, 1)
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'budget is deleted' });
@@ -183,9 +183,9 @@ export class BudgetComponent {
     if (budget.id === 0) {
       this.lstBudget.splice(index, 1)
     } else {
-      this.lstBudget[index] = this.clonedlstBudget[budget.id!];
+      this.lstBudget[index] = this.clonedlstBudget[budget.id];
     }
-    delete this.clonedlstBudget[budget.id!];
+    delete this.clonedlstBudget[budget.id];
     this.addRow = false
   }
 

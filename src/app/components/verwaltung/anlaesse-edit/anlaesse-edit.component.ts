@@ -52,8 +52,8 @@ export class AnlaesseEditComponent {
       return;
     }
 
-    if (this.anlass.datum != this.anlass.datum_date?.toISOString())
-      this.anlass.datum = this.anlass.datum_date?.toISOString()
+    if (this.anlass.datum != this.anlass.datum_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}))
+      this.anlass.datum = this.anlass.datum_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'})
 
     this.backendService.updAnlaesseData(this.anlass).subscribe(
       {next: (anl) => {

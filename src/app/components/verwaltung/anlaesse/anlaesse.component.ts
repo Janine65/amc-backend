@@ -140,7 +140,7 @@ export class AnlaesseComponent implements OnInit{
     });
     thisRef.dialogRef.onClose.subscribe((anlass: Anlass) => {
       if (anlass) {
-        anlass.datum_date = new Date(anlass.datum!);
+        anlass.datum_date = new Date(anlass.datum);
 
         thisRef.anlaesseListAll.push(anlass);
         thisRef.chgJahr()
@@ -154,9 +154,6 @@ export class AnlaesseComponent implements OnInit{
     const thisRef: AnlaesseComponent = this;
     console.log("Anlass ändern", selRec);
     thisRef.messageService.clear();
-
-    const newAnl = new Anlass();
-    Object.assign(newAnl, selRec);
 
     thisRef.dialogRef = thisRef.dialogService.open(AnlaesseEditComponent, {
       data: {
@@ -172,7 +169,7 @@ export class AnlaesseComponent implements OnInit{
     });
     thisRef.dialogRef.onClose.subscribe((anlass: Anlass) => {
       if (anlass) {
-        anlass.datum_date = new Date(anlass.datum!);
+        anlass.datum_date = new Date(anlass.datum);
         thisRef.anlaesseListAll = thisRef.anlaesseListAll.map(obj => [anlass].find(o => o.id === obj.id) || obj);
         thisRef.chgJahr()
         console.log(anlass)
@@ -185,8 +182,7 @@ export class AnlaesseComponent implements OnInit{
     const thisRef: AnlaesseComponent = this;
     console.log("Anlass kopieren", selRec);
     thisRef.messageService.clear();
-    const newAnl = new Anlass();
-    Object.assign(newAnl, selRec);
+    const newAnl = structuredClone(selRec);
     newAnl.id = undefined;
     newAnl.anlaesseid = selRec?.id;
     let newYear = selRec?.datum_date?.getFullYear();
@@ -210,7 +206,7 @@ export class AnlaesseComponent implements OnInit{
     });
     thisRef.dialogRef.onClose.subscribe((anlass: Anlass) => {
       if (anlass) {
-        anlass.datum_date = new Date(anlass.datum!);
+        anlass.datum_date = new Date(anlass.datum);
 
         thisRef.anlaesseListAll.push(anlass);
         thisRef.chgJahr()
@@ -225,11 +221,11 @@ export class AnlaesseComponent implements OnInit{
     console.log("Anlass löschen", selRec);
     thisRef.messageService.clear();
 
-    thisRef.backendService.delAnlaesseData(selRec!).subscribe(
+    thisRef.backendService.delAnlaesseData(selRec).subscribe(
       {
         complete: () => {
-          thisRef.anlaesseListAll.splice(thisRef.anlaesseListAll.indexOf((selRec as Anlass)),1)
-          thisRef.anlaesseList.splice(thisRef.anlaesseList.indexOf((selRec as Anlass)),1)
+          thisRef.anlaesseListAll.splice(thisRef.anlaesseListAll.indexOf(selRec),1)
+          thisRef.anlaesseList.splice(thisRef.anlaesseList.indexOf(selRec),1)
 
           thisRef.messageService.add({ detail: 'Der Anlass wurde gelöscht', closable: true, severity: 'info', summary: 'Anlass beenden' });
         }

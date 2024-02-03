@@ -82,10 +82,10 @@ export class AdresseEditComponent {
         return;
       }
   
-      if (this.adresse.eintritt != this.adresse.eintritt_date?.toISOString())
-        this.adresse.eintritt = this.adresse.eintritt_date?.toISOString()
-      if (this.adresse.austritt != this.adresse.austritt_date?.toISOString())
-        this.adresse.austritt = this.adresse.austritt_date?.toISOString()
+      if (this.adresse.eintritt != this.adresse.eintritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}))
+        this.adresse.eintritt = this.adresse.eintritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'})
+      if (this.adresse.austritt != this.adresse.austritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}))
+        this.adresse.austritt = this.adresse.austritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'})
   
       this.backendService.updateData(this.adresse).subscribe();      
     }
@@ -128,10 +128,10 @@ export class AdresseEditComponent {
         return;
       }
   
-      if (this.adresse.eintritt != this.adresse.eintritt_date?.toISOString())
-        this.adresse.eintritt = this.adresse.eintritt_date?.toISOString()
-      if (this.adresse.austritt != this.adresse.austritt_date?.toISOString())
-        this.adresse.austritt = this.adresse.austritt_date?.toISOString()
+      if (this.adresse.eintritt != this.adresse.eintritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}))
+        this.adresse.eintritt = this.adresse.eintritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'})
+      if (this.adresse.austritt != this.adresse.austritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}))
+        this.adresse.austritt = this.adresse.austritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'})
   
       this.backendService.updateData(this.adresse).subscribe();      
     }
@@ -228,10 +228,10 @@ export class AdresseEditComponent {
       return;
     }
 
-    if (this.adresse.eintritt != this.adresse.eintritt_date?.toISOString())
-      this.adresse.eintritt = this.adresse.eintritt_date?.toISOString()
-    if (this.adresse.austritt != this.adresse.austritt_date?.toISOString())
-      this.adresse.austritt = this.adresse.austritt_date?.toISOString()
+    if (this.adresse.eintritt != this.adresse.eintritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}))
+      this.adresse.eintritt = this.adresse.eintritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'})
+    if (this.adresse.austritt != this.adresse.austritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}))
+      this.adresse.austritt = this.adresse.austritt_date?.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'})
 
     this.backendService.updateData(this.adresse).subscribe(
       {next: (adr) => {
