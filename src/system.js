@@ -1,3 +1,4 @@
+const pkgFile = require('../package.json');
 class SystemVal {
     constructor(){
         this.version = this.getVersion();
@@ -8,7 +9,7 @@ class SystemVal {
     */
     getVersion() {
         console.log('getVersion');
-        return require('read-pkg').sync().version;
+        return pkgFile.version;
     }
 }
 
