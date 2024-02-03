@@ -626,8 +626,8 @@ async function importJournal(req, res, next) {
 		if (rowNumber > 1) {
 			Nr = row.getCell(cNr).value;
 			Datum = row.getCell(cDatum).value;
-			Soll = row.getCell(cSoll).value;
-			Haben = row.getCell(cHaben).value;
+			Soll = string(row.getCell(cSoll).value);
+			Haben = string(row.getCell(cHaben).value);
 			Buchungstext = row.getCell(cBuchungstext).value;
 			Betrag = row.getCell(cBetrag).value;
 
@@ -648,12 +648,12 @@ async function importJournal(req, res, next) {
 
 			if (!fSoll) {
 				Meldung = `Konto ${Soll} konnte nicht gefunden werden`
-				logWorksheet.addRow({ 'timestamp': new Date().toISOString(), 'type': 'Warnung', 'message': Meldung });
+				logWorksheet.addRow({ 'timestamp': new Date().toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}), 'type': 'Warnung', 'message': Meldung });
 				idSoll = 43;
 			}
 			if (!fHaben) {
 				Meldung = `Konto ${Haben} konnte nicht gefunden werden`
-				logWorksheet.addRow({ 'timestamp': new TDate().toISOString(), 'type': 'Warnung', 'message': Meldung });
+				logWorksheet.addRow({ 'timestamp': new TDate().toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}), 'type': 'Warnung', 'message': Meldung });
 				idHaben = 43;
 			}
 
@@ -661,14 +661,14 @@ async function importJournal(req, res, next) {
 			if (Datum instanceof Date) {
 				const offset = Datum.getTimezoneOffset()
 				Datum = new Date(Datum.getTime() - (offset * 60 * 1000))
-				formDate = Datum.toISOString().split('T')[0]
+				formDate = Datum.toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'}).split('T')[0]
 			} else {
 				formDate = Datum.split('.')[2] + '-' + Datum.split('.')[1] + '-' + Datum.split('.')[0]
 			}
 
 			let record = { "journalno": Nr, "date": formDate, "from_account": idSoll, "to_account": idHaben, "memo": Buchungstext, "amount": Betrag };
 			arInsData.push(record);
-			logWorksheet.addRow({ 'timestamp': new Date().toString(), 'type': 'Warnung', 'message': record.toString() });
+			logWorksheet.addRow({ 'timestamp': new Date().toString(), 'type': 'Warnung', 'message': JSON.stringify() });
 		}
 	})
 

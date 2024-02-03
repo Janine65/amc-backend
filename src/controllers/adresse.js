@@ -80,7 +80,7 @@ module.exports = {
 			data.austritt = "3000-01-01T00:00:00";
 		}
 		if (data.eintritt == "" || data.eintritt == null) {
-			data.eintritt = new Date().toISOString();
+			data.eintritt = new Date().toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'});
 		}
 		console.info('insert: ',data);
 		Adressen.create(data)
@@ -94,7 +94,7 @@ module.exports = {
 			data.austritt = "3000-01-01T00:00:00";
 		}
 		if (data.eintritt == "" || data.eintritt == null) {
-			data.eintritt = new Date().toISOString();
+			data.eintritt = new Date().toLocaleDateString('fr-CA', {year: 'numeric', month: '2-digit', day: '2-digit'});
 		}
 		if (data.mnr == undefined || data.mnr == "") {
 			// insert
