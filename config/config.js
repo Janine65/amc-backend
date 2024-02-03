@@ -1,7 +1,7 @@
 // om namah shivay
 
 // requires
-const _ = require('lodash');
+const _ = require('awesome-lodash');
 
 // module variables
 const config = require('./config.json');

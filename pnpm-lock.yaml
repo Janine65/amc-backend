@@ -11,6 +11,9 @@ importers:
       archiver:
         specifier: ^5.3.0
         version: 5.3.2
+      awesome-lodash:
+        specifier: npm:lodash@^4.17.21
+        version: /lodash@4.17.21
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
