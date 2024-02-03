@@ -1,5 +1,4 @@
 .vscode/settings.json
-package-lock.json
 logs/*.txt
 *.log
 ~$*.xlsx
