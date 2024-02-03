@@ -11,9 +11,7 @@
     "test": "nx test",
     "lint": "nx lint",
     "postversion": "git push && git push --tags",
-    "docker": "docker-compose build",
-    "predocker": "nx build --configuration production",
-    "postdocker": "docker-compose push"
+    "docker": "nx build && docker-compose build && docker-compose push",
   },
   "author": "Janine Franken",
   "license": "MIT",
