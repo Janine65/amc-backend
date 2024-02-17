@@ -35,9 +35,9 @@ import {ContextMenuModule} from 'primeng/contextmenu';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { SplitterModule } from 'primeng/splitter';
-import { NgxEditorModule } from 'ngx-editor';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ChartModule } from 'primeng/chart';
+import { EditorModule } from 'primeng/editor';
 import { TabViewModule } from 'primeng/tabview';
 import { StyleClassModule } from 'primeng/styleclass';
 import { AutoFocusModule } from 'primeng/autofocus';
@@ -164,7 +164,7 @@ import { AdresseShowComponent } from './components/verwaltung/adresse-show/adres
     ContextMenuModule,
     ConfirmDialogModule,    
     DialogModule,
-    NgxEditorModule,
+    EditorModule,
     FileUploadModule,
     SplitterModule,
     ReactiveFormsModule,

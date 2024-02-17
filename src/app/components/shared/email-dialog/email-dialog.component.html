@@ -40,11 +40,13 @@
         </div>
     </div>
         <div class="field grid">
-            <div class="col-12 md:col-12 editor NgxEditor__Wrapper">
-                <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
-                <ngx-editor pAutoFocus id="body" [editor]="editor" [(ngModel)]="emailBody.email_body" [disabled]="false"
-                    [placeholder]="'Hier kommt die Meldung'" name="body"
-                    class="text-base text-color surface-overlay p-2  appearance-none outline-none w-full"></ngx-editor>
+            <div class="col-12 md:col-12">
+                <p-editor [(ngModel)]="emailBody.email_body" [disabled]="false"
+                [placeholder]="'Hier kommt die Meldung'" name="body"
+                [modules]="modules" [style]="{'height':'150px'}"
+                class="">
+                <ng-template pTemplate="header"></ng-template>
+                </p-editor>
             </div>
         </div>
     <div class="card">

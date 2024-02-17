@@ -2,10 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AccountService, BackendService } from '@app/service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EmailBody, EmailSignature } from './email-dialog.types';
-import {  MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { environment } from '@environments/environment';
 import { Subscription } from 'rxjs';
-import { DEFAULT_TOOLBAR, Editor, Toolbar } from 'ngx-editor';
 
 @Component({
   selector: 'app-email-dialog',
@@ -18,11 +17,38 @@ export class EmailDialogComponent implements OnInit, OnDestroy {
   uploadProgress: number | null = null;
   uploadSub?: Subscription;
   lstSignature = [{
-    label: "Hansjörg Dutler", value: EmailSignature.HansjoergDutler},
-    {label: "Janine Franken", value: EmailSignature.JanineFranken}]
+    label: "Hansjörg Dutler", value: EmailSignature.HansjoergDutler
+  },
+  { label: "Janine Franken", value: EmailSignature.JanineFranken }]
 
-  editor!: Editor;
-  toolbar: Toolbar = DEFAULT_TOOLBAR;
+  quillFormats = [
+    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+    ['blockquote', 'code-block'],
+    ['link', 'image'],
+
+    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+    [{ 'script': 'sub' }, { 'script': 'super' }],      // superscript/subscript
+    [{ 'indent': '-1' }, { 'indent': '+1' }],          // outdent/indent
+
+    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+
+    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+    [{ 'font': [] }],
+    [{ 'align': [] }],
+
+    ['clean']                                         // remove formatting button
+  ];
+
+  modules = {
+    toolbar: this.quillFormats,
+    history: {
+      delay: 2000,
+      maxStack: 500,
+      userOnly: true
+    }
+  }
+
 
   constructor(
     private backendService: BackendService,
@@ -35,27 +61,20 @@ export class EmailDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.editor = new Editor({
-      history: true,
-      keyboardShortcuts: true,
-      inputRules: true,
-      attributes: { enterkeyhint: 'enter' },
-      features: {
-        linkOnPaste: true,
-        resizeImage: true,
-      },
-    });
+    // TODO 
+    return;
   }
 
   // make sure to destory the editor
   ngOnDestroy(): void {
-    this.editor.destroy();
+    // TODO 
+    return;
   }
 
   prepareFiles(files: File[]) {
     this.uploadProgress = 0;
     for (const f of files) {
-        this.backendService.uploadFiles(f)
+      this.backendService.uploadFiles(f)
         .subscribe(response => {
           if (response.body) {
             const body = response.body;
@@ -66,7 +85,7 @@ export class EmailDialogComponent implements OnInit, OnDestroy {
                 this.uploadFiles.push(f)
             }
           }
-      })
+        })
     }
   }
 
