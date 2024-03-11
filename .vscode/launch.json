@@ -3,25 +3,24 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch via NPM",
+      "command": "pnpm start",
+      "name": "Run npm start",
       "request": "launch",
-      "runtimeArgs": [
-        "run-script",
-        "debug"
-      ],
-      "runtimeExecutable": "pnpm",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "type": "node"
+      "type": "node-terminal"
     },
-
-    {
-      "name": "pnpm run start",
-      "type": "chrome",
-      "request": "launch",
-      "preLaunchTask": "pnpm: start",
-      "url": "http://localhost:4200/"
-    },
-  ]
+  {
+    "name": "Launch Chrome",
+    "type": "chrome",
+    "request": "launch",
+    "url": "http://localhost:4200",
+    "webRoot": "${workspaceFolder}"
+  },
+  {
+    "name": "Attach to Chrome",
+    "type": "chrome",
+    "request": "attach",
+    "port": 9222,
+    "webRoot": "${workspaceFolder}"
+  },
+  ],
 }

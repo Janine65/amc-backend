@@ -11,9 +11,9 @@
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
         <span *ngIf="isLoggedIn()" class="mt-4">{{getLoggedinUser()}}</span>
-        <button #accBtn class="p-link layout-topbar-button" (click)="clickUser()" >
+        <!-- <button #accBtn class="p-link layout-topbar-button" (click)="clickUser()" >
             <i class="pi pi-user" [style]="isLoggedIn() ? 'color: green' : 'color: black'"></i>            
         </button>        
-        <p-contextMenu #cmUser *ngIf="isLoggedIn()" [target]="accBtn" [model]="userItems" triggerEvent="click"></p-contextMenu>
+        <p-contextMenu #cmUser *ngIf="isLoggedIn()" [target]="accBtn" [model]="userItems" triggerEvent="click"></p-contextMenu> -->
     </div>
 </div>

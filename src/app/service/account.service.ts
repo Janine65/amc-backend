@@ -31,7 +31,7 @@ export class AccountService {
 
     isLogged(): Observable<boolean> {
         
-        return of(this.userSubject && this.userValue.id ? true : false)
+        return of(!!(this.userSubject && this.userValue.id))
     }
 
     login(email: string, password: string) {

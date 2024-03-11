@@ -1,14 +1,14 @@
 import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { LayoutService } from '../service/app.layout.service';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { AccountService } from '@service/account.service';
 import { User } from '@model/user';
 import { ReplaySubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-menu',
-    templateUrl: './app.menu.component.html',
-    providers: [AccountService]
+    templateUrl: './app.menu.component.html'
 })
 
 export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
@@ -16,12 +16,15 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
     public model!: MenuItem[];
     private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
 
-    constructor(public layoutService: LayoutService, private accountSevice: AccountService) {
+    constructor(public layoutService: LayoutService, 
+        private router: Router,
+        private messages: MessageService,
+        private accountService: AccountService) {
 
     }
     ngOnChanges(): void {
         console.log('ngOnChagnes')
-        this.refreshMenu(this.accountSevice.userValue)
+        this.refreshMenu(this.accountService.userValue)
     }
     ngOnDestroy(): void {
         this.destroyed$.next(true);
@@ -29,16 +32,46 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnInit() {
-        this.refreshMenu(this.accountSevice.userValue);
+        this.refreshMenu(this.accountService.userValue);
     }
 
     refreshMenu(user: User | undefined) {
+        const userMenu = [];
+        if (this.isLoggedIn()) {
+            userMenu.push({
+                label: 'Ausloggen',
+                icon: 'pi pi-sign-out',
+                command: async () => {
+                    await this.loggoutUser();
+                }
+            },
+            {
+                label: 'Mein Profil',
+                icon: 'pi pi-user-edit',
+                routerLink: ['/account/profile']
+            },
+            {
+                label: 'Alle gespeicherten Einstellung löschen',
+                icon: 'pi pi-trash',
+                command: () => {
+                    this.clearStorage();
+                }
+            });
+
+            if (this.accountService.userValue.role === 'admin')
+                userMenu.push({
+                label: 'Users',
+                icon: 'pi pi-fw pi-users',
+                routerLink: ['/users']
+                });
+        }
+
         this.model = [
             {
                 label: '',
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
-                ]
+                ]                
             }];
 
         if (user?.role) {
@@ -75,6 +108,64 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
                 }
             )
         }
+        if (userMenu.length > 0)
+            this.model.push(
+                {
+                    label: 'User',
+                    items: userMenu
+                });
+        else
+        this.model.push(
+            { 
+                label: '',
+                items: [
+                    {                
+                        label: 'Anmelden',
+                        icon: 'pi pi-sign-in',
+                        command: () => { this.clickUser() }
+                    }
+                ]
+            });
+
+
     }
 
+    async clickUser() {
+        if (this.isLoggedIn()) {
+            return
+        } else {
+            await this.router.navigateByUrl('/account/login');
+        }
+    }
+
+    async loggoutUser() {
+        if (this.isLoggedIn()) {
+            await this.accountService.logout();
+            this.messages.add({ detail: 'Du bist ausgelogged!', summary: 'Ausgelogged', severity: 'info', closable: true, sticky: false })
+        }
+    }
+
+    clearStorage() {
+        const saveUser = localStorage.getItem('user');
+        const parameter = localStorage.getItem('parameter');
+        localStorage.clear();
+        if (saveUser)
+            localStorage.setItem('user', saveUser);
+        if (parameter)
+            localStorage.setItem('parameter', parameter);
+    }
+
+    public isLoggedIn(): boolean {
+        if (this.accountService.userValue.id) {
+            return true;
+        }
+        return false;
+
+    }
+    public getLoggedinUser() {
+        if (this.isLoggedIn())
+            return this.accountService.userValue.name;
+
+        return 'not logged in';
+    }
 }
