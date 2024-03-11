@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LayoutService } from "../service/app.layout.service";
 import { Package } from '@model/user';
+import { AccountService } from '@service/account.service';
 
 @Component({
     selector: 'app-footer',
@@ -9,7 +10,8 @@ import { Package } from '@model/user';
 export class AppFooterComponent implements OnInit {
     appVersion = '';
     
-    constructor(public layoutService: LayoutService) {
+    constructor(public layoutService: LayoutService,
+        private accountService: AccountService) {
      }
     ngOnInit(): void {
         const pkgFrontString = localStorage.getItem('aboutFrontend');
@@ -25,4 +27,16 @@ export class AppFooterComponent implements OnInit {
         }
         
     }
-}
+    public isLoggedIn(): boolean {
+        if (this.accountService.userValue.id) {
+            return true;
+        }
+        return false;
+
+    }
+    public getLoggedinUser() {
+        if (this.isLoggedIn())
+            return this.accountService.userValue.name;
+
+        return 'not logged in';
+    }}

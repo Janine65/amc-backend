@@ -2,4 +2,6 @@
     <img src="assets/layout/images/AMCfarbigKlein.gif" alt="Logo" height="20" class="mr-2"/>
     by
     <span class="font-medium ml-2">Auto-Moto-Club Swissair - <a routerLink="about"> Version {{appVersion}}</a></span>
+    <span *ngIf="isLoggedIn()" class="font-small ml-4">logged in as: {{getLoggedinUser()}}</span>
+
 </div>
