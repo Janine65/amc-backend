@@ -32,7 +32,10 @@
         "scripts": [
           "node_modules/chart.js/dist/chart.js"
         ],
-        "allowedCommonJsDependencies": []
+        "allowedCommonJsDependencies": [
+          "lodash",
+          "quill-delta"
+        ]
       },
       "configurations": {
         "production": {
@@ -62,10 +65,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "amc-interna:build:production"
+          "buildTarget": "amc-interna:build:production"
         },
         "development": {
-          "browserTarget": "amc-interna:build:development"
+          "buildTarget": "amc-interna:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -73,7 +76,7 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "amc-interna:build"
+        "buildTarget": "amc-interna:build"
       }
     },
     "test": {

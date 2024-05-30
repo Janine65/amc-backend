@@ -8,6 +8,9 @@ import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Observable, from, timer } from 'rxjs';
 
+
+type Severity = 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' | undefined;
+
 @Component({
   selector: 'app-geschaeftsjahr',
   templateUrl: './geschaeftsjahr.component.html',
@@ -24,11 +27,14 @@ export class GeschaeftsjahrComponent implements OnInit {
   editMode = false;
   addMode = false;
   progressVisible = false;
-  fSev = 'info'
+  fTag: {value: string, severity: string} = {value : 'gestartet', severity: 'info'}
+  kTag: {value: string, severity: string} = {value : 'gestartet', severity: 'info'}
+  jTag: {value: string, severity: string} = {value : 'gestartet', severity: 'info'}
+  fSev: Severity = 'info'
   fValue = 'gestartet'
-  kSev = 'info'
+  kSev: Severity = 'info'
   kValue = 'gestartet'
-  jSev = 'info'
+  jSev: Severity = 'info'
   jValue = 'gestartet'
 
   lstStates = [
@@ -120,10 +126,10 @@ export class GeschaeftsjahrComponent implements OnInit {
     this.clearFields();
 
     if (selRec)
-      this.backendService.closeFiscalyear(selRec.year!, 2).subscribe(
+      this.backendService.closeFiscalyear(selRec.year, 2).subscribe(
         {
           complete: () => {
-            const ind = this.lstFiscalyear.findIndex(rec => rec.id == selRec.id!)
+            const ind = this.lstFiscalyear.findIndex(rec => rec.id == selRec.id)
             this.lstFiscalyear[ind].state = 2;
             thisRef.messageService.add({ detail: 'Das Geschäftsjahr wurde provisorisch abgeschlossen', closable: true, severity: 'info', sticky: false, summary: 'Geschäftsjahr abschliessen' });
 
@@ -141,10 +147,10 @@ export class GeschaeftsjahrComponent implements OnInit {
     this.clearFields();
 
     if (selRec)
-      this.backendService.closeFiscalyear(selRec.year!, 3).subscribe(
+      this.backendService.closeFiscalyear(selRec.year, 3).subscribe(
         {
           complete: () => {
-            const ind = this.lstFiscalyear.findIndex(rec => rec.id == selRec.id!)
+            const ind = this.lstFiscalyear.findIndex(rec => rec.id == selRec.id)
             this.lstFiscalyear[ind].state = 3;
             thisRef.messageService.add({ detail: 'Das Geschäftsjahr wurde abgeschlossen', closable: true, severity: 'info', sticky: false, summary: 'Geschäftsjahr abschliessen' });
 
@@ -176,7 +182,7 @@ export class GeschaeftsjahrComponent implements OnInit {
       this.backendService.delFiscalyear(selRec).subscribe(
         {
           complete: () => {
-            thisRef.lstFiscalyear.splice(thisRef.lstFiscalyear.indexOf((selRec as Fiscalyear)), 1)
+            thisRef.lstFiscalyear.splice(thisRef.lstFiscalyear.indexOf((selRec)), 1)
 
             thisRef.messageService.add({ detail: 'Das Geschäftsjahr', closable: true, severity: 'info', sticky: false, summary: 'Anlass beenden' });
 
@@ -210,7 +216,7 @@ export class GeschaeftsjahrComponent implements OnInit {
 
     thisRef.fSev = 'warning'
     thisRef.fValue = 'gestartet'
-    thisRef.backendService.exportAccData(Number(selRec!.year!))
+    thisRef.backendService.exportAccData(Number(selRec.year))
       .subscribe({
         next: (result) => {
           thisRef.backendService.downloadFile(result.filename)
@@ -234,7 +240,7 @@ export class GeschaeftsjahrComponent implements OnInit {
         complete: () => {
           thisRef.kSev = 'warning'
           thisRef.kValue = 'gestartet'
-          thisRef.backendService.exportAccountData(Number(selRec!.year!))
+          thisRef.backendService.exportAccountData(Number(selRec.year))
             .subscribe({
               next: (result) => {
                 thisRef.backendService.downloadFile(result.filename)
@@ -258,7 +264,7 @@ export class GeschaeftsjahrComponent implements OnInit {
               complete: () => {
                 thisRef.jSev = 'warning'
                 thisRef.jValue = 'gestartet'
-                thisRef.backendService.exportJournal(Number(selRec!.year!), 1)
+                thisRef.backendService.exportJournal(Number(selRec.year), 1)
                   .subscribe({
                     next: (result) => {
                       thisRef.backendService.downloadFile(result.filename)
@@ -307,7 +313,7 @@ export class GeschaeftsjahrComponent implements OnInit {
       {
         complete: () => {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.backendService.getOneFiscalyear(this.selFiscalyear.year!).subscribe(
+          this.backendService.getOneFiscalyear(this.selFiscalyear.year).subscribe(
             {
               next: (entry) => {
                 if (this.addMode) {

@@ -49,13 +49,13 @@ export class AuswertungComponent implements OnInit {
     const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
-    const labels: string[] = []
+    const labels: Array<string>[] = []
     const dataset1: number[] = []
     const dataset2: number[] = []
 
     this.lstGraphData.forEach((rec) => {
       const datum = new Date(rec.datum!);
-      labels.push(rec.name! + ' - ' + datum.toLocaleDateString());
+      labels.push([rec.name! , datum.toLocaleDateString()]);
       dataset1.push(rec.meisterschafts!.teilnehmer ? rec.meisterschafts!.teilnehmer : 0)
       dataset2.push(rec.gaeste ? rec.gaeste : 0)
     })
@@ -80,8 +80,6 @@ export class AuswertungComponent implements OnInit {
 
     this.options = {
       indexAxis: 'y',
-      maintainAspectRatio: false,
-      aspectRatio: 0.8,
       plugins: {
         legend: {
           labels: {
@@ -94,6 +92,7 @@ export class AuswertungComponent implements OnInit {
           stacked: true,
           ticks: {
             color: textColorSecondary,
+            stepSize: 1,
             font: {
               weight: 500
             }
@@ -106,7 +105,10 @@ export class AuswertungComponent implements OnInit {
         y: {
           stacked: true,
           ticks: {
-            color: textColorSecondary
+            color: textColorSecondary,
+            stepSize: 0,
+            min: 0,
+            autoSkip: false,
           },
           grid: {
             color: surfaceBorder,

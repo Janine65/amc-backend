@@ -107,6 +107,7 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
                     ]
                 }
             )
+            this.model.push({separator: true});
         }
         if (userMenu.length > 0)
             this.model.push(

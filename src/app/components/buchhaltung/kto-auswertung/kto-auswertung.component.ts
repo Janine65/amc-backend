@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { AccountAuswertung, ParamData } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
-import { isArray } from 'chart.js/dist/helpers/helpers.core';
-import { MessageService, TreeNode } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-kto-auswertung',

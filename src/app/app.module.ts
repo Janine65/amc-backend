@@ -42,6 +42,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { StyleClassModule } from 'primeng/styleclass';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 
 import { DynamicPipe } from '@shared/basetable/dynamicpipe';
@@ -181,6 +182,7 @@ import { AdresseShowComponent } from './components/verwaltung/adresse-show/adres
     DatePipe,
     PercentPipe,
     MatIconModule,
+    ProgressSpinnerModule,
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

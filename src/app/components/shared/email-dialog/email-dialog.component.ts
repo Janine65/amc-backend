@@ -16,6 +16,8 @@ export class EmailDialogComponent implements OnInit, OnDestroy {
   uploadFiles: File[] = [];
   uploadProgress: number | null = null;
   uploadSub?: Subscription;
+  loading = false;
+
   lstSignature = [{
     label: "Hansjörg Dutler", value: EmailSignature.HansjoergDutler
   },
@@ -120,6 +122,8 @@ export class EmailDialogComponent implements OnInit, OnDestroy {
       return
     }
 
+    this.loading = true;
+
     if (this.uploadFiles.length > 0) {
       this.emailBody.uploadFiles = this.uploadFiles.map((file) => file.name).join(',');
     }
@@ -136,11 +140,13 @@ export class EmailDialogComponent implements OnInit, OnDestroy {
         {
           next: (res) => {
             console.log(res);
+            this.loading = false;
             if (res.response == "250 Message received")
               this.messageService.add({ summary: 'OK: Email senden: Email wurde versandt.', severity: 'info', sticky: false, closable: false, life: 2000 })
             this.ref.close(res);
           },
           error: (res) => {
+            this.loading = false;
             this.messageService.add({ summary: 'Fehler: Email senden: ' + res.response, severity: 'error', sticky: true, closable: true })
           }
         }

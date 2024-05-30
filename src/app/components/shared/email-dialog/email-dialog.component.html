@@ -3,6 +3,9 @@
         <button pButton icon="pi pi-send" (click)="submit()" label="Senden" cass="p-button-primary p-button-outlined"></button>
     </p-toolbar>
 <div class="card">
+    <div class="progress-spinner" *ngIf="loading">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
     <div class="field grid">
         <label for="to" class="col-12 md:col-2 md:mb-0">TO:</label>
         <div class="col-12 md:col-10">

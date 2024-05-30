@@ -58,32 +58,32 @@ export class KegelkasseComponent implements OnInit {
 
 
 
-  get date() { return this.fgKasse.get('date')! }
-  get kasse() { return this.fgKasse.get('kasse')! }
-  get rappen5() { return this.fgKasse.get('rappen5')! }
-  get rappen10() { return this.fgKasse.get('rappen10')! }
-  get rappen20() { return this.fgKasse.get('rappen20')! }
-  get rappen50() { return this.fgKasse.get('rappen50')! }
-  get franken1() { return this.fgKasse.get('franken1')! }
-  get franken2() { return this.fgKasse.get('franken2')! }
-  get franken5() { return this.fgKasse.get('franken5')! }
-  get franken10() { return this.fgKasse.get('franken10')! }
-  get franken20() { return this.fgKasse.get('franken20')! }
-  get franken50() { return this.fgKasse.get('franken50')! }
-  get franken100() { return this.fgKasse.get('franken100')! }
-  get rappen5_sum() { return this.fgKasse.get('rappen5_sum')! }
-  get rappen10_sum() { return this.fgKasse.get('rappen10_sum')! }
-  get rappen20_sum() { return this.fgKasse.get('rappen20_sum')! }
-  get rappen50_sum() { return this.fgKasse.get('rappen50_sum')! }
-  get franken1_sum() { return this.fgKasse.get('franken1_sum')! }
-  get franken2_sum() { return this.fgKasse.get('franken2_sum')! }
-  get franken5_sum() { return this.fgKasse.get('franken5_sum')! }
-  get franken10_sum() { return this.fgKasse.get('franken10_sum')! }
-  get franken20_sum() { return this.fgKasse.get('franken20_sum')! }
-  get franken50_sum() { return this.fgKasse.get('franken50_sum')! }
-  get franken100_sum() { return this.fgKasse.get('franken100_sum')! }
-  get total() { return this.fgKasse.get('total')! }
-  get differenz() { return this.fgKasse.get('differenz')! }
+  get date() { return this.fgKasse.get('date') }
+  get kasse() { return this.fgKasse.get('kasse') }
+  get rappen5() { return this.fgKasse.get('rappen5') }
+  get rappen10() { return this.fgKasse.get('rappen10') }
+  get rappen20() { return this.fgKasse.get('rappen20') }
+  get rappen50() { return this.fgKasse.get('rappen50') }
+  get franken1() { return this.fgKasse.get('franken1') }
+  get franken2() { return this.fgKasse.get('franken2') }
+  get franken5() { return this.fgKasse.get('franken5') }
+  get franken10() { return this.fgKasse.get('franken10') }
+  get franken20() { return this.fgKasse.get('franken20') }
+  get franken50() { return this.fgKasse.get('franken50') }
+  get franken100() { return this.fgKasse.get('franken100') }
+  get rappen5_sum() { return this.fgKasse.get('rappen5_sum') }
+  get rappen10_sum() { return this.fgKasse.get('rappen10_sum') }
+  get rappen20_sum() { return this.fgKasse.get('rappen20_sum') }
+  get rappen50_sum() { return this.fgKasse.get('rappen50_sum') }
+  get franken1_sum() { return this.fgKasse.get('franken1_sum') }
+  get franken2_sum() { return this.fgKasse.get('franken2_sum') }
+  get franken5_sum() { return this.fgKasse.get('franken5_sum') }
+  get franken10_sum() { return this.fgKasse.get('franken10_sum') }
+  get franken20_sum() { return this.fgKasse.get('franken20_sum') }
+  get franken50_sum() { return this.fgKasse.get('franken50_sum') }
+  get franken100_sum() { return this.fgKasse.get('franken100_sum') }
+  get total() { return this.fgKasse.get('total') }
+  get differenz() { return this.fgKasse.get('differenz') }
 
   constructor(
     private backendService: BackendService,
@@ -188,7 +188,7 @@ export class KegelkasseComponent implements OnInit {
           this.franken50.setValue(this.kegelkasse.franken50 ?? 0);
           this.franken100.setValue(this.kegelkasse.franken100 ?? 0);
           this.unsubscribeDatum();
-          date = new Date(this.kegelkasse.datum!)
+          date = new Date(this.kegelkasse.datum)
           this.date.setValue(date);
           this.subscribeDatum();
         } else {
@@ -298,11 +298,13 @@ export class KegelkasseComponent implements OnInit {
               journal.memo = 'Kegeln ' + date.toLocaleString("de-CH", { month: "long" });
               this.backendService.addJournal(journal).subscribe({
                 next: (saveJournal) => {
-                  this.backendService.getOneJournal(saveJournal.id!).subscribe({
+                  this.backendService.getOneJournal(saveJournal.id).subscribe({
                     next: (oneJournal) => {
                       this.kegelkasse.journal = oneJournal
                       this.backendService.updKegelkasse(this.kegelkasse).subscribe({
-                        next: () => {
+                        next: (newRec) => {
+                          this.kegelkasse.id = newRec.id;
+                          this.kegelkasse.updatedAt = newRec.updatedAt;
                           this.messageService.add({ severity: 'info', detail: "Journaleintrag wurde erstellt", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
                         }
                       })
@@ -316,7 +318,9 @@ export class KegelkasseComponent implements OnInit {
       }
     } else {
       this.backendService.updKegelkasse(this.kegelkasse).subscribe({
-        next: () => {
+        next: (newRec) => {
+          this.kegelkasse.id = newRec.id;
+          this.kegelkasse.updatedAt = newRec.updatedAt;
           this.messageService.add({ severity: 'info', detail: "Kegelkasse wurde gespeichert", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
         }
       })
@@ -328,13 +332,13 @@ export class KegelkasseComponent implements OnInit {
         next: (list) => {
           this.lstKegelkasse = list
           for (const entry of this.lstKegelkasse) {
-            entry.datum_date = new Date(entry.datum!);
+            entry.datum_date = new Date(entry.datum);
             if (entry.user)
               entry.userName = entry.user.name
             else
               entry.userName = ''
             if (entry.cntUsers && entry.cntUsers > 0)
-              entry.amountProUser = entry.differenz! / entry.cntUsers
+              entry.amountProUser = entry.differenz / entry.cntUsers
             else
               entry.amountProUser = 0
           }

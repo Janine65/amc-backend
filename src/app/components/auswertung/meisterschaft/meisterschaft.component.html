@@ -12,7 +12,7 @@
                 <h2>Clubmeisterschaft</h2>
                 <p-table styleClass=" p-datatable-striped" [value]="lstClubmeister" dataKey="id"
                     [scrollHeight]="objHeightc$" [virtualScroll]="true" [virtualScrollItemSize]="36"
-                    [tableStyle]="{'min-width': '100%'}">
+                    [tableStyle]="{'min-width': '100%'}" [loading]="loading">
                     <ng-template pTemplate="header">
                         <tr>
                             <th>Rang</th>
@@ -43,7 +43,7 @@
             <h2>Kegelmeisterschaft</h2>
             <p-table styleClass=" p-datatable-striped" [value]="lstKegelmeister" dataKey="id"
                 [scrollHeight]="objHeightk$" [virtualScroll]="true" [virtualScrollItemSize]="36"
-                [tableStyle]="{'min-width': '100%'}">
+                [tableStyle]="{'min-width': '100%'}" [loading]="loading">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Rang</th>
