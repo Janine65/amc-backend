@@ -133,7 +133,7 @@ Anlaesse.init({
   },
   datum: { type: DataTypes.DATEONLY, allowNull: false },
   name: { type: DataTypes.STRING, allowNull: false },
-  beschreibung: { type: DataTypes.STRING, allowNull: false },
+  beschreibung: { type: DataTypes.STRING, allowNull: true },
   punkte: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 50 },
   istkegeln: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: 0 },
   nachkegeln: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: 0 },

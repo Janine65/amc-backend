@@ -323,6 +323,10 @@ async function addReceipt(req, res, next) {
 	const listUploadFiles = data.uploadFiles.split(',')
 	let sJahr = data.jahr;
 	const path = global.documents + sJahr + '/';
+	if (!fs.existsSync(path)) {
+		fs.mkdirSync(path);
+		fs.mkdirSync(path + '/receipt');
+	}
 	let payload = {
 		type: 'info',
 		message: '',
@@ -403,6 +407,11 @@ async function addFiles2Journal(req, res, next) {
 	const listUploadFiles = data.uploadFiles.split(',')
 	const path = global.documents + jahr + '/';
 
+	if (!fs.existsSync(path)) {
+		fs.mkdirSync(path);
+		fs.mkdirSync(path + '/receipt');
+	}
+
 	let payload = {
 		type: 'ok',
 		message: '',
@@ -482,6 +491,11 @@ async function addAttachment(req, res, next) {
 		type: 'error',
 		message: '',
 		files: []
+	}
+
+	if (!fs.existsSync(path)) {
+		fs.mkdirSync(path);
+		fs.mkdirSync(path + '/receipt');
 	}
 
 	for (const element of listUploadFiles) {

@@ -156,6 +156,10 @@ module.exports = {
             .then(resp => {
                 let jahrCost = new Date(resp.date).getFullYear();
                 const pathname = global.documents + jahrCost + '/';
+                if (!fs.existsSync(pathname)) {
+                    fs.mkdirSync(pathname);
+                    fs.mkdirSync(pathname + '/receipt');
+                }
                 const receipt =  'receipt/' + 'Journal-' + resp.id + '.pdf';
         
                 if (fs.existsSync(global.uploads + filename)) {

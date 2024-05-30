@@ -1611,6 +1611,10 @@ module.exports = {
             // PDF an Journaleintrag hängen
             const receipt = 'receipt/' + filenamePDF
             const path = global.documents + kegelDate.getFullYear() + '/';
+            if (!fs.existsSync(path)) {
+                fs.mkdirSync(path);
+                fs.mkdirSync(path + '/receipt');
+            }
             let newReceipt = Receipt.build({ receipt: receipt, jahr: kegelDate.getFullYear(), bezeichnung: 'Kegelkasse ' + kegelDateFormat })
             await newReceipt.save({ fields: ['receipt', 'jahr', 'bezeichnung'] })
                 .then(async (result) => {
