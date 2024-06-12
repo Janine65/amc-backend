@@ -70,12 +70,12 @@ export class JournalComponent implements OnInit {
 
   ngOnInit(): void {
     this.cols = [
-      { field: 'journalno', header: 'No.', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.0-0' },
-      { field: 'date', header: 'Datum', format: false, sortable: false, filtering: false, filter: undefined, pipe: DatePipe, args: 'dd.MM.yyyy' },
-      { field: 'fromAcc', header: 'Konto Soll', format: false, sortable: false, filtering: false, filter: undefined },
-      { field: 'toAcc', header: 'Konto Haben', format: false, sortable: false, filtering: false, filter: undefined },
-      { field: 'memo', header: 'text', format: false, sortable: false, filtering: false, filter: undefined },
-      { field: 'amount', header: 'Betrag', format: false, sortable: false, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.2-2' },
+      { field: 'journalno', header: 'No.', format: false, sortable: true, filtering: false, filter: 'numeric', pipe: DecimalPipe, args: '1.0-0' },
+      { field: 'date', header: 'Datum', format: false, sortable: true, filtering: true, filter: 'date', pipe: DatePipe, args: 'dd.MM.yyyy' },
+      { field: 'fromAcc', header: 'Konto Soll', format: false, sortable: true, filtering: true, filter: 'text' },
+      { field: 'toAcc', header: 'Konto Haben', format: false, sortable: true, filtering: true, filter: 'text' },
+      { field: 'memo', header: 'Buchungstext', format: false, sortable: true, filtering: true, filter: 'text' },
+      { field: 'amount', header: 'Betrag', format: false, sortable: true, filtering: true, filter: 'numeric', pipe: DecimalPipe, args: '1.2-2' },
     ];
 
     this.toolbarRW = [

@@ -69,7 +69,7 @@ export class KontoBewegungenComponent implements OnInit {
         this.lstJournal = list;
         console.log(list);
         this.lstJournal.forEach(x => {
-          x.date_date = new Date(x.date!);
+          x.date_date = new Date(x.date);
         })
         this.loading = false;
       });

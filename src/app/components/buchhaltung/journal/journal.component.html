@@ -10,8 +10,8 @@
     <ng-template pTemplate>
         <div class="card" style="width: 100%;">
             <div class="mb-2">
-                <label class="mr-3">Jahr wählen</label>
-                <p-dropdown [options]="selJahre" [(ngModel)]="selJahr" (onChange)="chgJahr()"></p-dropdown>
+                <label for="jahre" class="mr-3">Jahr wählen</label>
+                <p-dropdown id="jahre" [options]="selJahre" [(ngModel)]="selJahr" (onChange)="chgJahr()"></p-dropdown>
             </div>
             <div>
                 <form autocomplete="off" (ngSubmit)="save()" (reset)="reset()">

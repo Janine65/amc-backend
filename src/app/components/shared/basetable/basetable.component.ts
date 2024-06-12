@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DecimalPipe } from '@angular/common';
-import { Component, HostListener, Input, OnDestroy, OnInit, Type } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit, PipeTransform, Type } from '@angular/core';
 import { AccountService } from '@app/service';
 import { Table } from 'primeng/table';
 
 export class TableOptions {
   public header?: string;
   public field?: string;
-  public pipe?: Type<any>;
+  public pipe?: any;
   public args?: [any] | any;
   public format = false;
   public sortable = false;
