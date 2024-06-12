@@ -205,8 +205,18 @@ async function addData(req, res, next) {
 	let data = JSON.parse(req.body);
 	data.id = null;
 	console.info('insert: ', data);
-	Journal.create(data)
-		.then((obj) => res.json(obj))
+
+	let year = new Date(data.date).getFullYear();
+	Journal.max('journalno', {where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('date')), year)})
+		.then((journalno) => {
+			if (journalno)
+				data.journalno = journalno + 1;
+			else
+				data.journalno = 1;
+			Journal.create(data)
+			.then((obj) => res.json(obj))
+			.catch(e => next(e));			
+		})
 		.catch(e => next(e));
 }
 
