@@ -90,7 +90,7 @@ export class AnlaesseComponent implements OnInit{
     this.selJahre.push({label: (this.selJahr + 1).toString(), value: this.selJahr + 1});
     
     // read Anlaesse
-    from(this.backendService.getAnlaesseData()).subscribe(
+    from(this.backendService.getAnlaesseData(undefined)).subscribe(
       (list) => {
         this.anlaesseListAll = list;
         this.anlaesseListAll.forEach(anl => {

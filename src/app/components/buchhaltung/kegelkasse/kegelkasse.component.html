@@ -15,8 +15,8 @@
         </div>
         <form [formGroup]="fgKasse" autocomplete="off">
             <div class="field grid pb-0">
-                <label for="date" class="pr-2 col-fixed" style="width:210px">Datum</label>
-                <p-calendar dateFormat="dd.mm.yy" name="date" [required]="true" formControlName="date"></p-calendar>
+                <label for="date" class="pr-2 col-fixed" style="width:210px">Anlass</label>
+                <p-dropdown name="date" appendTo="body" [autofocus]="true" [options]="lKegelDatum" optionLabel="longname" optionValue="datum" formControlName="date"></p-dropdown>
             </div>
             <div class="grid">
                 <div class="col-6">

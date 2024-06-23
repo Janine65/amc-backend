@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Journal, Kegelkasse } from '@model/datatypes';
+import { Anlass, Journal, Kegelkasse } from '@model/datatypes';
 import { BackendService } from '@service/backend.service';
 import { MessageService } from 'primeng/api';
 import { BehaviorSubject, Subscription, map, zip } from 'rxjs';
@@ -17,7 +17,7 @@ import { User } from '@model/user';
 export class KegelkasseComponent implements OnInit {
 
   fgKasse = new FormGroup({
-    date: new FormControl<Date | null>({ value: null, disabled: false }),
+    date: new FormControl<string | null>({ value: null, disabled: false }),
     kasse: new FormControl<number | null>({ value: 0.00, disabled: true }),
     rappen5: new FormControl<number | null>({ value: 0, disabled: false }, [Validators.required, Validators.min(0)]),
     rappen10: new FormControl<number | null>({ value: 0, disabled: false }, [Validators.required, Validators.min(0)]),
@@ -56,7 +56,7 @@ export class KegelkasseComponent implements OnInit {
   cols: TableOptions[] = [];
   toolbar: TableToolbar[] = [];
 
-
+  lKegelDatum: Anlass[] = [];
 
   get date() { return this.fgKasse.get('date') }
   get kasse() { return this.fgKasse.get('kasse') }
@@ -85,6 +85,7 @@ export class KegelkasseComponent implements OnInit {
   get total() { return this.fgKasse.get('total') }
   get differenz() { return this.fgKasse.get('differenz') }
 
+
   constructor(
     private backendService: BackendService,
     private messageService: MessageService) { }
@@ -92,9 +93,6 @@ export class KegelkasseComponent implements OnInit {
   ngOnInit(): void {
     this.subFields = [];
     this.subscribeFields();
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    this.date.setValue(yesterday);
 
     this.cols = [
       { field: 'datum', header: 'Datum', format: false, sortable: false, filtering: false, filter: undefined, pipe: DatePipe, args: 'dd.MM.yyyy' },
@@ -104,6 +102,19 @@ export class KegelkasseComponent implements OnInit {
       { field: 'journalid', header: 'verbucht', format: false, sortable: false, filtering: false, filter: 'boolean' },
       { field: 'userName', header: 'User', format: false, sortable: false, filtering: false, filter: undefined },
     ];
+
+    this.backendService.getAnlaesseData([{ key: 'istkegeln', value: 'true' }]).subscribe({
+      next: (anl: Anlass[]) => {
+        this.lKegelDatum = []
+        anl.forEach(value => {
+          const tmpDate = new Date(value.datum);
+          this.lKegelDatum.push(value);
+          if (tmpDate.getMonth() == new Date().getMonth() && tmpDate.getFullYear() == new Date().getFullYear())
+            this.date.setValue(value.datum!);
+        })
+
+      }
+    })
 
   }
 
@@ -132,17 +143,6 @@ export class KegelkasseComponent implements OnInit {
 
   }
 
-  unsubscribeDatum() {
-    const sub = this.subFields[this.subFields.length - 1]
-    sub.unsubscribe();
-    this.subFields.pop();
-  }
-
-  subscribeDatum() {
-    this.subFields.push(this.date.valueChanges.subscribe(() => this.changeDate(this.date.value)));
-
-  }
-
   isButtonAllowed(role: string): boolean {
     const userStr = localStorage.getItem('user');
     if (userStr) {
@@ -167,11 +167,13 @@ export class KegelkasseComponent implements OnInit {
     this.franken100.setValue(0);
   }
 
-  changeDate(date: Date | null) {
-    if (date) {
-      this.kegelkasse = {}
+  changeDate(sKegelDate: string | null) {
+    if (sKegelDate) {
+      this.clearTotal();
+      this.kegelkasse = {};
+      const date = new Date(sKegelDate)
       zip(this.backendService.getKegelkasse(date.getMonth() + 1, date.getFullYear()),
-      this.backendService.getAmountOneAcc(date.toLocaleDateString("fr-CA"), 1002)
+        this.backendService.getAmountOneAcc(sKegelDate, 1002)
       ).pipe(map(([kegelkasse, result]) => {
         if (kegelkasse.length > 0) {
           this.kegelkasse = kegelkasse[0];
@@ -187,17 +189,13 @@ export class KegelkasseComponent implements OnInit {
           this.franken20.setValue(this.kegelkasse.franken20 ?? 0);
           this.franken50.setValue(this.kegelkasse.franken50 ?? 0);
           this.franken100.setValue(this.kegelkasse.franken100 ?? 0);
-          this.unsubscribeDatum();
-          date = new Date(this.kegelkasse.datum)
-          this.date.setValue(date);
-          this.subscribeDatum();
         } else {
           const user = localStorage.getItem('user')
           if (user) {
             this.kegelkasse.user = new BehaviorSubject<User>(JSON.parse(user)).value;
             this.kegelkasse.userid = this.kegelkasse.user.id;
           }
-        
+
         }
         const amount = Number(result.amount);
         this.fromAcc = Number(result.id);
@@ -206,7 +204,7 @@ export class KegelkasseComponent implements OnInit {
         this.calculate(null, null, 0);
 
       }))
-      .subscribe();      
+        .subscribe();
     }
   }
 
@@ -246,18 +244,17 @@ export class KegelkasseComponent implements OnInit {
       this.backendService.createReceipt(this.kegelkasse.id).subscribe({
         next: (result) => {
           if (result.type == 'info')
-            this.messageService.add({severity: 'info', detail: 'Beleg wurde ertellt.\n' + result.message, summary: 'Beleg erstellen', sticky: false, closable: true});
+            this.messageService.add({ severity: 'info', detail: 'Beleg wurde ertellt.\n' + result.message, summary: 'Beleg erstellen', sticky: false, closable: true });
           else
-            this.messageService.add({severity: 'error', detail: result.message, summary: 'Beleg erstellen', sticky: true, closable: true});
+            this.messageService.add({ severity: 'error', detail: result.message, summary: 'Beleg erstellen', sticky: true, closable: true });
         }
       })
   }
 
   async saveJournal(mitJournal: boolean) {
-    const date: Date = this.date.getRawValue()
-    if (!date)
+    if (!this.date.value)
       return
-    this.kegelkasse.datum = date.toLocaleDateString("fr-CA")
+    this.kegelkasse.datum = this.date.value;
     this.kegelkasse.kasse = this.kasse.getRawValue() ?? 0;
     this.kegelkasse.rappen5 = this.rappen5.getRawValue() ?? 0;
     this.kegelkasse.rappen10 = this.rappen10.getRawValue() ?? 0;
@@ -278,9 +275,9 @@ export class KegelkasseComponent implements OnInit {
         // Update Journal
         this.kegelkasse.journal.amount = this.differenz.getRawValue() ?? 0;
         if (this.kegelkasse.journal.amount != 0) {
-          this.kegelkasse.journal.date = date.toLocaleDateString("fr-CA");
+          this.kegelkasse.journal.date = this.date.value;
           zip(this.backendService.updJournal(this.kegelkasse.journal),
-          this.backendService.updKegelkasse(this.kegelkasse)
+            this.backendService.updKegelkasse(this.kegelkasse)
           ).pipe(map(() => {
             this.messageService.add({ severity: 'info', detail: "Journaleintrag wurde aktualisiert", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
           }))
@@ -290,12 +287,12 @@ export class KegelkasseComponent implements OnInit {
         const journal = new Journal();
         journal.amount = this.differenz.getRawValue() ?? 0;
         if (journal.amount != 0) {
-          journal.date = date.toLocaleDateString("fr-CA");
+          journal.date = this.date.value;
           journal.from_account = this.fromAcc;
           this.backendService.getOneDataByOrder(6002).subscribe({
             next: (acc) => {
               journal.to_account = acc.id!;
-              journal.memo = 'Kegeln ' + date.toLocaleString("de-CH", { month: "long" });
+              journal.memo = 'Kegeln ' + new Date(this.date.value).toLocaleString("de-CH", { month: "long" });
               this.backendService.addJournal(journal).subscribe({
                 next: (saveJournal) => {
                   this.backendService.getOneJournal(saveJournal.id).subscribe({
@@ -328,7 +325,7 @@ export class KegelkasseComponent implements OnInit {
   }
   tabChanged(tabIndex: number) {
     if (tabIndex == 1) {
-      this.backendService.getAllKegelkasse(this.date.getRawValue().getFullYear()).subscribe({
+      this.backendService.getAllKegelkasse(new Date(this.date.value).getFullYear()).subscribe({
         next: (list) => {
           this.lstKegelkasse = list
           for (const entry of this.lstKegelkasse) {

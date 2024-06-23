@@ -131,8 +131,16 @@ export class BackendService {
     return this.http.request(req);
   }
 
-  getAnlaesseData(): Observable<Anlass[]> {
-    const apiURL = environment.apiUrl + '/club/anlaesse/data'
+  getAnlaesseData(queries: [{key: string, value: string}] | undefined): Observable<Anlass[]> {
+    let apiURL = environment.apiUrl + '/club/anlaesse/data'
+    if (queries?.length > 0) {
+      apiURL += "?"
+      queries.forEach((value, ind) => {
+        if (ind > 0)
+          apiURL += "&"
+        apiURL += value.key + "=" + value.value
+      })
+    }
     return this.http.get<Anlass[]>(apiURL, {headers: this.header});
   }
 
