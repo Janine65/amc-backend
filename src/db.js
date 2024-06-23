@@ -163,14 +163,12 @@ Anlaesse.init({
         this.setDataValue('anlaesseid', value);
     }
   },
-  longname: DataTypes.VIRTUAL,
-  //   get() {
-  //     return `${this.datum} ${this.name}`;
-  //   },
-  //   set(value) {
-  //     throw new Error('Do not try to set the `longname` value!');
-  //   }
-  // },
+  longname: {
+    type: DataTypes.STRING,
+    set(value) {
+      throw new Error('Do not try to set the `longname` value!');
+    }
+  },
   status: { type: DataTypes.TINYINT, allowNull: false, defaultValue: 1 }
 },
   {
@@ -477,27 +475,27 @@ Budget.belongsTo(Account, { as: "acc", constraints: true, foreignKey: 'account' 
 Account.hasMany(Budget, { constraints: true, foreignKey: 'account' });
 
 const User = sequelize.define('User', {
-        id: {type: DataTypes.INTEGER, allowNull: false, autoIncrement: true, primaryKey: true },
-        userid: { type: DataTypes.UUID, allowNull: false },
-        name: { type: DataTypes.STRING, allowNull: false },
-        email: { type: DataTypes.STRING, allowNull: false },
-        password: { type: DataTypes.STRING, allowNull: false },
-        role: { type: DataTypes.ENUM('user', 'admin', 'revisor'), default: 'user' },
-        last_login: DataTypes.DATE
+  id: { type: DataTypes.INTEGER, allowNull: false, autoIncrement: true, primaryKey: true },
+  userid: { type: DataTypes.UUID, allowNull: false },
+  name: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false },
+  password: { type: DataTypes.STRING, allowNull: false },
+  role: { type: DataTypes.ENUM('user', 'admin', 'revisor'), default: 'user' },
+  last_login: DataTypes.DATE
+},
+  {
+    defaultScope: {
+      // exclude hash by default
+      attributes: { exclude: ['password'] }
     },
-    {
-        defaultScope: {
-            // exclude hash by default
-            attributes: { exclude: ['password'] }
-        },
-        scopes: {
-            // include hash with this scope
-            withHash: { attributes: {}, }
-        },
-        tableName: 'user',
-        modelName: 'user'
+    scopes: {
+      // include hash with this scope
+      withHash: { attributes: {}, }
+    },
+    tableName: 'user',
+    modelName: 'user'
 
-    });
+  });
 
 class Kegelkasse extends Model {
 }
@@ -529,14 +527,15 @@ Kegelkasse.init({
     sequelize,
     tableName: 'kegelkasse',
     modelName: 'kegelkasse'
-    
-})
+
+  })
 Kegelkasse.belongsTo(Journal, { as: "journal", constraints: true, foreignKey: 'journalid' })
 
 Kegelkasse.belongsTo(User, { as: "user", constraints: true, foreignKey: 'userid' });
 User.hasMany(Kegelkasse, { constraints: true, foreignKey: 'userid' });
 
-module.exports = {User,
+module.exports = {
+  User,
   Adressen, Anlaesse, Parameter, Meisterschaft, Clubmeister, Kegelkasse, Kegelmeister, Account, Journal, FiscalYear, Budget, Receipt, JournalReceipt,
 };
 

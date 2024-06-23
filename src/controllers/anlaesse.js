@@ -6,8 +6,15 @@ const { Op,
 
 module.exports = {
   getData: function (req, res, next) {
+    let isWhere = [Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("anlaesse.datum")), { [Op.gte]: global.Parameter.get("CLUBJAHR") - 1 })];
+    if (req.query) {
+      
+      if (req.query.istkegeln)
+        isWhere.push({"istkegeln": req.query.istkegeln})
+    }
     Anlaesse.findAll({
-      where: Sequelize.where(Sequelize.fn('YEAR', Sequelize.col("anlaesse.datum")), { [Op.gte]: global.Parameter.get("CLUBJAHR") - 1 }),
+      attributes: {include:"longname"},
+      where: isWhere,
       include: [
         { model: Anlaesse, as: 'linkedEvent', required: false, attributes: [["longname", "vorjahr"]] }],
       order: ["datum"]

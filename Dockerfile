@@ -11,4 +11,4 @@ COPY . .
 EXPOSE 2700
 RUN chown -R node /usr/src
 USER node
-CMD ["pnpm", "start"]
+CMD ["node", "index.js"]
