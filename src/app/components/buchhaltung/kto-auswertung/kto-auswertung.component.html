@@ -8,8 +8,8 @@
     </p-toolbar>
     <p-tabView>
         <p-tabPanel header="Bilanz">
-            <p-splitter [panelSizes]="[50, 50]" styleClass="mb-1 border-none">
-                <ng-template pTemplate>
+            <div class="grid grid-nogutter">
+                <div class="mb-1 col-12 md:col-6">
                     <div class="card" style="width: 100%;">
                         <h2>Aktiven</h2>
                         <div class="grid">
@@ -20,8 +20,9 @@
                             <p-dataView #aktiv [value]="lstAktivNodes" class="border-none" layout="list">
                                 <ng-template let-data pTemplate="list">
                                     <div class="grid grid-nogutter border-none">
-                                        <div *ngFor="let item of data" class="col-12">
-                                            <div class="flex flex-column sm:flex-row sm:align-items-center">
+                                        <div *ngFor="let item of data; let ind = index" class="col-12">
+                                            <div class="flex flex-column sm:flex-row sm:align-items-center"
+                                                [ngClass]="'auswList-'+(ind%2)">
                                                 <div class="col-12 md:col-1">
                                                     <div *ngIf="item.order > 0" [class]="item.$css">{{ item.order }}
                                                     </div>
@@ -41,8 +42,8 @@
                             </p-dataView>
                         </div>
                     </div>
-                </ng-template>
-                <ng-template pTemplate=>
+                </div>
+                <div class="mb-1 col-12 md:col-6">
                     <div class="card" style="width: 100%;">
                         <h2>Passiven</h2>
                         <div class="grid">
@@ -53,8 +54,9 @@
                             <p-dataView #passiv [value]="lstPassivNodes" class="border-none" layout="list">
                                 <ng-template let-data pTemplate="list">
                                     <div class="grid grid-nogutter border-none">
-                                        <div *ngFor="let item of data" class="col-12">
-                                            <div class="flex flex-column sm:flex-row sm:align-items-center">
+                                        <div *ngFor="let item of data; let ind = index" class="col-12">
+                                            <div class="flex flex-column sm:flex-row sm:align-items-center"
+                                                [ngClass]="'auswList-'+(ind%2)">
                                                 <div class="col-12 md:col-1">
                                                     <div *ngIf="item.order > 0" [class]="item.$css">{{ item.order }}
                                                     </div>
@@ -74,12 +76,12 @@
                             </p-dataView>
                         </div>
                     </div>
-                </ng-template>
-            </p-splitter>
+                </div>
+            </div>
         </p-tabPanel>
         <p-tabPanel header="Erfolgsrechnung">
-            <p-splitter [panelSizes]="[50, 50]" styleClass="mb-1">
-                <ng-template pTemplate>
+            <div class="grid grid-nogutter">
+                <div class="mb-1 col-12 md:col-6">
                     <div class="card" style="width: 100%;">
                         <h2>Aufwand</h2>
                         <div class="grid">
@@ -94,8 +96,9 @@
                             <p-dataView #aufwand [value]="lstAufwandNodes" class="border-none" layout="list">
                                 <ng-template let-data pTemplate="list">
                                     <div class="grid grid-nogutter border-none">
-                                        <div *ngFor="let item of data" class="col-12">
-                                            <div class="flex flex-column sm:flex-row sm:align-items-center">
+                                        <div *ngFor="let item of data; let ind = index" class="col-12">
+                                            <div class="flex flex-column sm:flex-row sm:align-items-center"
+                                                [ngClass]="'auswList-'+(ind%2)">
                                                 <div class="col-12 md:col-1">
                                                     <div *ngIf="item.order > 0" [class]="item.$css">{{ item.order }}
                                                     </div>
@@ -125,8 +128,8 @@
                             </p-dataView>
                         </div>
                     </div>
-                </ng-template>
-                <ng-template pTemplate=>
+                </div>
+                <div class="mb-1 col-12 md:col-6">
                     <div class="card" style="width: 100%;">
                         <h2>Ertrag</h2>
                         <div class="grid">
@@ -141,8 +144,9 @@
                             <p-dataView #ertrag [value]="lstErfolgNodes" class="border-none" layout="list">
                                 <ng-template let-data pTemplate="list">
                                     <div class="grid grid-nogutter border-none">
-                                        <div *ngFor="let item of data" class="col-12">
-                                            <div class="flex flex-column sm:flex-row sm:align-items-center">
+                                        <div *ngFor="let item of data; let ind = index" class="col-12">
+                                            <div class="flex flex-column sm:flex-row sm:align-items-center"
+                                                [ngClass]="'auswList-'+(ind%2)">
                                                 <div class="col-12 md:col-1">
                                                     <div *ngIf="item.order > 0" [class]="item.$css">{{ item.order }}
                                                     </div>
@@ -172,8 +176,8 @@
                             </p-dataView>
                         </div>
                     </div>
-                </ng-template>
-            </p-splitter>
+                </div>
+            </div>
         </p-tabPanel>
     </p-tabView>
 </div>
