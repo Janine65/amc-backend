@@ -27,7 +27,7 @@ global.assets = __dirname + "/public/assets/"
 require('./config/config')
 const app = express();
 
-const whitelist = ['http://localhost:4200', 'http://interna.neu.automoto-sr.info', 'https://interna.neu.automoto-sr.info', 'http://olconet:4200','http://olconet:2700',]
+const whitelist = ['http://localhost:4200', 'https://interna.automoto-sr.info', 'https://interna.neu.automoto-sr.info', 'http://olconet:4200','http://olconet:2700',]
 const corsOptionsDelegate = function (req, callback) {
   let corsOptions;
   if (whitelist.indexOf(req.header('Origin')) !== -1) {
@@ -43,7 +43,7 @@ app.use(express.text({extended: true, limit: 52428800}));
 app.use(express.json({extended: true, limit: 52428800}));
 app.use(express.urlencoded({extended: true, limit: 52428800}));
 
-app.use(cors(corsOptionsDelegate))
+app.use(cors(corsOptionsDelegate));
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', global.gConfig.webhost);
@@ -54,7 +54,7 @@ app.use(function (req, res, next) {
 
 // fileupload router
 app.post('/upload', function (req, res, next) {
-  const form = formidable({ 
+  const form = formidable.formidable({ 
     multiples: true,
     maxFileSize: 500 * 1024 * 1024,
     keepExtensions: true,
@@ -83,22 +83,7 @@ app.get('/download', function(req, res, next) {
 app.get('/about', function(req, res, next) {
   res.json(pkg);
 
-})
-const winston = require('winston')
-
-const logger = winston.createLogger({
-  level: 'warning',
-  format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
-  //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  transports: [
-    new winston.transports.File({ filename: path.join('logs', 'error.log'), level: 'error', timestamp: true }),
-    new winston.transports.File({ filename: path.join('logs', 'info.log'), level: 'info', timestamp: true }),
-    new winston.transports.File({ filename: path.join('logs', 'combined.log'), timestamp: true }),
-  ],
 });
-
-
-
 (async () => {
   const conn = new Sequelize(global.gConfig.database, global.gConfig.db_user, global.cipher.decrypt(global.gConfig.db_pwd), {
     host: global.gConfig.dbhost,
@@ -144,11 +129,11 @@ app.use(errorHandler);
 
 app.get('/', function (req, res, next) {
   res.json({ status: 'ok', message: 'alive' });
-})
+});
 
 app.get('/system/env', function (req, res, next) {
   res.json({ env: process.env.NODE_ENV });
-})
+});
 const exportData = require("./src/controllers/exports");
 app.post('/system/sendmail', exportData.sendEmail);
 

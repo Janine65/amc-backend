@@ -67,7 +67,7 @@ module.exports = {
 				replacements: [yearTo,yearFrom],
 				type: Sequelize.QueryTypes.INSERT,
 				plain: false,
-				logging: console.debug,
+				
 				raw: false
 			}
 		)

@@ -1,6 +1,11 @@
 const nodemailer = require("nodemailer");
 const path = require("path");
-const SwissQRBill = require('swissqrbill')
+//const SwissQRBill = require('swissqrbill')
+const PDFDocument = require("pdfkit");
+const SwissQRBill = require("swissqrbill/pdf")
+const utils = require("swissqrbill/utils")
+const nodeutils = require("node:fs")
+
 const {
     Sequelize
 } = require("sequelize");
@@ -46,16 +51,20 @@ module.exports = {
 
         const filename = "AMC-Mitgliederbeitrag-" + sJahr + "-" + adresse.mnr + ".pdf";
 
-        const pdf = new SwissQRBill.PDF(data, global.uploads + filename, { autoGenerate: false, size: "A4" });
+        const stream = nodeutils.createWriteStream(global.uploads + filename);
+        const pdf = new PDFDocument({ autoGenerate: false, size: "A4" });
+        pdf.pipe(stream);
         pdf.info = {
             Title: "Mitgliederrechnung " + sJahr,
             Author: "Auto-Moto-Club Swissair",
-            Subject: "Mitgliederrechnung " + sJahr
+            Subject: "Mitgliederrechnung " + sJahr,
+            CreationDate: new Date()
         }
+        pdf.save();
 
         // Fit the image within the dimensions
         let img = fs.readFileSync(global.assets + '/AMCfarbigKlein.jpg');
-        pdf.image(img.buffer, SwissQRBill.utils.mm2pt(140), SwissQRBill.utils.mm2pt(5),
+        pdf.image(img.buffer, utils.mm2pt(140), utils.mm2pt(5),
             { fit: [100, 100] });
 
         const date = new Date();
@@ -63,16 +72,16 @@ module.exports = {
         pdf.fontSize(12);
         pdf.fillColor("black");
         pdf.font("Helvetica");
-        pdf.text(data.creditor.name + "\n" + data.creditor.address + "\n" + data.creditor.zip + " " + data.creditor.city, SwissQRBill.utils.mm2pt(20), SwissQRBill.utils.mm2pt(35), {
-            width: SwissQRBill.utils.mm2pt(100),
+        pdf.text(data.creditor.name + "\n" + data.creditor.address + "\n" + data.creditor.zip + " " + data.creditor.city, utils.mm2pt(20), utils.mm2pt(35), {
+            width: utils.mm2pt(100),
             align: "left"
         });
 
         pdf.fontSize(12);
         pdf.font("Helvetica");
-        pdf.text(data.debtor.name + "\n" + data.debtor.address + "\n" + data.debtor.zip + " " + data.debtor.city, SwissQRBill.utils.mm2pt(130), SwissQRBill.utils.mm2pt(60), {
-            width: SwissQRBill.utils.mm2pt(70),
-            height: SwissQRBill.utils.mm2pt(50),
+        pdf.text(data.debtor.name + "\n" + data.debtor.address + "\n" + data.debtor.zip + " " + data.debtor.city, utils.mm2pt(130), utils.mm2pt(60), {
+            width: utils.mm2pt(70),
+            height: utils.mm2pt(50),
             align: "left"
         });
 
@@ -80,15 +89,15 @@ module.exports = {
         pdf.fontSize(11);
         pdf.font("Helvetica");
         pdf.text("Oberlunkhofen " + date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear(), {
-            width: SwissQRBill.utils.mm2pt(170),
+            width: utils.mm2pt(170),
             align: "right"
         });
 
         pdf.moveDown();
         pdf.fontSize(14);
         pdf.font("Helvetica-Bold");
-        pdf.text(data.additionalInformation, SwissQRBill.utils.mm2pt(20), SwissQRBill.utils.mm2pt(100), {
-            width: SwissQRBill.utils.mm2pt(140),
+        pdf.text(data.additionalInformation, utils.mm2pt(20), utils.mm2pt(100), {
+            width: utils.mm2pt(140),
             align: "left"
         });
 
@@ -99,35 +108,35 @@ module.exports = {
 
         let text = (adresse.geschlecht == 1 ? "Lieber " : "Liebe ") + adresse.vorname + "\n";
         pdf.text(text, {
-            width: SwissQRBill.utils.mm2pt(170),
+            width: utils.mm2pt(170),
             align: "left"
         });
         text += global.Parameter.get("RECHNUNG") + '\n';
         pdf.text(`${global.Parameter.get("RECHNUNG")}\n`, {
-            width: SwissQRBill.utils.mm2pt(170),
+            width: utils.mm2pt(170),
             align: "justify"
         });
         pdf.moveDown();
         text += `Mit liebem Clubgruss\nJanine Franken`;
         pdf.text(`Mit liebem Clubgruss\nJanine Franken`, {
-            width: SwissQRBill.utils.mm2pt(170),
+            width: utils.mm2pt(170),
             align: "left"
         });
         
         pdf.moveDown();
         pdf.fontSize(10);
         pdf.text(`Bitte beachte, dass für Einzahlungen am Postschalter eine Gebühr von CHF 2.50 erhoben wird. Zahlungen via Twint, Banküberweisung oder E-Finance sind kostenlos.\n`, {
-            width: SwissQRBill.utils.mm2pt(170),
+            width: utils.mm2pt(170),
             align: "justify",
             oblique: true
         });
 
         // Fit the image within the dimensions
         img = fs.readFileSync(global.assets + '/RNW-TWINT-SWISS-QR-DE.png');
-        pdf.image(img.buffer, SwissQRBill.utils.mm2pt(0), SwissQRBill.utils.mm2pt(182), {fit: [SwissQRBill.utils.mm2pt(210), SwissQRBill.utils.mm2pt(10)]});
+        pdf.image(img.buffer, utils.mm2pt(0), utils.mm2pt(182), {fit: [utils.mm2pt(210), utils.mm2pt(10)]});
 
-
-        pdf.addQRBill();
+        const qrBill = new SwissQRBill.SwissQRBill(data);
+        qrBill.attachTo(pdf);
         pdf.save();
         pdf.end();
 

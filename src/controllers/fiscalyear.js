@@ -89,7 +89,7 @@ module.exports = {
 			{
 				type: Sequelize.QueryTypes.SELECT,
 				plain: false,
-				logging: console.debug,
+				
 				raw: false
 			}
 		)
@@ -109,7 +109,7 @@ module.exports = {
 			{
 				type: Sequelize.QueryTypes.SELECT,
 				plain: false,
-				logging: console.debug,
+				
 				raw: false
 			}
 		)
@@ -139,7 +139,7 @@ module.exports = {
 			{
 				type: Sequelize.QueryTypes.SELECT,
 				plain: false,
-				logging: console.debug,
+				
 				raw: false
 			}
 		)
@@ -159,7 +159,7 @@ module.exports = {
 			{
 				type: Sequelize.QueryTypes.SELECT,
 				plain: false,
-				logging: console.debug,
+				
 				raw: false
 			}
 		)
@@ -236,7 +236,7 @@ module.exports = {
 				{
 					type: Sequelize.QueryTypes.INSERT,
 					plain: false,
-					logging: console.debug,
+					
 					raw: false
 				}
 			)
@@ -258,7 +258,7 @@ module.exports = {
 				{
 					type: Sequelize.QueryTypes.INSERT,
 					plain: false,
-					logging: console.debug,
+					
 					raw: false
 				}
 			)
@@ -278,7 +278,7 @@ module.exports = {
 				{
 					type: Sequelize.QueryTypes.DELETE,
 					plain: false,
-					logging: console.debug,
+					
 					raw: false
 				}
 			)
@@ -309,7 +309,7 @@ module.exports = {
 			{
 				type: Sequelize.QueryTypes.UPDATE,
 				plain: false,
-				logging: console.debug,
+				
 				raw: false
 			}
 		).catch((err) => {

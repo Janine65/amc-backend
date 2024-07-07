@@ -40,7 +40,7 @@ async function getAllAttachment(req, res, next) {
 	if (req.query.journalid != null) {
 		Receipt.findAll(
 			{
-				logging: console.debug,
+				
 				where: {
 					[Op.and]: [
 						{ jahr: req.query.jahr },
@@ -78,7 +78,7 @@ async function getAllAttachment(req, res, next) {
 	} else {
 		Receipt.findAll(
 			{
-				logging: console.debug,
+				
 				where: { jahr: req.query.jahr },
 				attributes: {
 					include: [[Sequelize.fn('COUNT', Sequelize.col('receipt2journal.journalid')), 'cntjournal']]

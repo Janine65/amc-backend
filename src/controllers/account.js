@@ -19,7 +19,7 @@ module.exports = {
 				replacements: [req.query.jahr],
 				type: Sequelize.QueryTypes.SELECT,
 				plain: false,
-				logging: console.debug,
+				
 				raw: false
 			}
 		)
@@ -35,7 +35,7 @@ module.exports = {
 				replacements: [req.query.jahr],
 				type: Sequelize.QueryTypes.SELECT,
 				plain: false,
-				logging: console.debug,
+				
 				raw: false
 			}
 		).catch(e => next(e));

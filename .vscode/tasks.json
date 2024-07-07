@@ -32,7 +32,7 @@
 				}
 			},
 			"node": {
-				"enableDebugging": true
+				"enableDebugging": false
 			}
 		}
 	]
