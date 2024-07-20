@@ -104,16 +104,11 @@ Adressen.init({
     type: DataTypes.BOOLEAN,
     defaultValue: 0
   },
-  notes: DataTypes.STRING
-  // fullname: {
-  //   type: DataTypes.VIRTUAL,
-  //   get() {
-  //     return `${this.vorname} ${this.name}`;
-  //   },
-  //   set(value) {
-  //     throw new Error('Do not try to set the `fullname` value!');
-  //   }
-  // }
+  notes: DataTypes.STRING,
+  fullname: {
+    type: DataTypes.VIRTUAL,
+    noUpdate: true,
+  }
 },
   {
     sequelize,
@@ -155,19 +150,10 @@ Anlaesse.init({
       key: 'id'
     },
     defaultValue: null,
-    set(value) {
-      // einen empty String zu Null konvertieren
-      if (value == "")
-        this.setDataValue('anlaesseid', null);
-      else
-        this.setDataValue('anlaesseid', value);
-    }
   },
   longname: {
     type: DataTypes.STRING,
-    set(value) {
-      throw new Error('Do not try to set the `longname` value!');
-    }
+    noUpdate: true,
   },
   status: { type: DataTypes.TINYINT, allowNull: false, defaultValue: 1 }
 },

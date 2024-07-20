@@ -109,7 +109,7 @@ module.exports = {
     } else {
       // update
       console.info("update: ", data);
-
+      
       Anlaesse.findByPk(data.id)
         .then((anlass) =>
           anlass.update(data)
