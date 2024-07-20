@@ -13,7 +13,7 @@
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
       "options": {
-        "verbose": true,
+        "verbose": false,
         "outputPath": "dist/amc-interna",
         "index": "src/index.html",
         "main": "src/main.ts",
