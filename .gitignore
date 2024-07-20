@@ -11,3 +11,4 @@ public/uploads/*
 node_modules
 documents/*
 patchDB.sql
+built/*

@@ -1,18 +1,17 @@
 
-const express = require('express');
-const cors = require('cors')
+import express from 'express';
+import cors from 'cors';
 
-const helmet = require('helmet');
-const path = require("path");
-const _ = require("./src/cipher");
-const http = require("http");
-const { Sequelize } = require('sequelize');
-const errorHandler = require('./src/authorize/error-handler')
-const { exit } = require('process');
-const formidable = require('formidable');
-const fs = require("fs")
+import helmet from 'helmet';
+import path from "path";
+import _ from "./src/cipher";
+import http from "http";
+import { Sequelize } from 'sequelize';
+import errorHandler from './src/authorize/error-handler';
+import { exit } from 'process';
+import { formidable, Part }  from 'formidable';
 
-const pkg = require("./package.json")
+import pkg from "./package.json";
 
 // environment variables
 if (process.env.NODE_ENV == undefined)
@@ -39,13 +38,13 @@ const corsOptionsDelegate = function (req, callback) {
   callback(null, corsOptions) // callback expects two parameters: error and options
 }
 
-app.use(express.text({extended: true, limit: 52428800}));
-app.use(express.json({extended: true, limit: 52428800}));
+app.use(express.text({limit: 52428800}));
+app.use(express.json({limit: 52428800}));
 app.use(express.urlencoded({extended: true, limit: 52428800}));
 
 app.use(cors(corsOptionsDelegate));
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', global.gConfig.webhost);
   res.setHeader('Access-Control-Allow-Methods', "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
   res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers,Access-Control-Allow-Methods,Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Authorization, Accept');
@@ -54,14 +53,14 @@ app.use(function (req, res, next) {
 
 // fileupload router
 app.post('/upload', function (req, res, next) {
-  const form = formidable.formidable({ 
+  const form = formidable({ 
     multiples: true,
     maxFileSize: 500 * 1024 * 1024,
     keepExtensions: true,
     uploadDir: global.uploads,
-        // Use it to control newFilename.              
-        filename: (name, ext, part, form) => {
-          return part.originalFilename; // Will be joined with options.uploadDir.
+    // Use it to control newFilename.              
+    filename: (name: string, ext: string, part:Part, form:IncomingForm):string => {
+          return part.originalFilename ?? ''; // Will be joined with options.uploadDir.
       }
    });
 
@@ -85,12 +84,11 @@ app.get('/about', function(req, res, next) {
 
 });
 (async () => {
-  const conn = new Sequelize(global.gConfig.database, global.gConfig.db_user, global.cipher.decrypt(global.gConfig.db_pwd), {
+  global.sequelize = new Sequelize(global.gConfig.database, global.gConfig.db_user, global.cipher.decrypt(global.gConfig.db_pwd), {
     host: global.gConfig.dbhost,
     port: global.gConfig.port,
     dialect: global.gConfig.dbtype,
   });
-  global.sequelize = conn;
 
   global.connected = false;
   let retries = 5;
@@ -98,6 +96,7 @@ app.get('/about', function(req, res, next) {
     try {
       await global.sequelize.authenticate();
       global.connected = true;
+      require("./src/db");
       break;
     } catch (err) {
       console.log(err);
@@ -111,8 +110,6 @@ app.get('/about', function(req, res, next) {
     
 
 })();
-
-const db = require("./src/db")
 
 app.use("/", express.static(path.join(__dirname, '/public')));
 
@@ -138,7 +135,8 @@ const exportData = require("./src/controllers/exports");
 app.post('/system/sendmail', exportData.sendEmail);
 
 
-const parameter = require("./src/controllers/parameter");
+import parameter from "./src/controllers/parameter";
+import IncomingForm from 'formidable/Formidable';
 app.get('/parameter/data', parameter.getData);
 app.post('/parameter/data', parameter.updateData);
 app.put('/parameter/data', parameter.updateData);
