@@ -104,11 +104,11 @@ Adressen.init({
     type: DataTypes.BOOLEAN,
     defaultValue: 0
   },
-  notes: DataTypes.STRING,
-  fullname: {
-    type: DataTypes.VIRTUAL,
-    noUpdate: true,
-  }
+  notes: DataTypes.STRING
+  // fullname: {
+  //   type: DataTypes.VIRTUAL,
+  //   noUpdate: true,
+  // }
 },
   {
     sequelize,
