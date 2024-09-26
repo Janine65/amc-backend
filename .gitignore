@@ -1,0 +1,10 @@
+node_modules/
+logs/
+src/createDBModel.js
+dist/
+testscript/
+src/documents/
+*.pdf
+*.zip
+src/public/uploads/*.xlsx
+src/public/exports/*.xlsx
