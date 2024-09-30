@@ -47,8 +47,10 @@ export class UserService {
     return findUser;
   }
 
-  public async setNewPass(userid: string): Promise<{newPass: string, findUser: User}> {
-    const findUser: User|null = await User.findByPk(userid);
+  public async setNewPass(email: string): Promise<{newPass: string, findUser: User}> {
+    const findUser: User|null = await User.findOne({
+      where: {email: email}
+    });
     if (!findUser) throw new GlobalHttpException(409, "User doesn't exists");
     
     const length = 10;

@@ -38,7 +38,7 @@ export class AuthService {
 
     const isPasswordMatching: boolean = compareSync(userData.password, findUser.password);
     if (!isPasswordMatching) throw new GlobalHttpException(409, 'Password not matching');
-    await findUser.update('updatedAt', new Date());
+    await findUser.update('last_login', new Date());
     const tokenData = createToken(findUser);
     const cookie = createCookie(tokenData);
 

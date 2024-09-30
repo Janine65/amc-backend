@@ -22,7 +22,7 @@ export type UserOptionalAttributes = "id" | "userid" | "name" | "email" | "salt"
 export type UserCreationAttributes = Optional<UserAttributes, UserOptionalAttributes>;
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  id!: number;
+  id!: number | undefined;
   userid!: string;
   name?: string;
   email!: string;

@@ -32,7 +32,7 @@ export interface AdresseAttributes {
   motojournal: boolean;
   austritt?: string;
   austritt_mail: boolean;
-  adressenid?: number;
+  adressenid?: number | undefined;
   jahrgang?: number;
   arbeitgeber?: string;
   pensioniert: boolean;
@@ -47,7 +47,7 @@ export type AdresseOptionalAttributes = "id" | "mnr" | "geschlecht" | "name" | "
 export type AdresseCreationAttributes = Optional<AdresseAttributes, AdresseOptionalAttributes>;
 
 export class Adresse extends Model<AdresseAttributes, AdresseCreationAttributes> implements AdresseAttributes {
-  id!: number;
+  id!: number | undefined;
   mnr?: number;
   geschlecht!: number;
   name!: string;
@@ -74,7 +74,7 @@ export class Adresse extends Model<AdresseAttributes, AdresseCreationAttributes>
   motojournal!: boolean;
   austritt?: string;
   austritt_mail!: boolean;
-  adressenid?: number;
+  adressenid?: number | undefined;
   jahrgang?: number;
   brummEmail!: boolean;
   arbeitgeber?: string;

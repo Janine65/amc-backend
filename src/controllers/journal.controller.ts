@@ -106,10 +106,10 @@ class JournalController implements Controller{
   public writeJournal = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const year = req.query.year as string;
-      const fReceipt = (req.query.receipt as string) == 'true';
+      const fReceipt = ["true","1"].includes(req.query.receipt as string);
       const getAccountData = await this.journal.writeJournal(year, fReceipt);
 
-      res.status(200).json({ data: getAccountData, message: 'writeJournal' });
+      res.status(200).json(getAccountData);
     } catch (error) {
       next(error);
     }

@@ -12,7 +12,7 @@ export interface AnlassAttributes {
   istsamanlass: boolean;
   nachkegeln: boolean;
   gaeste?: number;
-  anlaesseid?: number;
+  anlaesseid?: number | undefined;
   createdAt: Date;
   updatedAt: Date;
   status: number;
@@ -25,7 +25,7 @@ export type AnlassOptionalAttributes = "id" | "name" | "beschreibung" | "punkte"
 export type AnlassCreationAttributes = Optional<AnlassAttributes, AnlassOptionalAttributes>;
 
 export class Anlass extends Model<AnlassAttributes, AnlassCreationAttributes> implements AnlassAttributes {
-  id!: number;
+  id!: number | undefined;
   datum!: string;
   name!: string;
   beschreibung?: string;
@@ -34,7 +34,7 @@ export class Anlass extends Model<AnlassAttributes, AnlassCreationAttributes> im
   istsamanlass!: boolean;
   nachkegeln!: boolean;
   gaeste?: number;
-  anlaesseid?: number;
+  anlaesseid?: number | undefined;
   createdAt!: Date;
   updatedAt!: Date;
   status!: number;

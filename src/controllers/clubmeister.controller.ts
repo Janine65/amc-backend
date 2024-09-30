@@ -20,7 +20,7 @@ class ClubmeisterController implements Controller{
         this.router.get(this.path + 'clubmeister/:id', authMiddleware, this.getClubmeisterById);
         this.router.put(this.path + 'clubmeister/:id', authMiddleware, this.updateClubmeister);
         this.router.delete(this.path + 'clubmeister/:id', authMiddleware, this.deleteClubmeister);
-        this.router.get(this.path + 'overview', authMiddleware, this.getOverviewData);
+        this.router.get(this.path + 'overview', this.getOverviewData);
         this.router.get(this.path + 'calcmeister', authMiddleware, this.calcMeister);
     }
 

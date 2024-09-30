@@ -8,6 +8,7 @@ import { Budget } from '@/models/budget';
 import { Workbook } from 'exceljs';
 import { iFontSizeHeader, iFontSizeRow, iFontSizeTitel, setCellValueFormat } from './general.service';
 import { systemVal } from '@/utils/system';
+import { RetDataFile } from '@/models/generel';
 
 @Service()
 export class AccountService {
@@ -159,7 +160,7 @@ export class AccountService {
   }
 
   public async getAccountSummary(jahr: string): Promise<unknown[]> {
-    let arData:{id?: number, name?: string, level?: number, order?: number, status?: number, amount?: number, budget?: number, diff?: number, $css?: string}[] = [];
+    let arData:{id?: number | undefined, name?: string, level?: number, order?: number, status?: number, amount?: number, budget?: number, diff?: number, $css?: string}[] = [];
 		const arBudget = await Budget.findAll({
 			attributes: ["amount"],
 			where: { 'year': jahr },
@@ -190,7 +191,7 @@ export class AccountService {
 				});
 
     arJournalF.forEach((jour) => {
-      let record :{id?: number, name?: string, level?: number, order?: number, status?: number, amount?: number, budget?: number, diff?: number, $css?: string} = {}
+      let record :{id?: number | undefined, name?: string, level?: number, order?: number, status?: number, amount?: number, budget?: number, diff?: number, $css?: string} = {}
       record.id = jour.fromAccountAccount.id;
       record.name = jour.fromAccountAccount.name;
       record.order = jour.fromAccountAccount.order;
@@ -253,7 +254,7 @@ export class AccountService {
     })
 
     arJournalT.forEach(jour => {
-      let record :{id?: number, name?: string, level?: number, order?: number, status?: number, amount?: number, budget?: number, diff?: number, $css?: string} = {}
+      let record :{id?: number | undefined, name?: string, level?: number, order?: number, status?: number, amount?: number, budget?: number, diff?: number, $css?: string} = {}
       record.id = jour.toAccountAccount.id;
       record.name = jour.toAccountAccount.name;
       record.order = jour.toAccountAccount.order;
@@ -293,7 +294,7 @@ export class AccountService {
     })
 
     arBudget.forEach(budg => {
-      let record :{id?: number, name?: string, level?: number, order?: number, status?: number, amount?: number, budget?: number, diff?: number, $css?: string} = {}
+      let record :{id?: number | undefined, name?: string, level?: number, order?: number, status?: number, amount?: number, budget?: number, diff?: number, $css?: string} = {}
       record.id = budg.accountAccount.id;
       record.name = budg.accountAccount.name;
       record.order = budg.accountAccount.order;
@@ -333,7 +334,9 @@ export class AccountService {
     return arFiltered;
   }
 
-  public async writeKontoauszug (year: string, all: boolean): Promise<unknown> {
+  public async writeKontoauszug (year: string, all: boolean): Promise<RetDataFile> {
+    const payload: RetDataFile = {type: 'info', message: '', data: {filename: ''}};
+
     let arAccount: Account[];
     if (all) {
       arAccount = await Account.findAll({
@@ -464,13 +467,12 @@ export class AccountService {
     await workbok.xlsx.writeFile(systemVal.exports + filename)
         .catch((e) => {
             console.error(e);
+            payload.type = 'error';
+            payload.message = e;
             return e;
         });
 
-    return {
-        type: "info",
-        message: "Excelfile erstellt",
-        filename: filename
-    };
+    payload.data!.filename = filename;
+    return payload;
   }
 }

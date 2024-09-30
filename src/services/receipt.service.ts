@@ -6,6 +6,7 @@ import { systemVal } from '@/utils/system';
 import { chmodSync, copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { JournalReceipt } from '@/models/journalReceipt';
 import { Journal } from '@/models/journal';
+import { RetDataFiles } from '@/models/generel';
 
 @Service()
 export class ReceiptService {
@@ -51,10 +52,11 @@ export class ReceiptService {
     return findReceipt;
   }
 
-  public async createReceipt(jahr: string, uploadFiles: string[]): Promise<unknown> {
+  public async createReceipt(jahr: string, uploadFiles: string[]): Promise<RetDataFiles> {
     if (uploadFiles.length == 0) throw new GlobalHttpException(409, "No files uploaded to create Receipts");
 
-    const payload: { type: string, message: string, files: string[] } = { type: "info", message: "", files: [] }
+    const payload: RetDataFiles = { type: "info", message: "", data: {files: []} }
+
     const path = systemVal.documents + jahr + '/';
     if (!existsSync(path)) {
       mkdirSync(path);
@@ -76,7 +78,7 @@ export class ReceiptService {
         newReceipt.receipt = newFilename;
         await newReceipt.save();
         copyFileSync(filename, path + newFilename);
-        payload.files.push(newFilename);
+        payload.data!.files.push(newFilename);
         chmodSync(path + newFilename, '0640');
       } else {
         payload.message += "Error while reading the file " + element + "; ";
@@ -181,10 +183,10 @@ export class ReceiptService {
     return findReceipts;
   }
 
-  public async addAttachment2Journal(jahr: string, journalId: number, uploadFiles: string[]): Promise<unknown> {
+  public async addAttachment2Journal(jahr: string, journalId: number, uploadFiles: string[]): Promise<RetDataFiles> {
     if (uploadFiles.length == 0) throw new GlobalHttpException(409, "No files uploaded to create Receipts");
 
-    const payload: { type: string, message: string, files: string[] } = { type: "info", message: "", files: [] }
+    const payload: RetDataFiles  = { type: "info", message: "", data: {files: []} }
     const path = systemVal.documents + jahr + '/';
     if (!existsSync(path)) {
       mkdirSync(path);
@@ -207,7 +209,7 @@ export class ReceiptService {
         newReceipt.receipt = newFilename;
         await newReceipt.save();
         copyFileSync(filename, path + newFilename);
-        payload.files.push(newFilename);
+        payload.data!.files.push(newFilename);
         chmodSync(path + newFilename, '0640');
 
         // create journal_receipt

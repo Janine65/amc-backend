@@ -8,7 +8,7 @@ export interface KegelmeisterAttributes {
   rang?: number;
   vorname?: string;
   nachname?: string;
-  mitgliedid?: number;
+  mitgliedid?: number | undefined;
   punkte?: number;
   anlaesse?: number;
   babeli?: number;
@@ -23,12 +23,12 @@ export type KegelmeisterOptionalAttributes = "id" | "jahr" | "rang" | "vorname" 
 export type KegelmeisterCreationAttributes = Optional<KegelmeisterAttributes, KegelmeisterOptionalAttributes>;
 
 export class Kegelmeister extends Model<KegelmeisterAttributes, KegelmeisterCreationAttributes> implements KegelmeisterAttributes {
-  id!: number;
+  id!: number | undefined;
   jahr!: string;
   rang?: number;
   vorname?: string;
   nachname?: string;
-  mitgliedid?: number;
+  mitgliedid?: number | undefined;
   punkte?: number;
   anlaesse?: number;
   babeli?: number;

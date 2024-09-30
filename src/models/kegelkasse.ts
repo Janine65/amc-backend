@@ -20,10 +20,10 @@ export interface KegelkasseAttributes {
   franken100: number;
   total: number;
   differenz: number;
-  journalid?: number;
+  journalid?: number | undefined;
   createdAt: Date;
   updatedAt: Date;
-  userid?: number;
+  userid?: number | undefined;
   cntUsers?: number;
 }
 
@@ -33,7 +33,7 @@ export type KegelkasseOptionalAttributes = "id" | "journalid" | "createdAt" | "u
 export type KegelkasseCreationAttributes = Optional<KegelkasseAttributes, KegelkasseOptionalAttributes>;
 
 export class Kegelkasse extends Model<KegelkasseAttributes, KegelkasseCreationAttributes> implements KegelkasseAttributes {
-  id!: number;
+  id!: number | undefined;
   datum!: string;
   kasse!: number;
   rappen5!: number;
@@ -49,10 +49,10 @@ export class Kegelkasse extends Model<KegelkasseAttributes, KegelkasseCreationAt
   franken100!: number;
   total!: number;
   differenz!: number;
-  journalid?: number;
+  journalid?: number | undefined;
   createdAt!: Date;
   updatedAt!: Date;
-  userid?: number;
+  userid?: number | undefined;
   cntUsers?: number;
 
   // Kegelkasse belongsTo Journal via journalid

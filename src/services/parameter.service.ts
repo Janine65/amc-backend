@@ -1,6 +1,7 @@
 import { Service } from 'typedi';
 import { GlobalHttpException } from '@/exceptions/globalHttpException';
 import { Parameter } from '@/models/parameter';
+import { systemVal } from '@/utils/system';
 
 @Service()
 export class ParameterService {
@@ -20,7 +21,11 @@ export class ParameterService {
         const findParameter: Parameter|null = await Parameter.findOne({ where: { key: parameterData.key } });
         if (findParameter) throw new GlobalHttpException(409, `This key ${parameterData.key} already exists`);
     
-        const createParameterData: Parameter = await Parameter.create(parameterData);
+        const createParameterData = await Parameter.build(parameterData, {isNewRecord: true});
+        createParameterData.id = undefined;
+        await createParameterData.save();
+        
+        systemVal.Parameter.set(createParameterData.key, createParameterData.value);
         return createParameterData;
       }
     
@@ -31,6 +36,7 @@ export class ParameterService {
         await Parameter.update(parameterData, { where: { id: parameterId } });
     
         const updateParameter: Parameter|null = await Parameter.findByPk(parameterId);
+        systemVal.Parameter.set(updateParameter!.key, updateParameter!.value);
         return updateParameter!;
       }
     
@@ -39,7 +45,7 @@ export class ParameterService {
         if (!findParameter) throw new GlobalHttpException(409, "Parameter doesn't exist");
     
         await Parameter.destroy({ where: { id: parameterId } });
-    
+        systemVal.Parameter.delete(findParameter.key);
         return findParameter;
       }
     

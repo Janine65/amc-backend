@@ -20,7 +20,7 @@ export type AccountOptionalAttributes = "id" | "name" | "level" | "order" | "sta
 export type AccountCreationAttributes = Optional<AccountAttributes, AccountOptionalAttributes>;
 
 export class Account extends Model<AccountAttributes, AccountCreationAttributes> implements AccountAttributes {
-  id!: number;
+  id!: number | undefined;
   name?: string;
   level?: number;
   order?: number;

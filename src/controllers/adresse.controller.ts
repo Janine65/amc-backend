@@ -20,11 +20,11 @@ class AdresseController implements Controller{
         this.router.get(this.path + 'adresse/:id', authMiddleware, this.getAdresseById);
         this.router.put(this.path + 'adresse/:id', authMiddleware, this.updateAdresse);
         this.router.delete(this.path + 'adresse/:id', authMiddleware, this.deleteAdresse);
-        this.router.get(this.path + 'overview', authMiddleware, this.getOverview);
+        this.router.get(this.path + 'overview', this.getOverview);
         this.router.get(this.path + 'getFkData', authMiddleware, this.getFKData);
         this.router.post(this.path + 'export', authMiddleware, this.exportAdressen);
-        this.router.post(this.path + 'sendemail', authMiddleware, this.sendEmail);
-        this.router.get(this.path + 'sendemail', authMiddleware, this.sendEmail);
+        this.router.post(this.path + 'sendmail', authMiddleware, this.sendEmail);
+        this.router.post(this.path + 'qrbill', authMiddleware, this.createQRBill);
     }
 
   public getAdresses = async (req: Request, res: Response, next: NextFunction) => {
@@ -106,9 +106,9 @@ class AdresseController implements Controller{
   public exportAdressen = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const filter: FilterAdressen = req.body;
-      const fkdata = await this.adresse.exportAdressen(filter);
+      const retdata = await this.adresse.exportAdressen(filter);
 
-      res.status(200).json({ data: fkdata, message: 'exportAdressen' });
+      res.status(200).json(retdata);
     } catch (error) {
       next(error);
     }
@@ -118,9 +118,21 @@ class AdresseController implements Controller{
   public sendEmail = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const emailBody: EmailBody = req.body;
-      const fkdata = await this.adresse.sendEmail(emailBody);
+      const retdata = await this.adresse.sendEmail(emailBody);
 
-      res.status(200).json({ data: fkdata, message: 'sendEmail' });
+      res.status(200).json(retdata);
+    } catch (error) {
+      next(error);
+    }
+
+  }
+
+  public createQRBill = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const adresse: Adresse = req.body;
+      const retdata = await this.adresse.createQRBill(adresse);
+
+      res.status(200).json(retdata);
     } catch (error) {
       next(error);
     }

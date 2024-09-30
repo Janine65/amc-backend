@@ -3,6 +3,7 @@ import { Kegelkasse } from '@models/kegelkasse';
 import { KegelkasseService } from '@services/kegelkasse.service';
 import authMiddleware from '@/interfaces/auth.middleware';
 import Controller from '@/interfaces/controller.interface';
+import { RetDataFile } from '@/models/generel';
 
 class KegelkasseController implements Controller{
     public path = '/kegelkasse/';
@@ -106,9 +107,9 @@ class KegelkasseController implements Controller{
   public generateKegelkassePDF = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const kegelkasseId = Number(req.query.kegelkasseId as string);
-      const deleteKegelkasseData = await this.kegelkasse.generateKegelkassePDF(kegelkasseId);
+      const deleteKegelkasseData: RetDataFile = await this.kegelkasse.generateKegelkassePDF(kegelkasseId);
 
-      res.status(200).json({ data: deleteKegelkasseData, message: 'copyYear' });
+      res.status(200).json(deleteKegelkasseData);
     } catch (error) {
       next(error);
     }

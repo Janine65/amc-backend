@@ -24,7 +24,7 @@ class UserController implements Controller{
         this.router.get(this.path + 'user/:id', authMiddleware, this.getUserById);
         this.router.put(this.path + 'user/:id', authMiddleware, this.updateUser);
         this.router.delete(this.path + 'user/:id', authMiddleware, this.deleteUser);
-        this.router.get(this.path + 'newPass/:id', authMiddleware, this.setNewPass)
+        this.router.get(this.path + 'newpass', this.setNewPass)
         this.router.get(this.path + 'current', authMiddleware, this.getCurrent)
     }
 
@@ -82,9 +82,9 @@ class UserController implements Controller{
 
   public setNewPass = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userid = req.params.id;
+        const email = req.query.email as string;
         
-        this.user.setNewPass(userid)
+        this.user.setNewPass(email)
         .then(async (retVal: {newPass: string, findUser: User}) => {
             const newPass = retVal.newPass;
             const user = retVal.findUser;

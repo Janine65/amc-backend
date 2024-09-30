@@ -4,8 +4,8 @@ import type { Journal, JournalId } from './journal';
 import type { Receipt, ReceiptId } from './receipt';
 
 export interface JournalReceiptAttributes {
-  journalid?: number;
-  receiptid?: number;
+  journalid?: number | undefined;
+  receiptid?: number | undefined;
 }
 
 export type JournalReceiptJournalId = JournalReceipt["journalid"]
@@ -14,8 +14,8 @@ export type JournalReceiptOptionalAttributes = "journalid" | "receiptid";
 export type JournalReceiptCreationAttributes = Optional<JournalReceiptAttributes, JournalReceiptOptionalAttributes>;
 
 export class JournalReceipt extends Model<JournalReceiptAttributes, JournalReceiptCreationAttributes> implements JournalReceiptAttributes {
-  journalid?: number;
-  receiptid?: number;
+  journalid?: number | undefined;
+  receiptid?: number | undefined;
 
   // JournalReceipt belongsTo Journal via journalid
   journal!: Journal;

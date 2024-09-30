@@ -12,6 +12,7 @@ import PDFDocumentWithTables from 'pdfkit-table';
 import { chmod, copyFileSync, createWriteStream, existsSync, mkdirSync } from 'node:fs';
 import { systemVal } from '@/utils/system';
 import { formatDateLong, setCellValueFormat } from './general.service';
+import { RetDataFile } from '@/models/generel';
 
 
 @Service()
@@ -109,7 +110,7 @@ export class KegelkasseService {
     return findKegelkasse;
   }
 
-  public async generateKegelkassePDF(kegelkasseId: number): Promise<unknown> {
+  public async generateKegelkassePDF(kegelkasseId: number): Promise<RetDataFile> {
     const kegelkasse: Kegelkasse | null = await Kegelkasse.findByPk(kegelkasseId, {
       include: [{
         model: User, as: 'user', required: true
@@ -120,41 +121,12 @@ export class KegelkasseService {
     const iFontSizeHeader = 18
     const iFontSizeTitel = 14
 
-    // //load a locale
-    // try {
-    //   let locale = localeData('ch')
-
-    //   locale.delimiters = {
-    //     thousands: ' ',
-    //     decimal: '.'
-    //   };
-    // } catch (error) {
-    //   register('locale', 'ch', {
-    //     delimiters: {
-    //       thousands: ' ',
-    //       decimal: '.'
-    //     },
-    //     abbreviations: {
-    //       thousand: 'k',
-    //       million: 'm',
-    //       billion: 'b',
-    //       trillion: 't'
-    //     },
-    //     ordinal: function (number) {
-    //       return '.';
-    //     },
-    //     currency: {
-    //       symbol: 'Fr.'
-    //     }
-    //   });
-
-    // }
     locale('ch');
 
-    const payload = {
+    const payload: RetDataFile = {
       type: 'info',
       message: '',
-      file: ''
+      data: {filename: ''}
     }
 
     if (kegelkasse.journalid && kegelkasse.journalid > 0) {
@@ -274,10 +246,9 @@ export class KegelkasseService {
       await workbook.xlsx.writeFile(systemVal.exports + filename)
           .catch((e) => {
               console.error(e);
-              return {
-                  type: "error",
-                  message: e,
-              };
+              payload.type = 'error';
+              payload.message = e;
+              return payload;
           });
 
       const table = {
@@ -362,7 +333,7 @@ export class KegelkasseService {
       newReceipt = await newReceipt.save({ fields: ['receipt', 'jahr', 'bezeichnung'] });
       let newFilename = 'receipt/journal-' + newReceipt.id + '.pdf'
       newReceipt.receipt = newFilename
-      payload.file = newFilename
+      payload.data!.filename = newFilename
       newReceipt = await newReceipt.save({ fields: ['receipt'] });
       copyFileSync(global.exports + filenamePDF, path + newFilename);
       chmod(path + newFilename, '0640', err => {
@@ -376,7 +347,9 @@ export class KegelkasseService {
 
       return payload
     } else {
-      return { type: 'error', message: 'Kegelkasse nicht mit Journal verbunden' }
+      payload.type = 'error';
+      payload.message = 'Kegelkasse nicht mit Journal verbunden'
+      return payload
     }
 
   }

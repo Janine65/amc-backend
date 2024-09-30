@@ -2,7 +2,7 @@ import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 
 export interface ParameterAttributes {
-  id: number;
+  id: number | undefined;
   key: string;
   value: string;
   createdAt: Date;
@@ -15,7 +15,7 @@ export type ParameterOptionalAttributes = "id" | "key" | "value" | "createdAt" |
 export type ParameterCreationAttributes = Optional<ParameterAttributes, ParameterOptionalAttributes>;
 
 export class Parameter extends Model<ParameterAttributes, ParameterCreationAttributes> implements ParameterAttributes {
-  id!: number;
+  id!: number | undefined;
   key!: string;
   value!: string;
   createdAt!: Date;

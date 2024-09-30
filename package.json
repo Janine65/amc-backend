@@ -27,6 +27,7 @@
     "@swc/core": "^1.7.26",
     "@types/archiver": "^6.0.2",
     "@types/bcrypt": "^5.0.2",
+    "@types/compression": "^1.7.5",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/eslint__js": "^8.42.3",
@@ -57,6 +58,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "colors": "^1.4.0",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -70,6 +72,7 @@
     "multer": "1.4.5-lts.1",
     "nodemailer": "^6.9.15",
     "nodemon": "^3.1.7",
+    "nodeutils": "^1.2.3",
     "numeral": "^2.0.6",
     "pdfkit": "^0.15.0",
     "pdfkit-table": "^0.1.99",
@@ -78,6 +81,7 @@
     "sequelize": "^6.37.3",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
+    "swissqrbill": "^4.1.0",
     "tslib": "^2.7.0",
     "typedi": "^0.10.0"
   }

@@ -108,7 +108,7 @@ class AccountController implements Controller{
   public getAmountOneAcc = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const order = String(req.query.order);
-      const date = new Date(req.query.datum as string)
+      const date = new Date(req.query.date as string)
       const getData = await this.account.getAmountOneAcc(order,date);
       res.status(200).json({ data: getData, message: 'getOneDataByOrder'});
     } catch (error) {
@@ -141,7 +141,7 @@ class AccountController implements Controller{
       const year = String(req.query.year);
       const all = (req.query.jahr as string) == "true" || (req.query.jahr as string) == "1";
       const getData = await this.account.writeKontoauszug(year, all);
-      res.status(200).json({ data: getData, message: 'writeKontoauszug'});
+      res.status(200).json(getData);
     } catch (error) {
       next(error);
     }

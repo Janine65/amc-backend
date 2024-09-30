@@ -20,7 +20,7 @@ class KegelmeisterController implements Controller{
         this.router.get(this.path + 'kegelmeister/:id', authMiddleware, this.getKegelmeisterById);
         this.router.put(this.path + 'kegelmeister/:id', authMiddleware, this.updateKegelmeister);
         this.router.delete(this.path + 'kegelmeister/:id', authMiddleware, this.deleteKegelmeister);
-        this.router.get(this.path + 'overview', authMiddleware, this.getOverviewData);
+        this.router.get(this.path + 'overview', this.getOverviewData);
         this.router.get(this.path + 'calcmeister', authMiddleware, this.calcMeister);
     }
 

@@ -18,7 +18,7 @@ export type FiscalyearOptionalAttributes = "id" | "name" | "state" | "createdAt"
 export type FiscalyearCreationAttributes = Optional<FiscalyearAttributes, FiscalyearOptionalAttributes>;
 
 export class Fiscalyear extends Model<FiscalyearAttributes, FiscalyearCreationAttributes> implements FiscalyearAttributes {
-  id!: number;
+  id!: number | undefined;
   name?: string;
   state?: number;
   createdAt!: Date;

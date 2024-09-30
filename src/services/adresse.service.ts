@@ -9,9 +9,16 @@ import {
   setCellValueFormat,
 } from "./general.service";
 import { systemVal } from "@/utils/system";
-import { readFileSync } from "node:fs";
-import { createTransport } from "nodemailer";
+import { copyFileSync, createWriteStream, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { createTransport, SentMessageInfo } from "nodemailer";
 import path from "node:path";
+import { RetData, RetDataFile } from "@/models/generel";
+import PDFDocumentWithTables from "pdfkit-table";
+import { mm2pt } from "swissqrbill/utils";
+import { SwissQRBill } from "swissqrbill/pdf";
+import { Journal } from "@/models/journal";
+import { Receipt } from "@/models/receipt";
+import { JournalReceipt } from "@/models/journalReceipt";
 
 @Service()
 export class FilterAdressen {
@@ -38,7 +45,10 @@ export class EmailBody {
 
 export class AdresseService {
   public async findAllAdresse(): Promise<Adresse[]> {
-    const allAdresse: Adresse[] = await Adresse.findAll();
+    const allAdresse: Adresse[] = await Adresse.findAll({
+      where: { austritt: { [Op.gte]: Sequelize.fn("NOW") } },
+      order: ["name", "vorname"]
+    });
     return allAdresse;
   }
 
@@ -72,7 +82,7 @@ export class AdresseService {
     if (!findAdresse)
       throw new GlobalHttpException(409, "Adressen doesn't exist");
 
-    await Adresse.update(adresseData, { where: { id: adresseId } });
+    await findAdresse.update(adresseData, { where: { id: adresseId } });
 
     const updateAdresse: Adresse | null = await Adresse.findByPk(adresseId);
     return updateAdresse!;
@@ -134,20 +144,18 @@ export class AdresseService {
     return data;
   }
 
-  public async exportAdressen(filter: FilterAdressen): Promise<unknown> {
+  public async exportAdressen(filter: FilterAdressen): Promise<RetDataFile> {
     const sWhere: WhereOptions<AdresseAttributes> = {};
     sWhere.austritt = { [Op.gte]: new Date() };
-    if (filter.adresse)
-      sWhere.adresse = { [Op.like]: "%" + filter.adresse + "%" };
-    if (filter.name) sWhere.name = { [Op.like]: "%" + filter.name + "%" };
-    if (filter.vorname)
-      sWhere.vorname = { [Op.like]: "%" + filter.vorname + "%" };
-    if (filter.ort) sWhere.ort = { [Op.like]: "%" + filter.ort + "%" };
+    if (filter.adresse != '') sWhere.adresse = { [Op.like]: "%" + filter.adresse + "%" };
+    if (filter.name != '') sWhere.name = { [Op.like]: "%" + filter.name + "%" };
+    if (filter.vorname != '') sWhere.vorname = { [Op.like]: "%" + filter.vorname + "%" };
+    if (filter.ort != '') sWhere.ort = { [Op.like]: "%" + filter.ort + "%" };
     //if (filter.plz) sWhere.plz = { [Op.like]: "%" + filter.plz + "%" };
-    if (filter.sam_mitglied) sWhere.sam_mitglied = filter.sam_mitglied;
-    if (filter.vorstand) sWhere.vorstand = filter.vorstand;
-    if (filter.revisor) sWhere.revisor = filter.revisor;
-    if (filter.ehrenmitglied) sWhere.ehrenmitglied = filter.ehrenmitglied;
+    if (typeof filter.sam_mitglied == 'boolean') sWhere.sam_mitglied = filter.sam_mitglied;
+    if (typeof filter.vorstand == 'boolean') sWhere.vorstand = filter.vorstand;
+    if (typeof filter.revisor == 'boolean') sWhere.revisor = filter.revisor;
+    if (typeof filter.ehrenmitglied == 'boolean') sWhere.ehrenmitglied = filter.ehrenmitglied;
 
     const lstAdressen = await Adresse.findAll({
       where: sWhere,
@@ -436,17 +444,21 @@ export class AdresseService {
     const filename = "Adressen-" + fmtToday + ".xlsx";
     await workbook.xlsx.writeFile(systemVal.exports + filename).catch((e) => {
       console.error(e);
-      return e;
+      return {
+        type: "error",
+        message: e,
+        data: { filename: '' },
+      };
     });
 
     return {
       type: "info",
       message: "Excelfile erstellt",
-      filename: filename,
+      data: { filename: filename },
     };
   }
 
-  public async sendEmail(emailBody: EmailBody): Promise<unknown> {
+  public async sendEmail(emailBody: EmailBody): Promise<RetData> {
     if (
       emailBody.email_an == undefined &&
       emailBody.email_bcc == undefined &&
@@ -455,11 +467,13 @@ export class AdresseService {
       return {
         type: "error",
         message: "No recipients defined",
+        data: {}
       };
     if (emailBody.email_body == undefined)
       return {
         type: "error",
         message: "No message to send",
+        data: {}
       };
 
     if ((emailBody.email_signature ?? "") == "")
@@ -471,7 +485,11 @@ export class AdresseService {
       );
       emailBody.email_body += "<p>" + email_signature + "</p>";
     } catch (error) {
-      return error;
+      return {
+        type: "error",
+        message: error as string,
+        data: {}
+      };
     }
 
     const emailConfig = systemVal.getConfig(emailBody.email_signature!);
@@ -492,6 +510,7 @@ export class AdresseService {
         return {
           type: "error",
           message: "SMTP Connection can not be verified",
+          data: {}
         };
       }
       if (success) {
@@ -511,7 +530,7 @@ export class AdresseService {
       }
     }
 
-    const retData = await transporter.sendMail({
+    const retData: SentMessageInfo = await transporter.sendMail({
       from: emailConfig.email_from, // sender address
       to: emailBody.email_an, // list of receivers
       cc: emailBody.email_cc,
@@ -523,7 +542,187 @@ export class AdresseService {
     });
 
     transporter.close();
+    return { type: retData.response, message: 'Email sent', data: retData };
+  }
 
+  public async createQRBill(adresse: Adresse,): Promise<RetDataFile> {
+    const retData: RetDataFile = { type: 'info', message: '', data: { filename: '' } };
+    const jahr = systemVal.Parameter.get('CLUBJAHR');
+
+    const qrData = {
+      currency: "CHF" as "CHF" | "EUR",
+      //amount: 30.0,
+      additionalInformation: "Rechnungsnummer " + jahr + "0000" + adresse.mnr,
+      av1: "twint/light/02:627a1c3325b04c5cbbbe9afcdfb6501b#6298bbc2451e7f036c9e39e989c20452aa6afd8a#",
+      av2: "rn/twint/a~8Hbq5Y6GTd6RWWoWJ3pOsg~s~YbdhuKDqS5edL5KCHuzvtw/rn",
+      creditor: {
+        name: "Auto-Moto-Club Swissair",
+        address: "Breitenrain",
+        buildingNumber: "4",
+        zip: 8917,
+        city: "Oberlunkhofen",
+        account: "CH3009000000870661227",
+        country: "CH"
+      },
+      debtor: {
+        name: adresse.vorname + " " + adresse.name,
+        address: adresse.adresse,
+        zip: adresse.plz,
+        city: adresse.ort,
+        country: adresse.land
+      }
+    };
+
+    const filename = "AMC-Mitgliederbeitrag-" + jahr + "-" + adresse.mnr + ".pdf";
+    retData.data!.filename = filename;
+
+    const stream = createWriteStream(systemVal.uploads + filename);
+
+    const pdf = new PDFDocumentWithTables({
+      autoFirstPage: false,
+      size: "A4"
+    });
+    pdf.pipe(stream);
+    pdf.info = {
+      Title: "Mitgliederrechnung " + jahr,
+      Author: "Auto-Moto-Club Swissair",
+      Subject: "Mitgliederrechnung " + jahr,
+      CreationDate: new Date()
+    }
+
+    // Fit the image within the dimensions
+    let img = readFileSync(systemVal.assets + '/AMCfarbigKlein.jpg');
+    pdf.image(img.buffer, mm2pt(140), mm2pt(5),
+      { fit: [100, 100] });
+
+    const date = new Date();
+
+    pdf.fontSize(12);
+    pdf.fillColor("black");
+    pdf.font("Helvetica");
+    pdf.text(qrData.creditor.name + "\n" + qrData.creditor.address + "\n" + qrData.creditor.zip + " " + qrData.creditor.city, mm2pt(20), mm2pt(35), {
+      width: mm2pt(100),
+      align: "left"
+    });
+
+    pdf.fontSize(12);
+    pdf.font("Helvetica");
+    pdf.text(qrData.debtor.name + "\n" + qrData.debtor.address + "\n" + qrData.debtor.zip + " " + qrData.debtor.city, mm2pt(130), mm2pt(60), {
+      width: mm2pt(70),
+      height: mm2pt(50),
+      align: "left"
+    });
+
+    pdf.moveDown();
+    pdf.fontSize(11);
+    pdf.font("Helvetica");
+    pdf.text("Oberlunkhofen " + date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear(), {
+      width: mm2pt(170),
+      align: "right"
+    });
+
+    pdf.moveDown();
+    pdf.fontSize(14);
+    pdf.font("Helvetica-Bold");
+    pdf.text(qrData.additionalInformation, mm2pt(20), mm2pt(100), {
+      width: mm2pt(140),
+      align: "left"
+    });
+
+    pdf.moveDown();
+    pdf.fontSize(12);
+    pdf.fillColor("black");
+    pdf.font("Helvetica");
+
+    let text = (adresse.geschlecht == 1 ? "Lieber " : "Liebe ") + adresse.vorname + "\n";
+    pdf.text(text, {
+      width: mm2pt(170),
+      align: "left"
+    });
+    text += systemVal.Parameter.get("RECHNUNG") + '\n';
+    pdf.text(`${systemVal.Parameter.get("RECHNUNG")}\n`, {
+      width: mm2pt(170),
+      align: "justify"
+    });
+    pdf.moveDown();
+    text += `Mit liebem Clubgruss\nJanine Franken`;
+    pdf.text(`Mit liebem Clubgruss\nJanine Franken`, {
+      width: mm2pt(170),
+      align: "left"
+    });
+
+    pdf.moveDown();
+    pdf.fontSize(10);
+    pdf.text(`Bitte beachte, dass für Einzahlungen am Postschalter eine Gebühr von CHF 2.50 erhoben wird. Zahlungen via Twint, Banküberweisung oder E-Finance sind kostenlos.\n`, {
+      width: mm2pt(170),
+      align: "justify",
+      oblique: true
+    });
+
+    // Fit the image within the dimensions
+    img = readFileSync(systemVal.assets + '/RNW-TWINT-SWISS-QR-DE.png');
+    pdf.image(img.buffer, mm2pt(0), mm2pt(182), { fit: [mm2pt(210), mm2pt(10)] });
+
+    const qrBill = new SwissQRBill(qrData);
+    qrBill.attachTo(pdf);
+    pdf.save();
+    pdf.end();
+
+    let email_body = "<p>" + text.split("\n").join("</p><p>") + "</p>";
+
+    let email: EmailBody = {
+      email_an: adresse.email, email_cc: '', email_bcc: '',
+      email_body: email_body,
+      email_subject: "Auto-Moto-Club Swissair - Mitgliederrechnung",
+      email_uploadfiles: filename,
+      email_signature: "JanineFranken"
+    }
+
+    const retVal = await this.sendEmail(email);
+    if (retVal.type != '250 Message received') {
+      retData.type = 'error';
+      retData.message = retVal.type;
+      return retData
+    }
+
+    // journal Eintrag erstellen
+    const journal: Journal = Journal.build();
+    journal.memo = "Mitgliederbeitrag " + jahr + " von " + qrData.debtor.name;
+    journal.date = new Date();
+    journal.amount = 30;
+    journal.from_account = 31;
+    journal.to_account = 21;
+
+    await journal.save();
+
+    // dokument verschieben
+    const pathname = systemVal.documents + jahr + '/';
+    const receiptName = 'receipt/' + 'Journal-' + journal.id + '.pdf';
+    if (!existsSync(pathname)) {
+      mkdirSync(pathname);
+      mkdirSync(pathname + '/receipt');
+    }
+    if (existsSync(systemVal.uploads + filename)) {
+      copyFileSync(systemVal.uploads + filename, pathname + receiptName);
+    } else {
+      retData.type = 'error';
+      retData.message = "QR-Rechnung erstellt und versendet. Konnte File nicht kopieren und an den Journaleintrag hängen";
+      return retData;
+    }
+
+    // anhang erstellen
+    const receipt = Receipt.build();
+    receipt.receipt = receiptName;
+    receipt.bezeichnung = filename;
+    await receipt.save();
+
+    // anhang mit journaleintrag verbinden
+    const journal2receipt = JournalReceipt.build();
+    journal2receipt.journalid = journal.id;
+    journal2receipt.receiptid = receipt.id;
+    await journal2receipt.save();
+
+    retData.message = 'QR-Rechnung erstellt und versendet';
     return retData;
   }
 }

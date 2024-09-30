@@ -18,7 +18,7 @@ export type SessionOptionalAttributes = "id" | "sid" | "userid" | "expires" | "d
 export type SessionCreationAttributes = Optional<SessionAttributes, SessionOptionalAttributes>;
 
 export class Session extends Model<SessionAttributes, SessionCreationAttributes> implements SessionAttributes {
-  id!: number;
+  id!: number | undefined;
   sid!: string;
   userid?: string;
   expires?: Date;

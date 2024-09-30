@@ -19,7 +19,7 @@ class FiscalyearController implements Controller{
         this.router.get(this.path + 'getfiscalyearfk', authMiddleware, this.getFiscalyearFK);
         this.router.post(this.path + 'fiscalyear', authMiddleware, this.createFiscalyear);
         this.router.get(this.path + 'fiscalyear/:id', authMiddleware, this.getFiscalyearById);
-        this.router.get(this.path + 'getbyyear', authMiddleware, this.getFiscalyearByYear);
+        this.router.get(this.path + 'getbyyear', this.getFiscalyearByYear);
         this.router.put(this.path + 'fiscalyear/:id', authMiddleware, this.updateFiscalyear);
         this.router.delete(this.path + 'fiscalyear/:id', authMiddleware, this.deleteFiscalyear);
         this.router.get(this.path + 'closeyear', authMiddleware, this.closeYear);

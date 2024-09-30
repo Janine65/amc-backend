@@ -19,7 +19,7 @@ export type BudgetOptionalAttributes = "id" | "memo" | "amount" | "createdAt" | 
 export type BudgetCreationAttributes = Optional<BudgetAttributes, BudgetOptionalAttributes>;
 
 export class Budget extends Model<BudgetAttributes, BudgetCreationAttributes> implements BudgetAttributes {
-  id!: number;
+  id!: number | undefined;
   account!: number;
   year!: number;
   memo?: string;

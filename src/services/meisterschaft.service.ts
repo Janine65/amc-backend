@@ -59,17 +59,18 @@ export class MeisterschaftService {
     meisterschaftData: Meisterschaft
   ): Promise<Meisterschaft> {
     const findMeisterschaft: Meisterschaft | null = await Meisterschaft.findOne(
-      { where: { id: meisterschaftData.id } }
-    );
+      {
+        where: [{ mitgliedid: meisterschaftData.mitgliedid },
+        { eventid: meisterschaftData.eventid }]
+      });
     if (findMeisterschaft)
       throw new GlobalHttpException(
         409,
-        `This key ${meisterschaftData.id} already exists`
+        `This key ${meisterschaftData.mitgliedid}/${meisterschaftData.eventid} already exists`
       );
 
-    const createMeisterschaftData: Meisterschaft = await Meisterschaft.create(
-      meisterschaftData
-    );
+    const createMeisterschaftData = Meisterschaft.build(meisterschaftData);
+    await createMeisterschaftData.save();
     return createMeisterschaftData;
   }
 
@@ -108,7 +109,6 @@ export class MeisterschaftService {
     eventid: number
   ): Promise<Meisterschaft[]> {
     const arMeisterschaft = await Meisterschaft.findAll({
-      attributes: ["id", "punkte", "total_kegel", "streichresultat"],
       where: { eventid: eventid },
       include: {
         model: Adressen,

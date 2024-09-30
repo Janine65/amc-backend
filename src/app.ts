@@ -3,6 +3,7 @@ import { systemVal } from '@utils/system'
 import { logger } from '@utils/logger';
 import { db } from "./database/database";
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
 import cors from 'cors'
 import session from 'express-session'
 import { ErrorMiddleware } from './interfaces/error.middleware';
@@ -12,6 +13,7 @@ import swaggerOutput from "@utils/swagger_output.json";
 import { Parameter } from './models/parameter';
 import formidable from 'formidable';
 import * as pkg from '../package.json';
+import { RetData } from './models/generel';
 
 class App {
     public app: express.Application;
@@ -51,7 +53,9 @@ class App {
 
     // init middleware
     private initializeMiddleware() {
-        this.app.use(express.json())
+        this.app.use(compression());
+        this.app.use(express.json({ limit: 52428800 }));
+        this.app.use(express.urlencoded({ extended: true, limit: 52428800 }));
         this.app.use(cookieParser())
         this.app.use(cors())
         this.app.use(session({
@@ -85,7 +89,9 @@ class App {
                     next(err);
                     return;
                 }
-                res.json({ status: 'ok', message: 'file uplaoded', fields, files });
+                const retData: RetData = {type: 'info', message: 'file uploaded', data: files}
+
+                res.json(retData);
             });
         });
         this.app.get('/download', function(req, res, next) {

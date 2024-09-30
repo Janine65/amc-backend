@@ -80,7 +80,7 @@ class JournalReceiptController implements Controller{
 
   public addReceipts2Journal = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const journalId = Number(req.query.journalId as string);
+      const journalId = Number(req.query.journalid as string);
       const receipts = req.body as Receipt[];
       const updateJournalReceiptData = await this.journalReceipt.addReceipts2Journal(journalId, receipts);
 

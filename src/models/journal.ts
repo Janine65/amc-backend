@@ -6,7 +6,7 @@ import type { JournalReceipt, JournalReceiptJournalId } from './journalReceipt';
 import type { Kegelkasse, KegelkasseId } from './kegelkasse';
 
 export interface JournalAttributes {
-  id?: number;
+  id?: number | undefined;
   from_account?: number;
   to_account?: number;
   date?: Date;
@@ -26,7 +26,7 @@ export type JournalOptionalAttributes = "id" | "from_account" | "to_account" | "
 export type JournalCreationAttributes = Optional<JournalAttributes, JournalOptionalAttributes>;
 
 export class Journal extends Model<JournalAttributes, JournalCreationAttributes> implements JournalAttributes {
-  id!: number;
+  id!: number | undefined;
   from_account?: number;
   to_account?: number;
   date?: Date;

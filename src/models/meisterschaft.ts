@@ -17,7 +17,7 @@ export interface MeisterschaftAttributes {
   streichresultat?: boolean;
   createdAt: Date;
   updatedAt: Date;
-  total_kegel: number | null;
+  total_kegel?: number | null;
 }
 
 export type MeisterschaftPk = "id";
@@ -26,9 +26,9 @@ export type MeisterschaftOptionalAttributes = "id" | "mitgliedid" | "eventid" | 
 export type MeisterschaftCreationAttributes = Optional<MeisterschaftAttributes, MeisterschaftOptionalAttributes>;
 
 export class Meisterschaft extends Model<MeisterschaftAttributes, MeisterschaftCreationAttributes> implements MeisterschaftAttributes {
-  id!: number;
-  mitgliedid!: number;
-  eventid!: number;
+  id!: number | undefined;
+  mitgliedid!: number | undefined;
+  eventid!: number | undefined;
   punkte?: number;
   wurf1?: number;
   wurf2?: number;
@@ -39,7 +39,7 @@ export class Meisterschaft extends Model<MeisterschaftAttributes, MeisterschaftC
   streichresultat?: boolean;
   createdAt!: Date;
   updatedAt!: Date;
-  total_kegel!: number | null;
+  total_kegel?: number | null;
   teilnehmer!: number;
 
   // Meisterschaft belongsTo Adressen via mitgliedid
@@ -84,27 +84,33 @@ export class Meisterschaft extends Model<MeisterschaftAttributes, MeisterschaftC
       },
       punkte: {
         type: DataTypes.SMALLINT,
-        allowNull: true
+        allowNull: true,
+        defaultValue: 50
       },
       wurf1: {
         type: DataTypes.SMALLINT,
-        allowNull: true
+        allowNull: true,
+        defaultValue: 0
       },
       wurf2: {
         type: DataTypes.SMALLINT,
-        allowNull: true
+        allowNull: true,
+        defaultValue: 0
       },
       wurf3: {
         type: DataTypes.SMALLINT,
-        allowNull: true
+        allowNull: true,
+        defaultValue: 0
       },
       wurf4: {
         type: DataTypes.SMALLINT,
-        allowNull: true
+        allowNull: true,
+        defaultValue: 0
       },
       wurf5: {
         type: DataTypes.SMALLINT,
-        allowNull: true
+        allowNull: true,
+        defaultValue: 0
       },
       zusatz: {
         type: DataTypes.INTEGER,
@@ -117,7 +123,7 @@ export class Meisterschaft extends Model<MeisterschaftAttributes, MeisterschaftC
         defaultValue: false
       },
       total_kegel: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.VIRTUAL(DataTypes.INTEGER),
         allowNull: true
       },
       createdAt: '',

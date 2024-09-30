@@ -15,7 +15,7 @@ class ParameterController implements Controller{
     }
 
     public initializeRoutes() {
-        this.router.get(this.path + 'list', authMiddleware, this.getParameters);
+        this.router.get(this.path + 'list', this.getParameters);
         this.router.post(this.path + 'parameter', authMiddleware, this.createParameter);
         this.router.get(this.path + 'parameter/:id', authMiddleware, this.getParameterById);
         this.router.put(this.path + 'parameter/:id', authMiddleware, this.updateParameter);
@@ -46,9 +46,9 @@ class ParameterController implements Controller{
   public createParameter = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const parameterData = req.body;
-      const updateParameterData: Parameter = await this.parameter.createParameter(parameterData);
-
-      res.status(200).json({ data: updateParameterData, message: 'updated' });
+      const createParameterData: Parameter = await this.parameter.createParameter(parameterData);
+      
+      res.status(200).json({ data: createParameterData, message: 'updated' });
     } catch (error) {
       next(error);
     }

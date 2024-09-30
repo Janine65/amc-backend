@@ -17,7 +17,7 @@ export type ReceiptOptionalAttributes = "id" | "createdAt" | "updatedAt" | "jahr
 export type ReceiptCreationAttributes = Optional<ReceiptAttributes, ReceiptOptionalAttributes>;
 
 export class Receipt extends Model<ReceiptAttributes, ReceiptCreationAttributes> implements ReceiptAttributes {
-  id!: number;
+  id!: number | undefined;
   receipt!: string;
   createdAt?: Date;
   updatedAt?: Date;

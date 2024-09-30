@@ -9,6 +9,8 @@ import { iFontSizeHeader, iFontSizeRow, iFontSizeTitel, setCellValueFormat } fro
 import { db } from '@/database/database';
 import { Meisterschaft } from '@/models/meisterschaft';
 import { file } from 'pdfkit';
+import { RetDataFile } from '@/models/generel';
+import { AnlassAttributes } from '../../dist/src/models/anlass';
 
 const cName = "C6";
 const cVorname = "C7";
@@ -16,8 +18,15 @@ const sFirstRow = 13;
 
 @Service()
 export class AnlassService {
-  public async findAllAnlass(): Promise<Anlass[]> {
-    const allAnlass: Anlass[] = await Anlass.findAll();
+  public async findAllAnlass(fromYear: string, toYear: string): Promise<Anlass[]> {
+    const allAnlass: Anlass[] = await Anlass.findAll({
+      where: [Sequelize.where(Sequelize.fn("year", Sequelize.col("Anlass.datum")),Op.gte,fromYear), 
+      Sequelize.where(Sequelize.fn("year", Sequelize.col("Anlass.datum")), Op.lte,toYear)],
+      include: {
+        model: Anlass, as: "anlaesse"
+      },
+      order: [["datum", "ASC"]]
+    });
     return allAnlass;
   }
 
@@ -32,17 +41,31 @@ export class AnlassService {
     const findAnlass: Anlass | null = await Anlass.findOne({ where: { name: anlassData.name, datum: anlassData.datum } });
     if (findAnlass) throw new GlobalHttpException(409, `This anlass ${anlassData.name} at ${anlassData.datum} already exists`);
 
+    const datum = new Date(anlassData.datum);
+    anlassData.longname = datum.toLocaleDateString('de-CH', { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' - ' + anlassData.name;
     const createAnlassData: Anlass = await Anlass.create(anlassData);
-    return createAnlassData;
+
+    const createdAnlassData: Anlass | null = await Anlass.findByPk(createAnlassData.id, {
+      include: {
+        model: Anlass, as: "anlaesse"
+      }      
+    });
+    return createdAnlassData;
   }
 
   public async updateAnlass(anlassId: string, anlassData: Anlass): Promise<Anlass> {
     const findAnlass: Anlass | null = await Anlass.findByPk(anlassId);
     if (!findAnlass) throw new GlobalHttpException(409, "Anlassn doesn't exist");
 
+    const datum = new Date(anlassData.datum);
+    anlassData.longname = datum.toLocaleDateString('de-CH', { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' - ' + anlassData.name;
     await Anlass.update(anlassData, { where: { id: anlassId } });
 
-    const updateAnlass: Anlass | null = await Anlass.findByPk(anlassId);
+    const updateAnlass: Anlass | null = await Anlass.findByPk(anlassId, {
+      include: {
+        model: Anlass, as: "anlaesse"
+      }      
+    });
     return updateAnlass!;
   }
 
@@ -83,17 +106,26 @@ export class AnlassService {
     return arResult
   }
 
-  public async getFKData(): Promise<unknown> {
+  public async getFKData(jahr: string | undifined): Promise<unknown> {
+    const sWhere: WhereOptions<AnlassAttributes> = {};
+    if (jahr)
+      sWhere.datum = {
+      [Op.and]: {
+        [Op.gte]: jahr + "-01-01",
+        [Op.lte]: jahr + "-12-31"
+      }
+    };
     const result = await Anlass.findAll({
       attributes: ["id", ["longname", "value"]],
-      order: [["datum", "DESC"]]
+      where: sWhere,
+      order: [["datum", "ASC"]]
 
     });
 
     return result;
   }
 
-  public async writeStammblatt(type: number, jahr: string, adresseId: number | undefined): Promise<unknown> {
+  public async writeStammblatt(type: number, jahr: string, adresseId: number | undefined): Promise<RetDataFile> {
     const workbook = new Workbook();
     workbook.creator = "Janine Franken"
     // Force workbook calculation on load
@@ -103,7 +135,7 @@ export class AnlassService {
     let allAdresse: Adresse[];
 
     switch (type) {
-      case 1:
+      case 0:
         // leeres Datenblatt neutral erstellen
         sheet = workbook.addWorksheet("Template", {
           pageSetup: {
@@ -115,7 +147,7 @@ export class AnlassService {
         await this.createTemplate(jahr, sheet, false);
         break;
 
-      case 2:
+      case 1:
         // leeres Datenblatt für 1 oder alle Adressen erstellen
         if (adresseId) {
           oneAdresse = await Adresse.findByPk(adresseId);
@@ -156,7 +188,7 @@ export class AnlassService {
 
         break;
 
-      case 3:
+      case 2:
         // gefülltes Datenblatt für 1 oder alle Adressen erstellen
         if (adresseId) {
           oneAdresse = await Adresse.findByPk(adresseId);
@@ -220,13 +252,17 @@ export class AnlassService {
     await workbook.xlsx.writeFile(systemVal.exports + filename)
       .catch((e) => {
         console.error(e);
-        return e;
+        return {
+          type: "error",
+          message: e,
+          data: {filename: ''}
+        };
       });
 
     return {
       type: "info",
       message: "Excelfile erstellt",
-      filename: filename
+      data: {filename: filename}
     };
 
 

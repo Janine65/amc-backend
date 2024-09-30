@@ -8,7 +8,7 @@ export interface ClubmeisterAttributes {
   rang?: number;
   vorname?: string;
   nachname?: string;
-  mitgliedid?: number;
+  mitgliedid?: number | undefined;
   punkte?: number;
   anlaesse?: number;
   werbungen?: number;
@@ -24,12 +24,12 @@ export type ClubmeisterOptionalAttributes = "id" | "jahr" | "rang" | "vorname" |
 export type ClubmeisterCreationAttributes = Optional<ClubmeisterAttributes, ClubmeisterOptionalAttributes>;
 
 export class Clubmeister extends Model<ClubmeisterAttributes, ClubmeisterCreationAttributes> implements ClubmeisterAttributes {
-  id!: number;
+  id!: number | undefined;
   jahr!: string;
   rang?: number;
   vorname?: string;
   nachname?: string;
-  mitgliedid?: number;
+  mitgliedid?: number | undefined;
   punkte?: number;
   anlaesse?: number;
   werbungen?: number;

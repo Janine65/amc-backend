@@ -4,6 +4,7 @@ import { ReceiptService } from '@services/receipt.service';
 import authMiddleware from '@/interfaces/auth.middleware';
 import Controller from '@/interfaces/controller.interface';
 import { systemVal } from '@/utils/system';
+import { RetDataFiles } from '@/models/generel';
 
 class ReceiptController implements Controller{
     public path = '/receipt/';
@@ -56,9 +57,9 @@ class ReceiptController implements Controller{
       if (data.uploadFiles == undefined)
         res.status(409).json({type: 'error', message: 'No files found'});
 
-      const updateReceiptData = await this.receipt.createReceipt(data.jahr, data.uploadFiles.split(','));
+      const updateReceiptData: RetDataFiles = await this.receipt.createReceipt(data.jahr, data.uploadFiles.split(','));
 
-      res.status(200).json({ data: updateReceiptData, message: 'created' });
+      res.status(200).json(updateReceiptData);
     } catch (error) {
       next(error);
     }
@@ -90,7 +91,7 @@ class ReceiptController implements Controller{
   public findAllAttachments = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const jahr = String(req.query.jahr);
-      const journalId = Number(req.query.journalId);
+      const journalId = Number(req.query.journalid);
       const findAllReceiptsData: Receipt[] = await this.receipt.findAllAttachments(jahr, journalId);
 
       res.status(200).json({ data: findAllReceiptsData, message: 'findAllAttachments' });
@@ -131,9 +132,9 @@ class ReceiptController implements Controller{
       if (data.uploadFiles == undefined)
         res.status(409).json({type: 'error', message: 'No files found'});
 
-      const updateReceiptData = await this.receipt.addAttachment2Journal(data.jahr, data.journalId, data.uploadFiles.split(','));
+      const updateReceiptData: RetDataFiles = await this.receipt.addAttachment2Journal(data.jahr, data.journalId, data.uploadFiles.split(','));
 
-      res.status(200).json({ data: updateReceiptData, message: 'addAttachment2Journal' });
+      res.status(200).json(updateReceiptData);
     } catch (error) {
       next(error);
     }

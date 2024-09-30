@@ -20,14 +20,16 @@ class AnlassController implements Controller{
         this.router.get(this.path + 'anlass/:id', authMiddleware, this.getAnlassById);
         this.router.put(this.path + 'anlass/:id', authMiddleware, this.updateAnlass);
         this.router.delete(this.path + 'anlass/:id', authMiddleware, this.deleteAnlass);
-        this.router.get(this.path + 'overview', authMiddleware, this.getOverview);
+        this.router.get(this.path + 'overview', this.getOverview);
         this.router.get(this.path + 'getFkData', authMiddleware, this.getFKData);
         this.router.get(this.path + 'writestammblatt', authMiddleware, this.writeStammblatt);
     }
 
   public getAnlasss = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const findAllAnlasssData: Anlass[] = await this.anlass.findAllAnlass();
+      const fromJahr = req.query.from as string;
+      const toJahr = req.query.to as string;
+      const findAllAnlasssData: Anlass[] = await this.anlass.findAllAnlass(fromJahr, toJahr);
 
       res.status(200).json({ data: findAllAnlasssData, message: 'findAll' });
     } catch (error) {
@@ -92,7 +94,8 @@ class AnlassController implements Controller{
 
   public getFKData = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const fkdata = await this.anlass.getFKData();
+      const jahr = req.query.jahr;
+      const fkdata = await this.anlass.getFKData(jahr);
 
       res.status(200).json({ data: fkdata, message: 'getFKData' });
     } catch (error) {
@@ -109,7 +112,7 @@ class AnlassController implements Controller{
       if (adresseId)
         adresseId = Number(adresseId);
       const data = await this.anlass.writeStammblatt(type, jahr, adresseId as number);
-      res.status(200).json({ data: data, message: 'writeStammblatt' });
+      res.status(200).json(data);
     } catch (error) {
       next(error);
     }

@@ -19,6 +19,7 @@ import {
 import PDFDocumentWithTables from "pdfkit-table";
 import { createWriteStream, existsSync } from "node:fs";
 import archiver from "archiver";
+import { RetDataFile } from "@/models/generel";
 
 @Service()
 export class JournalService {
@@ -93,24 +94,20 @@ export class JournalService {
   }
 
   public async createJournal(journalData: Journal): Promise<Journal> {
-    const findJournal: Journal | null = await Journal.findOne({
-      where: { id: journalData.id },
-    });
-    if (findJournal)
-      throw new GlobalHttpException(
-        409,
-        `This key ${journalData.id} already exists`
-      );
-
     const year = new Date(journalData.date!).getFullYear();
+    const createJournalData = await Journal.build(journalData);
     const lastNo = await Journal.max("journalno", {
       where: Sequelize.where(Sequelize.fn("YEAR", Sequelize.col("date")), year),
     });
+    
+    if (lastNo) {
+      let nextNo = lastNo as number;
+      nextNo++;
+      createJournalData.journalno = nextNo
+    } else createJournalData.journalno = 1;
+    createJournalData.id = undefined;
 
-    if (lastNo) journalData.journalno = (lastNo as number) + 1;
-    else journalData.journalno = 1;
-
-    const createJournalData: Journal = await Journal.create(journalData);
+    await createJournalData.save();
     return createJournalData;
   }
 
@@ -138,7 +135,7 @@ export class JournalService {
     return findJournal;
   }
 
-  public async getAccData(year: string, account: number): Promise<unknown> {
+  public async getAccData(year: string, account: number): Promise<unknown[]> {
     const modelReturn = await Promise.all([
       await Journal.findAll({
         attributes: ["id", "journalno", "date", "memo", "amount"],
@@ -191,7 +188,7 @@ export class JournalService {
     return arData;
   }
 
-  public async writeJournal(year: string, fReceipt: boolean): Promise<unknown> {
+  public async writeJournal(year: string, fReceipt: boolean): Promise<RetDataFile> {
     locale("ch");
 
     const arJournal: Journal[] = await Journal.findAll({
@@ -562,14 +559,14 @@ export class JournalService {
       return {
         type: "info",
         message: "Datei erstellt",
-        filename: filename + sExt,
+        data: {filename: filename + sExt},
       };  
       
     } else {
       return {
         type: "info",
         message: "Datei erstellt",
-        filename: filename + sExt,
+        data: {filename: filename + sExt},
       };
     }
   }
