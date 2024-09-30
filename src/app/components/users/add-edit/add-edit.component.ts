@@ -43,7 +43,7 @@ export class AddEditComponent {
           this.accountService.getById(this.user.id || -1)
           .subscribe(
             {next: (user) => {
-              this.user = user
+              this.user = user.data as User;
               this.ref.close();
               }
             })
@@ -96,7 +96,7 @@ export class AddEditComponent {
        // neuer user
        this.accountService.register(this.user).subscribe(
         {next: (newUser) => {
-          this.ref.close(newUser)
+          this.ref.close(newUser.data as User)
         }}
       )
     } else {

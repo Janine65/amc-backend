@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ParamData } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { BackendService, RetData } from '@app/service';
 import { MessageService } from 'primeng/api';
+import { Observable, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-parameter',
@@ -21,7 +22,7 @@ export class ParameterComponent implements OnInit {
   ngOnInit(): void {
     this.backendService.getParameterData().subscribe({
       next: (result) => {
-        this.parameters = result;
+        this.parameters = result.data as ParamData[];
         console.log(this.parameters);
         this.loading = false;
       }
@@ -31,10 +32,23 @@ export class ParameterComponent implements OnInit {
     this.clonedParameters[parameter.id] = { ...parameter };
   }
 
-  onRowEditSave(parameter: ParamData) {
-    this.backendService.updParameterData(parameter).subscribe({
-      next: () => {
+  onRowDelete(parameter: ParamData, index: number) {
+      this.backendService.delParameterData(parameter)
+        .subscribe({next: () => {
+          delete this.parameters[index];
+        }})
+  }
+
+  onRowEditSave(parameter: ParamData, index: number) {
+    let sub: Observable<RetData>;
+    if (parameter.id == 0)
+      sub = this.backendService.addParameterData(parameter);
+    else
+      sub = this.backendService.updParameterData(parameter);
+    sub.subscribe({
+      next: (ret) => {
         delete this.clonedParameters[parameter.id];
+        this.parameters[index] = ret.data as ParamData;
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Parameter is updated' });
       }
     })
@@ -47,6 +61,5 @@ export class ParameterComponent implements OnInit {
 
   onAddNewRow(){
     this.parameters.unshift({id: 0, key: '', value: ''});
-    this.onRowEditInit(this.parameters[this.parameters.length-1]);
   }
 }

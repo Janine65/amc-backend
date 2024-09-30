@@ -23,7 +23,7 @@ export class AppFooterComponent implements OnInit {
         const pkgBackString = localStorage.getItem('aboutBackend');
         if (pkgBackString) {
             pkgBack = JSON.parse(pkgBackString);
-            this.appVersion += ' / ' + pkgBack.version ?? '';
+            this.appVersion += ' / ' + pkgBack.version;
         }
         
     }

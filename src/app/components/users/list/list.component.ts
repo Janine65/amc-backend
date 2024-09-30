@@ -52,7 +52,7 @@ export class ListComponent implements OnInit {
     this.accountService.getAll()
       .subscribe((list) => {
           console.log('got value ' + list);
-          this.userList = list;
+          this.userList = list.data as User[];
           this.loading = false;
         });
     }

@@ -56,6 +56,10 @@ export class AppLayoutComponent implements OnDestroy {
                 this.hideMenu();
                 this.hideProfileMenu();
             });
+        
+        window.addEventListener("mousedown", (ev) => {
+            this.layoutService.userActiveSince = new Date();
+        })
     }
 
     hideMenu() {

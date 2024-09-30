@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, OnInit } from '@angular/core';
 import { from, Subscription } from 'rxjs';
-import { BackendService } from '@app/service/backend.service';
+import { BackendService } from '@app/service';
 import { Adresse } from '@model/datatypes';
 import { TableOptions, TableToolbar } from '../../shared/basetable/basetable.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -114,7 +114,7 @@ export class AdressenComponent implements OnInit {
 
     this.subs = from(this.backendService.getAdressenData())
       .subscribe(list => {
-        this.adressList = list;
+        this.adressList = list.data as Adresse[];
         this.adressList.forEach(adr => {
           adr.eintritt_date = new Date(adr.eintritt);
           adr.austritt_date = new Date(adr.austritt);
@@ -276,12 +276,13 @@ export class AdressenComponent implements OnInit {
       return
     }
 
-    thisRef.backendService.removeData(selRec).subscribe(
+    thisRef.backendService.removeAdresse(selRec).subscribe(
       {
         complete: () => {
           thisRef.backendService.getOneAdress(selRec.id).subscribe(
             {
-              next: (adresse) => {
+              next: (retData) => {
+                const adresse = retData.data as Adresse;
                 adresse.eintritt_date = new Date(adresse.eintritt);
                 adresse.austritt_date = new Date(adresse.austritt);
                 thisRef.adressList = thisRef.adressList.map(obj => adresse.id === obj.id ? adresse : obj);
@@ -340,16 +341,16 @@ export class AdressenComponent implements OnInit {
             filter.ort = filters.ort[0].value;
         }
         if (filters.sam_mitglied) {
-          if (filters.sam_mitglied[0].value)
+          if (filters.sam_mitglied[0].value != undefined)
             filter.sam_mitglied = filters.sam_mitglied[0].value;
         }
         if (filters.vorstand) {
-          if (filters.vorstand[0].value)
-            filter.sam_mitglied = filters.vorstand[0].value;
+          if (filters.vorstand[0].value != undefined)
+            filter.vorstand = filters.vorstand[0].value;
         }
         if (filters.revisor) {
-          if (filters.revisor[0].value)
-            filter.sam_mitglied = filters.revisor[0].value;
+          if (filters.revisor[0].value != undefined)
+            filter.revisor = filters.revisor[0].value;
         }
         console.log(filter);
       }
@@ -359,8 +360,9 @@ export class AdressenComponent implements OnInit {
     thisRef.backendService.exportAdressData(filter).subscribe(
       {
         next: (result) => {
-          if (result.body && result.body.type == 'info') {
-            thisRef.backendService.downloadFile(result.body.filename).subscribe(
+          if (result.data && result.type == 'info') {
+          const filename = result.data.filename;
+          thisRef.backendService.downloadFile(filename).subscribe(
               {
                 next(data) {
                   if (data.body) {
@@ -368,7 +370,7 @@ export class AdressenComponent implements OnInit {
                     const downloadURL = window.URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = downloadURL;
-                    link.download = result.body.filename;
+                    link.download = filename;
                     link.click();
                   }
                 },

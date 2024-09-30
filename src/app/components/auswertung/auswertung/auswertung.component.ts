@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, OnInit } from '@angular/core';
 import { MeisterschaftAuswertung, ParamData } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { BackendService } from '@app/service';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -42,7 +42,7 @@ export class AuswertungComponent implements OnInit {
   updateGraph() {
     this.backendService.getChartData(this.selJahr).subscribe({
       next: (list) => {
-        this.lstGraphData = list;
+        this.lstGraphData = list.data as MeisterschaftAuswertung[];
 
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');

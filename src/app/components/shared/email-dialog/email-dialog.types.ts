@@ -6,7 +6,7 @@ export class EmailBody {
     email_subject?: StringEmpty;
     email_body?: StringEmpty;
     email_signature: EmailSignature | undefined;
-    uploadFiles?: StringEmpty;
+    email_uploadfiles?: StringEmpty;
 
     constructor (init?:Partial<EmailBody>) {
         Object.assign(this, init);

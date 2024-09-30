@@ -99,6 +99,9 @@ importers:
       '@nx/devkit':
         specifier: 17.3.2
         version: 17.3.2(nx@17.3.2)
+      '@nx/nx-darwin-arm64':
+        specifier: ^19.5.1
+        version: 19.5.1
       '@nx/workspace':
         specifier: 17.3.2
         version: 17.3.2
@@ -5014,6 +5017,13 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@nx/nx-darwin-arm64@19.5.1:
+    resolution: {integrity: sha512-mdFSnwf+cEGZQ0HDJIzHBOWmho66VUN44qsDRPVSwpaEqlHSlcbiqKzM0+oVx9CRDLNQoYtYs1Y3hGlnag1sCQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+    dev: true
 
   /@nx/nx-darwin-x64@17.3.2:
     resolution: {integrity: sha512-5F28wrfE7yU60MzEXGjndy1sPJmNMIaV2W/g82kTXzxAbGHgSjwrGFmrJsrexzLp9oDlWkbc6YmInKV8gmmIaQ==}

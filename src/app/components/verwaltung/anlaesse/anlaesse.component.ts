@@ -31,7 +31,7 @@ export class AnlaesseComponent implements OnInit{
   selJahr = 0;
 
   constructor(
-    private backendService: BackendService, 
+    private backendService: BackendService,
     private dialogService: DialogService, 
     private messageService: MessageService) {}
   ngOnInit(): void {
@@ -90,12 +90,12 @@ export class AnlaesseComponent implements OnInit{
     this.selJahre.push({label: (this.selJahr + 1).toString(), value: this.selJahr + 1});
     
     // read Anlaesse
-    from(this.backendService.getAnlaesseData(undefined)).subscribe(
+    from(this.backendService.getAnlaesseData((this.selJahr-1).toFixed(0), (this.selJahr+1).toFixed(0),undefined)).subscribe(
       (list) => {
-        this.anlaesseListAll = list;
+        this.anlaesseListAll = list.data as Anlass[];
         this.anlaesseListAll.forEach(anl => {
           anl.datum_date = new Date(anl.datum ? anl.datum : '');
-          anl.vorjahr = (anl.linkedEvent ? anl.linkedEvent.vorjahr : '');
+          anl.vorjahr = (anl.anlaesse ? anl.anlaesse.longname : '');
           if (anl.status == 0)
             anl.classRow = 'inactive';
         })
@@ -141,6 +141,7 @@ export class AnlaesseComponent implements OnInit{
     thisRef.dialogRef.onClose.subscribe((anlass: Anlass) => {
       if (anlass) {
         anlass.datum_date = new Date(anlass.datum);
+        anlass.vorjahr = (anlass.anlaesse ? anlass.anlaesse.longname : '');
 
         thisRef.anlaesseListAll.push(anlass);
         thisRef.chgJahr()
@@ -170,6 +171,8 @@ export class AnlaesseComponent implements OnInit{
     thisRef.dialogRef.onClose.subscribe((anlass: Anlass) => {
       if (anlass) {
         anlass.datum_date = new Date(anlass.datum);
+        anlass.vorjahr = (anlass.anlaesse ? anlass.anlaesse.longname : '');
+
         thisRef.anlaesseListAll = thisRef.anlaesseListAll.map(obj => [anlass].find(o => o.id === obj.id) || obj);
         thisRef.chgJahr()
         console.log(anlass)
@@ -207,6 +210,7 @@ export class AnlaesseComponent implements OnInit{
     thisRef.dialogRef.onClose.subscribe((anlass: Anlass) => {
       if (anlass) {
         anlass.datum_date = new Date(anlass.datum);
+        anlass.vorjahr = (anlass.anlaesse ? anlass.anlaesse.longname : '');
 
         thisRef.anlaesseListAll.push(anlass);
         thisRef.chgJahr()
@@ -260,10 +264,11 @@ export class AnlaesseComponent implements OnInit{
     // eslint-disable-next-line @typescript-eslint/no-this-alias, @typescript-eslint/no-unused-vars
     const thisRef: AnlaesseComponent = this;
     console.log("Datenblatt erstellen");
-    from(this.backendService.getSheet({year: this.selJahr, type: 0, id: null})).subscribe(
+    from(this.backendService.getSheet({jahr: this.selJahr, type: 0, id: null})).subscribe(
       (response) => {
         if (response.type == 'info') {
-          thisRef.backendService.downloadFile(response.filename).subscribe(
+          const filename = response.data.filename;
+          thisRef.backendService.downloadFile(filename).subscribe(
             {
               next(data) {
                 if (data.body) {
@@ -271,7 +276,7 @@ export class AnlaesseComponent implements OnInit{
                   const downloadURL = window.URL.createObjectURL(blob);
                   const link = document.createElement('a');
                   link.href = downloadURL;
-                  link.download = response.filename;
+                  link.download = filename;
                   link.click();
                 }
               },
@@ -286,10 +291,11 @@ export class AnlaesseComponent implements OnInit{
     // eslint-disable-next-line @typescript-eslint/no-this-alias, @typescript-eslint/no-unused-vars
     const thisRef: AnlaesseComponent = this;
     console.log("Datenblatt leer für alle erstellen");
-    from(this.backendService.getSheet({year: this.selJahr, type: 1, id: 0})).subscribe(
+    from(this.backendService.getSheet({jahr: this.selJahr, type: 1, id: 0})).subscribe(
       (response) => {
         if (response.type == 'info') {
-          thisRef.backendService.downloadFile(response.filename).subscribe(
+          const filename = response.data.filename;
+          thisRef.backendService.downloadFile(filename).subscribe(
             {
               next(data) {
                 if (data.body) {
@@ -297,7 +303,7 @@ export class AnlaesseComponent implements OnInit{
                   const downloadURL = window.URL.createObjectURL(blob);
                   const link = document.createElement('a');
                   link.href = downloadURL;
-                  link.download = response.filename;
+                  link.download = filename;
                   link.click();
                 }
               },
@@ -311,10 +317,11 @@ export class AnlaesseComponent implements OnInit{
     // eslint-disable-next-line @typescript-eslint/no-this-alias, @typescript-eslint/no-unused-vars
     const thisRef: AnlaesseComponent = this;
     console.log("Datenblatt voll für alle erstellen");
-    from(this.backendService.getSheet({year: this.selJahr, type: 2, id: 0})).subscribe(
+    from(this.backendService.getSheet({jahr: this.selJahr, type: 2, id: 0})).subscribe(
       (response) => {
         if (response.type == 'info') {
-          thisRef.backendService.downloadFile(response.filename).subscribe(
+          const filename = response.data.filename;
+          thisRef.backendService.downloadFile(filename).subscribe(
             {
               next(data) {
                 if (data.body) {
@@ -322,7 +329,7 @@ export class AnlaesseComponent implements OnInit{
                   const downloadURL = window.URL.createObjectURL(blob);
                   const link = document.createElement('a');
                   link.href = downloadURL;
-                  link.download = response.filename;
+                  link.download = filename;
                   link.click();
                 }
               },

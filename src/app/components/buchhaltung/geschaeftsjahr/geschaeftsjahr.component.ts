@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from '@angular/core';
 import { Fiscalyear } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { BackendService } from '@app/service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -84,7 +84,7 @@ export class GeschaeftsjahrComponent implements OnInit {
 
     from(this.backendService.getFiscalyear())
       .subscribe(list => {
-        this.lstFiscalyear = list;
+        this.lstFiscalyear = list.data as Fiscalyear[];
         this.lstFiscalyear.forEach(rec => {
           switch(rec.state) {
             case 1:
@@ -219,7 +219,8 @@ export class GeschaeftsjahrComponent implements OnInit {
     thisRef.backendService.exportAccData(Number(selRec.year))
       .subscribe({
         next: (result) => {
-          thisRef.backendService.downloadFile(result.filename)
+          const filename = result.data.filename;
+          thisRef.backendService.downloadFile(filename)
             .subscribe({
               next: (data) => {
                 if (data.body) {
@@ -227,7 +228,7 @@ export class GeschaeftsjahrComponent implements OnInit {
                   const downloadURL = window.URL.createObjectURL(blob);
                   const link = document.createElement('a');
                   link.href = downloadURL;
-                  link.download = result.filename;
+                  link.download = filename;
                   link.click(); 
                 }
               },
@@ -243,7 +244,9 @@ export class GeschaeftsjahrComponent implements OnInit {
           thisRef.backendService.exportAccountData(Number(selRec.year))
             .subscribe({
               next: (result) => {
-                thisRef.backendService.downloadFile(result.filename)
+                if (result.type == 'info') {
+                const filename = result.data.filename;
+                thisRef.backendService.downloadFile(filename)
                   .subscribe({
                     next: (data) => {
                       if (data.body) {
@@ -251,7 +254,7 @@ export class GeschaeftsjahrComponent implements OnInit {
                         const downloadURL = window.URL.createObjectURL(blob);
                         const link = document.createElement('a');
                         link.href = downloadURL;
-                        link.download = result.filename;
+                        link.download = filename;
                         link.click();
                       }
                     },
@@ -260,6 +263,7 @@ export class GeschaeftsjahrComponent implements OnInit {
                       thisRef.kValue = 'geladen'
                     }
                   })
+                }
               },
               complete: () => {
                 thisRef.jSev = 'warning'
@@ -267,7 +271,8 @@ export class GeschaeftsjahrComponent implements OnInit {
                 thisRef.backendService.exportJournal(Number(selRec.year), 1)
                   .subscribe({
                     next: (result) => {
-                      thisRef.backendService.downloadFile(result.filename)
+                      const filename = result.data.filename;
+                      thisRef.backendService.downloadFile(filename)
                         .subscribe({
                           next: (data) => {
                             if (data.body) {
@@ -275,7 +280,7 @@ export class GeschaeftsjahrComponent implements OnInit {
                               const downloadURL = window.URL.createObjectURL(blob);
                               const link = document.createElement('a');
                               link.href = downloadURL;
-                              link.download = result.filename;
+                              link.download = filename;
                               link.click();
                             }
                           },
@@ -316,12 +321,13 @@ export class GeschaeftsjahrComponent implements OnInit {
           this.backendService.getOneFiscalyear(this.selFiscalyear.year).subscribe(
             {
               next: (entry) => {
+                const fisc = entry.data as Fiscalyear;
                 if (this.addMode) {
-                  this.lstFiscalyear.push(this.selFiscalyear);
+                  this.lstFiscalyear.push(fisc);
                   this.lstFiscalyear.sort((a: Fiscalyear, b: Fiscalyear) => (b.year ? parseInt(b.year) : 0) - (a.year ? parseInt(a.year) : 0))
                 }
                 else
-                  this.lstFiscalyear = this.lstFiscalyear.map(obj => [entry].find(o => o.id === obj.id) || obj);
+                  this.lstFiscalyear = this.lstFiscalyear.map(obj => [fisc].find(o => o.id === obj.id) || obj);
 
                 this.clearFields();
               }

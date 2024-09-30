@@ -4,7 +4,7 @@
 import {  AfterViewInit, Component, HostListener, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Adresse, Anlass, Meisterschaft } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { BackendService } from '@app/service';
 import { MessageService } from 'primeng/api';
 import { AutoComplete } from 'primeng/autocomplete';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -36,7 +36,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     longname: undefined,
     status: undefined,
     vorjahr: undefined,
-    linkedEvent: undefined
+    anlaesse: undefined
   }
   lstMeisterschaft: Meisterschaft[] = []
   selMeisterschaft: Meisterschaft = {
@@ -51,7 +51,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     zusatz: undefined,
     streichresultat: undefined,
     total_kegel: undefined,
-    teilnehmer: undefined
+    mitglied: undefined
   }
   newMeisterschaft: Meisterschaft = {
     mitgliedid: undefined,
@@ -62,10 +62,10 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     wurf3: undefined,
     wurf4: undefined,
     wurf5: undefined,
-    zusatz: undefined,
+    zusatz: 5,
     streichresultat: undefined,
     total_kegel: undefined,
-    teilnehmer: undefined
+    mitglied: undefined
   }
   fMeisterschaft = false;
   lstAdressen: Adresse[] = []
@@ -114,8 +114,8 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     zip(this.backendService.getMeisterschaft(this.anlass.id!),
     this.backendService.getAdressenData()
     ).pipe(map(([list1, list2]) => {
-      this.lstMeisterschaft = list1;
-      this.lstAdressen = list2;
+      this.lstMeisterschaft = list1.data as Meisterschaft[];
+      this.lstAdressen = list2.data as Adresse[];
       this.lstAdressen.forEach(adr => adr.fullname = adr.vorname + ' ' + adr.name);
       console.log(this.lstAdressen);
 
@@ -239,7 +239,7 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     this.newMeisterschaft = this.selMeisterschaft;
     this.unsubscribeList();
     this.lstFilteredAdressen = []
-    const adr = this.lstAdressen.find(rec => rec.fullname == this.selMeisterschaft.teilnehmer?.fullname!);
+    const adr = this.lstAdressen.find(rec => rec.fullname == this.selMeisterschaft.mitglied?.fullname!);
     if (!adr) {
       this.messageService.add({closable: true, sticky: false, detail: "Fehler aufgetreten!", severity: "error", summary: "selTeilnehmerTable"});
       return;
@@ -275,8 +275,8 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
       this.newMeisterschaft.eventid = this.anlass.id
       this.newMeisterschaft.mitgliedid = adr.id;
       this.newMeisterschaft.punkte = this.anlass.punkte;
-      this.newMeisterschaft.teilnehmer = {id : adr.id!, fullname : adr.fullname!};
-      this.newMeisterschaft.zusatz = this.anlass.istkegeln && !this.anlass.nachkegeln ? 5 : undefined;
+      this.newMeisterschaft.mitglied = {id : adr.id!, fullname : adr.fullname!};
+      this.newMeisterschaft.zusatz = this.anlass.istkegeln && !this.anlass.nachkegeln ? 5 : 0;
       this.patchFields();
       this.fgMeisterschaft.markAllAsTouched();
     } else {
@@ -363,21 +363,34 @@ export class AnlassBookComponent implements OnInit, AfterViewInit {
     this.newMeisterschaft.wurf3 = this.wurf3.value ? this.wurf3.value : null;
     this.newMeisterschaft.wurf4 = this.wurf4.value ? this.wurf4.value : null;
     this.newMeisterschaft.wurf5 = this.wurf5.value ? this.wurf5.value : null;
-    this.newMeisterschaft.zusatz = this.zusatz.value ? this.zusatz.value : null;
+    this.newMeisterschaft.zusatz = this.zusatz.value ? this.zusatz.value : 0;
     this.newMeisterschaft.total_kegel = this.total.value ? this.total.value : null;
 
-    this.backendService.updMeisterschaft(this.newMeisterschaft).subscribe(
-      {
-        next: (anl) => {
-          console.log(anl);
-          this.clearTeilnehmer();
-          this.subs = from(this.backendService.getMeisterschaft(this.anlass.id!))
-          .subscribe(list => {
-            this.lstMeisterschaft = list;
-          });
+    if (this.newMeisterschaft.id == undefined || this.newMeisterschaft.id == 0) {
+      this.backendService.addMeisterschaft(this.newMeisterschaft).subscribe(
+        {
+          next: (_) => {
+            this.clearTeilnehmer();
+            this.subs = from(this.backendService.getMeisterschaft(this.anlass.id!))
+            .subscribe(list => {
+              this.lstMeisterschaft = list.data as Meisterschaft[];
+            });
+          }
         }
-      }
-    )
+      )
+    } else {
+      this.backendService.updMeisterschaft(this.newMeisterschaft).subscribe(
+        {
+          next: (_) => {
+            this.clearTeilnehmer();
+            this.subs = from(this.backendService.getMeisterschaft(this.anlass.id!))
+            .subscribe(list => {
+              this.lstMeisterschaft = list.data as Meisterschaft[];
+            });
+          }
+        }
+      )
+    }
   }
   reset() {
     this.clearTeilnehmer();

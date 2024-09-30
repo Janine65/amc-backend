@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Anlass, Journal, Kegelkasse } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { Account, Anlass, Journal, Kegelkasse } from '@model/datatypes';
+import { BackendService } from '@app/service';
 import { MessageService } from 'primeng/api';
 import { BehaviorSubject, Subscription, map, zip } from 'rxjs';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -103,8 +103,9 @@ export class KegelkasseComponent implements OnInit {
       { field: 'userName', header: 'User', format: false, sortable: false, filtering: false, filter: undefined },
     ];
 
-    this.backendService.getAnlaesseData([{ key: 'istkegeln', value: 'true' }]).subscribe({
-      next: (anl: Anlass[]) => {
+    this.backendService.getAnlaesseData((new Date().getFullYear()).toFixed(0), (new Date().getFullYear()).toFixed(0),[{ key: 'istkegeln', value: 'true' }]).subscribe({
+      next: (result) => {
+        const anl = result.data as Anlass[];
         this.lKegelDatum = []
         anl.forEach(value => {
           const tmpDate = new Date(value.datum);
@@ -174,7 +175,8 @@ export class KegelkasseComponent implements OnInit {
       const date = new Date(sKegelDate)
       zip(this.backendService.getKegelkasse(date.getMonth() + 1, date.getFullYear()),
         this.backendService.getAmountOneAcc(sKegelDate, 1002)
-      ).pipe(map(([kegelkasse, result]) => {
+      ).pipe(map(([result1, result]) => {
+        const kegelkasse = result1.data as Kegelkasse[];
         if (kegelkasse.length > 0) {
           this.kegelkasse = kegelkasse[0];
           this.kasse.setValue(this.kegelkasse.kasse ?? 0);
@@ -197,8 +199,9 @@ export class KegelkasseComponent implements OnInit {
           }
 
         }
-        const amount = Number(result.amount);
-        this.fromAcc = Number(result.id);
+        const acc = result.data as Account;
+        const amount = Number(acc.amount);
+        this.fromAcc = Number(acc.id);
         this.kasse.setValue(amount);
         this.kegelkasse.kasse = amount;
         this.calculate(null, null, 0);
@@ -290,16 +293,18 @@ export class KegelkasseComponent implements OnInit {
           journal.date = this.date.value;
           journal.from_account = this.fromAcc;
           this.backendService.getOneDataByOrder(6002).subscribe({
-            next: (acc) => {
+            next: (result) => {
+              const acc = result.data as Account;
               journal.to_account = acc.id!;
               journal.memo = 'Kegeln ' + new Date(this.date.value).toLocaleString("de-CH", { month: "long" });
               this.backendService.addJournal(journal).subscribe({
                 next: (saveJournal) => {
-                  this.backendService.getOneJournal(saveJournal.id).subscribe({
+                  this.backendService.getOneJournal((saveJournal.data as Journal).id).subscribe({
                     next: (oneJournal) => {
-                      this.kegelkasse.journal = oneJournal
+                      this.kegelkasse.journal = oneJournal.data as Journal;
                       this.backendService.updKegelkasse(this.kegelkasse).subscribe({
-                        next: (newRec) => {
+                        next: (result) => {
+                          const newRec = result.data as Kegelkasse;
                           this.kegelkasse.id = newRec.id;
                           this.kegelkasse.updatedAt = newRec.updatedAt;
                           this.messageService.add({ severity: 'info', detail: "Journaleintrag wurde erstellt", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
@@ -314,8 +319,9 @@ export class KegelkasseComponent implements OnInit {
         }
       }
     } else {
-      this.backendService.updKegelkasse(this.kegelkasse).subscribe({
-        next: (newRec) => {
+      this.backendService.addKegelkasse(this.kegelkasse).subscribe({
+        next: (result) => {
+          const newRec = result.data as Kegelkasse;
           this.kegelkasse.id = newRec.id;
           this.kegelkasse.updatedAt = newRec.updatedAt;
           this.messageService.add({ severity: 'info', detail: "Kegelkasse wurde gespeichert", sticky: false, closable: true, summary: 'Kegelkasse speichern' })
@@ -327,7 +333,7 @@ export class KegelkasseComponent implements OnInit {
     if (tabIndex == 1) {
       this.backendService.getAllKegelkasse(new Date(this.date.value).getFullYear()).subscribe({
         next: (list) => {
-          this.lstKegelkasse = list
+          this.lstKegelkasse = list.data as Kegelkasse[];
           for (const entry of this.lstKegelkasse) {
             entry.datum_date = new Date(entry.datum);
             if (entry.user)

@@ -1,445 +1,470 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Account, Adresse, Anlass, Budget, Clubmeister, Fiscalyear, Journal, Kegelkasse, Kegelmeister, MeisterAdresse, Meisterschaft, MeisterschaftAuswertung, OverviewData, ParamData, Receipt } from '../models/datatypes';
-import { environment } from '@environments/environment';
-import { Package } from '@model/user';
+import { HttpHeaders, HttpClient, HttpRequest } from "@angular/common/http";
+import { Injectable, Type } from "@angular/core";
+import { environment } from "@environments/environment";
+import { ParamData, Fiscalyear, OverviewData, Adresse, Anlass, Meisterschaft, MeisterAdresse, Clubmeister, Kegelmeister, MeisterschaftAuswertung, Journal, Account, Kegelkasse, Receipt, Budget } from "@model/index";
+import { Package } from "@model/user";
+import { Observable } from "rxjs";
 
-@Injectable({
-  providedIn: 'root'
-})
+export interface RetData {
+  data: object | undefined;
+  message: string;
+  type: string;
+}
+
+export interface RetDataFiles extends RetData {
+  data: {files: string[]} | undefined
+}
+
+export interface RetDataFile extends RetData {
+  data: {filename: string} | undefined
+}
+
+@Injectable({ providedIn: 'root' })
 export class BackendService {
 
-  private header! : HttpHeaders;
+  private header!: HttpHeaders;
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient) {
     this.header = new HttpHeaders({
-      //'Access-Control-Allow-Origin': 'http://localhost:4200',
       'Access-Control-Allow-Origin': environment.apiUrlSelf,
       'Access-Control-Allow-Methods': "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-      'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers,Access-Control-Allow-Methods,Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept, Authorization'
-      });
-    console.log(this.header);   
+      'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers,Access-Control-Allow-Methods,Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept, Authorization',
+      'Content-Type': 'application/json'
+    });
+    console.log(this.header);
   }
 
   getAbout(): Observable<Package> {
     const apiURL = environment.apiUrl + '/about';
-    return this.http.get<Package>(apiURL, {headers: this.header});
-  }
-  
-  getParameterData(): Observable<ParamData[]> {
-    const apiURL = environment.apiUrl + '/parameter/data';
-    return this.http.get<ParamData[]>(apiURL, {headers: this.header});
-
+    return this.http.get<Package>(apiURL, { headers: this.header });
   }
 
-  updParameterData(parameter: ParamData): Observable<any> {
-    const apiURL = environment.apiUrl + '/parameter/data'
-    const body = JSON.stringify(parameter)
-    return this.http.post<ParamData>(apiURL, body, {headers: this.header});
-  }
-
-  addParameterData(parameter: ParamData): Observable<any> {
-    const apiURL = environment.apiUrl + '/parameter/data'
-    const body = JSON.stringify(parameter)
-    return this.http.put<ParamData>(apiURL, body, {headers: this.header});
-  }
-
-  getDashboarJournalData(jahr: string): Observable<Fiscalyear> {
-    const apiURL = environment.apiUrl + '/journal/fiscalyear/getOneData?jahr=' + jahr;
-    return this.http.get<Fiscalyear>(apiURL, {headers: this.header});
-  }
-
-  getDashboardAdressData(): Observable<OverviewData[]> {
-    const apiURL = environment.apiUrl + '/club/adressen/overview'
-    return this.http.get<OverviewData[]>(apiURL, {headers: this.header});
-  }
-  getDashboardAnlaesseData(): Observable<OverviewData[]> {
-    const apiURL = environment.apiUrl + '/club/anlaesse/overview'
-    return this.http.get<OverviewData[]>(apiURL, {headers: this.header});
-  }
-  getDashboardClubmeisterData(): Observable<OverviewData[]> {
-    const apiURL = environment.apiUrl + '/club/clubmeister/overview'
-    return this.http.get<OverviewData[]>(apiURL, {headers: this.header});
-  }
-  getDashboardKegelmeisterData(): Observable<OverviewData[]> {
-    const apiURL = environment.apiUrl + '/club/kegelmeister/overview'
-    return this.http.get<OverviewData[]>(apiURL, {headers: this.header});
-  }
-  getAdressenData(): Observable<Adresse[]> {
-    const apiURL = environment.apiUrl + '/club/adressen/alldata'
-    return this.http.get<Adresse[]>(apiURL, {headers: this.header});
-  }
-
-  getAdressenFK(): Observable<any> {
-    const apiURL = environment.apiUrl + '/club/adressen/getFkData'
-    return this.http.get<Adresse[]>(apiURL, {headers: this.header});
-  }
-
-  getOneAdress(id: number): Observable<Adresse> {
-    const apiURL = environment.apiUrl + '/club/adressen/data?id=' + id;
-    return this.http.get<Adresse>(apiURL, {headers: this.header});
-  }
-
-  updateData(adresse: Adresse): Observable<Adresse> {
-    const apiURL = environment.apiUrl + '/club/adressen/data'
-    const body = JSON.stringify(adresse)
-    return this.http.post<Adresse>(apiURL, body, {headers: this.header});
-  }
-
-  removeData(adresse: Adresse) : Observable<any> {
-    const apiURL = environment.apiUrl + '/club/adressen/data'
-    const body = JSON.stringify(adresse)
-    const req = new HttpRequest('DELETE', apiURL, body, {headers: this.header});
-    return this.http.request(req);
-  }
-
-  exportAdressData(filter = {}) : Observable<any> {
-    const apiURL = environment.apiUrl + '/club/adressen/export'
-    const body = JSON.stringify(filter);
-    const req = new HttpRequest('PUT', apiURL, body, {headers: this.header});
-    return this.http.request(req);
-
-  }
-
-  uploadFiles(file: File): Observable<any> {
+  uploadFiles(file: File): Observable<RetData> {
     const apiURL = environment.apiUrl + '/upload';
     const data = new FormData();
     data.append("file", file);
-    const req = new HttpRequest('POST', apiURL, data, {headers: this.header});
-    return this.http.request(req);
+    const headers: HttpHeaders = new HttpHeaders({
+      'Access-Control-Allow-Origin': environment.apiUrlSelf,
+      'Access-Control-Allow-Methods': "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+      'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers,Access-Control-Allow-Methods,Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    });
+    const req = this.http.post<RetData>(apiURL, data, { headers: headers });
+    return req;
   }
 
   downloadFile(filename: string): Observable<any> {
     const apiURL = environment.apiUrl + '/download?filename=' + filename;
-    const req = new HttpRequest('GET', apiURL, {headers: this.header, responseType: 'blob' as 'json'});
+    const req = new HttpRequest('GET', apiURL, { headers: this.header, responseType: 'blob' as 'json' });
     return this.http.request(req);
   }
 
-  sendEmail(emailbody: any): Observable<any> {
-    const apiURL = environment.apiUrl + '/club/adressen/sendmail'
-    const body = JSON.stringify(emailbody)
-    return this.http.post<any>(apiURL, body, {headers: this.header});
+  getParameterData(): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/parameter/list';
+    return this.http.get<RetData>(apiURL, { headers: this.header });
 
   }
 
-  qrBillAdresse(adresse: Adresse): Observable<any> {
-    const apiURL = environment.apiUrl + '/club/adressen/qrbill'
-    const body = JSON.stringify(adresse)
-    const req = new HttpRequest('POST', apiURL, body, {headers: this.header});
-    return this.http.request(req);
+  updParameterData(parameter: ParamData): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/parameter/parameter/' + parameter.id;
+    const body = JSON.stringify(parameter);
+    return this.http.put<RetData>(apiURL, body, { headers: this.header });
   }
 
-  getAnlaesseData(queries: [{key: string, value: string}] | undefined): Observable<Anlass[]> {
-    let apiURL = environment.apiUrl + '/club/anlaesse/data'
+  addParameterData(parameter: ParamData): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/parameter/parameter';
+    const body = JSON.stringify(parameter);
+    return this.http.post<RetData>(apiURL, body, { headers: this.header });
+  }
+
+  delParameterData(parameter: ParamData): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/parameter/parameter/' + parameter.id;
+    return this.http.delete<RetData>(apiURL, { headers: this.header });
+  }
+  
+  getDashboarJournalData(jahr: string): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/fiscalyear/getbyyear?year=' + jahr;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
+  }
+
+  getDashboardAdressData(): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/adresse/overview';
+    return this.http.get<RetData>(apiURL, { headers: this.header });
+  }
+  getDashboardAnlaesseData(): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/anlass/overview';
+    return this.http.get<RetData>(apiURL, { headers: this.header });
+  }
+  getDashboardClubmeisterData(): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/clubmeister/overview';
+    return this.http.get<RetData>(apiURL, { headers: this.header });
+  }
+  getDashboardKegelmeisterData(): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/kegelmeister/overview';
+    return this.http.get<RetData>(apiURL, { headers: this.header });
+  }
+  getAdressenData(): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/adresse/list';
+    return this.http.get<RetData>(apiURL, { headers: this.header });
+  }
+
+  getAdressenFK(): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/adresse/getFkData';
+    return this.http.get<RetData>(apiURL, { headers: this.header });
+  }
+
+  getOneAdress(id: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/adresse/adresse/' + id;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
+  }
+
+  updateAdresse(adresse: Adresse): Observable<RetData> {
+    let apiURL = environment.apiUrl + '/adresse/adresse/';
+    const body = JSON.stringify(adresse);
+    if (adresse.id == undefined || adresse.id == 0) {
+      return this.http.post<RetData>(apiURL, body, { headers: this.header });
+    } else {
+      apiURL += adresse.id;
+      return this.http.put<RetData>(apiURL, body, { headers: this.header });
+    }
+  }
+
+  removeAdresse(adresse: Adresse): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/adresse/adresse/' + adresse.id;
+    const body = JSON.stringify(adresse);
+    return this.http.delete<RetData>(apiURL, { headers: this.header, body: body });
+  }
+
+  exportAdressData(filter = {}): Observable<RetDataFile> {
+    const apiURL = environment.apiUrl + '/adresse/export';
+    const body = JSON.stringify(filter);
+    return this.http.post<RetDataFile>(apiURL, body, { headers: this.header });
+  }
+
+  sendEmail(emailbody: any): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/adresse/sendmail';
+    const body = JSON.stringify(emailbody);
+    return this.http.post<RetData>(apiURL, body, { headers: this.header });
+
+  }
+
+  // TODO
+  qrBillAdresse(adresse: Adresse): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/adresse/qrbill';
+    const body = JSON.stringify(adresse);
+    return this.http.post<RetData>(apiURL, body, { headers: this.header });
+  }
+
+  // TODO: Filter muss noch eingebaut werden
+  getAnlaesseData(fromJahr: string, toJahr: string, queries: [{ key: string; value: string; }] | undefined): Observable<RetData> {
+    let apiURL = environment.apiUrl + `/anlass/list?from=${fromJahr}&to=${toJahr}`;
     if (queries?.length > 0) {
-      apiURL += "?"
+      apiURL += "&";
       queries.forEach((value, ind) => {
         if (ind > 0)
-          apiURL += "&"
-        apiURL += value.key + "=" + value.value
-      })
+          apiURL += "&";
+        apiURL += value.key + "=" + value.value;
+      });
     }
-    return this.http.get<Anlass[]>(apiURL, {headers: this.header});
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  getAnlaesseFKData(): Observable<any> {
-    const apiURL = environment.apiUrl + '/club/anlaesse/getFkData'
-    return this.http.get<Anlass[]>(apiURL, {headers: this.header});
+  getAnlaesseFKData(jahr: string | undefined): Observable<RetData> {
+    let apiURL = environment.apiUrl + '/anlass/getFkData';
+    if (jahr)
+      apiURL += "?jahr=" + jahr
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  addAnlaesseData(anlass: Anlass): Observable<Anlass> {
-    const apiURL = environment.apiUrl + '/club/anlaesse/data'
-    const body = JSON.stringify(anlass)
-    return this.http.put<Anlass>(apiURL, body, {headers: this.header});
+  addAnlaesseData(anlass: Anlass): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/anlass/anlass';
+    const body = JSON.stringify(anlass);
+    return this.http.post<RetData>(apiURL, body, { headers: this.header });
   }
 
-  updAnlaesseData(anlass: Anlass): Observable<Anlass> {
-    const apiURL = environment.apiUrl + '/club/anlaesse/data'
-    const body = JSON.stringify(anlass)
-    return this.http.post<Anlass>(apiURL, body, {headers: this.header});
+  updAnlaesseData(anlass: Anlass): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/anlass/anlass/' + anlass.id;
+    const body = JSON.stringify(anlass);
+    return this.http.put<RetData>(apiURL, body, { headers: this.header });
   }
 
-  delAnlaesseData(anlass: Anlass): Observable<Anlass> {
-    const apiURL = environment.apiUrl + '/club/anlaesse/data'
-    const body = JSON.stringify(anlass)
-    return this.http.delete<Anlass>(apiURL, {headers: this.header, body: body});
+  delAnlaesseData(anlass: Anlass): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/anlass/anlass/' + anlass.id;
+    const body = JSON.stringify(anlass);
+    return this.http.delete<RetData>(apiURL, { headers: this.header, body: body });
   }
 
-  getSheet(params: any): Observable<any> {
-    const apiURL = environment.apiUrl + '/club/anlaesse/sheet'
-    const body = JSON.stringify(params)
-    return this.http.post(apiURL, body, {headers: this.header});
+  getSheet(params: any): Observable<RetDataFile> {
+    let apiURL = environment.apiUrl + '/anlass/writestammblatt?';
+    apiURL += 'jahr=' + params.jahr;
+    apiURL += '&type=' + params.type;
+    if (params.id && params.id > 0)
+      apiURL += '&adresseId=' + params.id;
+    return this.http.get<RetDataFile>(apiURL, { headers: this.header });
   }
 
-  getOneAnlass(id: number): Observable<Anlass> {
-    const apiURL = environment.apiUrl + '/club/anlaesse/data/' + id;
-    return this.http.get(apiURL, {headers: this.header});
+  getOneAnlass(id: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/anlass/anlass/' + id;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  getAdresseMeisterschaft(adresseid: number): Observable<Meisterschaft[]> {
-    const apiURL = environment.apiUrl + '/club//meisterschaft/mitglied?id=' + adresseid + '&type=1';
-    return this.http.get<Meisterschaft[]>(apiURL, {headers: this.header});
+  getAdresseMeisterschaft(adresseid: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/meisterschaft/listmitglied?id=' + adresseid;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  getAdresseMeister(adresseid: number): Observable<MeisterAdresse[]> {
-    const apiURL = environment.apiUrl + '/club//meisterschaft/mitglied?id=' + adresseid + '&type=2';
-    return this.http.get<MeisterAdresse[]>(apiURL, {headers: this.header});
+  getAdresseMeister(adresseid: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/meisterschaft/listmitgliedmeister?id=' + adresseid;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  getMeisterschaft(eventid: number): Observable<Meisterschaft[]> {
-    const apiURL = environment.apiUrl + '/club/meisterschaft/data?eventid=' + eventid;
-    return this.http.get<Meisterschaft[]>(apiURL, {headers: this.header});
+  getMeisterschaft(eventid: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/meisterschaft/listevent?eventid=' + eventid;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  addMeisterschaft(meisterschaft: Meisterschaft): Observable<any> {
-    const apiURL = environment.apiUrl + '/club/meisterschaft/data/';
-    const body = JSON.stringify(meisterschaft)
-    return this.http.post(apiURL, body, {headers: this.header});
+  addMeisterschaft(meisterschaft: Meisterschaft): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/meisterschaft/meisterschaft/';
+    const body = JSON.stringify(meisterschaft);
+    return this.http.post<RetData>(apiURL, body, { headers: this.header });
   }
 
-  updMeisterschaft(meisterschaft: Meisterschaft): Observable<any> {
-    const apiURL = environment.apiUrl + '/club/meisterschaft/data/';
-    const body = JSON.stringify(meisterschaft)
-    return this.http.put(apiURL, body, {headers: this.header});
+  updMeisterschaft(meisterschaft: Meisterschaft): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/meisterschaft/meisterschaft/' + meisterschaft.id;
+    const body = JSON.stringify(meisterschaft);
+    return this.http.put<RetData>(apiURL, body, { headers: this.header });
   }
 
-  delMeisterschaft(meisterschaft: Meisterschaft): Observable<any> {
-    const apiURL = environment.apiUrl + '/club/meisterschaft/data/';
-    return this.http.delete(apiURL, {headers: this.header, body: JSON.stringify(meisterschaft)});
+  delMeisterschaft(meisterschaft: Meisterschaft): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/meisterschaft/meisterschaft/' + meisterschaft.id;
+    return this.http.delete<RetData>(apiURL, { headers: this.header, body: JSON.stringify(meisterschaft) });
   }
 
-  getClubmeister(jahr: number): Observable<Clubmeister[]> {
-    const apiURL = environment.apiUrl + '/club/clubmeister/data?jahr=' + jahr;
-    return this.http.get<Clubmeister[]>(apiURL, {headers: this.header});
+  getClubmeister(jahr: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/clubmeister/list?jahr=' + jahr;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  refreshClubmeister(jahr: number): Observable<any> {
-    const apiURL = environment.apiUrl + '/club/clubmeister/refresh?jahr=' + jahr;
-    return this.http.get<any>(apiURL, {headers: this.header});
+  refreshClubmeister(jahr: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/clubmeister/calcmeister?jahr=' + jahr;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  getKegelmeister(jahr: number): Observable<Kegelmeister[]> {
-    const apiURL = environment.apiUrl + '/club/kegelmeister/data?jahr=' + jahr;
-    return this.http.get<Kegelmeister[]>(apiURL, {headers: this.header});
+  getKegelmeister(jahr: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/kegelmeister/list?jahr=' + jahr;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  refreshKegelmeister(jahr: number): Observable<any> {
-    const apiURL = environment.apiUrl + '/club/kegelmeister/refresh?jahr=' + jahr;
-    return this.http.get<any>(apiURL, {headers: this.header});
+  refreshKegelmeister(jahr: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/kegelmeister/calcmeister?jahr=' + jahr;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  getChartData(jahr: number): Observable<MeisterschaftAuswertung[]> {
-    const apiURL = environment.apiUrl + '/club/meisterschaft/getChartData?jahr=' + jahr;
-    return this.http.get<any>(apiURL, {headers: this.header});
+  getChartData(jahr: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/meisterschaft/getchartdata?jahr=' + jahr;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
 
   }
 
-  getFiscalyear(): Observable<Fiscalyear[]> {
-    const apiURL = environment.apiUrl + '/journal/fiscalyear/data';
-    return this.http.get<Fiscalyear[]>(apiURL, {headers: this.header});
+  getFiscalyear(): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/fiscalyear/list';
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  addFiscalyear(data: Fiscalyear): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/fiscalyear/data';
-    const body = JSON.stringify(data)
-    return this.http.post(apiURL, body, {headers: this.header});
+  addFiscalyear(data: Fiscalyear): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/fiscalyear/fiscalyear';
+    const body = JSON.stringify(data);
+    return this.http.post<RetData>(apiURL, body, { headers: this.header });
   }
 
-  updFiscalyear(data: Fiscalyear): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/fiscalyear/data';
-    const body = JSON.stringify(data)
-    return this.http.put(apiURL, body, {headers: this.header});
+  updFiscalyear(data: Fiscalyear): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/fiscalyear/fiscalyear/' + data.id;
+    const body = JSON.stringify(data);
+    return this.http.put<RetData>(apiURL, body, { headers: this.header });
   }
-  delFiscalyear(data: Fiscalyear): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/fiscalyear/data';
-    const body = JSON.stringify(data)
-    return this.http.delete(apiURL, {headers: this.header, body: body});
+  delFiscalyear(data: Fiscalyear): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/fiscalyear/fiscalyear/' + data.id;
+    const body = JSON.stringify(data);
+    return this.http.delete<RetData>(apiURL, { headers: this.header, body: body });
   }
-  getOneFiscalyear(year: string) : Observable<Fiscalyear> {
-    const apiURL = environment.apiUrl + '/journal/fiscalyear/getOneData?jahr=' + year;
-    return this.http.get<Fiscalyear>(apiURL, {headers: this.header});
+  getOneFiscalyear(year: string): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/fiscalyear/getbyyear?year=' + year;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
 
   }
-  closeFiscalyear(jahr: string, status: number): Observable<any> {
-  const apiURL = environment.apiUrl + '/journal/fiscalyear/close?jahr=' + jahr + '&status=' + status;
-    return this.http.put(apiURL, null, {headers: this.header});
+  closeFiscalyear(jahr: string, status: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/fiscalyear/closeyear?year=' + jahr + '&state=' + status;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
-  getOneAccount(jahr: number, accountid: number): Observable<Journal[]> {
-    const apiURL = environment.apiUrl + '/journal/journal/getAccData?jahr=' + jahr + '&acc=' + accountid;
-    return this.http.get<Journal[]>(apiURL, {headers: this.header});
+  getOneAccount(jahr: number, accountid: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/journal/getaccdata?year=' + jahr + '&account=' + accountid;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
-  getAccount(): Observable<Account[]> {
-    const apiURL = environment.apiUrl + '/journal/account/alldata';
-    return this.http.get<Account[]>(apiURL, {headers: this.header});
+  getAccount(): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/account/list';
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
-  addAccount(data: Account): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/account/data';
-    const body = JSON.stringify(data)
-    return this.http.post(apiURL, body, {headers: this.header});
+  addAccount(data: Account): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/account/account';
+    const body = JSON.stringify(data);
+    return this.http.post<RetData>(apiURL, body, { headers: this.header });
   }
-  updAccount(data: Account): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/account/data';
-    const body = JSON.stringify(data)
-    return this.http.put(apiURL, body, {headers: this.header});
+  updAccount(data: Account): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/account/account/' + data.id;
+    const body = JSON.stringify(data);
+    return this.http.put<RetData>(apiURL, body, { headers: this.header });
   }
-  delAccount(data: Account): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/account/data';
-    const body = JSON.stringify(data)
-    return this.http.delete(apiURL, {headers: this.header, body: body});
+  delAccount(data: Account): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/account/account/' + data.id;
+    const body = JSON.stringify(data);
+    return this.http.delete<RetData>(apiURL, { headers: this.header, body: body });
   }
-  getOneDataByOrder(order: number) : Observable<Account> {
-    const apiURL = environment.apiUrl + '/journal/account/getOneDataByOrder?order=' + order;
-    return this.http.get<Account>(apiURL, {headers: this.header});
+  getOneDataByOrder(order: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/account/getonedatabyorder?order=' + order;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
-  getAmountOneAcc(datum: string, order: number) : Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/account/getAmountOneAcc?datum=' + datum + '&order=' + order;
-    return this.http.get<any>(apiURL, {headers: this.header});
+  getAmountOneAcc(datum: string, order: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/account/getamountoneacc?date=' + datum + '&order=' + order;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
-  getJournal(jahr: number): Observable<Journal[]> {
-    const apiURL = environment.apiUrl + '/journal/journal/data?jahr=' + jahr;
-    return this.http.get<Journal[]>(apiURL, {headers: this.header});
+  getJournal(jahr: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/journal/getbyyear?year=' + jahr;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
-  addJournal(data: Journal): Observable<Journal> {
-    const apiURL = environment.apiUrl + '/journal/journal/data';
-    const body = JSON.stringify(data)
-    return this.http.post(apiURL, body, {headers: this.header});
+  addJournal(data: Journal): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/journal/journal';
+    const body = JSON.stringify(data);
+    return this.http.post<RetData>(apiURL, body, { headers: this.header });
   }
-  updJournal(data: Journal): Observable<Journal> {
-    const apiURL = environment.apiUrl + '/journal/journal/data';
-    const body = JSON.stringify(data)
-    return this.http.put(apiURL, body, {headers: this.header});
+  updJournal(data: Journal): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/journal/journal/' + data.id;
+    const body = JSON.stringify(data);
+    return this.http.put<RetData>(apiURL, body, { headers: this.header });
   }
-  delJournal(data: Journal): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/journal/data';
-    const body = JSON.stringify(data)
-    return this.http.delete(apiURL, {headers: this.header, body: body});
+  delJournal(data: Journal): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/journal/journal/' + data.id;
+    const body = JSON.stringify(data);
+    return this.http.delete<RetData>(apiURL, { headers: this.header, body: body });
   }
-  getKegelkasse(monat: number, jahr: number): Observable<Kegelkasse[]> {
-    const apiURL = environment.apiUrl + '/journal/journal/kegelkasse?monat=' + monat + '&jahr=' + jahr;
-    return this.http.get<Kegelkasse[]>(apiURL, {headers: this.header});
+  getKegelkasse(monat: number, jahr: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/kegelkasse/kassebydatum?monat=' + monat + '&jahr=' + jahr;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
-  getAllKegelkasse(jahr: number): Observable<Kegelkasse[]> {
-    const apiURL = environment.apiUrl + '/journal/journal/allkegelkasse?jahr=' + jahr;
-    return this.http.get<Kegelkasse[]>(apiURL, {headers: this.header});
+  getAllKegelkasse(jahr: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/kegelkasse/kassebyjahr?jahr=' + jahr;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
-  addKegelkasse(data: Journal): Observable<Kegelkasse> {
-    const apiURL = environment.apiUrl + '/journal/keglkasse/data';
-    const body = JSON.stringify(data)
-    return this.http.post<Kegelkasse>(apiURL, body, {headers: this.header});
+  addKegelkasse(data: Kegelkasse): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/keglkasse/kegelkasse';
+    const body = JSON.stringify(data);
+    return this.http.post<RetData>(apiURL, body, { headers: this.header });
   }
-  updKegelkasse(data: Journal): Observable<Kegelkasse> {
-    const apiURL = environment.apiUrl + '/journal/journal/kegelkasse';
-    const body = JSON.stringify(data)
-    return this.http.put<Kegelkasse>(apiURL, body, {headers: this.header});
-  }
-
-  createReceipt(id: number) : Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/journal/kegelR2J?kegelid=' + id;
-    return this.http.get<any>(apiURL, {headers: this.header});
+  updKegelkasse(data: Kegelkasse): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/kegelkasse/kegelkasse/' + data.id;
+    const body = JSON.stringify(data);
+    return this.http.put<RetData>(apiURL, body, { headers: this.header });
   }
 
-  getOneJournal(id: number) : Observable<Journal> {
-    const apiURL = environment.apiUrl + '/journal/journal/onedata?id=' + id;
-    return this.http.get<Journal>(apiURL, {headers: this.header});
+  createReceipt(id: number): Observable<RetDataFile> {
+    const apiURL = environment.apiUrl + '/kegelkasse/genreceipt?kegelkasseId=' + id;
+    return this.http.get<RetDataFile>(apiURL, { headers: this.header });
+  }
+
+  getOneJournal(id: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/journal/journal/' + id;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
 
   }
-  exportJournal(jahr: number, receipt: number) : Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/journal/export?jahr=' + jahr + '&receipt=' + receipt;
-    return this.http.get<any>(apiURL, {headers: this.header});
+  exportJournal(jahr: number, receipt: number): Observable<RetDataFile> {
+    const apiURL = environment.apiUrl + '/journal/write?year=' + jahr + '&receipt=' + receipt;
+    return this.http.get<RetDataFile>(apiURL, { headers: this.header });
 
   }
-  getAttachment(id: number, jahr: number) : Observable<Receipt[]> {
-    const apiURL = environment.apiUrl + '/journal/journal/getAtt?id=' + id + '&jahr=' + jahr;
-    return this.http.get<Receipt[]>(apiURL, {headers: this.header});
+  getAttachment(id: number, jahr: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/receipt/findatt?journalid=' + id;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
 
   }
-  getAllAttachment(jahr: number, journalid?: number) : Observable<Receipt[]> {
-    let apiURL = environment.apiUrl + '/journal/journal/getAllAtt?jahr=' + jahr;
+  getAllAttachment(jahr: number, journalid?: number): Observable<RetData> {
+    let apiURL = environment.apiUrl + '/receipt/findallatt?jahr=' + jahr;
     if (journalid)
       apiURL += '&journalid=' + journalid;
-    return this.http.get<Receipt[]>(apiURL, {headers: this.header});
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 
   uploadAtt(reciept: string): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/journal/uploadAtt?receipt=' + reciept;
-    return this.http.get(apiURL, {headers: this.header, responseType: 'blob'});
+    const apiURL = environment.apiUrl + '/receipt/uploadatt?receipt=' + reciept;
+    return this.http.get(apiURL, { headers: this.header, responseType: 'blob' });
 
   }
-  delAtt(journalid: number, receipt: Receipt): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/journal/delAtt';
-    const body = {'journalid': journalid, 'receiptid': receipt.id}
-    return this.http.delete(apiURL, {headers: this.header, body: JSON.stringify(body)});
+  delAtt(journalid: number, receipt: Receipt): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/receipt/receipt/' + receipt.id;
+    return this.http.delete<RetData>(apiURL, { headers: this.header });
   }
 
-  addReceipt(jahr: string, files: string): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/journal/addReceipt';
-    const body = {jahr: jahr,  uploadFiles: files};
-    return this.http.post(apiURL, JSON.stringify(body), {headers: this.header});
+  addReceipt(jahr: string, files: string): Observable<RetDataFiles> {
+    const apiURL = environment.apiUrl + '/receipt/receipt';
+    const body = { jahr: jahr, uploadFiles: files };
+    return this.http.post<RetDataFiles>(apiURL, JSON.stringify(body), { headers: this.header });
   }
 
-  updReceipt(receipt: Receipt): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/journal/updReceipt';
+  updReceipt(receipt: Receipt): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/receipt/receipt/' + receipt.id;
     const body = receipt;
-    return this.http.put(apiURL, JSON.stringify(body), {headers: this.header});
+    return this.http.put<RetData>(apiURL, JSON.stringify(body), { headers: this.header });
   }
 
-  delReceipt(receipt: Receipt): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/journal/delReceipt';
-    const body = receipt
-    return this.http.delete(apiURL, {headers: this.header, body: JSON.stringify(body)});
+  delReceipt(receipt: Receipt): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/receipt/receipt/' + receipt.id;
+    return this.http.delete<RetData>(apiURL, { headers: this.header });
   }
 
-  bulkAddReceipt(jahr: string, journalid: number, files: string): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/journal/bulkAtt?jahr=' + jahr + '&journalid=' + journalid;
-    const body = {uploadFiles: files};
-    return this.http.post(apiURL, JSON.stringify(body), {headers: this.header});
+  bulkAddReceipt(jahr: string, journalid: number, files: string): Observable<RetDataFiles> {
+    const apiURL = environment.apiUrl + '/receipt/att2journal';
+    const body = { uploadFiles: files, year: jahr, journalid: journalid };
+    return this.http.post<RetDataFiles>(apiURL, JSON.stringify(body), { headers: this.header });
   }
 
-  addAtt(journalid: number, receipt: Receipt[]): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/journal/addR2J?journalid=' + journalid;
+  addAtt(journalid: number, receipt: Receipt[]): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/journalreceipt/add2journal?journalid=' + journalid;
     const body = JSON.stringify(receipt);
-    return this.http.put(apiURL, body, {headers: this.header});
+    return this.http.put<RetData>(apiURL, body, { headers: this.header });
   }
 
-  getBudget(jahr: number): Observable<Budget[]> {
-    const apiURL = environment.apiUrl + '/journal/budget/data?jahr=' + jahr;
-    return this.http.get<Budget[]>(apiURL, {headers: this.header});
+  getBudget(jahr: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/budget/list?jahr=' + jahr;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
-  addBudget(data: Budget): Observable<Budget> {
-    const apiURL = environment.apiUrl + '/journal/budget/data';
-    const body = JSON.stringify(data)
-    return this.http.post(apiURL, body, {headers: this.header});
+  addBudget(data: Budget): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/budget/budget';
+    const body = JSON.stringify(data);
+    return this.http.post<RetData>(apiURL, body, { headers: this.header });
   }
-  updBudget(data: Budget): Observable<Budget> {
-    const apiURL = environment.apiUrl + '/journal/budget/data';
-    const body = JSON.stringify(data)
-    return this.http.put(apiURL, body, {headers: this.header});
+  updBudget(data: Budget): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/budget/budget/' + data.id;
+    const body = JSON.stringify(data);
+    return this.http.put<RetData>(apiURL, body, { headers: this.header });
   }
-  delBudget(data: Budget): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/budget/data';
-    const body = JSON.stringify(data)
-    return this.http.delete(apiURL, {headers: this.header, body: body});
+  delBudget(data: Budget): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/budget/budget/' + data.id;
+    return this.http.delete<RetData>(apiURL, { headers: this.header });
   }
-  copyBudget(yearFrom: number, yearTo: number): Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/budget/copyyear?from='+yearFrom+'&to='+yearTo;
-    return this.http.put(apiURL, {headers: this.header});
-  }
-
-  showAccData(jahr: number) : Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/account/showData?jahr='+jahr;
-    return this.http.get(apiURL, {headers: this.header});
-
+  copyBudget(yearFrom: number, yearTo: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/budget/copyyear?from=' + yearFrom + '&to=' + yearTo;
+    return this.http.put<RetData>(apiURL, { headers: this.header });
   }
 
-  exportAccData(jahr: number) : Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/fiscalyear/export?jahr='+jahr;
-    return this.http.get(apiURL, {headers: this.header});
+  showAccData(jahr: number): Observable<RetData> {
+    const apiURL = environment.apiUrl + '/account/getaccjahr?jahr=' + jahr;
+    return this.http.get<RetData>(apiURL, { headers: this.header });
   }
-  exportAccountData(jahr: number) : Observable<any> {
-    const apiURL = environment.apiUrl + '/journal/account/export?jahr='+jahr;
-    return this.http.get(apiURL, {headers: this.header});
+
+  exportAccData(jahr: number): Observable<RetDataFile> {
+    const apiURL = environment.apiUrl + '/fiscalyear/writebilanz?year=' + jahr;
+    return this.http.get<RetDataFile>(apiURL, { headers: this.header });
+  }
+  exportAccountData(jahr: number): Observable<RetDataFile> {
+    const apiURL = environment.apiUrl + '/account/writekontoauszug?year=' + jahr;
+    return this.http.get<RetDataFile>(apiURL, { headers: this.header });
   }
 }

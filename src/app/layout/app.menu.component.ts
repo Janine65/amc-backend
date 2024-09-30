@@ -3,7 +3,7 @@ import { LayoutService } from '../service/app.layout.service';
 import { MenuItem, MessageService } from 'primeng/api';
 import { AccountService } from '@service/account.service';
 import { User } from '@model/user';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, Subject, take, takeUntil, takeWhile } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,25 +14,28 @@ import { Router } from '@angular/router';
 export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
 
     public model!: MenuItem[];
-    private destroyed$: ReplaySubject<boolean> = new ReplaySubject(1);
+    private destroyed$ = new Subject<boolean>();
 
-    constructor(public layoutService: LayoutService, 
+    constructor(public layoutService: LayoutService,
         private router: Router,
         private messages: MessageService,
         private accountService: AccountService) {
 
     }
     ngOnChanges(): void {
-        console.log('ngOnChagnes')
-        this.refreshMenu(this.accountService.userValue)
+        console.log('ngOnChanges')
+        this.refreshMenu(this.accountService.userValue);
+
     }
     ngOnDestroy(): void {
-        this.destroyed$.next(true);
+        this.destroyed$.next(false);
         this.destroyed$.complete();
     }
 
     ngOnInit() {
         this.refreshMenu(this.accountService.userValue);
+        this.accountService.userSubject
+            .subscribe((user) => this.refreshMenu(user));
     }
 
     refreshMenu(user: User | undefined) {
@@ -45,24 +48,24 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
                     await this.loggoutUser();
                 }
             },
-            {
-                label: 'Mein Profil',
-                icon: 'pi pi-user-edit',
-                routerLink: ['/account/profile']
-            },
-            {
-                label: 'Alle gespeicherten Einstellung löschen',
-                icon: 'pi pi-trash',
-                command: () => {
-                    this.clearStorage();
-                }
-            });
+                {
+                    label: 'Mein Profil',
+                    icon: 'pi pi-user-edit',
+                    routerLink: ['/account/profile']
+                },
+                {
+                    label: 'Alle gespeicherten Einstellung löschen',
+                    icon: 'pi pi-trash',
+                    command: () => {
+                        this.clearStorage();
+                    }
+                });
 
             if (this.accountService.userValue.role === 'admin')
                 userMenu.push({
-                label: 'Users',
-                icon: 'pi pi-fw pi-users',
-                routerLink: ['/users']
+                    label: 'Users',
+                    icon: 'pi pi-fw pi-users',
+                    routerLink: ['/users']
                 });
         }
 
@@ -71,7 +74,7 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
                 label: '',
                 items: [
                     { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
-                ]                
+                ]
             }];
 
         if (user?.role) {
@@ -82,7 +85,7 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
                         items: [
                             { label: 'Adressen', icon: 'pi pi-fw pi-id-card', routerLink: ['/verwaltung/adressen'] },
                             { label: 'Anlässe', icon: 'pi pi-fw pi-calendar', routerLink: ['/verwaltung/anlaesse'] },
-                            user.role === 'admin' ? { label: 'Parameters', icon: 'pi pi-fw pi-bookmark', routerLink: ['/verwaltung/parameter'] } : {visible: false},
+                            user.role === 'admin' ? { label: 'Parameters', icon: 'pi pi-fw pi-bookmark', routerLink: ['/verwaltung/parameter'] } : { visible: false },
                         ]
                     },
                     {
@@ -107,7 +110,7 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
                     ]
                 }
             )
-            this.model.push({separator: true});
+            this.model.push({ separator: true });
         }
         if (userMenu.length > 0)
             this.model.push(
@@ -116,17 +119,17 @@ export class AppMenuComponent implements OnInit, OnDestroy, OnChanges {
                     items: userMenu
                 });
         else
-        this.model.push(
-            { 
-                label: '',
-                items: [
-                    {                
-                        label: 'Anmelden',
-                        icon: 'pi pi-sign-in',
-                        command: () => { this.clickUser() }
-                    }
-                ]
-            });
+            this.model.push(
+                {
+                    label: '',
+                    items: [
+                        {
+                            label: 'Anmelden',
+                            icon: 'pi pi-sign-in',
+                            command: () => { this.clickUser() }
+                        }
+                    ]
+                });
 
 
     }

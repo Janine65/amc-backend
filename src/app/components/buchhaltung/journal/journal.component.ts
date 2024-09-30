@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, OnInit } from '@angular/core';
 import { Account, Fiscalyear, Journal, ParamData } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { BackendService } from '@app/service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -151,16 +151,16 @@ export class JournalComponent implements OnInit {
       this.backendService.getAccount(),
       this.backendService.getOneFiscalyear(this.selJahr.toString())
     ).pipe(map(([list1, list2, result]) => {
-      this.lstJournal = list1;
+      this.lstJournal = list1.data as Journal[];
       this.lstJournal.forEach(x => {
         x.date_date = new Date(x.date);
-        x.fromAcc = x.fromAccount?.longname;
-        x.from_account = x.fromAccount?.id;
-        x.toAcc = x.toAccount?.longname;
-        x.to_account = x.toAccount?.id;
+        x.fromAcc = x.fromAccountAccount?.longname;
+        x.from_account = x.fromAccountAccount?.id;
+        x.toAcc = x.toAccountAccount?.longname;
+        x.to_account = x.toAccountAccount?.id;
       })
-      this.lstAccounts = list2;
-      this.selFiscalyear = result;
+      this.lstAccounts = list2.data as Account[];
+      this.selFiscalyear = result.data as Fiscalyear;
       if (!this.selFiscalyear || this.selFiscalyear.state == 3)
         this.toolbar = this.toolbarRO
       else
@@ -188,13 +188,13 @@ export class JournalComponent implements OnInit {
   fromAccountSel(acc: Account) {
     // document why this method 'fromAccountSel' is empty
     this.lstFromAccounts = []
-    this.selJournal.fromAccount = acc;
+    this.selJournal.fromAccountAccount = acc;
   }
 
   toAccountSel(acc: Account) {
     // document why this method 'fromAccountSel' is empty
     this.lstToAccounts = []
-    this.selJournal.toAccount = acc;
+    this.selJournal.toAccountAccount = acc;
   }
 
   fromAccountSearch(event: AutoCompleteCompleteEvent) {
@@ -250,7 +250,8 @@ export class JournalComponent implements OnInit {
     thisRef.backendService.exportJournal(thisRef.selJahr, 0).subscribe({
       next: (result) => {
         if (result.type == 'info') {
-          thisRef.backendService.downloadFile(result.filename).subscribe(
+          const filename = result.data.filename;
+          thisRef.backendService.downloadFile(filename).subscribe(
             {
               next(data) {
                 if (data.body) {
@@ -258,7 +259,7 @@ export class JournalComponent implements OnInit {
                   const downloadURL = window.URL.createObjectURL(blob);
                   const link = document.createElement('a');
                   link.href = downloadURL;
-                  link.download = result.filename;
+                  link.download = filename;
                   link.click();
                   thisRef.messageService.clear();
                 }
@@ -278,7 +279,8 @@ export class JournalComponent implements OnInit {
     thisRef.backendService.exportJournal(thisRef.selJahr, 1).subscribe({
       next: (result) => {
         if (result.type == 'info') {
-          thisRef.backendService.downloadFile(result.filename).subscribe(
+          const filename = result.data.filename;
+          thisRef.backendService.downloadFile(filename).subscribe(
             {
               next(data) {
                 if (data.body) {
@@ -286,7 +288,7 @@ export class JournalComponent implements OnInit {
                   const downloadURL = window.URL.createObjectURL(blob);
                   const link = document.createElement('a');
                   link.href = downloadURL;
-                  link.download = result.filename;
+                  link.download = filename;
                   link.click();
                   thisRef.messageService.clear();
                 }
@@ -453,8 +455,8 @@ export class JournalComponent implements OnInit {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let sub: Observable<any>;
 
-    this.selJournal.from_account = this.selJournal.fromAccount?.id;
-    this.selJournal.to_account = this.selJournal.toAccount?.id;
+    this.selJournal.from_account = this.selJournal.fromAccountAccount?.id;
+    this.selJournal.to_account = this.selJournal.toAccountAccount?.id;
     this.selJournal.date = `${this.selJournal.date_date.getFullYear()}-${this.selJournal.date_date.toLocaleString('default', { month: '2-digit' })}-${this.selJournal.date_date.toLocaleString('default', { day: '2-digit' })}`;
 
     if (this.addMode) {
@@ -465,21 +467,23 @@ export class JournalComponent implements OnInit {
     sub.subscribe(
       {
         next: (record) => {
-          this.backendService.getOneJournal(record.id).subscribe(
+          const jour = record.data as Journal;
+          this.backendService.getOneJournal(jour.id).subscribe(
             {
               next: (result) => {
-                result.date_date = new Date(result.date);
-                result.fromAcc = result.fromAccount?.longname;
-                result.from_account = result.fromAccount?.id;
-                result.toAcc = result.toAccount?.longname;
-                result.to_account = result.toAccount?.id;
+                const jour = result.data as Journal;
+                jour.date_date = new Date(jour.date);
+                jour.fromAcc = jour.fromAccountAccount?.longname;
+                jour.from_account = jour.fromAccountAccount?.id;
+                jour.toAcc = jour.toAccountAccount?.longname;
+                jour.to_account = jour.toAccountAccount?.id;
 
                 if (this.addMode) {
-                  this.lstJournal.push(result);
+                  this.lstJournal.push(jour);
                   this.lstJournal.sort((a: Journal, b: Journal) => (a.journalno && b.journalno ? a.journalno - b.journalno : (a.date_date < b.date_date ? -1 : 1)))
                 }
                 else
-                  this.lstJournal = this.lstJournal.map(obj => [result].find(o => o.id === obj.id) ?? obj);
+                  this.lstJournal = this.lstJournal.map(obj => [jour].find(o => o.id === obj.id) ?? obj);
 
                 this.clearFields();
 

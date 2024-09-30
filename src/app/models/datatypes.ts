@@ -72,7 +72,7 @@ export class Anlass extends TableData {
     public longname?: StringEmpty;
     public status?: NumberEmpty;
     public vorjahr?: StringEmpty;
-    public linkedEvent?: {vorjahr?: StringEmpty};
+    public anlaesse?: Anlass;
   }
 
 export class Meisterschaft extends TableData {
@@ -87,7 +87,7 @@ export class Meisterschaft extends TableData {
     public zusatz?: NumberEmpty;
     public streichresultat?: NumberEmpty;
     public total_kegel?: NumberEmpty;
-    public teilnehmer?: {id?: NumberEmpty; fullname?: StringEmpty};
+    public mitglied?: {id?: NumberEmpty; fullname?: StringEmpty};
     public jahr?: NumberEmpty;
     public datum?: StringEmpty;
     public event_datum_date?: DateEmpty;
@@ -174,11 +174,11 @@ export class Clubmeister extends TableData {
     fromAcc?: StringEmpty;
     to_account?: NumberEmpty;
     toAcc?: StringEmpty;
-    fromAccount?: Account;
-    toAccount?: Account;
+    fromAccountAccount?: Account;
+    toAccountAccount?: Account;
     haben?: NumberEmpty;
     soll?: NumberEmpty;
-    journal2receipt? : JournalReceipt;
+    journalReceipts? : JournalReceipt;
   }
 
   export class Kegelkasse extends TableData {

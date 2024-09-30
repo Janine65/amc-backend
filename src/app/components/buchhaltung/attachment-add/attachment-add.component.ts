@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BackendService } from '@service/backend.service';
+import { BackendService } from '@app/service';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
@@ -33,13 +33,10 @@ export class AttachmentAddComponent {
         this.backendService.uploadFiles(f)
         .subscribe({
           next: (response) => {
-            if (response.body) {
-              const body = response.body;
-              if (body['status'] == 'ok') {
-                const files = body.files;
-                if (files.file.originalFilename == f.name)
+            if (response.type == 'info') {
+                const files = response.data as any;
+                if (files.file[0].originalFilename == f.name)
                   this.uploadFiles.push(f)
-              }
             }  
           },
           complete: () => {

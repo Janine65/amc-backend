@@ -5,8 +5,8 @@
                 <div class="field col-12 md:col-6 mt-4">
                     <label for="datum" class="mr-2 ">Datum</label>
                     <p-calendar dateFormat="dd.mm.yy" id="datum" name="datum" [required]="true"
-                        class="p-2 appearance-none outline-none w-full"
-                        [(ngModel)]="anlass.datum_date"></p-calendar>
+                        class="p-2 appearance-none outline-none w-full" appendTo="body"
+                        [(ngModel)]="anlass.datum_date" (onSelect)="getAnlaesse()"></p-calendar>
                 </div>
                 <div class="field col-12 md:col-6">
                     <label for="status">Status</label>
@@ -58,7 +58,7 @@
                     <p-dropdown id="vorjahr" [options]="dlstFKAnlaesse" optionLabel="value" optionValue="id"
                         [filter]="true" filterBy="value" [autoDisplayFirst]="false" [showClear]="true" name="vorjahr"
                         class="mr-2 text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
-                        [(ngModel)]="anlass.anlaesseid" [style.width.%]="80"></p-dropdown>
+                        [(ngModel)]="anlass.anlaesseid" [style.width.%]="80" appendTo="body"></p-dropdown>
                 </div>
             </div>
         </div>

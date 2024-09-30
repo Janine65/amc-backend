@@ -3,7 +3,7 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Journal, ParamData } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { BackendService } from '@app/service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -66,7 +66,7 @@ export class KontoBewegungenComponent implements OnInit {
   private readJournal() {
     from(this.backendService.getOneAccount(this.selJahr, this.accountId))
       .subscribe(list => {
-        this.lstJournal = list;
+        this.lstJournal = list.data as Journal[];
         console.log(list);
         this.lstJournal.forEach(x => {
           x.date_date = new Date(x.date);

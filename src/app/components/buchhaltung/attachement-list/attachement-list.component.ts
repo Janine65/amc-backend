@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { Component } from '@angular/core';
 import { Receipt } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { BackendService, RetDataFile } from '@app/service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -57,12 +57,12 @@ export class AttachementListComponent {
     if (this.configType == 'one' && this.journalid) {
       this.backendService.getAttachment(this.journalid, this.jahr)
         .subscribe(list => {
-          this.lstReceipts = list;
+          this.lstReceipts = list.data as Receipt[];
         });
     } else {
       this.backendService.getAllAttachment(this.jahr, this.journalid)
         .subscribe(list => {
-          this.lstReceipts = list;
+          this.lstReceipts = list.data as Receipt[];
           this.cols.push({ field: 'cntjournal', header: 'Anzahl Journaleinträge', format: false, sortable: true, filtering: false, filter: undefined, pipe: DecimalPipe, args: '1.0-0' })
         });
       if (this.configType == 'add' && this.journalid) {
@@ -144,8 +144,7 @@ export class AttachementListComponent {
             accept: () => {
               thisRef.backendService.delReceipt(selRec).subscribe(
                 {
-                  next: (result) => {
-                    console.log(result);
+                  next: () => {
                     thisRef.lstReceipts.splice(thisRef.lstReceipts.indexOf(selRec), 1)
                     thisRef.messageService.add({ summary: "Attachment löschen", detail: "Das Attachment wurde gelöscht", severity: "info", sticky: false })
                   }

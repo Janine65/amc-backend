@@ -42,6 +42,14 @@ export class LayoutService {
         menuHoverActive: false
     };
 
+    private _userActiveSince: Date = new Date();
+    public get userActiveSince(): Date {
+        return this._userActiveSince;
+    }
+    public set userActiveSince(value: Date) {
+        this._userActiveSince = value;
+    }
+    
     private configUpdate = new Subject<AppConfig>();
 
     private overlayOpen = new Subject<any>();

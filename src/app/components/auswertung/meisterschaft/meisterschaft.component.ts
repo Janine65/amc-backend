@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Clubmeister, Kegelmeister, ParamData } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { BackendService } from '@app/service';
 import { MessageService } from 'primeng/api';
 import { map, zip } from 'rxjs';
 
@@ -83,8 +83,8 @@ export class MeisterschaftComponent implements OnInit {
     zip(this.backendService.getClubmeister(this.selJahr),
     this.backendService.getKegelmeister(this.selJahr))
     .pipe(map(([list1, list2]) => {
-      this.lstClubmeister = list1;
-      this.lstKegelmeister = list2;
+      this.lstClubmeister = list1.data as Clubmeister[];
+      this.lstKegelmeister = list2.data as Kegelmeister[];
       this.loading = false; 
       this.getHeight();
     }))

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from '@angular/core';
 import { Account } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { BackendService } from '@app/service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -66,7 +66,7 @@ export class KontenComponent implements OnInit {
 
     from(this.backendService.getAccount())
     .subscribe(list => {
-      this.lstAccount = list;
+      this.lstAccount = list.data as Account[];
       this.lstAccount.forEach(rec => {
         if (rec.status === 0)
           rec.classRow = 'inactive'
@@ -169,7 +169,8 @@ export class KontenComponent implements OnInit {
       {complete: () => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.backendService.getOneDataByOrder(this.selAccount.order!).subscribe(
-          { next: (entry) => {
+          { next: (result) => {
+            const entry = result.data as Account;
             if (this.addMode) {
               this.lstAccount.push(this.selAccount);
               this.lstAccount.sort((a : Account, b : Account) => (a.order ? a.order : 0)  - (b.order ? b.order : 0))

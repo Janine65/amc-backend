@@ -25,7 +25,7 @@
                     <div class="field grid">
                         <label for="fromAcc" class="col-12 mb-2 md:col-2 md:mb-0">Konto Soll</label>
                         <div class="col-12 md:col-10">
-                            <p-autoComplete name="fromAcc" [(ngModel)]="selJournal.fromAccount"
+                            <p-autoComplete name="fromAcc" [(ngModel)]="selJournal.fromAccountAccount"
                                 [disabled]="!editMode && !addMode" [suggestions]="lstFromAccounts"
                                 (completeMethod)="fromAccountSearch($event)" field="longname" [dropdown]="false"
                                 (onSelect)="fromAccountSel($event.value)" [forceSelection]="true">
@@ -35,7 +35,7 @@
                     <div class="field grid">
                         <label for="toAcc" class="col-12 mb-2 md:col-2 md:mb-0">Konto Haben</label>
                         <div class="col-12 md:col-10">
-                            <p-autoComplete name="toAcc" [(ngModel)]="selJournal.toAccount"
+                            <p-autoComplete name="toAcc" [(ngModel)]="selJournal.toAccountAccount"
                                 [disabled]="!editMode && !addMode" [suggestions]="lstToAccounts"
                                 (completeMethod)="toAccountSearch($event)" field="longname" [dropdown]="false"
                                 (onSelect)="toAccountSel($event.value)" [forceSelection]="true">

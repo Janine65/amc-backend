@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
-import { BackendService } from '@service/backend.service';
+import { BackendService } from '@app/service';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 
 

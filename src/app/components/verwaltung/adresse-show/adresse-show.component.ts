@@ -1,7 +1,7 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { MeisterAdresse, Meisterschaft } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { Anlass, MeisterAdresse, Meisterschaft } from '@model/datatypes';
+import { BackendService } from '@app/service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -68,11 +68,11 @@ export class AdresseShowComponent {
       this.backendService.getAdresseMeister(this.adresseid))
       .pipe(map((result) => {
         console.log(result);
-        this.lstEvents = result[0];
+        this.lstEvents = result[0].data as Anlass[];
         this.lstEvents.forEach(rec => {
           rec.event_datum_date = new Date(rec.datum!);
         })
-        this.lstMeister = result[1];
+        this.lstMeister = result[1].data as MeisterAdresse[];
       }))
       .subscribe();
     

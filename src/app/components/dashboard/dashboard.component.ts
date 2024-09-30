@@ -2,7 +2,7 @@
 /* eslint-disable prefer-spread */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, combineLatest, from, map, zip } from 'rxjs';
-import { BackendService } from '@app/service/backend.service';
+import { BackendService } from '@app/service';
 import { Fiscalyear, OverviewData, ParamData } from 'src/app/models/datatypes';
 import pkg from './../../../../package.json';
 
@@ -30,8 +30,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     
     this.subs = from(this.backendService.getParameterData())
     .subscribe(async list => {
-      this.parameter = list;
-      localStorage.setItem('parameter', JSON.stringify(list));
+      this.parameter = list.data as ParamData[];
+      localStorage.setItem('parameter', JSON.stringify(this.parameter));
       const element = this.parameter.find(element => element.key === 'CLUBJAHR');
       if (element) {
         this.jahr = element.value;      
@@ -46,25 +46,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.backendService.getDashboardKegelmeisterData(),
           this.backendService.getDashboarJournalData(this.jahr)
           )
-        .pipe(map(([about, list1, list2, list3, list4, fiscal]) => {
+        .pipe(map(([about, list1, list2, list3, list4, retdata]) => {
           localStorage.setItem('aboutBackend', JSON.stringify(about));
           localStorage.setItem('aboutFrontend', JSON.stringify(pkg));
-          this.dashboarData.push.apply(this.dashboarData, list1);
-          this.dashboarData.push.apply(this.dashboarData, list2);
-          this.dashboarData.push.apply(this.dashboarData, list3);
-          this.dashboarData.push.apply(this.dashboarData, list4);
-          this.fiscalyear = fiscal;
-          if (fiscal) {
+          this.dashboarData.push.apply(this.dashboarData, list1.data);
+          this.dashboarData.push.apply(this.dashboarData, list2.data);
+          this.dashboarData.push.apply(this.dashboarData, list3.data);
+          this.dashboarData.push.apply(this.dashboarData, list4.data);
+          this.fiscalyear = retdata.data as Fiscalyear;
+          if (this.fiscalyear) {
             let value = ''
-            switch (fiscal.state) {
+            switch (this.fiscalyear.state) {
               case 1:
-                value = fiscal.name + " - offen"
+                value = this.fiscalyear.name + " - offen"
                 break;
               case 2:
-                value = fiscal.name + " - prov. abgeschlossen"
+                value = this.fiscalyear.name + " - prov. abgeschlossen"
                 break;
               default:
-                value = fiscal.name + " - abgeschlossen"
+                value = this.fiscalyear.name + " - abgeschlossen"
                 break;
             }
             this.dashboarData.push({label: 'Buchhaltung', value: value})

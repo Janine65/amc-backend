@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, HostListener } from '@angular/core';
 import { Account, Budget, Fiscalyear, ParamData } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { BackendService } from '@app/service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { map, zip } from 'rxjs';
 
@@ -44,7 +44,8 @@ export class BudgetComponent {
 
     this.backendService.getAccount().subscribe({
       next: (list) => {
-        list.forEach(rec => {
+        const lAcc = list.data as Account[];
+        lAcc.forEach(rec => {
           if (rec.level && rec.level >= 4)
             this.lstAccounts.push(rec)
         })
@@ -73,7 +74,7 @@ export class BudgetComponent {
     zip(this.backendService.getBudget(this.selJahr),
     this.backendService.getOneFiscalyear(this.selJahr.toFixed(0))
     ).pipe(map(([list, result]) => {
-      this.lstBudget = list;
+      this.lstBudget = list.data as Budget[];
       this.lstBudget.forEach( rec => {
         rec.acc_id = rec.acc?.id
         rec.acc_name = rec.acc?.name
@@ -81,7 +82,7 @@ export class BudgetComponent {
         if (rec.acc?.status == 0)
           rec.classRow = 'inactive';
       })
-      this.selFiscalyear = result;
+      this.selFiscalyear = result.data as Fiscalyear;
       this.loading = false;
 
     })).subscribe();

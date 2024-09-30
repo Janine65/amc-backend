@@ -78,14 +78,11 @@ export class EmailDialogComponent implements OnInit, OnDestroy {
     for (const f of files) {
       this.backendService.uploadFiles(f)
         .subscribe(response => {
-          if (response.body) {
-            const body = response.body;
-            if (body['status'] == 'ok') {
+          if (response.type == 'info') {
               this.uploadProgress = 100;
-              const files = body.files;
-              if (files.file.originalFilename == f.name)
+              const files = response.data as any;
+              if (files.file[0].originalFilename == f.name)
                 this.uploadFiles.push(f)
-            }
           }
         })
     }
@@ -125,7 +122,7 @@ export class EmailDialogComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     if (this.uploadFiles.length > 0) {
-      this.emailBody.uploadFiles = this.uploadFiles.map((file) => file.name).join(',');
+      this.emailBody.email_uploadfiles = this.uploadFiles.map((file) => file.name).join(',');
     }
 
     if (this.emailBody.email_signature == undefined) {
@@ -141,13 +138,13 @@ export class EmailDialogComponent implements OnInit, OnDestroy {
           next: (res) => {
             console.log(res);
             this.loading = false;
-            if (res.response == "250 Message received")
+            if (res.type == "250 Message received")
               this.messageService.add({ summary: 'OK: Email senden: Email wurde versandt.', severity: 'info', sticky: false, closable: false, life: 2000 })
             this.ref.close(res);
           },
           error: (res) => {
             this.loading = false;
-            this.messageService.add({ summary: 'Fehler: Email senden: ' + res.response, severity: 'error', sticky: true, closable: true })
+            this.messageService.add({ summary: 'Fehler: Email senden: ' + res.message, severity: 'error', sticky: true, closable: true })
           }
         }
       )

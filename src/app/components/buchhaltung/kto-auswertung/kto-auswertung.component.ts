@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { AccountAuswertung, ParamData } from '@model/datatypes';
-import { BackendService } from '@service/backend.service';
+import { Account, AccountAuswertung, ParamData } from '@model/datatypes';
+import { BackendService } from '@app/service';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -45,8 +45,8 @@ export class KtoAuswertungComponent {
     // Read Data
     this.backendService.showAccData(this.selJahr).subscribe({
       next: (result) => {
-        if (result.length > 0) {
-          this.lstAccountData = result;
+        if ((result.data as Object[]).length > 0) {
+          this.lstAccountData = result.data as AccountAuswertung[];
           this.lstAktivNodes = [];
           this.lstPassivNodes = [];
           this.lstAufwandNodes = [];
@@ -141,7 +141,8 @@ export class KtoAuswertungComponent {
     this.backendService.exportAccData(this.selJahr).subscribe({
       next: (result) => {
         if (result.type == 'info') {
-          this.backendService.downloadFile(result.filename).subscribe(
+          const filename = result.data.filename;
+          this.backendService.downloadFile(filename).subscribe(
             {
               next(data) {
                 if (data.body) {
@@ -149,7 +150,7 @@ export class KtoAuswertungComponent {
                   const downloadURL = window.URL.createObjectURL(blob);
                   const link = document.createElement('a');
                   link.href = downloadURL;
-                  link.download = result.filename;
+                  link.download = filename;
                   link.click();
                 }
               },
