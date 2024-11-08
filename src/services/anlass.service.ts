@@ -17,10 +17,15 @@ const sFirstRow = 13;
 
 @Service()
 export class AnlassService {
-  public async findAllAnlass(fromYear: string, toYear: string): Promise<Anlass[]> {
+  public async findAllAnlass(fromYear: string, toYear: string, istkegeln: boolean | undefined): Promise<Anlass[]> {
+    const sWhere: WhereOptions<AnlassAttributes> = {};
+    if (istkegeln) {
+      sWhere.istkegeln = istkegeln
+    }
     const allAnlass: Anlass[] = await Anlass.findAll({
       where: [Sequelize.where(Sequelize.fn("year", Sequelize.col("Anlass.datum")),Op.gte,fromYear), 
-      Sequelize.where(Sequelize.fn("year", Sequelize.col("Anlass.datum")), Op.lte,toYear)],
+      Sequelize.where(Sequelize.fn("year", Sequelize.col("Anlass.datum")), Op.lte,toYear),
+      sWhere],
       include: {
         model: Anlass, as: "anlaesse"
       },

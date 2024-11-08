@@ -3,6 +3,7 @@ import { Anlass } from '@/models/anlass';
 import { AnlassService } from '@services/anlass.service';
 import authMiddleware from '@/interfaces/auth.middleware';
 import Controller from '@/interfaces/controller.interface';
+import { Dictionary } from 'lodash';
 
 class AnlassController implements Controller{
     public path = '/anlass/';
@@ -29,7 +30,9 @@ class AnlassController implements Controller{
     try {
       const fromJahr = req.query.from as string;
       const toJahr = req.query.to as string;
-      const findAllAnlasssData: Anlass[] = await this.anlass.findAllAnlass(fromJahr, toJahr);
+      const istkegeln = Boolean(req.query.istkegeln as string);
+      
+      const findAllAnlasssData: Anlass[] = await this.anlass.findAllAnlass(fromJahr, toJahr, istkegeln);
 
       res.status(200).json({ data: findAllAnlasssData, message: 'findAll' });
     } catch (error) {

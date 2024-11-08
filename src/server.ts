@@ -1,5 +1,5 @@
 // Import the 'express' module
-import { systemVal } from '@utils/system'
+import { systemVal } from '@/utils/system'
 import { existsSync, mkdirSync } from 'node:fs';
 
 let path =  __dirname + "/documents/"
