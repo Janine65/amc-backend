@@ -1,16 +1,15 @@
 import { Service } from 'typedi';
 import { GlobalHttpException } from '@/exceptions/globalHttpException';
 import { Anlass } from '@/models/anlass';
-import { Sequelize, Op, QueryTypes } from 'sequelize';
+import { Sequelize, Op, QueryTypes, WhereOptions } from 'sequelize';
 import { systemVal } from '@/utils/system';
 import { Workbook, Worksheet } from 'exceljs';
 import { Adresse } from '@/models/adresse';
 import { iFontSizeHeader, iFontSizeRow, iFontSizeTitel, setCellValueFormat } from './general.service';
 import { db } from '@/database/database';
 import { Meisterschaft } from '@/models/meisterschaft';
-import { file } from 'pdfkit';
 import { RetDataFile } from '@/models/generel';
-import { AnlassAttributes } from '../../dist/src/models/anlass';
+import { AnlassAttributes } from '@/models/anlass';
 
 const cName = "C6";
 const cVorname = "C7";
@@ -37,7 +36,7 @@ export class AnlassService {
     return findAnlass;
   }
 
-  public async createAnlass(anlassData: Anlass): Promise<Anlass> {
+  public async createAnlass(anlassData: Anlass): Promise<Anlass | null> {
     const findAnlass: Anlass | null = await Anlass.findOne({ where: { name: anlassData.name, datum: anlassData.datum } });
     if (findAnlass) throw new GlobalHttpException(409, `This anlass ${anlassData.name} at ${anlassData.datum} already exists`);
 
@@ -106,7 +105,7 @@ export class AnlassService {
     return arResult
   }
 
-  public async getFKData(jahr: string | undifined): Promise<unknown> {
+  public async getFKData(jahr: string | undefined): Promise<unknown> {
     const sWhere: WhereOptions<AnlassAttributes> = {};
     if (jahr)
       sWhere.datum = {
@@ -233,7 +232,7 @@ export class AnlassService {
             });
             await this.createTemplate(jahr, sheet, true);
             this.fillName(sheet, adresse);
-            await this.fillTemplate(sheet, adresse.id, jahr);
+            await this.fillTemplate(sheet, adresse.id!, jahr);
           }
 
         }
@@ -402,7 +401,7 @@ export class AnlassService {
     // Iterate over all rows (including empty rows) in a worksheet
     sheet.eachRow({
       includeEmpty: true
-    }, function (rowData, rowNumber) {
+    }, function (rowData) {
       rowData.height = 15;
     });
 
@@ -458,7 +457,7 @@ export class AnlassService {
                   kegelTotal += kegelSumme;
                 } else {
                   // setzte diagonale Linie - > Streichresultat                                
-                  sheet.getRow(row).eachCell({ includeEmpty: false }, function (formatCell, colNumber) {
+                  sheet.getRow(row).eachCell({ includeEmpty: false }, function (formatCell) {
 
                     formatCell.style.border = {
                       bottom: { style: 'thin' },

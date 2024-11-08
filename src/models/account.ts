@@ -4,7 +4,7 @@ import type { Budget, BudgetId } from './budget';
 import type { Journal, JournalId } from './journal';
 
 export interface AccountAttributes {
-  id: number;
+  id?: number;
   name?: string;
   level?: number;
   order?: number;
@@ -20,7 +20,7 @@ export type AccountOptionalAttributes = "id" | "name" | "level" | "order" | "sta
 export type AccountCreationAttributes = Optional<AccountAttributes, AccountOptionalAttributes>;
 
 export class Account extends Model<AccountAttributes, AccountCreationAttributes> implements AccountAttributes {
-  id!: number | undefined;
+  id?: number;
   name?: string;
   level?: number;
   order?: number;

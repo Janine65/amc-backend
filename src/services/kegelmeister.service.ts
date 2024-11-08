@@ -76,7 +76,7 @@ export class KegelmeisterService {
 		});
 		const arAnlaesse: number[] = []
 		for (const anlass of alAnlaesse) {
-			arAnlaesse.push(anlass.id);
+			arAnlaesse.push(anlass.id!);
 		}
 		if (jahr == systemVal.Parameter.get('CLUBJAHR')) {
 			let anzahl = await Anlaesse.count({
@@ -124,7 +124,7 @@ export class KegelmeisterService {
 					raw: true
 				})
 				for (const element of alMeisterschaft) {
-					allMitgliedId.push(element.mitgliedid);
+					allMitgliedId.push(element.mitgliedid!);
 				}
 				if (allMitgliedId.length > 0) {
 					await Meisterschaft.update({ "streichresultat": true },
@@ -147,12 +147,12 @@ export class KegelmeisterService {
 				let anzahl = 0
 				for (const meister of alMeisterschaft) {
 					if (zwmitgliedid != meister.mitgliedid) {
-						zwmitgliedid = meister.mitgliedid;
+						zwmitgliedid = meister.mitgliedid!;
 						anzahl = 0;
 					}
 					anzahl++
 					if (anzahl > Number(systemVal.Parameter.get('ANZAHL_KEGEL')))
-						allMitgliedId.push(meister.id)
+						allMitgliedId.push(meister.id!)
 				}
 				if (allMitgliedId.length > 0) {
 					await Meisterschaft.update({ "streichresultat": true },
@@ -176,7 +176,7 @@ export class KegelmeisterService {
 		})
 
 		for (const element of alMeisterschaft) {
-			allMitgliedId.push(element.mitgliedid)
+			allMitgliedId.push(element.mitgliedid!)
 			let meister = new Kegelmeister({ jahr: jahr, mitgliedid: element.mitgliedid, punkte: Number(element.total_kegel), anlaesse: Number(element.countEvent), babeli: 0 });
 			arMeister.push(meister);
 		}

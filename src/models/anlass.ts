@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { Meisterschaft, MeisterschaftId } from './meisterschaft';
 
 export interface AnlassAttributes {
-  id: number;
+  id?: number;
   datum: string;
   name: string;
   beschreibung?: string;
@@ -25,7 +25,7 @@ export type AnlassOptionalAttributes = "id" | "name" | "beschreibung" | "punkte"
 export type AnlassCreationAttributes = Optional<AnlassAttributes, AnlassOptionalAttributes>;
 
 export class Anlass extends Model<AnlassAttributes, AnlassCreationAttributes> implements AnlassAttributes {
-  id!: number | undefined;
+  id?: number;
   datum!: string;
   name!: string;
   beschreibung?: string;

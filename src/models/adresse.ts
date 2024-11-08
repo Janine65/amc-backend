@@ -5,7 +5,7 @@ import type { Kegelmeister, KegelmeisterId } from './kegelmeister';
 import type { Meisterschaft, MeisterschaftId } from './meisterschaft';
 
 export interface AdresseAttributes {
-  id: number;
+  id?: number;
   mnr?: number;
   geschlecht: number;
   name: string;
@@ -47,7 +47,7 @@ export type AdresseOptionalAttributes = "id" | "mnr" | "geschlecht" | "name" | "
 export type AdresseCreationAttributes = Optional<AdresseAttributes, AdresseOptionalAttributes>;
 
 export class Adresse extends Model<AdresseAttributes, AdresseCreationAttributes> implements AdresseAttributes {
-  id!: number | undefined;
+  id?: number;
   mnr?: number;
   geschlecht!: number;
   name!: string;

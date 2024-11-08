@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { JournalReceipt, JournalReceiptReceiptId } from './journalReceipt';
 
 export interface ReceiptAttributes {
-  id: number;
+  id?: number;
   receipt: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -17,7 +17,7 @@ export type ReceiptOptionalAttributes = "id" | "createdAt" | "updatedAt" | "jahr
 export type ReceiptCreationAttributes = Optional<ReceiptAttributes, ReceiptOptionalAttributes>;
 
 export class Receipt extends Model<ReceiptAttributes, ReceiptCreationAttributes> implements ReceiptAttributes {
-  id!: number | undefined;
+  id?: number;
   receipt!: string;
   createdAt?: Date;
   updatedAt?: Date;

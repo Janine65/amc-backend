@@ -4,9 +4,9 @@ import type { Adresse, AdresseId } from './adresse';
 import type { Anlass, AnlassId } from './anlass';
 
 export interface MeisterschaftAttributes {
-  id: number;
-  mitgliedid: number;
-  eventid: number;
+  id?: number;
+  mitgliedid?: number;
+  eventid?: number;
   punkte?: number | null;
   wurf1?: number | null;
   wurf2?: number | null;
@@ -26,9 +26,9 @@ export type MeisterschaftOptionalAttributes = "id" | "mitgliedid" | "eventid" | 
 export type MeisterschaftCreationAttributes = Optional<MeisterschaftAttributes, MeisterschaftOptionalAttributes>;
 
 export class Meisterschaft extends Model<MeisterschaftAttributes, MeisterschaftCreationAttributes> implements MeisterschaftAttributes {
-  id!: number | undefined;
-  mitgliedid!: number | undefined;
-  eventid!: number | undefined;
+  id?: number;
+  mitgliedid?: number;
+  eventid?: number;
   punkte?: number;
   wurf1?: number;
   wurf2?: number;

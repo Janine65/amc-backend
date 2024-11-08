@@ -4,7 +4,7 @@ import type { Account, AccountId } from './account';
 import type { Fiscalyear, FiscalyearId } from './fiscalyear';
 
 export interface BudgetAttributes {
-  id: number;
+  id?: number;
   account: number;
   year: number;
   memo?: string;
@@ -19,7 +19,7 @@ export type BudgetOptionalAttributes = "id" | "memo" | "amount" | "createdAt" | 
 export type BudgetCreationAttributes = Optional<BudgetAttributes, BudgetOptionalAttributes>;
 
 export class Budget extends Model<BudgetAttributes, BudgetCreationAttributes> implements BudgetAttributes {
-  id!: number | undefined;
+  id?: number;
   account!: number;
   year!: number;
   memo?: string;

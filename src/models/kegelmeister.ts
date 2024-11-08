@@ -3,12 +3,12 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { Adresse, AdresseId } from './adresse';
 
 export interface KegelmeisterAttributes {
-  id: number;
+  id?: number;
   jahr: string;
   rang?: number;
   vorname?: string;
   nachname?: string;
-  mitgliedid?: number | undefined;
+  mitgliedid?: number;
   punkte?: number;
   anlaesse?: number;
   babeli?: number;
@@ -23,12 +23,12 @@ export type KegelmeisterOptionalAttributes = "id" | "jahr" | "rang" | "vorname" 
 export type KegelmeisterCreationAttributes = Optional<KegelmeisterAttributes, KegelmeisterOptionalAttributes>;
 
 export class Kegelmeister extends Model<KegelmeisterAttributes, KegelmeisterCreationAttributes> implements KegelmeisterAttributes {
-  id!: number | undefined;
+  id?: number;
   jahr!: string;
   rang?: number;
   vorname?: string;
   nachname?: string;
-  mitgliedid?: number | undefined;
+  mitgliedid?: number;
   punkte?: number;
   anlaesse?: number;
   babeli?: number;

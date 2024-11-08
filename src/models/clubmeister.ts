@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { Adresse, AdresseId } from './adresse';
 
 export interface ClubmeisterAttributes {
-  id: number;
+  id?: number;
   jahr: string;
   rang?: number;
   vorname?: string;
@@ -24,7 +24,7 @@ export type ClubmeisterOptionalAttributes = "id" | "jahr" | "rang" | "vorname" |
 export type ClubmeisterCreationAttributes = Optional<ClubmeisterAttributes, ClubmeisterOptionalAttributes>;
 
 export class Clubmeister extends Model<ClubmeisterAttributes, ClubmeisterCreationAttributes> implements ClubmeisterAttributes {
-  id!: number | undefined;
+  id?: number;
   jahr!: string;
   rang?: number;
   vorname?: string;

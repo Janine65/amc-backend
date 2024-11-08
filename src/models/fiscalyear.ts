@@ -4,7 +4,7 @@ import type { Budget, BudgetId } from './budget';
 import type { Journal, JournalId } from './journal';
 
 export interface FiscalyearAttributes {
-  id: number;
+  id?: number;
   name?: string;
   state?: number;
   createdAt: Date;
@@ -18,7 +18,7 @@ export type FiscalyearOptionalAttributes = "id" | "name" | "state" | "createdAt"
 export type FiscalyearCreationAttributes = Optional<FiscalyearAttributes, FiscalyearOptionalAttributes>;
 
 export class Fiscalyear extends Model<FiscalyearAttributes, FiscalyearCreationAttributes> implements FiscalyearAttributes {
-  id!: number | undefined;
+  id?: number;
   name?: string;
   state?: number;
   createdAt!: Date;

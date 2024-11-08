@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { User, UserId } from './user';
 
 export interface SessionAttributes {
-  id: number;
+  id?: number;
   sid: string;
   userid?: string;
   expires?: Date;
@@ -18,7 +18,7 @@ export type SessionOptionalAttributes = "id" | "sid" | "userid" | "expires" | "d
 export type SessionCreationAttributes = Optional<SessionAttributes, SessionOptionalAttributes>;
 
 export class Session extends Model<SessionAttributes, SessionCreationAttributes> implements SessionAttributes {
-  id!: number | undefined;
+  id?: number;
   sid!: string;
   userid?: string;
   expires?: Date;

@@ -74,21 +74,21 @@ export class ClubmeisterService {
 		});
 		const arAnlaesse = []
 		for (const element of alAnlaesse) {
-			arAnlaesse.push(element.id);
+			arAnlaesse.push(element.id!);
 		}
 
 		const alMeisterschaft = await Meisterschaft.findAll({
 			attributes: ["mitgliedid", 
 				[Sequelize.fn('SUM', Sequelize.col("punkte")), "punkte"], 
 				[Sequelize.fn("COUNT", Sequelize.col("eventid")), "countEvent"]],
-			where: [{ "eventid": { [Op.in]: arAnlaesse } },
+			where: [{ eventid: { [Op.in]: arAnlaesse } },
 			{ "punkte": { [Op.gt]: 0 } }],
 			group: ["mitgliedid"],
 			raw: true
 		})
 
 		for (const element of alMeisterschaft) {
-			allMitgliedId.push(element.mitgliedid)
+			allMitgliedId.push(element.mitgliedid!)
 			let meister = new Clubmeister({ jahr: jahr, mitgliedid: element.mitgliedid, punkte: Number(element.punkte), anlaesse: Number(element.countEvent), werbungen: 0, mitglieddauer: 0 });
 			arMeister.push(meister);
 		}

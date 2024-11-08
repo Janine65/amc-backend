@@ -4,7 +4,7 @@ import type { Kegelkasse, KegelkasseId } from './kegelkasse';
 import type { Session, SessionId } from './session';
 
 export interface UserAttributes {
-  id: number;
+  id?: number;
   userid: string;
   name?: string;
   email: string;
@@ -22,7 +22,7 @@ export type UserOptionalAttributes = "id" | "userid" | "name" | "email" | "salt"
 export type UserCreationAttributes = Optional<UserAttributes, UserOptionalAttributes>;
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  id!: number | undefined;
+  id?: number;
   userid!: string;
   name?: string;
   email!: string;

@@ -10,7 +10,7 @@ import { v4 as uuid } from 'uuid';
 import { systemVal } from '@/utils/system';
 
 const createToken = (user: User): TokenData => {
-  const dataStoredInToken: DataStoredInToken = { id: user.id };
+  const dataStoredInToken: DataStoredInToken = { id: user.id! };
   const expiresIn: number = 60 * 60;
 
   return { expiresIn, token: sign(dataStoredInToken, systemVal.gConfig.secret, { expiresIn }) };

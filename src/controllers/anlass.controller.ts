@@ -51,7 +51,7 @@ class AnlassController implements Controller{
   public createAnlass = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const AnlassData = req.body;
-      const updateAnlassData: Anlass = await this.anlass.createAnlass(AnlassData);
+      const updateAnlassData: Anlass | null = await this.anlass.createAnlass(AnlassData);
 
       res.status(200).json({ data: updateAnlassData, message: 'updated' });
     } catch (error) {
@@ -95,7 +95,7 @@ class AnlassController implements Controller{
   public getFKData = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const jahr = req.query.jahr;
-      const fkdata = await this.anlass.getFKData(jahr);
+      const fkdata = await this.anlass.getFKData(jahr as string);
 
       res.status(200).json({ data: fkdata, message: 'getFKData' });
     } catch (error) {

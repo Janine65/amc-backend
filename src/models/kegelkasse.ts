@@ -4,7 +4,7 @@ import type { Journal, JournalId } from './journal';
 import type { User, UserId } from './user';
 
 export interface KegelkasseAttributes {
-  id: number;
+  id?: number;
   datum: string;
   kasse: number;
   rappen5: number;
@@ -33,7 +33,7 @@ export type KegelkasseOptionalAttributes = "id" | "journalid" | "createdAt" | "u
 export type KegelkasseCreationAttributes = Optional<KegelkasseAttributes, KegelkasseOptionalAttributes>;
 
 export class Kegelkasse extends Model<KegelkasseAttributes, KegelkasseCreationAttributes> implements KegelkasseAttributes {
-  id!: number | undefined;
+  id?: number;
   datum!: string;
   kasse!: number;
   rappen5!: number;
