@@ -103,7 +103,7 @@ export class KegelkasseComponent implements OnInit {
       { field: 'userName', header: 'User', format: false, sortable: false, filtering: false, filter: undefined },
     ];
 
-    this.backendService.getAnlaesseData((new Date().getFullYear()).toFixed(0), (new Date().getFullYear()).toFixed(0),[{ key: 'istkegeln', value: 'true' }]).subscribe({
+    this.backendService.getAnlaesseData((new Date().getFullYear()).toFixed(0), (new Date().getFullYear()).toFixed(0),true).subscribe({
       next: (result) => {
         const anl = result.data as Anlass[];
         this.lKegelDatum = []
@@ -176,9 +176,9 @@ export class KegelkasseComponent implements OnInit {
       zip(this.backendService.getKegelkasse(date.getMonth() + 1, date.getFullYear()),
         this.backendService.getAmountOneAcc(sKegelDate, 1002)
       ).pipe(map(([result1, result]) => {
-        const kegelkasse = result1.data as Kegelkasse[];
-        if (kegelkasse.length > 0) {
-          this.kegelkasse = kegelkasse[0];
+        const kegelkasse = result1.data as Kegelkasse;
+        if (kegelkasse) {
+          this.kegelkasse = kegelkasse;
           this.kasse.setValue(this.kegelkasse.kasse ?? 0);
           this.rappen5.setValue(this.kegelkasse.rappen5 ?? 0);
           this.rappen10.setValue(this.kegelkasse.rappen10 ?? 0);

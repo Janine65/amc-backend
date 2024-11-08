@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, timer } from 'rxjs';
+import { BehaviorSubject, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '@environments/environment';
@@ -80,7 +80,7 @@ export class AccountService {
     }
 
     private saveUser(user: User, cookie: string) {
-        let lCookie = cookie.split(';');
+        const lCookie = cookie.split(';');
         user.token = lCookie[0].replace('Authorization=', '');
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem('user', JSON.stringify(user));

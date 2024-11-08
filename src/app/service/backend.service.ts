@@ -1,7 +1,7 @@
 import { HttpHeaders, HttpClient, HttpRequest } from "@angular/common/http";
-import { Injectable, Type } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { environment } from "@environments/environment";
-import { ParamData, Fiscalyear, OverviewData, Adresse, Anlass, Meisterschaft, MeisterAdresse, Clubmeister, Kegelmeister, MeisterschaftAuswertung, Journal, Account, Kegelkasse, Receipt, Budget } from "@model/index";
+import { ParamData, Fiscalyear, Adresse, Anlass, Meisterschaft, Journal, Account, Kegelkasse, Receipt, Budget } from "@model/index";
 import { Package } from "@model/user";
 import { Observable } from "rxjs";
 
@@ -155,15 +155,10 @@ export class BackendService {
   }
 
   // TODO: Filter muss noch eingebaut werden
-  getAnlaesseData(fromJahr: string, toJahr: string, queries: [{ key: string; value: string; }] | undefined): Observable<RetData> {
+  getAnlaesseData(fromJahr: string, toJahr: string, istkegeln: boolean | undefined): Observable<RetData> {
     let apiURL = environment.apiUrl + `/anlass/list?from=${fromJahr}&to=${toJahr}`;
-    if (queries?.length > 0) {
-      apiURL += "&";
-      queries.forEach((value, ind) => {
-        if (ind > 0)
-          apiURL += "&";
-        apiURL += value.key + "=" + value.value;
-      });
+    if (istkegeln) {
+      apiURL += "&istkegeln=" + istkegeln;
     }
     return this.http.get<RetData>(apiURL, { headers: this.header });
   }
