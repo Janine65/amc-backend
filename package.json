@@ -82,6 +82,7 @@
     "swagger-ui-express": "^5.0.1",
     "swissqrbill": "^4.1.0",
     "tslib": "^2.8.1",
-    "typedi": "^0.10.0"
+    "typedi": "^0.10.0",
+    "uuid": "^11.0.2"
   }
 }
