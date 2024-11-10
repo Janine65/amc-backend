@@ -1,4 +1,4 @@
-FROM guergeiro/pnpm:18-8 AS build
+FROM guergeiro/pnpm:20-8 AS build
 #FROM node:18-slim AS build
 ENV NODE_ENV=production
 
@@ -8,7 +8,7 @@ WORKDIR /usr/local/app
 COPY package.json pnpm-lock.yaml /usr/local/app/
 # install package.json (o sea las dependencies)
 # RUN pnpm fetch --prod
-RUN pnpm install --frozen-lockfile 
+RUN pnpm install --force 
 
 COPY ./ /usr/local/app/
 
