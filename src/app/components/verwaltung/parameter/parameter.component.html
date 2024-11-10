@@ -14,7 +14,7 @@
                 <td [pEditableColumn]="parameter.key" pEditableColumnField="key">
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input pInputText type="text" size="20" [(ngModel)]="parameter.key" required/>
+                            <input pInputText type="text" [style]="{'width':'100%'}" [(ngModel)]="parameter.key" required/>
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{ parameter.key }}
@@ -24,7 +24,8 @@
                 <td [pEditableColumn]="parameter.value" pEditableColumnField="value">
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <textarea pInputTextarea [autoResize]="true" [(ngModel)]="parameter.value" required ></textarea>
+                            <textarea pInputTextarea [autoResize]="true" [(ngModel)]="parameter.value" required 
+                            [style]="{'width':'100%'}"></textarea>
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{ parameter.value }}

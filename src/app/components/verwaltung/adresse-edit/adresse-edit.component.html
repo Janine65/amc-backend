@@ -130,7 +130,8 @@
                     <label for="geworben">Geworben von</label>
                     <p-dropdown id="geworben" [options]="dlstFKAdressen" optionLabel="value" optionValue="id"
                         [filter]="true" filterBy="value" [autoDisplayFirst]="false" [showClear]="true" name="geworben"
-                        class="text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
+                        class="text-base text-color surface-overlay p-2 appearance-none outline-none"
+                        [style]="{'width':'80%'}"
                         [(ngModel)]="adresse.adressenid"></p-dropdown>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Account, AccountAuswertung, ParamData } from '@model/datatypes';
+import { AccountAuswertung, ParamData } from '@model/datatypes';
 import { BackendService } from '@app/service';
 import { MessageService } from 'primeng/api';
 
@@ -45,7 +45,7 @@ export class KtoAuswertungComponent {
     // Read Data
     this.backendService.showAccData(this.selJahr).subscribe({
       next: (result) => {
-        if ((result.data as Object[]).length > 0) {
+        if ((result.data as []).length > 0) {
           this.lstAccountData = result.data as AccountAuswertung[];
           this.lstAktivNodes = [];
           this.lstPassivNodes = [];

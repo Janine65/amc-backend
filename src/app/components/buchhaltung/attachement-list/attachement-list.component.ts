@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { Component } from '@angular/core';
 import { Receipt } from '@model/datatypes';
-import { BackendService, RetDataFile } from '@app/service';
+import { BackendService } from '@app/service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -55,7 +55,7 @@ export class AttachementListComponent {
        )
     }
     if (this.configType == 'one' && this.journalid) {
-      this.backendService.getAttachment(this.journalid, this.jahr)
+      this.backendService.getAttachment(this.journalid)
         .subscribe(list => {
           this.lstReceipts = list.data as Receipt[];
         });

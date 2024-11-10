@@ -24,10 +24,10 @@
                     </div>
                     <div class="field col-12 md:col-12 mt-4">
                         <label for="state" class="mr-2 ">Status</label>
-                        <p-dropdown name="state" [options]="lstStates" optionLabel="label" optionValue="value"
+                        <p-dropdown name="state" [options]="lstStates" optionLabel="label" optionValue="value"                        
                             [autoDisplayFirst]="true" [disabled]="!(editMode && selFiscalyear.state === 3)"
                             class="mr-2 text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
-                            [(ngModel)]="selFiscalyear.state" [style.width.%]="80"></p-dropdown>
+                            [(ngModel)]="selFiscalyear.state" [style]="{'width':'80%'}"></p-dropdown>
                     </div>
                     <div class="field col-12 md:col-12 mt-4">
                         <button pButton type="button" label="Sichern" icon="pi pi-save"

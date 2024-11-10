@@ -1,4 +1,4 @@
-<p-splitter [panelSizes]="[40, 60]" styleClass="mb-1">
+<p-splitter [panelSizes]="[60, 40]" styleClass="mb-1">
     <ng-template pTemplate>
         <div class="card" style="width: 100%;">
             <app-basetable
@@ -10,7 +10,7 @@
             </app-basetable>
         </div>
     </ng-template>
-    <ng-template pTemplate=>
+    <ng-template pTemplate>
         <div class="card" style="width: 100%;">
             <form autocomplete="off" (ngSubmit)="save()">
                 <div class="formgrid grid">
@@ -37,7 +37,7 @@
                         <p-dropdown name="state" [options]="lstStates" optionLabel="label" optionValue="value"
                         [autoDisplayFirst]="true" [disabled]="!editMode && !addMode"
                         class="mr-2 text-base text-color surface-overlay p-2 appearance-none outline-none w-full"
-                        [(ngModel)]="selAccount.status" [style.width.%]="80"></p-dropdown>
+                        [(ngModel)]="selAccount.status" [style]="{'width':'80%'}"></p-dropdown>
                     </div>
                     <div class="field col-12 md:col-12 mt-4">
                         <button pButton type="button" label="Sichern" icon="pi pi-save" class="p-button-primary p-button-outlined"

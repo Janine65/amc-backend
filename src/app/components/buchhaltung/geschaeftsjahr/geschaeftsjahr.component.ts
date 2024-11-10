@@ -129,9 +129,26 @@ export class GeschaeftsjahrComponent implements OnInit {
       this.backendService.closeFiscalyear(selRec.year, 2).subscribe(
         {
           complete: () => {
-            const ind = this.lstFiscalyear.findIndex(rec => rec.id == selRec.id)
-            this.lstFiscalyear[ind].state = 2;
-            thisRef.messageService.add({ detail: 'Das Geschäftsjahr wurde provisorisch abgeschlossen', closable: true, severity: 'info', sticky: false, summary: 'Geschäftsjahr abschliessen' });
+            this.loading = true;
+            from(this.backendService.getFiscalyear())
+            .subscribe(list => {
+              this.lstFiscalyear = list.data as Fiscalyear[];
+              this.lstFiscalyear.forEach(rec => {
+                switch(rec.state) {
+                  case 1:
+                    rec.classRow = 'offen';
+                    break;
+                  case 2:
+                    rec.classRow = 'provisorisch';
+                    break;
+                  case 3:
+                    rec.classRow = 'abgeschlossen';
+                    break;
+                  }
+              })
+              this.loading = false;
+              thisRef.messageService.add({ detail: 'Das Geschäftsjahr wurde provisorisch abgeschlossen', closable: true, severity: 'info', sticky: false, summary: 'Geschäftsjahr abschliessen' });
+            });            
 
           }
         }
@@ -150,9 +167,26 @@ export class GeschaeftsjahrComponent implements OnInit {
       this.backendService.closeFiscalyear(selRec.year, 3).subscribe(
         {
           complete: () => {
-            const ind = this.lstFiscalyear.findIndex(rec => rec.id == selRec.id)
-            this.lstFiscalyear[ind].state = 3;
-            thisRef.messageService.add({ detail: 'Das Geschäftsjahr wurde abgeschlossen', closable: true, severity: 'info', sticky: false, summary: 'Geschäftsjahr abschliessen' });
+            this.loading = true;
+            from(this.backendService.getFiscalyear())
+            .subscribe(list => {
+              this.lstFiscalyear = list.data as Fiscalyear[];
+              this.lstFiscalyear.forEach(rec => {
+                switch(rec.state) {
+                  case 1:
+                    rec.classRow = 'offen';
+                    break;
+                  case 2:
+                    rec.classRow = 'provisorisch';
+                    break;
+                  case 3:
+                    rec.classRow = 'abgeschlossen';
+                    break;
+                  }
+              })
+              this.loading = false;
+              thisRef.messageService.add({ detail: 'Das Geschäftsjahr wurde abgeschlossen', closable: true, severity: 'info', sticky: false, summary: 'Geschäftsjahr abschliessen' });
+            });            
 
           }
         }
@@ -182,9 +216,9 @@ export class GeschaeftsjahrComponent implements OnInit {
       this.backendService.delFiscalyear(selRec).subscribe(
         {
           complete: () => {
-            thisRef.lstFiscalyear.splice(thisRef.lstFiscalyear.indexOf((selRec)), 1)
+            thisRef.lstFiscalyear.splice(thisRef.lstFiscalyear.indexOf(selRec), 1)
 
-            thisRef.messageService.add({ detail: 'Das Geschäftsjahr', closable: true, severity: 'info', sticky: false, summary: 'Anlass beenden' });
+            thisRef.messageService.add({ detail: 'Das Geschäftsjahr ' + selRec.year + ' wurde gelöscht', closable: true, severity: 'info', sticky: false, summary: 'Geschäftsjahr löschen' });
 
           }
         }

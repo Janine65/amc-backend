@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, HostListener } from '@angular/core';
 import { Account, Budget, Fiscalyear, ParamData } from '@model/datatypes';
-import { BackendService } from '@app/service';
+import { AlertService, BackendService } from '@app/service';
+import { AlertType } from '@app/models';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { map, zip } from 'rxjs';
 
@@ -31,7 +32,8 @@ export class BudgetComponent {
   constructor(
     private backendService: BackendService, 
     private messageService: MessageService,
-    private confirmationService: ConfirmationService) {
+    private confirmationService: ConfirmationService,
+    private alertService: AlertService) {
     const str = localStorage.getItem('parameter');
     this.parameter = str ? JSON.parse(str) : [];
     const paramJahr = this.parameter.find((param) => param.key === 'CLUBJAHR');
@@ -46,8 +48,10 @@ export class BudgetComponent {
       next: (list) => {
         const lAcc = list.data as Account[];
         lAcc.forEach(rec => {
-          if (rec.level && rec.level >= 4)
+          if (rec.level && rec.level >= 4) {
+            rec.disabled = rec.status == 0;
             this.lstAccounts.push(rec)
+          }
         })
     }})
 
@@ -76,10 +80,10 @@ export class BudgetComponent {
     ).pipe(map(([list, result]) => {
       this.lstBudget = list.data as Budget[];
       this.lstBudget.forEach( rec => {
-        rec.acc_id = rec.acc?.id
-        rec.acc_name = rec.acc?.name
-        rec.acc_order = rec.acc?.order
-        if (rec.acc?.status == 0)
+        rec.acc_id = rec.accountAccount?.id
+        rec.acc_name = rec.accountAccount?.name
+        rec.acc_order = rec.accountAccount?.order
+        if (rec.accountAccount?.status == 0)
           rec.classRow = 'inactive';
       })
       this.selFiscalyear = result.data as Fiscalyear;
@@ -100,19 +104,34 @@ export class BudgetComponent {
 
   copyYear() {
     const nextYear = this.selJahr + 1
-    this.confirmationService.confirm({
-      message: 'Die Daten werden vom Jahr ' + this.selJahr + ' zum Jahr ' + nextYear + ' kopiert. Alle vorhandenen Einträge werden vorgängig gelöscht. Bitte bestätige diesen Vorgang',
-      accept: () => {
-        this.backendService.copyBudget(this.selJahr, nextYear).subscribe(
-          { complete: () => {
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Kopiervorgang abgeschlossen' })
-          },
-          error: (err) => {
-            this.messageService.add({ severity: 'error', summary: 'Fehler', detail: err.message });
-          }}
-        )
+
+    this.backendService.getOneFiscalyear(nextYear.toFixed(0)).subscribe({
+      next: (retData) => {
+        if (retData.type == 'info') {
+          if (retData.data != null && retData.data instanceof Fiscalyear) {
+            this.confirmationService.confirm({
+              message: 'Die Daten werden vom Jahr ' + this.selJahr + ' zum Jahr ' + nextYear + ' kopiert. Alle vorhandenen Einträge werden vorgängig gelöscht. Bitte bestätige diesen Vorgang',
+              accept: () => {
+                this.backendService.copyBudget(this.selJahr, nextYear).subscribe(
+                  { complete: () => {
+                    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Kopiervorgang abgeschlossen' })
+                  },
+                  error: (err) => {
+                    this.messageService.add({ severity: 'error', summary: 'Fehler', detail: err.message });
+                  }}
+                )
+                }
+            });              
+          } else {
+            this.alertService.alert({ autoClose: false, fade: false, type: AlertType.Error, message: `Das Geschäftsjahr ${nextYear} muess zuerst eröffnet werden.`, keepAfterRouteChange: false });
+          }
         }
-    });      
+      }
+    }
+
+    )
+
+
 
   }
 
@@ -145,7 +164,7 @@ export class BudgetComponent {
       sub = this.backendService.updBudget(budget)
 
     sub.subscribe({
-        next: (rec) => {
+        next: (rec: Budget) => {
           this.addRow = false
           delete this.clonedlstBudget[budget.id];
           const ind: Budget | undefined = this.lstBudget.find(rec => rec.id == budget.id)

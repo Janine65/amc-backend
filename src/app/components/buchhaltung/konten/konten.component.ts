@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, OnInit } from '@angular/core';
-import { Account } from '@model/datatypes';
+import { Account, ParamData } from '@model/datatypes';
 import { BackendService } from '@app/service';
 import { TableOptions, TableToolbar } from '@shared/basetable/basetable.component';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Observable, from } from 'rxjs';
 import { KontoBewegungenComponent } from '../konto-bewegungen/konto-bewegungen.component';
-import { DecimalPipe, LowerCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-konten',
@@ -60,7 +59,11 @@ export class KontenComponent implements OnInit {
       },
       {
         label: "Bewegungen", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-plus",
-        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.showProcess, roleNeeded: '', isEditFunc: false
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: true, clickfnc: this.showProcess, roleNeeded: '', isEditFunc: false
+      },
+      {
+        label: "Export Bewegungen", btnClass: "p-button-secondary p-button-outlined", icon: "pi pi-excel",
+        isDefault: false, disabledWhenEmpty: true, disabledNoSelection: false, clickfnc: this.exportKonto, roleNeeded: '', isEditFunc: false
       },
     ];
 
@@ -133,6 +136,39 @@ export class KontenComponent implements OnInit {
     this.selAccount = {}
 
   }
+
+  exportKonto = () => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const thisRef: KontenComponent = this;
+    console.log("Export Kontoauszug");
+    thisRef.clearFields();
+
+    const str = localStorage.getItem('parameter');
+    const parameter: ParamData[] = str ? JSON.parse(str) : [];
+    const paramJahr = parameter.find((param) => param.key === 'CLUBJAHR');
+
+    thisRef.backendService.exportAccountData(Number(paramJahr.value))
+      .subscribe({
+        next: (result) => {
+          const filename = result.data.filename;
+          thisRef.backendService.downloadFile(filename)
+            .subscribe({
+              next: (data) => {
+                if (data.body) {
+                  const blob = new Blob([data.body]);
+                  const downloadURL = window.URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = downloadURL;
+                  link.download = filename;
+                  link.click(); 
+                }
+              },
+              complete: () => {
+              }
+            })
+        }});
+
+  };
 
   showProcess = (selRec?: Account) => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias

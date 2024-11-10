@@ -150,6 +150,7 @@ export class Clubmeister extends TableData {
     status?: NumberEmpty;
     longname?: StringEmpty;
     amount?: NumberEmpty;
+    disabled?: boolean;
     
   }
 
@@ -222,7 +223,7 @@ export class Clubmeister extends TableData {
     year?: NumberEmpty;
     amount?: NumberEmpty;
     memo?: StringEmpty;
-    acc?: Account;
+    accountAccount?: Account;
     acc_order?: NumberEmpty;
     acc_id?: NumberEmpty;
     acc_name?: StringEmpty;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpHeaders, HttpClient, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "@environments/environment";
@@ -375,7 +376,7 @@ export class BackendService {
     return this.http.get<RetDataFile>(apiURL, { headers: this.header });
 
   }
-  getAttachment(id: number, jahr: number): Observable<RetData> {
+  getAttachment(id: number): Observable<RetData> {
     const apiURL = environment.apiUrl + '/receipt/findatt?journalid=' + id;
     return this.http.get<RetData>(apiURL, { headers: this.header });
 
@@ -450,7 +451,7 @@ export class BackendService {
   }
 
   showAccData(jahr: number): Observable<RetData> {
-    const apiURL = environment.apiUrl + '/account/getaccjahr?jahr=' + jahr;
+    const apiURL = environment.apiUrl + '/account/getaccountsummary?jahr=' + jahr;
     return this.http.get<RetData>(apiURL, { headers: this.header });
   }
 

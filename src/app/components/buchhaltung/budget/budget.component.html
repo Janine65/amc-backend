@@ -30,7 +30,9 @@
                     <p-cellEditor *ngIf="rowIsEditing(data)">
                         <ng-template pTemplate="input">
                             <p-dropdown [options]="lstAccounts" [(ngModel)]="data.acc_id" optionLabel="name"
-                                optionValue="id" [required]="true" (onChange)="chgAcc(data)"></p-dropdown>
+                                optionValue="id" optionDisabled="disabled" [required]="true" 
+                                (onChange)="chgAcc(data)" autoWidth="false" [style]="{'width':'100%'}">
+                            </p-dropdown>
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{ data.acc_name }}
@@ -43,7 +45,7 @@
                     </div>
                     <p-cellEditor *ngIf="rowIsEditing(data)">
                         <ng-template pTemplate="input">
-                            <p-inputNumber [(ngModel)]="data.amount" [required]="true"></p-inputNumber>
+                            <p-inputNumber [(ngModel)]="data.amount" [required]="true" [style]="{'width':'100%'}"></p-inputNumber>
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{ data.amount | number : '1.2-2' }}
@@ -56,7 +58,7 @@
                     </div>
                     <p-cellEditor *ngIf="rowIsEditing(data)">
                         <ng-template pTemplate="input">
-                            <input pInputText [(ngModel)]="data.memo">
+                            <input pInputText [(ngModel)]="data.memo" [style]="{'width':'100%'}">
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{ data.memo }}
