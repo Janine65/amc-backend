@@ -43,7 +43,6 @@
     "@types/sequelize": "^4.28.20",
     "@types/swagger-ui-express": "^4.1.7",
     "eslint": "^9.14.0",
-    "globals": "^15.12.0",
     "sequelize-auto": "^0.8.8",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
