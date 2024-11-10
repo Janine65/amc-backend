@@ -109,8 +109,8 @@ importers:
         specifier: ^9.14.0
         version: 9.14.0
       '@swc/cli':
-        specifier: ^0.4.0
-        version: 0.4.0(@swc/core@1.9.1(@swc/helpers@0.3.17))(chokidar@3.6.0)
+        specifier: ^0.5.0
+        version: 0.5.0(@swc/core@1.9.1(@swc/helpers@0.3.17))(chokidar@3.6.0)
       '@swc/core':
         specifier: ^1.9.1
         version: 1.9.1(@swc/helpers@0.3.17)
@@ -407,8 +407,8 @@ packages:
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
     engines: {node: '>=10'}
 
-  '@swc/cli@0.4.0':
-    resolution: {integrity: sha512-4JdVrPtF/4rCMXp6Q1h5I6YkYZrCCcqod7Wk97ZQq7K8vNGzJUryBv4eHCvqx5sJOJBrbYm9fcswe1B0TygNoA==}
+  '@swc/cli@0.5.0':
+    resolution: {integrity: sha512-eFsrNt85SbHTeX6svpBNcA5DQLP/wrSyCs3KVZjbuEHWD7JGpajZOIwH74lVhyrmrXOcGxgbnxXEbDIfRlLcSw==}
     engines: {node: '>= 16.14.0'}
     hasBin: true
     peerDependencies:
@@ -3011,7 +3011,7 @@ snapshots:
 
   '@sindresorhus/is@4.6.0': {}
 
-  '@swc/cli@0.4.0(@swc/core@1.9.1(@swc/helpers@0.3.17))(chokidar@3.6.0)':
+  '@swc/cli@0.5.0(@swc/core@1.9.1(@swc/helpers@0.3.17))(chokidar@3.6.0)':
     dependencies:
       '@mole-inc/bin-wrapper': 8.0.1
       '@swc/core': 1.9.1(@swc/helpers@0.3.17)
