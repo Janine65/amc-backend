@@ -11,7 +11,7 @@ services:
     ports:
       - 2700:2700
     volumes:
-      - documents:/usr/src/documents:rw
+      - documents:/app/dist/src/documents:rw
     hostname: amcbackend
     networks:
       - back-tier

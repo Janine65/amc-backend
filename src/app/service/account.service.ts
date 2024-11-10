@@ -66,7 +66,7 @@ export class AccountService {
     async refresh() {
         if (this.isLogged()) {
             const mins = (new Date().getTime() - this.layoutService.userActiveSince.getTime()) / 1000 / 60;
-            console.log(`${mins} Minuten sind vergangen, seit der Token das letzte Mal aktualisiert wurde.`);
+            console.log(`${mins.toFixed(0)} Minuten sind vergangen, seit der Token das letzte Mal aktualisiert wurde.`);
             if (mins > 30 && mins < 60) {
                 console.log('Token wird aktualisiert');
                 this.http.post<RetDataUser>(`${this.apiUrl}/auth/refreshToken`, this.userValue, { headers: this.header })
