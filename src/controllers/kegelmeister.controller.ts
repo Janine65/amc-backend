@@ -29,7 +29,7 @@ class KegelmeisterController implements Controller{
       const jahr = String(req.query.jahr);
       const findAllKegelmeistersData: Kegelmeister[] = await this.kegelmeister.findAllKegelmeister(jahr);
 
-      res.status(200).json({ data: findAllKegelmeistersData, message: 'findAll' });
+      res.status(200).json({ type: 'info', data: findAllKegelmeistersData, message: 'findAll' });
     } catch (error) {
       next(error);
     }
@@ -40,7 +40,7 @@ class KegelmeisterController implements Controller{
       const kegelmeisterId = req.params.id;
       const findOneKegelmeisterData: Kegelmeister = await this.kegelmeister.findKegelmeisterById(kegelmeisterId);
 
-      res.status(200).json({ data: findOneKegelmeisterData, message: 'findOne' });
+      res.status(200).json({ type: 'info', data: findOneKegelmeisterData, message: 'findOne' });
     } catch (error) {
       next(error);
     }
@@ -51,7 +51,7 @@ class KegelmeisterController implements Controller{
       const kegelmeisterData = req.body;
       const updateKegelmeisterData: Kegelmeister = await this.kegelmeister.createKegelmeister(kegelmeisterData);
 
-      res.status(200).json({ data: updateKegelmeisterData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateKegelmeisterData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -63,7 +63,7 @@ class KegelmeisterController implements Controller{
       const kegelmeisterData = req.body;
       const updateKegelmeisterData: Kegelmeister = await this.kegelmeister.updateKegelmeister(kegelmeisterId, kegelmeisterData);
 
-      res.status(200).json({ data: updateKegelmeisterData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateKegelmeisterData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -74,7 +74,7 @@ class KegelmeisterController implements Controller{
       const kegelmeisterId = req.params.id;
       const deleteKegelmeisterData: Kegelmeister = await this.kegelmeister.deleteKegelmeister(kegelmeisterId);
 
-      res.status(200).json({ data: deleteKegelmeisterData, message: 'deleted' });
+      res.status(200).json({ type: 'info', data: deleteKegelmeisterData, message: 'deleted' });
     } catch (error) {
       next(error);
     }
@@ -84,7 +84,7 @@ class KegelmeisterController implements Controller{
     try {
       const overviewData = await this.kegelmeister.getOverviewData();
 
-      res.status(200).json({ data: overviewData, message: 'getOverviewData' });
+      res.status(200).json({ type: 'info', data: overviewData, message: 'getOverviewData' });
     } catch (error) {
       next(error);
     }
@@ -95,7 +95,7 @@ class KegelmeisterController implements Controller{
       const jahr = req.query.jahr as string
       const overviewData = await this.kegelmeister.calcMeister(jahr);
 
-      res.status(200).json({ data: overviewData, message: 'getOverviewData' });
+      res.status(200).json({ type: 'info', data: overviewData, message: 'getOverviewData' });
     } catch (error) {
       next(error);
     }

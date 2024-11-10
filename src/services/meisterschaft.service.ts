@@ -241,6 +241,7 @@ export class MeisterschaftService {
       attributes: ["datum", "name", "gaeste", "anlaesseid"],
       where: [
         { nachkegeln: false },
+        { status: 1},
         Sequelize.where(Sequelize.fn("YEAR", Sequelize.col("datum")), jahr),
       ],
       include: {

@@ -15,6 +15,8 @@ import {
   iFontSizeTitel,
   setCellValueFormat,
 } from "./general.service";
+import { RetData, RetDataFile } from "@/models/generel";
+import { file } from "pdfkit";
 
 export class Bilanz extends Account {
   amount: number = 0;
@@ -44,13 +46,10 @@ export class FiscalyearService {
     return findFiscalyear;
   }
 
-  public async findFiscalyearByYear(year: string): Promise<Fiscalyear> {
+  public async findFiscalyearByYear(year: string): Promise<Fiscalyear | null> {
     const findFiscalyear: Fiscalyear | null = await Fiscalyear.findOne({
       where: { year: year },
     });
-    if (!findFiscalyear)
-      throw new GlobalHttpException(409, "Fiscalyear doesn't exist");
-
     return findFiscalyear;
   }
 
@@ -132,7 +131,9 @@ export class FiscalyearService {
     return findFiscalyear;
   }
 
-  public async closeYear(year: string, state: number): Promise<unknown> {
+  public async closeYear(year: string, state: number): Promise<RetData> {
+    const payload: RetData = {type: 'info', message: '', data: {gewinn: 0}}
+
     const sNextYear = parseInt(year) + 1;
 
     /**
@@ -148,11 +149,9 @@ export class FiscalyearService {
       where: { year: year },
     });
     if (!oldFiscalyear) {
-      return {
-        type: "error",
-        message: "Konnte Geschäftsjahr " + year + " nicht finden.",
-        gewinn: 0,
-      };
+      payload.message = "Konnte Geschäftsjahr " + year + " nicht finden.";
+      payload.type = "error"
+      return payload;
     }
 
     // Journal - Bilanz Summen lesen
@@ -318,18 +317,17 @@ export class FiscalyearService {
     oldFiscalyear.state = state;
     await oldFiscalyear.save();
 
-    return {
-      type: "info",
-      message:
-        "AMC-Buchhaltung " +
+    payload.message = "AMC-Buchhaltung " +
         year +
         " wurde erfolgreich beendet mit Gewinn/Verlust " +
-        iGewinn,
-      gewinn: iGewinn,
-    };
+        iGewinn;
+    payload.data = {gewinn: iGewinn}
+    return payload;
   }
 
-  public async writeBilanz(year: string) {
+  public async writeBilanz(year: string) : Promise<RetDataFile> {
+    const payload: RetDataFile = {type: 'info', message: '', data: {filename: ''}};
+
     const iVJahr = Number(year) - 1;
     const iNJahr = Number(year) + 1;
 
@@ -811,11 +809,8 @@ export class FiscalyearService {
       return e;
     });
 
-    return {
-      type: "info",
-      message: "Excelfile erstellt",
-      filename: filename,
-    };
+    payload.data!.filename = filename
+    return payload;
   }
 
   /**

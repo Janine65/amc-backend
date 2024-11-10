@@ -108,13 +108,14 @@ export class ReceiptService {
     return findReceipt;
   }
 
-  public async findAllAttachments(jahr: string, journalId: number): Promise<Receipt[]> {
+  public async findAllAttachments(jahr: string, journalId: number | undefined): Promise<Receipt[]> {
     let findReceipts: Receipt[];
 
-    const recieptsJournal = await JournalReceipt.findAll({
-      where: { journalid: journalId },
-      attributes: ["receiptid"]
-    });
+    if (journalId && journalId > 0) {
+      const recieptsJournal = await JournalReceipt.findAll({
+        where: { journalid: journalId },
+        attributes: ["receiptid"]
+      });
 
     const alReceiptIds: number[] = recieptsJournal.map(rec => rec.receiptid!);
 
@@ -132,7 +133,20 @@ export class ReceiptService {
       group: ['id', 'receipt', 'bezeichnung', 'updatedAt', 'jahr', 'createdAt'],
       order: ['bezeichnung']
     });
+  } else {
+    findReceipts = await Receipt.findAll({
+      attributes: {
+        include: [[fn('COUNT', col('journalReceipts.journalid')), 'cntjournal']]
+      },
+      where: { jahr: jahr },
+      include: [
+        { model: JournalReceipt, as: 'journalReceipts', required: false, attributes: [] }
+      ],
+      group: ['id', 'receipt', 'bezeichnung', 'updatedAt', 'jahr', 'createdAt'],
+      order: ['bezeichnung']
+    });
 
+  }
 
     const pathname = systemVal.documents + jahr + '/';
     try {
@@ -165,10 +179,11 @@ export class ReceiptService {
       ]
     });
 
-    const pathname = systemVal.documents + journal.date!.getFullYear + '/';
+    const date = new Date(journal.date!)
+    const pathname = systemVal.documents + date.getFullYear() + '/';
     try {
       readdirSync(systemVal.uploads + 'receipt/');
-    } catch (error) {
+    } catch (ex) {
       mkdirSync(systemVal.uploads + 'receipt/')
     }
     findReceipts.forEach(rec => {
@@ -183,11 +198,11 @@ export class ReceiptService {
     return findReceipts;
   }
 
-  public async addAttachment2Journal(jahr: string, journalId: number, uploadFiles: string[]): Promise<RetDataFiles> {
+  public async addAttachment2Journal(year: string, journalId: number, uploadFiles: string[]): Promise<RetDataFiles> {
     if (uploadFiles.length == 0) throw new GlobalHttpException(409, "No files uploaded to create Receipts");
 
     const payload: RetDataFiles  = { type: "info", message: "", data: {files: []} }
-    const path = systemVal.documents + jahr + '/';
+    const path = systemVal.documents + year + '/';
     if (!existsSync(path)) {
       mkdirSync(path);
       mkdirSync(path + '/receipt');
@@ -202,7 +217,7 @@ export class ReceiptService {
         // create receipt
         let newReceipt = new Receipt();
         newReceipt.receipt = receipt;
-        newReceipt.jahr = jahr;
+        newReceipt.jahr = year;
         newReceipt.bezeichnung = element;
         newReceipt = await newReceipt.save();
         const newFilename = 'receipt/journal-' + newReceipt.id + '.pdf';

@@ -34,7 +34,7 @@ class AnlassController implements Controller{
       
       const findAllAnlasssData: Anlass[] = await this.anlass.findAllAnlass(fromJahr, toJahr, istkegeln);
 
-      res.status(200).json({ data: findAllAnlasssData, message: 'findAll' });
+      res.status(200).json({ type: 'info', data: findAllAnlasssData, message: 'findAll' });
     } catch (error) {
       next(error);
     }
@@ -45,7 +45,7 @@ class AnlassController implements Controller{
       const AnlassId = req.params.id;
       const findOneAnlassData: Anlass = await this.anlass.findAnlassById(AnlassId);
 
-      res.status(200).json({ data: findOneAnlassData, message: 'findOne' });
+      res.status(200).json({ type: 'info', data: findOneAnlassData, message: 'findOne' });
     } catch (error) {
       next(error);
     }
@@ -56,7 +56,7 @@ class AnlassController implements Controller{
       const AnlassData = req.body;
       const updateAnlassData: Anlass | null = await this.anlass.createAnlass(AnlassData);
 
-      res.status(200).json({ data: updateAnlassData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateAnlassData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -68,7 +68,7 @@ class AnlassController implements Controller{
       const AnlassData = req.body;
       const updateAnlassData: Anlass = await this.anlass.updateAnlass(AnlassId, AnlassData);
 
-      res.status(200).json({ data: updateAnlassData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateAnlassData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -79,7 +79,7 @@ class AnlassController implements Controller{
       const AnlassId = req.params.id;
       const deleteAnlassData: Anlass = await this.anlass.deleteAnlass(AnlassId);
 
-      res.status(200).json({ data: deleteAnlassData, message: 'deleted' });
+      res.status(200).json({ type: 'info', data: deleteAnlassData, message: 'deleted' });
     } catch (error) {
       next(error);
     }
@@ -89,7 +89,7 @@ class AnlassController implements Controller{
     try {
       const overviewData = await this.anlass.getOverviewData();
 
-      res.status(200).json({ data: overviewData, message: 'getOverview' });
+      res.status(200).json({ type: 'info', data: overviewData, message: 'getOverview' });
     } catch (error) {
       next(error);
     }
@@ -100,7 +100,7 @@ class AnlassController implements Controller{
       const jahr = req.query.jahr;
       const fkdata = await this.anlass.getFKData(jahr as string);
 
-      res.status(200).json({ data: fkdata, message: 'getFKData' });
+      res.status(200).json({ type: 'info', data: fkdata, message: 'getFKData' });
     } catch (error) {
       next(error);
     }

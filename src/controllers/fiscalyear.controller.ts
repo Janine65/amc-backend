@@ -30,7 +30,7 @@ class FiscalyearController implements Controller{
     try {
       const findAllFiscalyearsData: Fiscalyear[] = await this.fiscalyear.findAllFiscalyear();
 
-      res.status(200).json({ data: findAllFiscalyearsData, message: 'getFiscalyears' });
+      res.status(200).json({ type: 'info', data: findAllFiscalyearsData, message: 'getFiscalyears' });
     } catch (error) {
       next(error);
     }
@@ -41,7 +41,7 @@ class FiscalyearController implements Controller{
       const fiscalyearId = req.params.id;
       const findOneFiscalyearData: Fiscalyear = await this.fiscalyear.findFiscalyearById(fiscalyearId);
 
-      res.status(200).json({ data: findOneFiscalyearData, message: 'getFiscalyearById' });
+      res.status(200).json({ type: 'info', data: findOneFiscalyearData, message: 'getFiscalyearById' });
     } catch (error) {
       next(error);
     }
@@ -50,9 +50,9 @@ class FiscalyearController implements Controller{
   public getFiscalyearByYear = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const year = req.query.year as string;
-      const findOneFiscalyearData: Fiscalyear = await this.fiscalyear.findFiscalyearByYear(year);
+      const findOneFiscalyearData: Fiscalyear | null = await this.fiscalyear.findFiscalyearByYear(year);
 
-      res.status(200).json({ data: findOneFiscalyearData, message: 'getFiscalyearByYear' });
+      res.status(200).json({ type: 'info', data: findOneFiscalyearData, message: 'getFiscalyearByYear' });
     } catch (error) {
       next(error);
     }
@@ -63,7 +63,7 @@ class FiscalyearController implements Controller{
       const fiscalyearData = req.body;
       const updateFiscalyearData: Fiscalyear = await this.fiscalyear.createFiscalyear(fiscalyearData);
 
-      res.status(200).json({ data: updateFiscalyearData, message: 'createFiscalyear' });
+      res.status(200).json({ type: 'info', data: updateFiscalyearData, message: 'createFiscalyear' });
     } catch (error) {
       next(error);
     }
@@ -75,7 +75,7 @@ class FiscalyearController implements Controller{
       const fiscalyearData = req.body;
       const updateFiscalyearData: Fiscalyear = await this.fiscalyear.updateFiscalyear(fiscalyearId, fiscalyearData);
 
-      res.status(200).json({ data: updateFiscalyearData, message: 'updateFiscalyear' });
+      res.status(200).json({ type: 'info', data: updateFiscalyearData, message: 'updateFiscalyear' });
     } catch (error) {
       next(error);
     }
@@ -86,7 +86,7 @@ class FiscalyearController implements Controller{
       const fiscalyearId = req.params.id;
       const deleteFiscalyearData: Fiscalyear = await this.fiscalyear.deleteFiscalyear(fiscalyearId);
 
-      res.status(200).json({ data: deleteFiscalyearData, message: 'deleteFiscalyear' });
+      res.status(200).json({ type: 'info', data: deleteFiscalyearData, message: 'deleteFiscalyear' });
     } catch (error) {
       next(error);
     }
@@ -97,7 +97,7 @@ class FiscalyearController implements Controller{
       const name = req.query.name as string;
       const findFiscalyear: Fiscalyear[] = await this.fiscalyear.getFKData(name);
 
-      res.status(200).json({ data: findFiscalyear, message: 'getFiscalyearFK' });
+      res.status(200).json({ type: 'info', data: findFiscalyear, message: 'getFiscalyearFK' });
     } catch (error) {
       next(error);
     }
@@ -109,7 +109,7 @@ class FiscalyearController implements Controller{
       const state = parseInt(req.query.state as string);
       const message = await this.fiscalyear.closeYear(year, state);
 
-      res.status(200).json({data: message, message: "closeYear"});
+      res.status(200).json(message);
     } catch (error) {
       next(error);
     }
@@ -120,7 +120,7 @@ class FiscalyearController implements Controller{
       const year = req.query.year as string;
       const message = await this.fiscalyear.writeBilanz(year);
 
-      res.status(200).json({data: message, message: "writeBilanz"});
+      res.status(200).json(message);
     } catch (error) {
       next(error);
     }

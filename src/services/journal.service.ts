@@ -161,6 +161,7 @@ export class JournalService {
       }),
     ]);
     const arPreData = modelReturn.flat();
+    arPreData.sort((a:Journal, b:Journal) => a.journalno! - b.journalno! );
     const arData = [];
     for (let index = 0; index < arPreData.length; index++) {
       const element = arPreData[index];

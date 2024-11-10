@@ -33,7 +33,7 @@ class ReceiptController implements Controller{
       const jahr = String(req.query.jahr);
       const findAllReceiptsData: Receipt[] = await this.receipt.findAllReceipt(jahr);
 
-      res.status(200).json({ data: findAllReceiptsData, message: 'findAll' });
+      res.status(200).json({ type: 'info', data: findAllReceiptsData, message: 'findAll' });
     } catch (error) {
       next(error);
     }
@@ -44,7 +44,7 @@ class ReceiptController implements Controller{
       const receiptId = req.params.id;
       const findOneReceiptData: Receipt = await this.receipt.findReceiptById(receiptId);
 
-      res.status(200).json({ data: findOneReceiptData, message: 'findOne' });
+      res.status(200).json({ type: 'info', data: findOneReceiptData, message: 'findOne' });
     } catch (error) {
       next(error);
     }
@@ -71,7 +71,7 @@ class ReceiptController implements Controller{
       const receiptData = req.body;
       const updateReceiptData: Receipt = await this.receipt.updateReceipt(receiptId, receiptData);
 
-      res.status(200).json({ data: updateReceiptData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateReceiptData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -82,7 +82,7 @@ class ReceiptController implements Controller{
       const receiptId = req.params.id;
       const deleteReceiptData: Receipt = await this.receipt.deleteReceipt(receiptId);
 
-      res.status(200).json({ data: deleteReceiptData, message: 'deleted' });
+      res.status(200).json({ type: 'info', data: deleteReceiptData, message: 'deleted' });
     } catch (error) {
       next(error);
     }
@@ -94,7 +94,7 @@ class ReceiptController implements Controller{
       const journalId = Number(req.query.journalid);
       const findAllReceiptsData: Receipt[] = await this.receipt.findAllAttachments(jahr, journalId);
 
-      res.status(200).json({ data: findAllReceiptsData, message: 'findAllAttachments' });
+      res.status(200).json({ type: 'info', data: findAllReceiptsData, message: 'findAllAttachments' });
     } catch (error) {
       next(error);
     }
@@ -102,10 +102,10 @@ class ReceiptController implements Controller{
 
   public findAttachments = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const journalId = Number(req.query.journalId);
+      const journalId = Number(req.query.journalid);
       const findAllReceiptsData: Receipt[] = await this.receipt.findAttachments(journalId);
 
-      res.status(200).json({ data: findAllReceiptsData, message: 'findAttachments' });
+      res.status(200).json({ type: 'info', data: findAllReceiptsData, message: 'findAttachments' });
     } catch (error) {
       next(error);
     }
@@ -132,7 +132,7 @@ class ReceiptController implements Controller{
       if (data.uploadFiles == undefined)
         res.status(409).json({type: 'error', message: 'No files found'});
 
-      const updateReceiptData: RetDataFiles = await this.receipt.addAttachment2Journal(data.jahr, data.journalId, data.uploadFiles.split(','));
+      const updateReceiptData: RetDataFiles = await this.receipt.addAttachment2Journal(data.year, data.journalid, data.uploadFiles.split(','));
 
       res.status(200).json(updateReceiptData);
     } catch (error) {

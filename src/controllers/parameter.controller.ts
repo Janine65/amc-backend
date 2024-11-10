@@ -26,7 +26,7 @@ class ParameterController implements Controller{
     try {
       const findAllParametersData: Parameter[] = await this.parameter.findAllParameter();
 
-      res.status(200).json({ data: findAllParametersData, message: 'findAll' });
+      res.status(200).json({ type: 'info', data: findAllParametersData, message: 'findAll' });
     } catch (error) {
       next(error);
     }
@@ -37,7 +37,7 @@ class ParameterController implements Controller{
       const parameterId = req.params.id;
       const findOneParameterData: Parameter = await this.parameter.findParameterById(parameterId);
 
-      res.status(200).json({ data: findOneParameterData, message: 'findOne' });
+      res.status(200).json({ type: 'info', data: findOneParameterData, message: 'findOne' });
     } catch (error) {
       next(error);
     }
@@ -48,7 +48,7 @@ class ParameterController implements Controller{
       const parameterData = req.body;
       const createParameterData: Parameter = await this.parameter.createParameter(parameterData);
       
-      res.status(200).json({ data: createParameterData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: createParameterData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -60,7 +60,7 @@ class ParameterController implements Controller{
       const parameterData = req.body;
       const updateParameterData: Parameter = await this.parameter.updateParameter(parameterId, parameterData);
 
-      res.status(200).json({ data: updateParameterData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateParameterData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -71,7 +71,7 @@ class ParameterController implements Controller{
       const parameterId = req.params.id;
       const deleteParameterData: Parameter = await this.parameter.deleteParameter(parameterId);
 
-      res.status(200).json({ data: deleteParameterData, message: 'deleted' });
+      res.status(200).json({ type: 'info', data: deleteParameterData, message: 'deleted' });
     } catch (error) {
       next(error);
     }

@@ -28,7 +28,7 @@ class BudgetController implements Controller{
       const jahr = String(req.query.jahr);
       const findAllBudgetsData: Budget[] = await this.budget.findAllBudget(jahr);
 
-      res.status(200).json({ data: findAllBudgetsData, message: 'findAll' });
+      res.status(200).json({ type: 'info', data: findAllBudgetsData, message: 'findAll' });
     } catch (error) {
       next(error);
     }
@@ -39,7 +39,7 @@ class BudgetController implements Controller{
       const budgetId = req.params.id;
       const findOneBudgetData: Budget = await this.budget.findBudgetById(budgetId);
 
-      res.status(200).json({ data: findOneBudgetData, message: 'findOne' });
+      res.status(200).json({ type: 'info', data: findOneBudgetData, message: 'findOne' });
     } catch (error) {
       next(error);
     }
@@ -50,7 +50,7 @@ class BudgetController implements Controller{
       const budgetData = req.body;
       const updateBudgetData: Budget = await this.budget.createBudget(budgetData);
 
-      res.status(200).json({ data: updateBudgetData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateBudgetData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -62,7 +62,7 @@ class BudgetController implements Controller{
       const budgetData = req.body;
       const updateBudgetData: Budget = await this.budget.updateBudget(budgetId, budgetData);
 
-      res.status(200).json({ data: updateBudgetData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateBudgetData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -73,7 +73,7 @@ class BudgetController implements Controller{
       const budgetId = req.params.id;
       const deleteBudgetData: Budget = await this.budget.deleteBudget(budgetId);
 
-      res.status(200).json({ data: deleteBudgetData, message: 'deleted' });
+      res.status(200).json({ type: 'info', data: deleteBudgetData, message: 'deleted' });
     } catch (error) {
       next(error);
     }
@@ -85,7 +85,7 @@ class BudgetController implements Controller{
       const to = String(req.query.to);
       const deleteBudgetData = await this.budget.copyYear(from, to);
 
-      res.status(200).json({ data: deleteBudgetData, message: 'copyYear' });
+      res.status(200).json({ type: 'info', data: deleteBudgetData, message: 'copyYear' });
     } catch (error) {
       next(error);
     }

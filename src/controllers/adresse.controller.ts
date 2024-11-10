@@ -31,7 +31,7 @@ class AdresseController implements Controller{
     try {
       const findAllAdressesData: Adresse[] = await this.adresse.findAllAdresse();
 
-      res.status(200).json({ data: findAllAdressesData, message: 'findAll' });
+      res.status(200).json({ type: 'info', data: findAllAdressesData, message: 'findAll' });
     } catch (error) {
       next(error);
     }
@@ -42,7 +42,7 @@ class AdresseController implements Controller{
       const AdresseId = req.params.id;
       const findOneAdresseData: Adresse = await this.adresse.findAdresseById(AdresseId);
 
-      res.status(200).json({ data: findOneAdresseData, message: 'findOne' });
+      res.status(200).json({ type: 'info', data: findOneAdresseData, message: 'findOne' });
     } catch (error) {
       next(error);
     }
@@ -53,7 +53,7 @@ class AdresseController implements Controller{
       const AdresseData = req.body;
       const updateAdresseData: Adresse = await this.adresse.createAdresse(AdresseData);
 
-      res.status(200).json({ data: updateAdresseData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateAdresseData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -65,7 +65,7 @@ class AdresseController implements Controller{
       const AdresseData = req.body;
       const updateAdresseData: Adresse = await this.adresse.updateAdresse(AdresseId, AdresseData);
 
-      res.status(200).json({ data: updateAdresseData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateAdresseData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -76,7 +76,7 @@ class AdresseController implements Controller{
       const AdresseId = req.params.id;
       const deleteAdresseData: Adresse = await this.adresse.deleteAdresse(AdresseId);
 
-      res.status(200).json({ data: deleteAdresseData, message: 'deleted' });
+      res.status(200).json({ type: 'info', data: deleteAdresseData, message: 'deleted' });
     } catch (error) {
       next(error);
     }
@@ -86,7 +86,7 @@ class AdresseController implements Controller{
     try {
       const overviewData = await this.adresse.getOverview();
 
-      res.status(200).json({ data: overviewData, message: 'getOverview' });
+      res.status(200).json({ type: 'info', data: overviewData, message: 'getOverview' });
     } catch (error) {
       next(error);
     }
@@ -96,7 +96,7 @@ class AdresseController implements Controller{
     try {
       const fkdata = await this.adresse.getFKData();
 
-      res.status(200).json({ data: fkdata, message: 'getFKData' });
+      res.status(200).json({ type: 'info', data: fkdata, message: 'getFKData' });
     } catch (error) {
       next(error);
     }

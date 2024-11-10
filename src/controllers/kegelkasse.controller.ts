@@ -30,7 +30,7 @@ class KegelkasseController implements Controller{
     try {
       const findAllKegelkassesData: Kegelkasse[] = await this.kegelkasse.findAllKegelkasse();
 
-      res.status(200).json({ data: findAllKegelkassesData, message: 'findAll' });
+      res.status(200).json({ type: 'info', data: findAllKegelkassesData, message: 'findAll' });
     } catch (error) {
       next(error);
     }
@@ -41,7 +41,7 @@ class KegelkasseController implements Controller{
       const kegelkasseId = req.params.id;
       const findOneKegelkasseData: Kegelkasse = await this.kegelkasse.findKegelkasseById(kegelkasseId);
 
-      res.status(200).json({ data: findOneKegelkasseData, message: 'findOne' });
+      res.status(200).json({ type: 'info', data: findOneKegelkasseData, message: 'findOne' });
     } catch (error) {
       next(error);
     }
@@ -52,7 +52,7 @@ class KegelkasseController implements Controller{
       const kegelkasseData = req.body;
       const updateKegelkasseData: Kegelkasse = await this.kegelkasse.createKegelkasse(kegelkasseData);
 
-      res.status(200).json({ data: updateKegelkasseData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateKegelkasseData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -64,7 +64,7 @@ class KegelkasseController implements Controller{
       const kegelkasseData = req.body;
       const updateKegelkasseData: Kegelkasse = await this.kegelkasse.updateKegelkasse(kegelkasseId, kegelkasseData);
 
-      res.status(200).json({ data: updateKegelkasseData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateKegelkasseData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -75,7 +75,7 @@ class KegelkasseController implements Controller{
       const kegelkasseId = req.params.id;
       const deleteKegelkasseData: Kegelkasse = await this.kegelkasse.deleteKegelkasse(kegelkasseId);
 
-      res.status(200).json({ data: deleteKegelkasseData, message: 'deleted' });
+      res.status(200).json({ type: 'info', data: deleteKegelkasseData, message: 'deleted' });
     } catch (error) {
       next(error);
     }
@@ -86,7 +86,7 @@ class KegelkasseController implements Controller{
       const jahr = String(req.query.jahr);
       const findAllKegelkassesData: Kegelkasse[] = await this.kegelkasse.findKegelkasseByJahr(jahr);
 
-      res.status(200).json({ data: findAllKegelkassesData, message: 'getKegelkasseByJahr' });
+      res.status(200).json({ type: 'info', data: findAllKegelkassesData, message: 'getKegelkasseByJahr' });
     } catch (error) {
       next(error);
     }
@@ -98,7 +98,7 @@ class KegelkasseController implements Controller{
       const monat = String(req.query.monat);
       const findAllKegelkassesData = await this.kegelkasse.findKegelkasseByDatum(jahr, monat);
 
-      res.status(200).json({ data: findAllKegelkassesData, message: 'getKegelkasseByDatum' });
+      res.status(200).json({ type: 'info', data: findAllKegelkassesData, message: 'getKegelkasseByDatum' });
     } catch (error) {
       next(error);
     }

@@ -33,7 +33,7 @@ class MeisterschaftController implements Controller{
     try {
       const findAllMeisterschaftsData: Meisterschaft[] = await this.meisterschaft.findAllMeisterschaft();
 
-      res.status(200).json({ data: findAllMeisterschaftsData, message: 'getMeisterschafts' });
+      res.status(200).json({ type: 'info', data: findAllMeisterschaftsData, message: 'getMeisterschafts' });
     } catch (error) {
       next(error);
     }
@@ -44,7 +44,7 @@ class MeisterschaftController implements Controller{
       const meisterschaftId = req.params.id;
       const findOneMeisterschaftData: Meisterschaft = await this.meisterschaft.findMeisterschaftById(meisterschaftId);
 
-      res.status(200).json({ data: findOneMeisterschaftData, message: 'getMeisterschaftById' });
+      res.status(200).json({ type: 'info', data: findOneMeisterschaftData, message: 'getMeisterschaftById' });
     } catch (error) {
       next(error);
     }
@@ -55,7 +55,7 @@ class MeisterschaftController implements Controller{
       const eventid = Number(req.query.eventid as string);
       const findOneMeisterschaftData: Meisterschaft[] = await this.meisterschaft.getMeisterschaftForEvent(eventid);
 
-      res.status(200).json({ data: findOneMeisterschaftData, message: 'getMeisterschaftForEvent' });
+      res.status(200).json({ type: 'info', data: findOneMeisterschaftData, message: 'getMeisterschaftForEvent' });
     } catch (error) {
       next(error);
     }
@@ -66,7 +66,7 @@ class MeisterschaftController implements Controller{
       const mitgliedid = Number(req.query.mitgliedid as string);
       const findMeisterschaftData = await this.meisterschaft.getMeisterschaftForMitglied(mitgliedid);
 
-      res.status(200).json({ data: findMeisterschaftData, message: 'getMeisterschaftForMitglied' });
+      res.status(200).json({ type: 'info', data: findMeisterschaftData, message: 'getMeisterschaftForMitglied' });
     } catch (error) {
       next(error);
     }
@@ -77,7 +77,7 @@ class MeisterschaftController implements Controller{
       const mitgliedid = Number(req.query.mitgliedid as string);
       const findMeisterData = await this.meisterschaft.getMeisterForMitglied(mitgliedid);
 
-      res.status(200).json({ data: findMeisterData, message: 'getMeisterForMitglied' });
+      res.status(200).json({ type: 'info', data: findMeisterData, message: 'getMeisterForMitglied' });
     } catch (error) {
       next(error);
     }
@@ -88,7 +88,7 @@ class MeisterschaftController implements Controller{
       const jahr = req.query.jahr as string;
       const retValue = await this.meisterschaft.checkJahr(jahr);
 
-      res.status(200).json({ data: retValue, message: 'createMeisterschaft' });
+      res.status(200).json({ type: 'info', data: retValue, message: 'createMeisterschaft' });
     } catch (error) {
       next(error);
     }
@@ -100,7 +100,7 @@ class MeisterschaftController implements Controller{
       const vorjahr = Boolean(req.query.vorjahr as string);
       const alAnlaesse: Anlaesse[] = await this.meisterschaft.getChartData(jahr, vorjahr);
 
-      res.status(200).json({ data: alAnlaesse, message: 'getChartData' });
+      res.status(200).json({ type: 'info', data: alAnlaesse, message: 'getChartData' });
     } catch (error) {
       next(error);
     }
@@ -111,7 +111,7 @@ class MeisterschaftController implements Controller{
       const meisterschaftData = req.body;
       const updateMeisterschaftData: Meisterschaft = await this.meisterschaft.createMeisterschaft(meisterschaftData);
 
-      res.status(200).json({ data: updateMeisterschaftData, message: 'createMeisterschaft' });
+      res.status(200).json({ type: 'info', data: updateMeisterschaftData, message: 'createMeisterschaft' });
     } catch (error) {
       next(error);
     }
@@ -123,7 +123,7 @@ class MeisterschaftController implements Controller{
       const meisterschaftData = req.body;
       const updateMeisterschaftData: Meisterschaft = await this.meisterschaft.updateMeisterschaft(meisterschaftId, meisterschaftData);
 
-      res.status(200).json({ data: updateMeisterschaftData, message: 'updateMeisterschaft' });
+      res.status(200).json({ type: 'info', data: updateMeisterschaftData, message: 'updateMeisterschaft' });
     } catch (error) {
       next(error);
     }
@@ -134,7 +134,7 @@ class MeisterschaftController implements Controller{
       const meisterschaftId = req.params.id;
       const deleteMeisterschaftData: Meisterschaft = await this.meisterschaft.deleteMeisterschaft(meisterschaftId);
 
-      res.status(200).json({ data: deleteMeisterschaftData, message: 'deleteMeisterschaft' });
+      res.status(200).json({ type: 'info', data: deleteMeisterschaftData, message: 'deleteMeisterschaft' });
     } catch (error) {
       next(error);
     }
@@ -145,7 +145,7 @@ class MeisterschaftController implements Controller{
       const jahr = req.query.jahr as string;
       const deleteMeisterschaftData = await this.meisterschaft.writeAuswertung(jahr);
 
-      res.status(200).json({ data: deleteMeisterschaftData, message: 'writeAuswertung' });
+      res.status(200).json({ type: 'info', data: deleteMeisterschaftData, message: 'writeAuswertung' });
     } catch (error) {
       next(error);
     }

@@ -8,3 +8,4 @@ src/documents/
 *.zip
 src/public/uploads/*.xlsx
 src/public/exports/*.xlsx
+.DS_Store

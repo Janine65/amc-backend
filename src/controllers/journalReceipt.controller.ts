@@ -28,7 +28,7 @@ class JournalReceiptController implements Controller{
     try {
       const findAllJournalReceiptsData: JournalReceipt[] = await this.journalReceipt.findAllJournalReceipt();
 
-      res.status(200).json({ data: findAllJournalReceiptsData, message: 'getJournalReceipts' });
+      res.status(200).json({ type: 'info', data: findAllJournalReceiptsData, message: 'getJournalReceipts' });
     } catch (error) {
       next(error);
     }
@@ -39,7 +39,7 @@ class JournalReceiptController implements Controller{
       const journalId = Number(req.query.journalId as string);
       const findJournalReceiptData: JournalReceipt[] = await this.journalReceipt.findJournalReceiptByJournalId(journalId);
 
-      res.status(200).json({ data: findJournalReceiptData, message: 'getJournalReceiptByJournalId' });
+      res.status(200).json({ type: 'info', data: findJournalReceiptData, message: 'getJournalReceiptByJournalId' });
     } catch (error) {
       next(error);
     }
@@ -50,7 +50,7 @@ class JournalReceiptController implements Controller{
       const receiptId = Number(req.query.receiptId as string);
       const findJournalReceiptData: JournalReceipt[] = await this.journalReceipt.findJournalReceiptByReceiptId(receiptId);
 
-      res.status(200).json({ data: findJournalReceiptData, message: 'getJournalReceiptByReceiptId' });
+      res.status(200).json({ type: 'info', data: findJournalReceiptData, message: 'getJournalReceiptByReceiptId' });
     } catch (error) {
       next(error);
     }
@@ -61,7 +61,7 @@ class JournalReceiptController implements Controller{
       const journalReceiptData = req.body;
       const updateJournalReceiptData = await this.journalReceipt.createJournalReceipt(journalReceiptData);
 
-      res.status(200).json({ data: updateJournalReceiptData, message: 'createJournalReceipt' });
+      res.status(200).json({ type: 'info', data: updateJournalReceiptData, message: 'createJournalReceipt' });
     } catch (error) {
       next(error);
     }
@@ -72,7 +72,7 @@ class JournalReceiptController implements Controller{
       const journalReceipt = req.body;
       await this.journalReceipt.deleteJournalReceipt(journalReceipt);
 
-      res.status(200).json({ data: undefined, message: 'deleteJournalReceipt' });
+      res.status(200).json({ type: 'info', data: undefined, message: 'deleteJournalReceipt' });
     } catch (error) {
       next(error);
     }
@@ -84,7 +84,7 @@ class JournalReceiptController implements Controller{
       const receipts = req.body as Receipt[];
       const updateJournalReceiptData = await this.journalReceipt.addReceipts2Journal(journalId, receipts);
 
-      res.status(200).json({ data: updateJournalReceiptData, message: 'createJournalReceipt' });
+      res.status(200).json({ type: 'info', data: updateJournalReceiptData, message: 'createJournalReceipt' });
     } catch (error) {
       next(error);
     }

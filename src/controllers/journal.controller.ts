@@ -29,7 +29,7 @@ class JournalController implements Controller{
     try {
       const findAllJournalsData: Journal[] = await this.journal.findAllJournal();
 
-      res.status(200).json({ data: findAllJournalsData, message: 'getJournals' });
+      res.status(200).json({ type: 'info', data: findAllJournalsData, message: 'getJournals' });
     } catch (error) {
       next(error);
     }
@@ -40,7 +40,7 @@ class JournalController implements Controller{
       const journalId = req.params.id;
       const findOneJournalData: Journal = await this.journal.findJournalById(journalId);
 
-      res.status(200).json({ data: findOneJournalData, message: 'getJournalById' });
+      res.status(200).json({ type: 'info', data: findOneJournalData, message: 'getJournalById' });
     } catch (error) {
       next(error);
     }
@@ -51,7 +51,7 @@ class JournalController implements Controller{
       const year = req.query.year as string;
       const findOneJournalData: Journal[] = await this.journal.findJournalByYear(year);
 
-      res.status(200).json({ data: findOneJournalData, message: 'getJournalByYear' });
+      res.status(200).json({ type: 'info', data: findOneJournalData, message: 'getJournalByYear' });
     } catch (error) {
       next(error);
     }
@@ -62,7 +62,7 @@ class JournalController implements Controller{
       const journalData = req.body;
       const updateJournalData: Journal = await this.journal.createJournal(journalData);
 
-      res.status(200).json({ data: updateJournalData, message: 'createJournal' });
+      res.status(200).json({ type: 'info', data: updateJournalData, message: 'createJournal' });
     } catch (error) {
       next(error);
     }
@@ -74,7 +74,7 @@ class JournalController implements Controller{
       const journalData = req.body;
       const updateJournalData: Journal = await this.journal.updateJournal(journalId, journalData);
 
-      res.status(200).json({ data: updateJournalData, message: 'updateJournal' });
+      res.status(200).json({ type: 'info', data: updateJournalData, message: 'updateJournal' });
     } catch (error) {
       next(error);
     }
@@ -85,7 +85,7 @@ class JournalController implements Controller{
       const journalId = req.params.id;
       const deleteJournalData: Journal = await this.journal.deleteJournal(journalId);
 
-      res.status(200).json({ data: deleteJournalData, message: 'deleteJournal' });
+      res.status(200).json({ type: 'info', data: deleteJournalData, message: 'deleteJournal' });
     } catch (error) {
       next(error);
     }
@@ -97,7 +97,7 @@ class JournalController implements Controller{
       const account = Number(req.query.account);
       const getAccountData = await this.journal.getAccData(year, account);
 
-      res.status(200).json({ data: getAccountData, message: 'getAccountData' });
+      res.status(200).json({ type: 'info', data: getAccountData, message: 'getAccountData' });
     } catch (error) {
       next(error);
     }

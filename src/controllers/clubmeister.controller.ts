@@ -29,7 +29,7 @@ class ClubmeisterController implements Controller{
       const jahr = String(req.query.jahr);
       const findAllClubmeistersData: Clubmeister[] = await this.clubmeister.findAllClubmeister(jahr);
 
-      res.status(200).json({ data: findAllClubmeistersData, message: 'findAll' });
+      res.status(200).json({ type: 'info', data: findAllClubmeistersData, message: 'findAll' });
     } catch (error) {
       next(error);
     }
@@ -40,7 +40,7 @@ class ClubmeisterController implements Controller{
       const clubmeisterId = req.params.id;
       const findOneClubmeisterData: Clubmeister = await this.clubmeister.findClubmeisterById(clubmeisterId);
 
-      res.status(200).json({ data: findOneClubmeisterData, message: 'findOne' });
+      res.status(200).json({ type: 'info', data: findOneClubmeisterData, message: 'findOne' });
     } catch (error) {
       next(error);
     }
@@ -51,7 +51,7 @@ class ClubmeisterController implements Controller{
       const clubmeisterData = req.body;
       const updateClubmeisterData: Clubmeister = await this.clubmeister.createClubmeister(clubmeisterData);
 
-      res.status(200).json({ data: updateClubmeisterData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateClubmeisterData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -63,7 +63,7 @@ class ClubmeisterController implements Controller{
       const clubmeisterData = req.body;
       const updateClubmeisterData: Clubmeister = await this.clubmeister.updateClubmeister(clubmeisterId, clubmeisterData);
 
-      res.status(200).json({ data: updateClubmeisterData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateClubmeisterData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -74,7 +74,7 @@ class ClubmeisterController implements Controller{
       const clubmeisterId = req.params.id;
       const deleteClubmeisterData: Clubmeister = await this.clubmeister.deleteClubmeister(clubmeisterId);
 
-      res.status(200).json({ data: deleteClubmeisterData, message: 'deleted' });
+      res.status(200).json({ type: 'info', data: deleteClubmeisterData, message: 'deleted' });
     } catch (error) {
       next(error);
     }
@@ -84,7 +84,7 @@ class ClubmeisterController implements Controller{
     try {
       const overviewData = await this.clubmeister.getOverviewData();
 
-      res.status(200).json({ data: overviewData, message: 'getOverviewData' });
+      res.status(200).json({ type: 'info', data: overviewData, message: 'getOverviewData' });
     } catch (error) {
       next(error);
     }
@@ -95,7 +95,7 @@ class ClubmeisterController implements Controller{
       const jahr = req.query.jahr as string
       const overviewData = await this.clubmeister.calcMeister(jahr);
 
-      res.status(200).json({ data: overviewData, message: 'getOverviewData' });
+      res.status(200).json({ type: 'info', data: overviewData, message: 'getOverviewData' });
     } catch (error) {
       next(error);
     }

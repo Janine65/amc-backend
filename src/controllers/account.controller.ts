@@ -32,7 +32,7 @@ class AccountController implements Controller{
     try {
       const findAllAccountsData: Account[] = await this.account.findAllAccount();
 
-      res.status(200).json({ data: findAllAccountsData, message: 'findAll' });
+      res.status(200).json({ type: 'info', data: findAllAccountsData, message: 'findAll' });
     } catch (error) {
       next(error);
     }
@@ -43,7 +43,7 @@ class AccountController implements Controller{
       const accountId = req.params.id;
       const findOneAccountData: Account = await this.account.findAccountById(accountId);
 
-      res.status(200).json({ data: findOneAccountData, message: 'findOne' });
+      res.status(200).json({ type: 'info', data: findOneAccountData, message: 'findOne' });
     } catch (error) {
       next(error);
     }
@@ -54,7 +54,7 @@ class AccountController implements Controller{
       const accountData = req.body;
       const updateAccountData: Account = await this.account.createAccount(accountData);
 
-      res.status(200).json({ data: updateAccountData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateAccountData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -66,7 +66,7 @@ class AccountController implements Controller{
       const accountData = req.body;
       const updateAccountData: Account = await this.account.updateAccount(accountId, accountData);
 
-      res.status(200).json({ data: updateAccountData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateAccountData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -77,7 +77,7 @@ class AccountController implements Controller{
       const accountId = req.params.id;
       const deleteAccountData: Account = await this.account.deleteAccount(accountId);
 
-      res.status(200).json({ data: deleteAccountData, message: 'deleted' });
+      res.status(200).json({ type: 'info', data: deleteAccountData, message: 'deleted' });
     } catch (error) {
       next(error);
     }
@@ -89,7 +89,7 @@ class AccountController implements Controller{
       const all = Number.parseInt(String(req.query.all));
       const getData: Account[] = await this.account.getAccountJahr(jahr, all);
 
-      res.status(200).json({ data: getData, message: 'getAccountJahr' });
+      res.status(200).json({ type: 'info', data: getData, message: 'getAccountJahr' });
     } catch (error) {
       next(error);
     }
@@ -99,7 +99,7 @@ class AccountController implements Controller{
     try {
       const order = String(req.query.order);
       const getData = await this.account.getOneDataByOrder(order);
-      res.status(200).json({ data: getData, message: 'getOneDataByOrder'});
+      res.status(200).json({ type: 'info', data: getData, message: 'getOneDataByOrder'});
     } catch (error) {
       next(error);
     }
@@ -110,7 +110,7 @@ class AccountController implements Controller{
       const order = String(req.query.order);
       const date = new Date(req.query.date as string)
       const getData = await this.account.getAmountOneAcc(order,date);
-      res.status(200).json({ data: getData, message: 'getOneDataByOrder'});
+      res.status(200).json({ type: 'info', data: getData, message: 'getOneDataByOrder'});
     } catch (error) {
       next(error);
     }
@@ -120,7 +120,7 @@ class AccountController implements Controller{
     try {
       const filter = String(req.query.filter);
       const getData = await this.account.getFKData(filter);
-      res.status(200).json({ data: getData, message: 'getFKData'});
+      res.status(200).json({ type: 'info', data: getData, message: 'getFKData'});
     } catch (error) {
       next(error);
     }
@@ -130,7 +130,7 @@ class AccountController implements Controller{
     try {
       const jahr = String(req.query.jahr);
       const getData = await this.account.getAccountSummary(jahr);
-      res.status(200).json({ data: getData, message: 'getAccountSummary'});
+      res.status(200).json({ type: 'info', data: getData, message: 'getAccountSummary'});
     } catch (error) {
       next(error);
     }
@@ -139,8 +139,8 @@ class AccountController implements Controller{
   public writeKontoauszug = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const year = String(req.query.year);
-      const all = (req.query.jahr as string) == "true" || (req.query.jahr as string) == "1";
-      const getData = await this.account.writeKontoauszug(year, all);
+      // const all = (req.query.jahr as string) == "true" || (req.query.jahr as string) == "1";
+      const getData = await this.account.writeKontoauszug(year);
       res.status(200).json(getData);
     } catch (error) {
       next(error);

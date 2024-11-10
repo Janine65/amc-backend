@@ -32,7 +32,7 @@ class UserController implements Controller{
     try {
       const findAllUsersData: User[] = await this.user.findAllUser();
 
-      res.status(200).json({ data: findAllUsersData, message: 'findAll' });
+      res.status(200).json({ type: 'info', data: findAllUsersData, message: 'findAll' });
     } catch (error) {
       next(error);
     }
@@ -43,7 +43,7 @@ class UserController implements Controller{
       const userId = req.params.id;
       const findOneUserData: User = await this.user.findUserById(userId);
 
-      res.status(200).json({ data: findOneUserData, message: 'findOne' });
+      res.status(200).json({ type: 'info', data: findOneUserData, message: 'findOne' });
     } catch (error) {
       next(error);
     }
@@ -55,7 +55,7 @@ class UserController implements Controller{
       const userData: UpdateUserDto = req.body;
       const updateUserData: User = await this.user.updateUser(userId, userData);
 
-      res.status(200).json({ data: updateUserData, message: 'updated' });
+      res.status(200).json({ type: 'info', data: updateUserData, message: 'updated' });
     } catch (error) {
       next(error);
     }
@@ -66,7 +66,7 @@ class UserController implements Controller{
       const userId = req.params.id;
       const deleteUserData: User = await this.user.deleteUser(userId);
 
-      res.status(200).json({ data: deleteUserData, message: 'deleted' });
+      res.status(200).json({ type: 'info', data: deleteUserData, message: 'deleted' });
     } catch (error) {
       next(error);
     }
@@ -74,7 +74,7 @@ class UserController implements Controller{
 
   public getCurrent = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      res.status(200).json({ data: req.user, message: 'getCurrent' });
+      res.status(200).json({ type: 'info', data: req.user, message: 'getCurrent' });
     } catch (error) {
       next(error);
     }

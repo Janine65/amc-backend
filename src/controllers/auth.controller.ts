@@ -52,7 +52,7 @@ class AuthController implements Controller {
         }
         console.log(emailBody);
         await this.adresseSrv.sendEmail(emailBody);
-        res.status(201).json({ data: newUser, message: 'signup' });
+        res.status(201).json({ type: 'info', data: newUser, message: 'signup' });
       })
     .catch((error) => {
         next(error);

@@ -13,7 +13,11 @@ import { RetDataFile } from '@/models/generel';
 @Service()
 export class AccountService {
   public async findAllAccount(): Promise<Account[]> {
-    const allAccount: Account[] = await Account.findAll();
+    const allAccount: Account[] = await Account.findAll(
+      {
+        order: [["level", "ASC"], ["order", "ASC"]]
+      }
+    );
     return allAccount;
   }
 
@@ -334,13 +338,13 @@ export class AccountService {
     return arFiltered;
   }
 
-  public async writeKontoauszug (year: string, all: boolean): Promise<RetDataFile> {
+  public async writeKontoauszug (year: string, all: boolean = false): Promise<RetDataFile> {
     const payload: RetDataFile = {type: 'info', message: '', data: {filename: ''}};
 
     let arAccount: Account[];
-    if (all) {
+    if (all == true) {
       arAccount = await Account.findAll({
-        where: [{ "order": { [Op.lt]: 9 } },
+        where: [{ "order": { [Op.gt]: 9 } },
         { "status": 1 }],
         order: ["order"]        
       });
@@ -351,7 +355,12 @@ export class AccountService {
       });
      
       let alAccounts: number[] = arJournal.map(rec => rec.from_account!);
-      alAccounts.concat(...(arJournal.map(rec => rec.to_account!)));
+      alAccounts = alAccounts.concat(...(arJournal.map(rec => rec.to_account!))).sort();
+      for (let i=0; i<alAccounts.length; ++i) {
+        for (let j=i+1; j<alAccounts.length; ++j) 
+          if (alAccounts[i] == alAccounts[j])
+            alAccounts.splice(j--, 1);
+      }
 
       arAccount = await Account.findAll({
         where: [{ "order": { [Op.gt]: 9 } },
