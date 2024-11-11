@@ -3,6 +3,15 @@ import { systemVal } from '@/utils/system'
 import { existsSync, mkdirSync } from 'node:fs';
 import { logger } from '@utils/logger';
 
+import config from '@config/config.json';
+
+const defaultConfig = config.development;
+const environment = process.env.NODE_ENV ?? 'development';
+const environmentConfig = environment == 'development' ? defaultConfig : config.production;
+const finalConfig = {...defaultConfig, ...environmentConfig};
+
+systemVal.gConfig = finalConfig;
+
 // instantiate app class
 import AuthController from '@controllers/auth.controller'
 import UserController from '@controllers/user.controller'
@@ -20,14 +29,6 @@ import KegelkasseController from '@controllers/kegelkasse.controller'
 import ReceiptController from '@controllers/receipt.controller';
 import JournalReceiptController from '@controllers/journalReceipt.controller';
 
-import config from '@config/config.json';
-
-const defaultConfig = config.development;
-const environment = process.env.NODE_ENV ?? 'development';
-const environmentConfig = environment == 'development' ? defaultConfig : config.production;
-const finalConfig = {...defaultConfig, ...environmentConfig};
-
-systemVal.gConfig = finalConfig;
 
 let path =  __dirname + "/documents/"
 if (!existsSync(path)) 
