@@ -1,6 +1,8 @@
 import { Sequelize } from 'sequelize';
 import { version } from '../../package.json';
-
+import config from '@config/config.json';
+import { existsSync, mkdirSync, realpathSync } from 'node:fs';
+        
 class ConfigClass {
     config_id!: string;
     app_name!: string;
@@ -184,6 +186,45 @@ class SystemVal {
         }
         SystemVal._instance = this;
         this._version = version;
+
+        const defaultConfig = config.development;
+        const environment = process.env.NODE_ENV ?? 'development';
+        const environmentConfig = environment == 'development' ? defaultConfig : config.production;
+        const finalConfig = {...defaultConfig, ...environmentConfig};
+        
+        this.gConfig = finalConfig;
+        
+        let mainpath = realpathSync(__dirname + "/..");
+        
+        let path =  mainpath + "/documents/"
+        if (!existsSync(path)) 
+          mkdirSync(path);
+        this.documents = path
+        
+        path = mainpath + "/public/"
+        if (!existsSync(path)) 
+          mkdirSync(path);
+        this.public = path
+        
+        path =  mainpath + "/public/uploads/"
+        if (!existsSync(path)) 
+          mkdirSync(path);
+        this.uploads = path
+        
+        path = mainpath + "/public/exports/"
+        if (!existsSync(path)) 
+          mkdirSync(path);
+        this.exports = path
+        
+        path = mainpath + "/public/assets/"
+        if (!existsSync(path)) 
+          mkdirSync(path);
+        this.assets = path
+        
+        path =  mainpath + "/logs/"
+        if (!existsSync(path)) 
+          mkdirSync(path);
+        this.log_dir = path        
     }
 
     public static getInstance(): SystemVal {
