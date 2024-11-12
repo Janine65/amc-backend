@@ -38,7 +38,7 @@
         "webhost": "https://interna.neu.automoto-sr.info",
         "database": "amcadmin",
         "db_user": "webuser",
-        "db_pwd": "U2FsdGVkX1+uREut48vXcp9FVvrcmZcVefiR8vBlKiA=",
+        "db_pwd": "2647a8e02dd5e83e659cb97b03536b8e",
         "port": 5439,
         "dbtype": "postgres",
         "defaultEmail" : "HansjoergDutler"
