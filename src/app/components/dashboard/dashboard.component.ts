@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable prefer-spread */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription, combineLatest, from, map, zip } from 'rxjs';
+import { Subscription, from, map, zip } from 'rxjs';
 import { BackendService } from '@app/service';
 import { Fiscalyear, OverviewData, ParamData } from 'src/app/models/datatypes';
 import pkg from './../../../../package.json';
@@ -31,6 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subs = from(this.backendService.getParameterData())
     .subscribe(async list => {
       this.parameter = list.data as ParamData[];
+      console.log(this.parameter);
       localStorage.setItem('parameter', JSON.stringify(this.parameter));
       const element = this.parameter.find(element => element.key === 'CLUBJAHR');
       if (element) {
