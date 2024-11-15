@@ -21,10 +21,6 @@ import KegelkasseController from '@controllers/kegelkasse.controller'
 import ReceiptController from '@controllers/receipt.controller';
 import JournalReceiptController from '@controllers/journalReceipt.controller';
 
-// log global.system.gConfig
-logger.info(`systemVal: ${JSON.stringify(systemVal, undefined, systemVal.gConfig.json_indentation)}`);
-
-
  const app = new App(
   [
     new UserController(),
@@ -45,4 +41,6 @@ logger.info(`systemVal: ${JSON.stringify(systemVal, undefined, systemVal.gConfig
   ]
 );
 
+app.start();
+systemVal.loadParams();
 app.listen();

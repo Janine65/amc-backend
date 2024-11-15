@@ -21,11 +21,14 @@ class App {
     constructor(controllers: Controller[]) {
         // Create an Express application
         this.app = express();
-        this.connectDb();
         this.initializeMiddleware();
         this.initialzieMainFunctions();
         this.initializeControllers(controllers);
         this.initializeErrorHandling();
+    }
+
+    public async start() {
+        await this.connectDb();
     }
 
     public listen() {
@@ -37,14 +40,8 @@ class App {
 
     private async connectDb() {
         db.sequelize.query("select count(*) from parameter")
-            .then(async (result) => {
+            .then( () => {
                 console.log('Database connected');
-                const retValue = await Parameter.findAll();
-                systemVal.Parameter = new Map();
-                retValue.forEach(param => {
-                    systemVal.Parameter.set(param.key, param.value)
-                });
-
             })
             .catch((err) => {
                 console.log(err);

@@ -40,6 +40,8 @@ class ConfigClass {
 // Class for crypt passwords - access in global class
 
 import crypto from 'node:crypto'
+import { Parameter } from '@/models/parameter';
+import { logger } from './logger';
 
 class CIPHER {
 
@@ -229,6 +231,19 @@ class SystemVal {
 
     public static getInstance(): SystemVal {
         return SystemVal._instance;
+    }
+
+    loadParams() {
+        Parameter.findAll().then((retValue) => {
+            this.Parameter = new Map();
+            retValue.forEach(param => {
+                this.Parameter.set(param.key, param.value)
+            });    
+
+            // log global.system.gConfig
+            logger.info(`systemVal: ${JSON.stringify(this, undefined, this.gConfig.json_indentation)}`);
+        });
+
     }
     getVersion(): string {
         return this._version;

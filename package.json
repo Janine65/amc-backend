@@ -9,7 +9,7 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "start": "pnpm run build && node dist/src/server.js",
+    "start": "pnpm run build:swc && node dist/src/server.js",
     "dev": "cross-env NODE_ENV=development nodemon -r .env",
     "postversion": "git push && git push --tags",
     "build": "tsc && tsc-alias",
