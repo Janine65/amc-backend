@@ -54,7 +54,7 @@ export class ClubmeisterService {
 
 		const anzahl = await Clubmeister.count({
 			where: [{
-				jahr: systemVal.Parameter.get('CLUBJAHR')
+				jahr: systemVal.params.get('CLUBJAHR')
 			}, {
 				status: true
 			}]

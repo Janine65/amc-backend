@@ -547,7 +547,7 @@ export class AdresseService {
 
   public async createQRBill(adresse: Adresse,): Promise<RetDataFile> {
     const retData: RetDataFile = { type: 'info', message: '', data: { filename: '' } };
-    const jahr = systemVal.Parameter.get('CLUBJAHR');
+    const jahr = systemVal.params.get('CLUBJAHR');
 
     const qrData = {
       currency: "CHF" as "CHF" | "EUR",
@@ -639,8 +639,8 @@ export class AdresseService {
       width: mm2pt(170),
       align: "left"
     });
-    text += systemVal.Parameter.get("RECHNUNG") + '\n';
-    pdf.text(`${systemVal.Parameter.get("RECHNUNG")}\n`, {
+    text += systemVal.params.get("RECHNUNG") + '\n';
+    pdf.text(`${systemVal.params.get("RECHNUNG")}\n`, {
       width: mm2pt(170),
       align: "justify"
     });

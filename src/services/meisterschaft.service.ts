@@ -129,7 +129,7 @@ export class MeisterschaftService {
         model: Anlaesse,
         as: "event",
         where: Sequelize.where(Sequelize.fn("year", Sequelize.col("datum")), {
-          [Op.lte]: systemVal.Parameter.get("CLUBJAHR"),
+          [Op.lte]: systemVal.params.get("CLUBJAHR"),
         }),
         attributes: [
           [Sequelize.fn("year", Sequelize.col("datum")), "jahr"],

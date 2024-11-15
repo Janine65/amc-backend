@@ -91,7 +91,7 @@ export class AnlassService {
     let arResult = [{ label: 'Total Anlässe', value: 0 }, { label: 'Zukünftige Anlässe', value: 0 }]
 
     let total = await Anlass.count({
-      where: [Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('datum')), systemVal.Parameter.get("CLUBJAHR")),
+      where: [Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('datum')), systemVal.params.get("CLUBJAHR")),
       { "status": 1 },
       { "istsamanlass": false },
       { "nachkegeln": false }]
@@ -99,7 +99,7 @@ export class AnlassService {
     arResult[0].value = total;
 
     total = await Anlass.count({
-      where: [Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('datum')), systemVal.Parameter.get("CLUBJAHR")),
+      where: [Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('datum')), systemVal.params.get("CLUBJAHR")),
       { "datum": { [Op.gte]: Sequelize.fn("NOW") } },
       { "status": 1 },
       { "istsamanlass": false },

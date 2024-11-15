@@ -3,10 +3,10 @@ import { DataTypes, Model, Optional } from 'sequelize';
 
 export interface ParameterAttributes {
   id: number | undefined;
-  key: string;
-  value: string;
-  createdAt: Date;
-  updatedAt: Date;
+  key?: string;
+  value?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export type ParameterPk = "id";

@@ -25,7 +25,7 @@ export class ParameterService {
         createParameterData.id = undefined;
         await createParameterData.save();
         
-        systemVal.Parameter.set(createParameterData.key, createParameterData.value);
+        systemVal.params.set(createParameterData.key, createParameterData.value);
         return createParameterData;
       }
     
@@ -36,7 +36,7 @@ export class ParameterService {
         await Parameter.update(parameterData, { where: { id: parameterId } });
     
         const updateParameter: Parameter|null = await Parameter.findByPk(parameterId);
-        systemVal.Parameter.set(updateParameter!.key, updateParameter!.value);
+        systemVal.params.set(updateParameter!.key, updateParameter!.value);
         return updateParameter!;
       }
     
@@ -45,7 +45,7 @@ export class ParameterService {
         if (!findParameter) throw new GlobalHttpException(409, "Parameter doesn't exist");
     
         await Parameter.destroy({ where: { id: parameterId } });
-        systemVal.Parameter.delete(findParameter.key);
+        systemVal.params.delete(findParameter.key);
         return findParameter;
       }
     

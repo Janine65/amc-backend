@@ -54,7 +54,7 @@ export class KegelmeisterService {
 
 		const anzahl = await Kegelmeister.count({
 			where: [{
-				jahr: systemVal.Parameter.get('CLUBJAHR')
+				jahr: systemVal.params.get('CLUBJAHR')
 			}, {
 				status: true
 			}]
@@ -78,7 +78,7 @@ export class KegelmeisterService {
 		for (const anlass of alAnlaesse) {
 			arAnlaesse.push(anlass.id!);
 		}
-		if (jahr == systemVal.Parameter.get('CLUBJAHR')) {
+		if (jahr == systemVal.params.get('CLUBJAHR')) {
 			let anzahl = await Anlaesse.count({
 				where: [Sequelize.where(Sequelize.fn('year', Sequelize.col("datum")), jahr),
 				{ "nachkegeln": false },
@@ -120,7 +120,7 @@ export class KegelmeisterService {
 					where: [{ "eventid": { [Op.in]: arAnlaesse } },
 					{ "streichresultat": false }],
 					group: ["mitgliedid"],
-					having: Sequelize.where(Sequelize.fn('COUNT', Sequelize.col("eventid")), { [Op.lt]: systemVal.Parameter.get('ANZAHL_KEGEL') }),
+					having: Sequelize.where(Sequelize.fn('COUNT', Sequelize.col("eventid")), { [Op.lt]: systemVal.params.get('ANZAHL_KEGEL') }),
 					raw: true
 				})
 				for (const element of alMeisterschaft) {
@@ -151,7 +151,7 @@ export class KegelmeisterService {
 						anzahl = 0;
 					}
 					anzahl++
-					if (anzahl > Number(systemVal.Parameter.get('ANZAHL_KEGEL')))
+					if (anzahl > Number(systemVal.params.get('ANZAHL_KEGEL')))
 						allMitgliedId.push(meister.id!)
 				}
 				if (allMitgliedId.length > 0) {

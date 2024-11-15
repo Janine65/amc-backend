@@ -25,7 +25,7 @@ import { RetDataFile } from "@/models/generel";
 export class JournalService {
   public async findAllJournal(): Promise<Journal[]> {
     const allJournal: Journal[] = await Journal.findAll({
-      where: { year: systemVal.Parameter.get("CLUBJAHR") },
+      where: { year: systemVal.params.get("CLUBJAHR") },
       order: ["journalno", "date", "from_account"],
     });
     return allJournal;
