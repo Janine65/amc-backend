@@ -45,6 +45,7 @@ class DB {
         
         this.sequelize.authenticate();
         this.dbModels = initModels(this.sequelize);
+        this.sequelize.sync()
     }
     public static getInstance():DB
     {
