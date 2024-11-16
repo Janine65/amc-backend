@@ -34,7 +34,7 @@ export class ReceiptService {
     findReceipts.forEach(rec => {
       try {
         copyFileSync(pathname + rec.receipt, systemVal.uploads + rec.receipt);
-      } catch (err) {
+      } catch {
         // allow empty catch
         console.log(pathname + rec.receipt + ': File not found');
         rec.receipt = 'File not found: ' + rec.receipt
@@ -183,13 +183,13 @@ export class ReceiptService {
     const pathname = systemVal.documents + date.getFullYear() + '/';
     try {
       readdirSync(systemVal.uploads + 'receipt/');
-    } catch (ex) {
+    } catch {
       mkdirSync(systemVal.uploads + 'receipt/')
     }
     findReceipts.forEach(rec => {
       try {
         copyFileSync(pathname + rec.receipt, systemVal.uploads + rec.receipt);
-      } catch (ex) {
+      } catch {
         console.log(pathname + rec.receipt + ': File not found');
         rec.receipt = 'File not found: ' + rec.receipt
       }

@@ -61,7 +61,7 @@ export class UserService {
     }
 
     const hashedPassword = await hash(newPass, 10);
-    await User.update({ ...findUser, password: hashedPassword }, { where: { id: findUser.id } });
+    await User.update({ ...findUser, password: hashedPassword }, { where: { id: findUser.get('id') } });
     
     return {newPass, findUser};
   }
