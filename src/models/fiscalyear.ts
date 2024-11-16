@@ -71,8 +71,8 @@ export class Fiscalyear extends Model<FiscalyearAttributes, FiscalyearCreationAt
         allowNull: true,
         unique: "fiscalyear_unique"
       },
-      createdAt: '',
-      updatedAt: ''
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'fiscalyear',

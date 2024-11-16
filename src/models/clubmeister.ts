@@ -72,7 +72,7 @@ export class Clubmeister extends Model<ClubmeisterAttributes, ClubmeisterCreatio
       },
       mitgliedid: {
         type: DataTypes.SMALLINT,
-        allowNull: true,
+        allowNull: false,
         references: {
           model: 'adressen',
           key: 'id'
@@ -99,8 +99,8 @@ export class Clubmeister extends Model<ClubmeisterAttributes, ClubmeisterCreatio
         allowNull: false,
         defaultValue: true
       },
-      createdAt: '',
-      updatedAt: ''
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'clubmeister',

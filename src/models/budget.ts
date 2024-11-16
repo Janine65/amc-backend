@@ -72,8 +72,8 @@ export class Budget extends Model<BudgetAttributes, BudgetCreationAttributes> im
         type: DataTypes.DECIMAL,
         allowNull: true
       },
-      createdAt: '',
-      updatedAt: ''
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'budget',

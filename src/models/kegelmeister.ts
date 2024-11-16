@@ -70,7 +70,7 @@ export class Kegelmeister extends Model<KegelmeisterAttributes, KegelmeisterCrea
       },
       mitgliedid: {
         type: DataTypes.SMALLINT,
-        allowNull: true,
+        allowNull: false,
         references: {
           model: 'adressen',
           key: 'id'
@@ -93,8 +93,8 @@ export class Kegelmeister extends Model<KegelmeisterAttributes, KegelmeisterCrea
         allowNull: false,
         defaultValue: true
       },
-      createdAt: '',
-      updatedAt: ''
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'kegelmeister',

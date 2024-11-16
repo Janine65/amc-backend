@@ -132,18 +132,8 @@ export class Journal extends Model<JournalAttributes, JournalCreationAttributes>
           key: 'year'
         }
       },
-      // receipts: {
-      //   type: DataTypes.VIRTUAL,
-      //   async get() {
-      //     const receipts = await this.getJournalReceipts();
-      //     return receipts;
-      //   },
-      //   set(value) {
-      //     throw new Error('Do not try to set the `receipts` value!');
-      //   },        
-      // },
-      createdAt: '',
-      updatedAt: ''
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'journal',

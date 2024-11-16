@@ -92,10 +92,16 @@ export class Account extends Model<AccountAttributes, AccountCreationAttributes>
       },
       longname: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
+        get() {
+            return this.level + ' ' + this.name;
+        },
+        set() {
+          this.setDataValue('longname', this.level + ' ' + this.name);
+        },
       },
-      createdAt: '',
-      updatedAt: ''
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'account',

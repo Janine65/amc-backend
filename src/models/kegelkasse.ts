@@ -151,8 +151,8 @@ export class Kegelkasse extends Model<KegelkasseAttributes, KegelkasseCreationAt
           key: 'id'
         }
       },
-      createdAt: '',
-      updatedAt: ''
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'kegelkasse',

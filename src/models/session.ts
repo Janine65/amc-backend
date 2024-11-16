@@ -61,7 +61,7 @@ export class Session extends Model<SessionAttributes, SessionCreationAttributes>
         type: DataTypes.TEXT,
         allowNull: true
       },
-      createdAt: ''
+      createdAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'sessions',

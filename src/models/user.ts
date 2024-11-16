@@ -91,8 +91,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     role: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      defaultValue: "user",
-      comment: "\t"
+      defaultValue: "user"
     },
     last_login: {
       type: DataTypes.DATE,

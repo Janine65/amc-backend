@@ -37,7 +37,7 @@ class App {
   private async connectDb(): Promise<void> {
     return new Promise<void>( (resolve, reject) => {
         db.sequelize
-        .query("select count(*) from parameter")
+        .query("select now()")
         .then(() => {
             console.log("Database connected");
             resolve();

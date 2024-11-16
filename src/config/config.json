@@ -8,7 +8,7 @@
         "dbhost": "localhost",
         "webhost": "http://localhost:4200",
         "database": "amcadmin",
-        "db_user": "webuser",
+        "db_user": "postgres",
         "db_pwd": "808caaa5a7ff307b08e38458554c3f5d",
         "port": 5436,
         "dbtype": "postgres",

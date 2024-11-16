@@ -118,10 +118,18 @@ export class Anlass extends Model<AnlassAttributes, AnlassCreationAttributes> im
       },
       longname: {
         type: DataTypes.STRING(250),
-        allowNull: false
+        allowNull: false,
+        get() {
+          const dat = new Date(this.datum)
+          return dat.toLocaleDateString('de-CH', {year: 'numeric', month: '2-digit', day: '2-digit'}) + ' ' + this.name
+        },
+        set() {
+          const dat = new Date(this.datum)
+          this.setDataValue('longname', dat.toLocaleDateString('de-CH', {year: 'numeric', month: '2-digit', day: '2-digit'}) + ' ' + this.name)
+        }
       },
-      createdAt: '',
-      updatedAt: ''
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'anlaesse',

@@ -65,7 +65,6 @@ export class Meisterschaft extends Model<MeisterschaftAttributes, MeisterschaftC
       mitgliedid: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 0,
         references: {
           model: 'adressen',
           key: 'id'
@@ -75,7 +74,6 @@ export class Meisterschaft extends Model<MeisterschaftAttributes, MeisterschaftC
       eventid: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 0,
         references: {
           model: 'anlaesse',
           key: 'id'
@@ -123,11 +121,19 @@ export class Meisterschaft extends Model<MeisterschaftAttributes, MeisterschaftC
         defaultValue: false
       },
       total_kegel: {
-        type: DataTypes.VIRTUAL(DataTypes.INTEGER),
-        allowNull: true
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        get() {
+          if (this.wurf1 && this.wurf2 && this.wurf3 && this.wurf4 && this.wurf5 && this.zusatz)
+          return this.wurf1 + this.wurf2 + this.wurf3 + this.wurf4 + this.wurf5 + this.zusatz;
+        },
+        set() {
+          if (this.wurf1 && this.wurf2 && this.wurf3 && this.wurf4 && this.wurf5 && this.zusatz)
+            this.setDataValue('total_kegel', this.wurf1 + this.wurf2 + this.wurf3 + this.wurf4 + this.wurf5 + this.zusatz);
+        },
       },
-      createdAt: '',
-      updatedAt: ''
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'meisterschaft',
