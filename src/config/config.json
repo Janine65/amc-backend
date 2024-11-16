@@ -37,8 +37,8 @@
         "dbhost": "olconet",
         "webhost": "https://interna.automoto-sr.info",
         "database": "amcadmin",
-        "db_user": "webuser",
-        "db_pwd": "2647a8e02dd5e83e659cb97b03536b8e",
+        "db_user": "postgres",
+        "db_pwd": "502eb48ae68c4f9ffef07c9d8b42db9d",
         "port": 5439,
         "dbtype": "postgres",
         "defaultEmail" : "HansjoergDutler"

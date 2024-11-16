@@ -16,7 +16,6 @@ class DB {
 
         let passwd = ''
         passwd = systemVal.cipher.decrypt(systemVal.gConfig.db_pwd);
-        console.log(systemVal.cipher.encrypt('DidpgPfWU'));
 
         this.sequelize = new Sequelize.Sequelize(systemVal.gConfig.database,
             systemVal.gConfig.db_user,
