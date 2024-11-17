@@ -25,8 +25,6 @@ import { Parameter as _Parameter } from "./parameter";
 import type { ParameterAttributes, ParameterCreationAttributes } from "./parameter";
 import { Receipt as _Receipt } from "./receipt";
 import type { ReceiptAttributes, ReceiptCreationAttributes } from "./receipt";
-import { Session as _Session } from "./session";
-import type { SessionAttributes, SessionCreationAttributes } from "./session";
 import { User as _User } from "./user";
 import type { UserAttributes, UserCreationAttributes } from "./user";
 
@@ -44,7 +42,6 @@ export {
   _Meisterschaft as Meisterschaft,
   _Parameter as Parameter,
   _Receipt as Receipt,
-  _Session as Session,
   _User as User,
 };
 
@@ -75,8 +72,6 @@ export type {
   ParameterCreationAttributes,
   ReceiptAttributes,
   ReceiptCreationAttributes,
-  SessionAttributes,
-  SessionCreationAttributes,
   UserAttributes,
   UserCreationAttributes,
 };
@@ -95,7 +90,6 @@ export function initModels(sequelize: Sequelize) {
   const Meisterschaft = _Meisterschaft.initModel(sequelize);
   const Parameter = _Parameter.initModel(sequelize);
   const Receipt = _Receipt.initModel(sequelize);
-  const Session = _Session.initModel(sequelize);
   const User = _User.initModel(sequelize);
 
   Budget.belongsTo(Account, { as: "accountAccount", foreignKey: "account"});
@@ -128,8 +122,6 @@ export function initModels(sequelize: Sequelize) {
   Receipt.hasMany(JournalReceipt, { as: "journalReceipts", foreignKey: "receiptid"});
   Kegelkasse.belongsTo(User, { as: "user", foreignKey: "userid"});
   User.hasMany(Kegelkasse, { as: "kegelkasses", foreignKey: "userid"});
-  Session.belongsTo(User, { as: "user", foreignKey: "userid"});
-  User.hasMany(Session, { as: "sessions", foreignKey: "userid"});
 
   return {
     Account: Account,
@@ -145,7 +137,6 @@ export function initModels(sequelize: Sequelize) {
     Meisterschaft: Meisterschaft,
     Parameter: Parameter,
     Receipt: Receipt,
-    Session: Session,
     User: User,
   };
 }

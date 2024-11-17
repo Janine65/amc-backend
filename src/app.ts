@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import cors from "cors";
 import session from "express-session";
+// initalize sequelize with session store
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
 import { ErrorMiddleware } from "./interfaces/error.middleware";
 import Controller from "./interfaces/controller.interface";
 import swaggerUi from "swagger-ui-express";
@@ -30,6 +32,19 @@ class App {
   }
 
   public listen() {
+    this.app.use(
+      session({
+        secret: systemVal.gConfig.secret,
+        resave: false,
+        store: new SequelizeStore({
+          db: db.sequelize,
+          tableName: "Sessions",
+        }),
+        saveUninitialized: true,
+        cookie: { secure: true },
+      })
+    );
+
     this.app.listen(systemVal.gConfig.node_port, () => {});
     console.log(`app listen on port ${systemVal.gConfig.node_port}`)
   }
@@ -42,7 +57,6 @@ class App {
             console.log("Database connected");
             db.sequelize.query('SELECT * FROM public.user')
             .then(([result, metadata]) => {
-              console.log(result);
               console.log(metadata);        
               resolve();
             })
@@ -62,15 +76,7 @@ class App {
     this.app.use(express.json({ limit: 52428800 }));
     this.app.use(express.urlencoded({ extended: true, limit: 52428800 }));
     this.app.use(cookieParser());
-    this.app.use(cors());
-    this.app.use(
-      session({
-        secret: systemVal.gConfig.secret,
-        resave: false,
-        saveUninitialized: true,
-        cookie: { secure: true },
-      })
-    );
+    this.app.use(cors());    
   }
 
   // init error handling
