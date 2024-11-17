@@ -12,8 +12,8 @@ export interface KegelmeisterAttributes {
   punkte?: number;
   anlaesse?: number;
   babeli?: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   status: boolean;
 }
 
@@ -93,8 +93,6 @@ export class Kegelmeister extends Model<KegelmeisterAttributes, KegelmeisterCrea
         allowNull: false,
         defaultValue: true
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'kegelmeister',

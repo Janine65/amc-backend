@@ -15,8 +15,8 @@ export interface MeisterschaftAttributes {
   wurf5?: number | null;
   zusatz?: number | null;
   streichresultat?: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   total_kegel?: number | null;
 }
 
@@ -132,8 +132,6 @@ export class Meisterschaft extends Model<MeisterschaftAttributes, MeisterschaftC
             this.setDataValue('total_kegel', this.wurf1 + this.wurf2 + this.wurf3 + this.wurf4 + this.wurf5 + this.zusatz);
         },
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'meisterschaft',

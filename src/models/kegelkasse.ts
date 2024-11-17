@@ -21,8 +21,8 @@ export interface KegelkasseAttributes {
   total: number;
   differenz: number;
   journalid?: number | undefined;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   userid?: number | undefined;
   cntUsers?: number;
 }
@@ -151,8 +151,6 @@ export class Kegelkasse extends Model<KegelkasseAttributes, KegelkasseCreationAt
           key: 'id'
         }
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'kegelkasse',

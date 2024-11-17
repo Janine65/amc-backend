@@ -13,8 +13,8 @@ export interface ClubmeisterAttributes {
   anlaesse?: number;
   werbungen?: number;
   mitglieddauer?: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   status: boolean;
 }               
 
@@ -99,8 +99,6 @@ export class Clubmeister extends Model<ClubmeisterAttributes, ClubmeisterCreatio
         allowNull: false,
         defaultValue: true
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'clubmeister',

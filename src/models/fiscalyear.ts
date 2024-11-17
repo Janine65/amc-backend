@@ -7,8 +7,8 @@ export interface FiscalyearAttributes {
   id?: number;
   name?: string;
   state?: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   year?: number;
 }
 
@@ -71,8 +71,6 @@ export class Fiscalyear extends Model<FiscalyearAttributes, FiscalyearCreationAt
         allowNull: true,
         unique: "fiscalyear_unique"
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'fiscalyear',

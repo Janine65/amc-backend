@@ -39,8 +39,6 @@ export class Parameter extends Model<ParameterAttributes, ParameterCreationAttri
         type: DataTypes.STRING(2000),
         allowNull: false
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'parameter',

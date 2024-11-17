@@ -1,7 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { Kegelkasse, KegelkasseId } from './kegelkasse';
-import type { Session, SessionId } from './session';
 
 export interface UserAttributes {
   id?: number;
@@ -45,18 +44,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   hasKegelkass!: Sequelize.HasManyHasAssociationMixin<Kegelkasse, KegelkasseId>;
   hasKegelkasses!: Sequelize.HasManyHasAssociationsMixin<Kegelkasse, KegelkasseId>;
   countKegelkasses!: Sequelize.HasManyCountAssociationsMixin;
-  // User hasMany Session via userid
-  sessions!: Session[];
-  getSessions!: Sequelize.HasManyGetAssociationsMixin<Session>;
-  setSessions!: Sequelize.HasManySetAssociationsMixin<Session, SessionId>;
-  addSession!: Sequelize.HasManyAddAssociationMixin<Session, SessionId>;
-  addSessions!: Sequelize.HasManyAddAssociationsMixin<Session, SessionId>;
-  createSession!: Sequelize.HasManyCreateAssociationMixin<Session>;
-  removeSession!: Sequelize.HasManyRemoveAssociationMixin<Session, SessionId>;
-  removeSessions!: Sequelize.HasManyRemoveAssociationsMixin<Session, SessionId>;
-  hasSession!: Sequelize.HasManyHasAssociationMixin<Session, SessionId>;
-  hasSessions!: Sequelize.HasManyHasAssociationsMixin<Session, SessionId>;
-  countSessions!: Sequelize.HasManyCountAssociationsMixin;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof User {
     return User.init({

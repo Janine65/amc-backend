@@ -9,8 +9,8 @@ export interface AccountAttributes {
   level?: number;
   order?: number;
   status?: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   longname?: string;
 }
 
@@ -25,8 +25,8 @@ export class Account extends Model<AccountAttributes, AccountCreationAttributes>
   level?: number;
   order?: number;
   status?: number;
-  createdAt!: Date;
-  updatedAt!: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   longname?: string;
 
   // Account hasMany Budget via account
@@ -100,8 +100,6 @@ export class Account extends Model<AccountAttributes, AccountCreationAttributes>
           this.setDataValue('longname', this.level + ' ' + this.name);
         },
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'account',

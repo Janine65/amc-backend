@@ -132,8 +132,6 @@ export class Journal extends Model<JournalAttributes, JournalCreationAttributes>
           key: 'year'
         }
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'journal',

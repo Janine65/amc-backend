@@ -13,8 +13,8 @@ export interface AnlassAttributes {
   nachkegeln: boolean;
   gaeste?: number;
   anlaesseid?: number | undefined;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   status: number;
   longname: string;
 }
@@ -128,8 +128,7 @@ export class Anlass extends Model<AnlassAttributes, AnlassCreationAttributes> im
           this.setDataValue('longname', dat.toLocaleDateString('de-CH', {year: 'numeric', month: '2-digit', day: '2-digit'}) + ' ' + this.name)
         }
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE
+
     }, {
     sequelize,
     tableName: 'anlaesse',

@@ -9,8 +9,8 @@ export interface BudgetAttributes {
   year: number;
   memo?: string;
   amount?: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export type BudgetPk = "id";
@@ -72,8 +72,6 @@ export class Budget extends Model<BudgetAttributes, BudgetCreationAttributes> im
         type: DataTypes.DECIMAL,
         allowNull: true
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE
     }, {
     sequelize,
     tableName: 'budget',
