@@ -1,6 +1,6 @@
 {
   "name": "amc-backend",
-  "version": "5.0.16",
+  "version": "5.0.17",
   "displayName": "Interne Applikation AMC",
   "description": "TypeScript + Sequelize + postgres + Express API Server",
   "author": {
