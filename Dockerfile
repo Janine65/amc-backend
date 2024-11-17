@@ -3,6 +3,7 @@ FROM node:16-slim AS base
 FROM base AS deps
  
 RUN corepack enable
+RUN npm install -g pnpm@latest-8 --force
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch --frozen-lockfile
@@ -11,6 +12,7 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install
 FROM base AS build
  
 RUN corepack enable
+RUN npm install -g pnpm@latest-8 --force
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch --frozen-lockfile
