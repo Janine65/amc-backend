@@ -25,17 +25,17 @@ class DB {
             port: systemVal.gConfig.port,
             timezone: 'Europe/Zurich',
             ssl: true,
-            define: {
-                charset: 'utf8mb4',
-                collate: 'utf8mb4_general_ci',
-                underscored: false,
-                freezeTableName: true,
-                timestamps: true
-            },
-            pool: {
-                min: 0,
-                max: 5,
-            },
+            // define: {
+            //     charset: 'utf8mb4',
+            //     collate: 'utf8mb4_general_ci',
+            //     underscored: false,
+            //     freezeTableName: true,
+            //     timestamps: true
+            // },
+            // pool: {
+            //     min: 0,
+            //     max: 5,
+            // },
             logQueryParameters: systemVal.gConfig.config_id === 'development',
             logging: (query, time) => {
                 logger.info(time + 'ms' + ' ' + query);

@@ -40,7 +40,13 @@ class App {
         .query("select now()")
         .then(() => {
             console.log("Database connected");
-            resolve();
+            db.sequelize.query('SELECT * FROM public.user')
+            .then(([result, metadata]) => {
+              console.log(result);
+              console.log(metadata);        
+              resolve();
+            })
+
         })
         .catch((err) => {
             console.log(err);
