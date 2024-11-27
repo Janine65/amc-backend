@@ -1,9 +1,9 @@
-FROM node:16-slim AS base
- 
+FROM node:18-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
 FROM base AS deps
- 
 RUN corepack enable
-RUN npm install -g pnpm@latest-8 --force
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch
@@ -12,13 +12,12 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install
 FROM base AS build
  
 RUN corepack enable
-RUN npm install -g pnpm@latest-8 --force
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install
 COPY . .
-RUN pnpm build:swc
+RUN pnpm run build:swc
  
 FROM base
  
@@ -28,5 +27,5 @@ COPY --from=build /app/dist /app/dist
 
 COPY package.json /app/dist
 ENV NODE_ENV=production
-
+EXPOSE 8000
 CMD ["node", "./dist/src/server.js"]
