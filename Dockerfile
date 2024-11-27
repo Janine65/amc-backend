@@ -1,4 +1,4 @@
-FROM node:20-slim AS build
+FROM node:20 AS build
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
@@ -8,13 +8,12 @@ WORKDIR /app
 COPY *.json pnpm-lock.yaml ./
 RUN apt-get update
 RUN apt-get --assume-yes install python3
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch --prod --lockfile
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --prod --lockfile
+RUN pnpm fetch --lockfile
+RUN pnpm install --lockfile
 COPY . .
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm add -g nx
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm add -w @angular-devkit/core@17.3.10
+RUN pnpm add -g nx
 
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm run build
+RUN pnpm run build
  
 # Stage 1, for copying the compiled app from the previous step and making it ready for production with Nginx
 FROM nginx:alpine
