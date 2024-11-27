@@ -1,22 +1,26 @@
 FROM node:20-slim AS build
- 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
 RUN corepack enable
-WORKDIR /usr/local/app
+WORKDIR /app
 
-
-COPY package.json pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch --frozen-lockfile
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
+COPY *.json pnpm-lock.yaml ./
+RUN apt-get update
+RUN apt-get --assume-yes install python3
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch --prod --lockfile
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --prod --lockfile
 COPY . .
-ENV PNPM_HOME=/usr/bin
-ENV NODE_ENV=production
-RUN pnpm install -g @nrwl/cli@15.9.3
-RUN pnpm run build --output-path=dist
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm add -g nx
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm add -w @angular-devkit/core@17.3.10
+
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm run build
  
 # Stage 1, for copying the compiled app from the previous step and making it ready for production with Nginx
 FROM nginx:alpine
-COPY --from=build /usr/local/app/dist /usr/share/nginx/html/
+COPY --from=build /app/dist /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+ENV NODE_ENV=production
 
 EXPOSE 8080
 

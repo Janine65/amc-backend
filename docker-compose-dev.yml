@@ -1,0 +1,40 @@
+services:
+  amcbackend:
+    container_name: amcbackend
+    image: amcbackend:test
+    build:
+      context: ../amc-backend/
+      dockerfile: ../amc-backend/Dockerfile
+    environment:
+      - COMPOSE_PROJECT_NAME
+      - NODE_ENV=development
+    ports:
+      - 2700:2700
+    hostname: amcbackend
+    networks:
+      - back-tier
+      - front-tier
+
+  amcinternal:
+    container_name: amcinternal
+    image: amcinternal:test
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    depends_on:
+      - amcbackend
+    environment:
+      - COMPOSE_PROJECT_NAME
+      - NODE_ENV=production
+    ports:
+      - 4200:4200
+    links:
+      - amcbackend
+    hostname: amcinternal
+    networks:
+      - front-tier
+
+networks:
+  # The presence of these objects is sufficient to define them
+  front-tier: {}
+  back-tier: {}

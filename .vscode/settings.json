@@ -1,3 +1,4 @@
 {
-    "workbench.externalBrowser": "chrome"
+  "workbench.externalBrowser": "chrome",
+  "nxConsole.nxWorkspacePath": ""
 }
