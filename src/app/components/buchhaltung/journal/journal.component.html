@@ -1,72 +1,136 @@
 <p-splitter [panelSizes]="[70, 30]" styleClass="mb-1">
-    <ng-template pTemplate>
-        <div class="card" style="width: 100%;">
-            <app-basetable [tableOptions]="cols" [tableData]="lstJournal" [formatFunction]="formatField"
-                [tableToolbar]="toolbar" localStorage="journal" [diffCalcHight]="350"
-                [editable]="isEditable()">
-            </app-basetable>
-        </div>
-    </ng-template>
-    <ng-template pTemplate>
-        <div class="card" style="width: 100%;">
-            <div class="mb-2">
-                <label for="jahre" class="mr-3">Jahr wählen</label>
-                <p-dropdown id="jahre" [options]="selJahre" [(ngModel)]="selJahr" (onChange)="chgJahr()"></p-dropdown>
+  <ng-template pTemplate>
+    <div class="card" style="width: 100%">
+      <app-basetable
+        [tableOptions]="cols"
+        [tableData]="lstJournal"
+        [formatFunction]="formatField"
+        [tableToolbar]="toolbar"
+        localStorage="journal"
+        [diffCalcHight]="350"
+        [editable]="isEditable()"
+      >
+      </app-basetable>
+    </div>
+  </ng-template>
+  <ng-template pTemplate>
+    <div class="card" style="width: 100%">
+      <div class="mb-2">
+        <label for="jahre" class="mr-3">Jahr wählen</label>
+        <p-dropdown
+          id="jahre"
+          [options]="selJahre"
+          [(ngModel)]="selJahr"
+          (onChange)="chgJahr()"
+        ></p-dropdown>
+      </div>
+      <div>
+        <form autocomplete="off" (ngSubmit)="save()" (reset)="reset()">
+          <div class="field grid">
+            <label for="date" class="col-12 mb-2 md:col-2 md:mb-0">Datum</label>
+            <div class="col-12 md:col-10">
+              <p-calendar
+                dateFormat="dd.mm.yy"
+                name="date"
+                [required]="true"
+                [(ngModel)]="selJournal.date_date"
+                [disabled]="!editMode && !addMode"
+              ></p-calendar>
             </div>
-            <div>
-                <form autocomplete="off" (ngSubmit)="save()" (reset)="reset()">
-                    <div class="field grid">
-                        <label for="date" class="col-12 mb-2 md:col-2 md:mb-0">Datum</label>
-                        <div class="col-12 md:col-10">
-                            <p-calendar dateFormat="dd.mm.yy" name="date" [required]="true"
-                                [(ngModel)]="selJournal.date_date" [disabled]="!editMode && !addMode"></p-calendar>
-                        </div>
-                    </div>
-                    <div class="field grid">
-                        <label for="fromAcc" class="col-12 mb-2 md:col-2 md:mb-0">Konto Soll</label>
-                        <div class="col-12 md:col-10">
-                            <p-autoComplete name="fromAcc" [(ngModel)]="selJournal.fromAccountAccount"
-                                [disabled]="!editMode && !addMode" [suggestions]="lstFromAccounts"
-                                (completeMethod)="fromAccountSearch($event)" field="longname" [dropdown]="false"
-                                (onSelect)="fromAccountSel($event.value)" [forceSelection]="true">
-                            </p-autoComplete>
-                        </div>
-                    </div>
-                    <div class="field grid">
-                        <label for="toAcc" class="col-12 mb-2 md:col-2 md:mb-0">Konto Haben</label>
-                        <div class="col-12 md:col-10">
-                            <p-autoComplete name="toAcc" [(ngModel)]="selJournal.toAccountAccount"
-                                [disabled]="!editMode && !addMode" [suggestions]="lstToAccounts"
-                                (completeMethod)="toAccountSearch($event)" field="longname" [dropdown]="false"
-                                (onSelect)="toAccountSel($event.value)" [forceSelection]="true">
-                            </p-autoComplete>
-                        </div>
-                    </div>
-                    <div class="field grid">
-                        <label for="memo" class="col-12 mb-2 md:col-2 md:mb-0">Text</label>
-                        <div class="col-12 md:col-10">
-                            <input type="text" name="memo" pInputText minlength="5" required class="w-full"
-                                [(ngModel)]="selJournal.memo" [disabled]="!editMode && !addMode">
-                        </div>
-                    </div>
-                    <div class="field grid">
-                        <label for="amount" class="col-12 mb-2 md:col-2 md:mb-0">Betrag</label>
-                        <div class="col-12 md:col-10">
-                            <p-inputNumber name="amount" mode="currency" currency="CHF" locale="de-CH"
-                                [minFractionDigits]="2" [maxFractionDigits]="2" [required]="true"
-                                [(ngModel)]="selJournal.amount" [disabled]="!editMode && !addMode"></p-inputNumber>
-                        </div>
-                    </div>
-                    <div class="field grid">
-                        <button pButton type="button" label="Sichern" icon="pi pi-save"
-                            class="p-button-primary p-button-outlined" (click)="save()"
-                            [disabled]="!editMode && !addMode"></button>
-                        <button pButton type="button" label="Löschen" icon="pi pi-refresh"
-                            class="p-button-secondary p-button-outlined" (click)="reset()"
-                            [disabled]="!editMode && !addMode"></button>
-                    </div>
-                </form>
+          </div>
+          <div class="field grid">
+            <label for="fromAcc" class="col-12 mb-2 md:col-2 md:mb-0"
+              >Konto Soll</label
+            >
+            <div class="col-12 md:col-10">
+              <p-autoComplete
+                name="fromAcc"
+                [(ngModel)]="selJournal.fromAccountAccount"
+                [disabled]="!editMode && !addMode"
+                [suggestions]="lstFromAccounts"
+                (completeMethod)="fromAccountSearch($event)"
+                field="longname"
+                [dropdown]="false"
+                (onSelect)="fromAccountSel($event.value)"
+                [forceSelection]="true"
+              >
+              </p-autoComplete>
             </div>
-        </div>
-    </ng-template>
+          </div>
+          <div class="field grid">
+            <label for="toAcc" class="col-12 mb-2 md:col-2 md:mb-0"
+              >Konto Haben</label
+            >
+            <div class="col-12 md:col-10">
+              <p-autoComplete
+                name="toAcc"
+                [(ngModel)]="selJournal.toAccountAccount"
+                [disabled]="!editMode && !addMode"
+                [suggestions]="lstToAccounts"
+                (completeMethod)="toAccountSearch($event)"
+                field="longname"
+                [dropdown]="false"
+                (onSelect)="toAccountSel($event.value)"
+                [forceSelection]="true"
+              >
+              </p-autoComplete>
+            </div>
+          </div>
+          <div class="field grid">
+            <label for="memo" class="col-12 mb-2 md:col-2 md:mb-0">Text</label>
+            <div class="col-12 md:col-10">
+              <input
+                type="text"
+                name="memo"
+                pInputText
+                minlength="5"
+                required
+                class="w-full"
+                [(ngModel)]="selJournal.memo"
+                [disabled]="!editMode && !addMode"
+              />
+            </div>
+          </div>
+          <div class="field grid">
+            <label for="amount" class="col-12 mb-2 md:col-2 md:mb-0"
+              >Betrag</label
+            >
+            <div class="col-12 md:col-10">
+              <p-inputNumber
+                name="amount"
+                mode="currency"
+                currency="CHF"
+                locale="de-CH"
+                [minFractionDigits]="2"
+                [maxFractionDigits]="2"
+                [required]="true"
+                [(ngModel)]="selJournal.amount"
+                [disabled]="!editMode && !addMode"
+              ></p-inputNumber>
+            </div>
+          </div>
+          <div class="field grid">
+            <button
+              pButton
+              type="button"
+              label="Sichern"
+              icon="pi pi-save"
+              class="p-button-primary p-button-outlined"
+              (click)="save()"
+              [disabled]="!editMode && !addMode"
+            ></button>
+            <button
+              pButton
+              type="button"
+              label="Verwerfen"
+              icon="pi pi-refresh"
+              class="p-button-secondary p-button-outlined"
+              (click)="reset()"
+              [disabled]="!editMode && !addMode"
+            ></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-template>
 </p-splitter>
