@@ -274,13 +274,7 @@ export class Adresse extends Model<AdresseAttributes, AdresseCreationAttributes>
     },
     fullname: {
       type: DataTypes.STRING(250),
-      allowNull: true,
-      get() {
-          return this.vorname + ' ' + this.name;
-      },
-      set() {
-        this.setDataValue('fullname', this.vorname + ' ' + this.name);
-      },
+      allowNull: true
     }
   }, {
     sequelize,

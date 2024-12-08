@@ -20,7 +20,8 @@ export class AnlassService {
   public async findAllAnlass(fromYear: string, toYear: string, istkegeln: boolean | undefined): Promise<Anlass[]> {
     const sWhere: WhereOptions<AnlassAttributes> = {};
     if (istkegeln) {
-      sWhere.istkegeln = istkegeln
+      sWhere.istkegeln = istkegeln;
+      sWhere.nachkegeln = false;
     }
     const allAnlass: Anlass[] = await Anlass.findAll({
       where: [Sequelize.where(Sequelize.fn("year", Sequelize.col("Anlass.datum")),Op.gte,fromYear), 
@@ -105,7 +106,7 @@ export class AnlassService {
       { "istsamanlass": false },
       { "nachkegeln": false }]
     })
-    arResult[0].value = total;
+    arResult[1].value = total;
 
     return arResult
   }

@@ -122,15 +122,7 @@ export class Meisterschaft extends Model<MeisterschaftAttributes, MeisterschaftC
       },
       total_kegel: {
         type: DataTypes.INTEGER,
-        allowNull: true,
-        get() {
-          if (this.wurf1 && this.wurf2 && this.wurf3 && this.wurf4 && this.wurf5 && this.zusatz)
-          return this.wurf1 + this.wurf2 + this.wurf3 + this.wurf4 + this.wurf5 + this.zusatz;
-        },
-        set() {
-          if (this.wurf1 && this.wurf2 && this.wurf3 && this.wurf4 && this.wurf5 && this.zusatz)
-            this.setDataValue('total_kegel', this.wurf1 + this.wurf2 + this.wurf3 + this.wurf4 + this.wurf5 + this.zusatz);
-        },
+        allowNull: true
       },
     }, {
     sequelize,
