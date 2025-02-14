@@ -1,0 +1,47 @@
+{
+  "config": {
+    "development": {
+      "config_id": "development",
+      "app_name": "amc-administration",
+      "app_desc": "AMC Administration",
+      "node_port": 8000,
+      "json_indentation": 4,
+      "dbhost": "localhost",
+      "webhost": "http://localhost:4200",
+      "database": "amcadmin",
+      "db_user": "postgres",
+      "db_pwd": "808caaa5a7ff307b08e38458554c3f5d",
+      "port": 5436,
+      "dbtype": "postgres",
+      "defaultEmail": "JanineFranken",
+      "userEmail": "Janine Franken",
+      "JanineFranken": {
+        "smtp": "smtp.zoho.com",
+        "smtp_port": 465,
+        "smtp_user": "janine@automoto-sr.info",
+        "smtp_pwd": "07a4ed591c554f51d19b2d3c1cd57219",
+        "email_from": "Janine Franken <janine@automoto-sr.info>"
+      },
+      "HansjoergDutler": {
+        "smtp": "smtp.zoho.com",
+        "smtp_port": 465,
+        "smtp_user": "info@automoto-sr.info",
+        "smtp_pwd": "c37fec5a0552904265841b0ab95dd4f8",
+        "email_from": "AutoMotoClub Swissair <info@automoto-sr.info>"
+      },
+      "secret": "AutoMotoClubSwissairOberlunkhofe",
+      "iv": "JanineFranken_65"
+    },
+    "production": {
+      "config_id": "production",
+      "node_port": 2700,
+      "dbhost": "olconet",
+      "webhost": "https://interna.automoto-sr.info",
+      "database": "amcadmin",
+      "db_user": "postgres",
+      "db_pwd": "502eb48ae68c4f9ffef07c9d8b42db9d",
+      "port": 5439,
+      "defaultEmail": "HansjoergDutler"
+    }
+  }
+}

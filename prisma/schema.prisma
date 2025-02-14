@@ -1,0 +1,304 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:DimpgP24@localhost:5436/amcadmin?schema=public"
+}
+
+model Sessions {
+  sid     String    @id @db.VarChar(255)
+  sess    Json
+  expires DateTime? @db.Timestamp(6)
+}
+
+model account {
+  id                                    Int       @id @default(autoincrement())
+  name                                  String?   @db.VarChar(255)
+  level                                 Int?
+  order                                 Int?
+  status                                Int?
+  createdAt                             DateTime? @db.Timestamptz(6)
+  updatedAt                             DateTime? @db.Timestamptz(6)
+  longname                              String?   @db.VarChar(255)
+  budget_budget_accountToaccount        budget[]  @relation("budget_accountToaccount")
+  journal_journal_from_accountToaccount journal[] @relation("journal_from_accountToaccount")
+  journal_journal_to_accountToaccount   journal[] @relation("journal_to_accountToaccount")
+}
+
+model adressen {
+  id             Int             @id @default(autoincrement())
+  mnr            Int?            @unique(map: "mnr_UNIQUE")
+  geschlecht     Int             @default(1)
+  name           String          @db.VarChar(255)
+  vorname        String          @db.VarChar(255)
+  adresse        String          @db.VarChar(255)
+  plz            Int
+  ort            String          @db.VarChar(255)
+  land           String          @default("CH") @db.VarChar(45)
+  telefon_p      String?         @db.VarChar(50)
+  telefon_g      String?         @db.VarChar(50)
+  mobile         String?         @db.VarChar(50)
+  email          String?         @db.VarChar(150)
+  eintritt       DateTime?       @db.Date
+  sam_mitglied   Boolean         @default(false)
+  jahresbeitrag  Decimal?        @db.Decimal
+  mnr_sam        Int?
+  createdAt      DateTime        @db.Timestamptz(6)
+  updatedAt      DateTime        @db.Timestamptz(6)
+  vorstand       Boolean         @default(false)
+  ehrenmitglied  Boolean         @default(false)
+  veteran1       Boolean         @default(false)
+  veteran2       Boolean         @default(false)
+  revisor        Boolean         @default(false)
+  motojournal    Boolean         @default(false)
+  austritt       DateTime?       @default(dbgenerated("'3000-01-01'::date")) @db.Date
+  austritt_mail  Boolean         @default(false)
+  adressenid     Int?
+  jahrgang       Int?
+  arbeitgeber    String?         @db.VarChar(50)
+  pensioniert    Boolean         @default(false)
+  allianz        Boolean         @default(false)
+  notes          String?
+  fullname       String?         @db.VarChar(250)
+  adressen       adressen?       @relation("adressenToadressen", fields: [adressenid], references: [id])
+  other_adressen adressen[]      @relation("adressenToadressen")
+  clubmeister    clubmeister[]
+  kegelmeister   kegelmeister[]
+  meisterschaft  meisterschaft[]
+
+  @@index([adressenid], map: "fki_addresse_fk")
+  @@index([adresse], map: "public_adressen_adresse1_idx")
+  @@index([fullname], map: "public_adressen_fullname5_idx")
+  @@index([geschlecht], map: "public_adressen_geschlecht2_idx")
+  @@index([name], map: "public_adressen_name3_idx")
+  @@index([plz], map: "public_adressen_plz4_idx")
+}
+
+model anlaesse {
+  id             Int             @id @default(autoincrement())
+  datum          DateTime        @db.Date
+  name           String          @db.VarChar(50)
+  beschreibung   String?         @db.VarChar(100)
+  punkte         Int?            @db.SmallInt
+  istkegeln      Boolean         @default(false)
+  istsamanlass   Boolean         @default(false)
+  nachkegeln     Boolean         @default(false)
+  gaeste         Int?            @default(0) @db.SmallInt
+  anlaesseid     Int?
+  createdAt      DateTime?       @db.Timestamptz(6)
+  updatedAt      DateTime?       @db.Timestamptz(6)
+  status         Int             @default(1) @db.SmallInt
+  longname       String          @db.VarChar(250)
+  anlaesse       anlaesse?       @relation("anlaesseToanlaesse", fields: [anlaesseid], references: [id])
+  other_anlaesse anlaesse[]      @relation("anlaesseToanlaesse")
+  meisterschaft  meisterschaft[]
+
+  @@index([anlaesseid], map: "fki_anlaesse_fk")
+  @@index([datum], map: "public_anlaesse_datum0_idx")
+  @@index([longname], map: "public_anlaesse_longname1_idx")
+}
+
+model budget {
+  id                              Int        @id @default(autoincrement())
+  account                         Int
+  year                            Int
+  memo                            String?    @db.VarChar(255)
+  amount                          Decimal?   @db.Decimal
+  createdAt                       DateTime?  @db.Timestamptz(6)
+  updatedAt                       DateTime?  @db.Timestamptz(6)
+  account_budget_accountToaccount account    @relation("budget_accountToaccount", fields: [account], references: [id], onDelete: NoAction)
+  fiscalyear                      fiscalyear @relation(fields: [year], references: [year], onDelete: NoAction)
+
+  @@unique([account, year], map: "budget_unique")
+  @@unique([account, year], map: "public_budget_account0_idx")
+  @@index([account], map: "public_budget_account1_idx")
+}
+
+model clubmeister {
+  id            Int       @id @default(autoincrement())
+  jahr          String    @db.VarChar(4)
+  rang          Int?      @db.SmallInt
+  vorname       String?   @db.VarChar(255)
+  nachname      String?   @db.VarChar(255)
+  mitgliedid    Int       @db.SmallInt
+  punkte        Int?      @db.SmallInt
+  anlaesse      Int?      @db.SmallInt
+  werbungen     Int?      @db.SmallInt
+  mitglieddauer Int?      @db.SmallInt
+  createdAt     DateTime? @db.Timestamptz(6)
+  updatedAt     DateTime? @db.Timestamptz(6)
+  status        Boolean   @default(true)
+  adressen      adressen  @relation(fields: [mitgliedid], references: [id], onDelete: NoAction)
+
+  @@unique([jahr, rang], map: "clubmeister_unique")
+  @@unique([jahr, rang], map: "public_clubmeister_jahr0_idx")
+  @@index([mitgliedid], map: "fki_mitgliedId_fk")
+  @@index([mitgliedid], map: "public_clubmeister_mitgliedid1_idx")
+}
+
+model fiscalyear {
+  id        Int       @id @default(autoincrement())
+  name      String?   @db.VarChar(255)
+  state     Int?
+  createdAt DateTime? @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+  year      Int?      @unique(map: "fiscalyear_unique")
+  budget    budget[]
+  journal   journal[]
+}
+
+model journal {
+  id                                    Int               @id @default(autoincrement())
+  from_account                          Int?
+  to_account                            Int?
+  date                                  DateTime?         @db.Date
+  memo                                  String?           @db.VarChar(255)
+  journalno                             Int?
+  amount                                Decimal?          @default(0) @db.Decimal
+  status                                Int?
+  createdAt                             DateTime?         @db.Timestamptz(6)
+  updatedAt                             DateTime?         @db.Timestamptz(6)
+  year                                  Int?
+  account_journal_from_accountToaccount account?          @relation("journal_from_accountToaccount", fields: [from_account], references: [id])
+  account_journal_to_accountToaccount   account?          @relation("journal_to_accountToaccount", fields: [to_account], references: [id])
+  fiscalyear                            fiscalyear?       @relation(fields: [year], references: [year])
+  journal_receipt                       journal_receipt[]
+  kegelkasse                            kegelkasse[]
+
+  @@index([year], map: "fki_journal_year")
+  @@index([from_account], map: "public_journal_from_account0_idx")
+  @@index([to_account], map: "public_journal_to_account1_idx")
+}
+
+model journal_receipt {
+  journalid Int
+  receiptid Int
+  journal   journal @relation(fields: [journalid], references: [id], onDelete: SetNull)
+  receipt   receipt @relation(fields: [receiptid], references: [id], onDelete: Cascade, onUpdate: SetNull, map: "receipt_fk")
+
+  @@id([journalid, receiptid])
+}
+
+model kegelkasse {
+  id         Int       @id @default(autoincrement())
+  datum      DateTime  @unique(map: "date_uq") @db.Date
+  kasse      Decimal   @db.Decimal
+  rappen5    Int
+  rappen10   Int
+  rappen20   Int
+  rappen50   Int
+  franken1   Int
+  franken2   Int
+  franken5   Int
+  franken10  Int
+  franken20  Int
+  franken50  Int
+  franken100 Int
+  total      Decimal   @db.Decimal
+  differenz  Decimal   @db.Decimal
+  journalid  Int?
+  createdAt  DateTime? @db.Timestamptz(6)
+  updatedAt  DateTime? @db.Timestamptz(6)
+  userid     Int?
+  journal    journal?  @relation(fields: [journalid], references: [id])
+  user       user?     @relation(fields: [userid], references: [id])
+}
+
+model kegelmeister {
+  id         Int       @id @default(autoincrement())
+  jahr       String    @db.VarChar(4)
+  rang       Int?      @db.SmallInt
+  vorname    String?   @db.VarChar(255)
+  nachname   String?   @db.VarChar(255)
+  mitgliedid Int       @db.SmallInt
+  punkte     Int?      @db.SmallInt
+  anlaesse   Int?      @db.SmallInt
+  babeli     Int?      @db.SmallInt
+  createdAt  DateTime? @db.Timestamptz(6)
+  updatedAt  DateTime? @db.Timestamptz(6)
+  status     Boolean   @default(true)
+  adressen   adressen  @relation(fields: [mitgliedid], references: [id], onDelete: NoAction)
+
+  @@unique([jahr, rang], map: "kegelmeister_unique")
+  @@index([mitgliedid], map: "fkik_mitgliedId_fk")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model meisterschaft {
+  id              Int       @id @default(autoincrement())
+  mitgliedid      Int       @default(0)
+  eventid         Int       @default(0)
+  punkte          Int?      @default(50) @db.SmallInt
+  wurf1           Int?      @default(0) @db.SmallInt
+  wurf2           Int?      @default(0) @db.SmallInt
+  wurf3           Int?      @default(0) @db.SmallInt
+  wurf4           Int?      @default(0) @db.SmallInt
+  wurf5           Int?      @default(0) @db.SmallInt
+  zusatz          Int?      @default(5)
+  streichresultat Boolean?  @default(false)
+  createdAt       DateTime? @db.Timestamptz(6)
+  updatedAt       DateTime? @db.Timestamptz(6)
+  total_kegel     Int?
+  anlaesse        anlaesse  @relation(fields: [eventid], references: [id], onDelete: NoAction)
+  adressen        adressen  @relation(fields: [mitgliedid], references: [id], onDelete: NoAction)
+
+  @@unique([mitgliedid, eventid], map: "eventmitglied")
+  @@unique([mitgliedid, eventid], map: "public_meisterschaft_mitgliedid0_idx")
+}
+
+model parameter {
+  id        Int       @id @unique(map: "public_parameter_id0_idx") @default(autoincrement())
+  key       String    @unique(map: "parameter_unique") @db.VarChar(45)
+  value     String    @db.VarChar(2000)
+  createdAt DateTime? @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+
+  @@index([key], map: "public_parameter_key1_idx")
+}
+
+model receipt {
+  id              Int               @id @default(autoincrement())
+  receipt         String
+  createdAt       DateTime          @db.Timestamptz(6)
+  updatedAt       DateTime          @db.Timestamptz(6)
+  jahr            String?           @db.VarChar(4)
+  bezeichnung     String?           @db.VarChar(100)
+  journal_receipt journal_receipt[]
+}
+
+model sessions {
+  id        Int       @id @unique(map: "public_sessions_id0_idx") @default(autoincrement())
+  sid       String    @unique(map: "public_sessions_sid1_idx") @db.VarChar(45)
+  userid    String?   @db.VarChar(45)
+  expires   DateTime? @db.Timestamptz(6)
+  data      String?
+  createdAt DateTime? @db.Timestamptz(6)
+  updatedAt DateTime  @db.Timestamptz(6)
+  user      user?     @relation(fields: [userid], references: [userid])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user {
+  id         Int          @id @default(autoincrement())
+  userid     String?      @unique(map: "public_user_userid0_idx") @db.VarChar(45)
+  name       String       @db.VarChar(500)
+  email      String       @unique(map: "email_uq") @db.VarChar(500)
+  salt       String?      @db.VarChar(500)
+  password   String       @db.VarChar(500)
+  role       String       @default("user") @db.VarChar(255)
+  last_login DateTime?    @db.Timestamptz(6)
+  createdAt  DateTime     @db.Timestamptz(6)
+  updatedAt  DateTime     @db.Timestamptz(6)
+  kegelkasse kegelkasse[]
+  sessions   sessions[]
+}
+
+enum role {
+  revisor
+  user
+  admin
+}

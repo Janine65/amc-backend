@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "plugins": ["@nestjs/swagger"],
+    "deleteOutDir": false,
+    "assets": [
+      {
+        "include": "**/public/assets/**",
+        "outDir": "dist/src",
+        "watchAssets": true
+      }
+    ],
+    "watchAssets": true
+  }
+}
