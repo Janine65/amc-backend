@@ -45,6 +45,13 @@ export class UserService {
     return this.prisma.user.findUnique({ where: { id: id } });
   }
 
+  async updateLastLogin(id: number) {
+    return this.prisma.user.update({
+      data: { last_login: new Date() },
+      where: { id: id },
+    });
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
     if (updateUserDto.password) {
       updateUserDto.password = await hash(

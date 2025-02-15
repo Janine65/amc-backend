@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import {
   IsBoolean,
-  IsDateString,
   IsEmail,
   IsNotEmpty,
   IsNumber,
@@ -52,14 +50,13 @@ export class CreateAdressenDto {
   @IsNotEmpty()
   email: string;
 
-  @Type(() => Date)
-  @IsDateString({ strict: true })
   @ApiProperty({
     type: 'string',
     format: 'date',
     required: true,
     nullable: false,
   })
+  @IsNotEmpty()
   eintritt: Date;
 
   @IsBoolean()
@@ -71,8 +68,6 @@ export class CreateAdressenDto {
   @IsNumber()
   mnr_sam?: number;
 
-  @Type(() => Date)
-  @IsDateString({ strict: true })
   @ApiProperty({
     type: 'string',
     format: 'date',

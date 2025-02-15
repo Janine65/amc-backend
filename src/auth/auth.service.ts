@@ -30,8 +30,7 @@ export class AuthService {
     }
 
     // Step 3: Update the user's last login date
-    user.last_login = new Date();
-    await this.userService.update(user.id, user);
+    await this.userService.updateLastLogin(user.id);
 
     // Step 4: Generate a JWT containing the user's ID and return it
     return {

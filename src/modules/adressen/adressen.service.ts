@@ -48,6 +48,15 @@ export class AdressenService {
     if (adr) {
       throw new ConflictException('Adress already exists');
     }
+    if (typeof createAdressenDto.eintritt === 'string') {
+      createAdressenDto.eintritt = new Date(createAdressenDto.eintritt);
+    }
+    if (
+      createAdressenDto.austritt &&
+      typeof createAdressenDto.austritt === 'string'
+    ) {
+      createAdressenDto.austritt = new Date(createAdressenDto.austritt);
+    }
     const data = {
       ...createAdressenDto,
       createdAt: new Date(),

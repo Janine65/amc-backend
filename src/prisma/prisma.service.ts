@@ -1,15 +1,21 @@
 // src/prisma/prisma.service.ts
 
-import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class PrismaService extends PrismaClient {
+export class PrismaService
+  extends PrismaClient<
+    Prisma.PrismaClientOptions,
+    'query | error | debug | info'
+  >
+  implements OnModuleInit, OnModuleDestroy
+{
   constructor() {
     super({
       log: [
         {
-          emit: 'stdout',
+          emit: 'event',
           level: 'query',
         },
         {
@@ -26,11 +32,21 @@ export class PrismaService extends PrismaClient {
         },
       ],
     });
+    this.$on<any>('query', (event: Prisma.QueryEvent) => {
+      console.debug('--------------------------------------------------');
+      console.debug('Query: ' + event.query);
+      console.debug('Params: ' + event.params);
+      console.debug('Duration: ' + event.duration + 'ms');
+      console.debug('--------------------------------------------------');
+    });
+  }
+  async onModuleInit() {
+    await this.$connect();
+    console.info('PrismaService initialized');
+  }
 
-    // this.$on('query', (e) => {
-    //   console.log('Query: ' + e.query);
-    //   console.log('Params: ' + e.params);
-    //   console.log('Duration: ' + e.duration + 'ms');
-    // });
+  async onModuleDestroy() {
+    await this.$disconnect();
+    console.info('PrismaService disconnected');
   }
 }

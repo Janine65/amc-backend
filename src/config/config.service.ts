@@ -54,6 +54,10 @@ export class ConfigService {
       '?schema=public';
     process.env.DATABASE_URL = database_url;
 
+    this.loadParams().catch((err) => {
+      console.log(err);
+    });
+
     const mainpath = realpathSync(__dirname + '/..');
 
     let path = mainpath + '/documents/';

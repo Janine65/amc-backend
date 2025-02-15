@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Anlaesseentity } from '../../anlaesse/entities/anlaesse.entity';
+import { AnlaesseEntity } from '../../anlaesse/entities/anlaesse.entity';
 import { AdressenEntity } from '../../adressen/entities/adressen.entity';
 
 export class Meisterschaftentity {
@@ -84,10 +84,10 @@ export class Meisterschaftentity {
   })
   total_kegel: number | null;
   @ApiProperty({
-    type: () => Anlaesseentity,
+    type: () => AnlaesseEntity,
     required: false,
   })
-  anlaesse?: Anlaesseentity;
+  anlaesse?: AnlaesseEntity;
   @ApiProperty({
     type: () => AdressenEntity,
     required: false,

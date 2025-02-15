@@ -1,95 +1,50 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { Meisterschaftentity } from '../../meisterschaft/entities/meisterschaft.entity';
+import { anlaesse } from '@prisma/client';
+import { Expose } from 'class-transformer';
 
-import {ApiProperty} from '@nestjs/swagger'
-import {Meisterschaftentity} from '../../meisterschaft/entities/meisterschaft.entity'
-
-
-export class Anlaesseentity {
+export class AnlaesseEntity implements anlaesse {
+  constructor(partial: Partial<AnlaesseEntity>) {
+    Object.assign(this, partial);
+  }
+  @Expose()
+  id: number;
   @ApiProperty({
-  type: 'integer',
-  format: 'int32',
-})
-id: number ;
-@ApiProperty({
-  type: 'string',
-  format: 'date-time',
-})
-datum: Date ;
-@ApiProperty({
-  type: 'string',
-})
-name: string ;
-@ApiProperty({
-  type: 'string',
-  nullable: true,
-})
-beschreibung: string  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  nullable: true,
-})
-punkte: number  | null;
-@ApiProperty({
-  type: 'boolean',
-})
-istkegeln: boolean ;
-@ApiProperty({
-  type: 'boolean',
-})
-istsamanlass: boolean ;
-@ApiProperty({
-  type: 'boolean',
-})
-nachkegeln: boolean ;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  nullable: true,
-})
-gaeste: number  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  nullable: true,
-})
-anlaesseid: number  | null;
-@ApiProperty({
-  type: 'string',
-  format: 'date-time',
-  nullable: true,
-})
-createdAt: Date  | null;
-@ApiProperty({
-  type: 'string',
-  format: 'date-time',
-  nullable: true,
-})
-updatedAt: Date  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-})
-status: number ;
-@ApiProperty({
-  type: 'string',
-})
-longname: string ;
-@ApiProperty({
-  type: () => Anlaesseentity,
-  required: false,
-  nullable: true,
-})
-anlaesse?: Anlaesseentity  | null;
-@ApiProperty({
-  type: () => Anlaesseentity,
-  isArray: true,
-  required: false,
-})
-other_anlaesse?: Anlaesseentity[] ;
-@ApiProperty({
-  type: () => Meisterschaftentity,
-  isArray: true,
-  required: false,
-})
-meisterschaft?: Meisterschaftentity[] ;
+    type: 'string',
+    format: 'date',
+    required: true,
+    nullable: false,
+  })
+  datum: Date;
+  name: string;
+  beschreibung: string | null;
+  punkte: number | null;
+  istkegeln: boolean;
+  istsamanlass: boolean;
+  nachkegeln: boolean;
+  gaeste: number | null;
+  anlaesseid: number | null;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+  status: number;
+  longname: string;
+
+  @ApiProperty({
+    type: () => AnlaesseEntity,
+    required: false,
+    nullable: true,
+  })
+  anlaesse?: AnlaesseEntity | null;
+  @ApiProperty({
+    type: () => AnlaesseEntity,
+    isArray: true,
+    required: false,
+  })
+  other_anlaesse?: AnlaesseEntity[];
+  @ApiProperty({
+    type: () => Meisterschaftentity,
+    isArray: true,
+    required: false,
+  })
+  meisterschaft?: Meisterschaftentity[];
 }
