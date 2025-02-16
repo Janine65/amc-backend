@@ -2,7 +2,7 @@ import { adressen } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { Clubmeisterentity } from '../../clubmeister/entities/clubmeister.entity';
 import { Kegelmeisterentity } from '../../kegelmeister/entities/kegelmeister.entity';
-import { Meisterschaftentity } from '../../meisterschaft/entities/meisterschaft.entity';
+import { MeisterschaftEntity } from '../../meisterschaft/entities/meisterschaft.entity';
 import { Expose, Transform } from 'class-transformer';
 import { Decimal } from '@prisma/client/runtime/library';
 
@@ -68,5 +68,5 @@ export class AdressenEntity implements adressen {
   other_adressen?: AdressenEntity[];
   clubmeister?: Clubmeisterentity[];
   kegelmeister?: Kegelmeisterentity[];
-  meisterschaft?: Meisterschaftentity[];
+  meisterschaft?: MeisterschaftEntity[];
 }

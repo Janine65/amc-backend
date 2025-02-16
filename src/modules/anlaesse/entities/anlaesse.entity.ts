@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Meisterschaftentity } from '../../meisterschaft/entities/meisterschaft.entity';
+import { MeisterschaftEntity } from '../../meisterschaft/entities/meisterschaft.entity';
 import { anlaesse } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
@@ -42,9 +42,9 @@ export class AnlaesseEntity implements anlaesse {
   })
   other_anlaesse?: AnlaesseEntity[];
   @ApiProperty({
-    type: () => Meisterschaftentity,
+    type: () => MeisterschaftEntity,
     isArray: true,
     required: false,
   })
-  meisterschaft?: Meisterschaftentity[];
+  meisterschaft?: MeisterschaftEntity[];
 }

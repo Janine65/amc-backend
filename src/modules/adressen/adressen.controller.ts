@@ -22,7 +22,6 @@ import {
 } from '@nestjs/swagger';
 import { AdressenEntity } from './entities/adressen.entity';
 import { EmailBody } from './dto/email-body.dto';
-import { OverviewDto } from './dto/overview.dto';
 import { RetDataDto, RetDataFileDto } from 'src/utils/ret-data.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
@@ -30,16 +29,25 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class AdressenController {
   constructor(private readonly adressenService: AdressenService) {}
   @Get('overview')
-  @ApiOkResponse({ type: OverviewDto, isArray: true })
-  getOverview() {
-    return this.adressenService.getOverview();
+  @ApiOkResponse({ type: RetDataDto })
+  async getOverview() {
+    return new RetDataDto(
+      await this.adressenService.getOverview(),
+      'Adressen Overview',
+      'info',
+    );
   }
 
   @Get('getFkData')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @ApiOkResponse({ type: RetDataDto })
   async getFKData() {
-    return this.adressenService.getFKData();
+    return new RetDataDto(
+      await this.adressenService.getFKData(),
+      'FK Data',
+      'info',
+    );
   }
 
   @Post('export')
@@ -69,54 +77,66 @@ export class AdressenController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiCreatedResponse({ type: AdressenEntity })
+  @ApiCreatedResponse({ type: RetDataDto })
   async create(@Body() createAdressenDto: CreateAdressenDto) {
     const adr = await this.adressenService.create(createAdressenDto);
     if (adr === null) {
       throw new NotFoundException('Address not found');
     }
-    return new AdressenEntity(adr);
+    return new RetDataDto(new AdressenEntity(adr), 'Address created', 'info');
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ type: AdressenEntity, isArray: true })
+  @ApiOkResponse({ type: RetDataDto })
   async findAll() {
     const addresses = await this.adressenService.findAll();
-    return addresses.map((adr) => new AdressenEntity(adr));
+    return new RetDataDto(
+      addresses.map((adr) => new AdressenEntity(adr)),
+      'Addresses found',
+      'info',
+    );
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ type: AdressenEntity })
+  @ApiOkResponse({ type: RetDataDto })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const adr = await this.adressenService.findOne(id);
     if (adr === null) {
       throw new NotFoundException('Address not found');
     }
-    return new AdressenEntity(adr);
+    return new RetDataDto(new AdressenEntity(adr), 'Address found', 'info');
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ type: AdressenEntity })
+  @ApiOkResponse({ type: RetDataDto })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateAdressenDto: UpdateAdressenDto,
   ) {
-    return new AdressenEntity(
-      await this.adressenService.update(id, updateAdressenDto),
+    return new RetDataDto(
+      new AdressenEntity(
+        await this.adressenService.update(id, updateAdressenDto),
+      ),
+      'Address updated',
+      'info',
     );
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ type: AdressenEntity })
+  @ApiOkResponse({ type: RetDataDto })
   async remove(@Param('id', ParseIntPipe) id: number) {
-    return new AdressenEntity(await this.adressenService.remove(id));
+    return new RetDataDto(
+      new AdressenEntity(await this.adressenService.remove(id)),
+      'Address deleted',
+      'info',
+    );
   }
 }

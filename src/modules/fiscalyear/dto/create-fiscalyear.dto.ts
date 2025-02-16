@@ -1,42 +1,10 @@
-
-import {ApiProperty} from '@nestjs/swagger'
-
-
-
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateFiscalyearDto {
-  @ApiProperty({
-  type: 'string',
-  required: false,
-  nullable: true,
-})
-name?: string  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  required: false,
-  nullable: true,
-})
-state?: number  | null;
-@ApiProperty({
-  type: 'string',
-  format: 'date-time',
-  required: false,
-  nullable: true,
-})
-createdAt?: Date  | null;
-@ApiProperty({
-  type: 'string',
-  format: 'date-time',
-  required: false,
-  nullable: true,
-})
-updatedAt?: Date  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  required: false,
-  nullable: true,
-})
-year?: number  | null;
+  @IsString()
+  name?: string | null;
+  @IsNumber()
+  state?: number | null;
+  @IsNumber()
+  year?: number | null;
 }

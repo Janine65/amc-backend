@@ -1,88 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { AnlaesseEntity } from '../../anlaesse/entities/anlaesse.entity';
 import { AdressenEntity } from '../../adressen/entities/adressen.entity';
+import { meisterschaft } from '@prisma/client';
 
-export class Meisterschaftentity {
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
+export class MeisterschaftEntity implements Readonly<meisterschaft> {
+  constructor(partial: Partial<meisterschaft>) {
+    Object.assign(this, partial);
+  }
   id: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   mitgliedid: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   eventid: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   punkte: number | null;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   wurf1: number | null;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   wurf2: number | null;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   wurf3: number | null;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   wurf4: number | null;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   wurf5: number | null;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   zusatz: number | null;
-  @ApiProperty({
-    type: 'boolean',
-    nullable: true,
-  })
   streichresultat: boolean | null;
-  @ApiProperty({
-    type: 'string',
-    format: 'date-time',
-    nullable: true,
-  })
   createdAt: Date | null;
-  @ApiProperty({
-    type: 'string',
-    format: 'date-time',
-    nullable: true,
-  })
   updatedAt: Date | null;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   total_kegel: number | null;
+
   @ApiProperty({
     type: () => AnlaesseEntity,
     required: false,

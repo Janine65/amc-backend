@@ -8,22 +8,59 @@ export class BudgetService {
   constructor(private prisma: PrismaService) {}
 
   create(createBudgetDto: CreateBudgetDto) {
-    return 'This action adds a new budget';
+    return this.prisma.budget.create({
+      data: {
+        ...createBudgetDto,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      include: { account_budget_accountToaccount: true },
+    });
   }
 
-  findAll() {
-    return `This action returns all budget`;
+  findAll(year: number) {
+    return this.prisma.budget.findMany({
+      where: { year: year },
+      orderBy: { account_budget_accountToaccount: { order: 'asc' } },
+      include: { account_budget_accountToaccount: true },
+    });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} budget`;
+    return this.prisma.budget.findUnique({
+      where: { id: id },
+      include: { account_budget_accountToaccount: true },
+    });
   }
 
   update(id: number, updateBudgetDto: UpdateBudgetDto) {
-    return `This action updates a #${id} budget`;
+    return this.prisma.budget.update({
+      where: { id: id },
+      data: {
+        ...updateBudgetDto,
+        updatedAt: new Date(),
+      },
+      include: { account_budget_accountToaccount: true },
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} budget`;
+    return this.prisma.budget.delete({ where: { id: id } });
+  }
+
+  async copyYear(from: number, to: number) {
+    const budgets = await this.prisma.budget.findMany({
+      where: { year: from },
+    });
+    await this.prisma.budget.createMany({
+      data: budgets.map((budget) => ({
+        ...budget,
+        id: undefined,
+        year: to,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })),
+    });
+    return this.findAll(to);
   }
 }

@@ -1,55 +1,32 @@
-import { Prisma } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { AccountEntity } from '../../account/entities/account.entity';
-import { Fiscalyearentity } from '../../fiscalyear/entities/fiscalyear.entity';
+import { FiscalyearEntity } from '../../fiscalyear/entities/fiscalyear.entity';
+import { Expose, Transform } from 'class-transformer';
+import { Decimal } from '@prisma/client/runtime/library';
+import { budget } from '@prisma/client';
 
-export class Budgetentity {
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
+export class BudgetEntity implements budget {
+  constructor(partial: Partial<BudgetEntity>) {
+    Object.assign(this, partial);
+  }
+  @Expose()
   id: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   account: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   year: number;
-  @ApiProperty({
-    type: 'string',
-    nullable: true,
-  })
   memo: string | null;
-  @ApiProperty({
-    type: 'string',
-    format: 'Decimal.js',
-    nullable: true,
-  })
-  amount: Prisma.Decimal | null;
-  @ApiProperty({
-    type: 'string',
-    format: 'date-time',
-    nullable: true,
-  })
+  @Transform((value) => parseFloat(value.value))
+  amount: Decimal | null;
   createdAt: Date | null;
-  @ApiProperty({
-    type: 'string',
-    format: 'date-time',
-    nullable: true,
-  })
   updatedAt: Date | null;
+
   @ApiProperty({
     type: () => AccountEntity,
     required: false,
   })
   account_budget_accountToaccount?: AccountEntity;
   @ApiProperty({
-    type: () => Fiscalyearentity,
+    type: () => FiscalyearEntity,
     required: false,
   })
-  fiscalyear?: Fiscalyearentity;
+  fiscalyear?: FiscalyearEntity;
 }

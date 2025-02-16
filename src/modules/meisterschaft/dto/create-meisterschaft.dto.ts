@@ -1,92 +1,34 @@
-
-import {ApiProperty} from '@nestjs/swagger'
-
-
-
+import { IsBoolean, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateMeisterschaftDto {
-  @ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  default: 50,
-  required: false,
-  nullable: true,
-})
-punkte?: number  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  default: 0,
-  required: false,
-  nullable: true,
-})
-wurf1?: number  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  default: 0,
-  required: false,
-  nullable: true,
-})
-wurf2?: number  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  default: 0,
-  required: false,
-  nullable: true,
-})
-wurf3?: number  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  default: 0,
-  required: false,
-  nullable: true,
-})
-wurf4?: number  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  default: 0,
-  required: false,
-  nullable: true,
-})
-wurf5?: number  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  default: 5,
-  required: false,
-  nullable: true,
-})
-zusatz?: number  | null;
-@ApiProperty({
-  type: 'boolean',
-  default: false,
-  required: false,
-  nullable: true,
-})
-streichresultat?: boolean  | null;
-@ApiProperty({
-  type: 'string',
-  format: 'date-time',
-  required: false,
-  nullable: true,
-})
-createdAt?: Date  | null;
-@ApiProperty({
-  type: 'string',
-  format: 'date-time',
-  required: false,
-  nullable: true,
-})
-updatedAt?: Date  | null;
-@ApiProperty({
-  type: 'integer',
-  format: 'int32',
-  required: false,
-  nullable: true,
-})
-total_kegel?: number  | null;
+  @IsNumber()
+  mitgliedid: number;
+  @IsNumber()
+  eventid: number;
+  @IsNumber()
+  punkte?: number | null;
+  @IsNumber()
+  @IsOptional()
+  wurf1?: number | null;
+  @IsNumber()
+  @IsOptional()
+  wurf2?: number | null;
+  @IsNumber()
+  @IsOptional()
+  wurf3?: number | null;
+  @IsNumber()
+  @IsOptional()
+  wurf4?: number | null;
+  @IsNumber()
+  @IsOptional()
+  wurf5?: number | null;
+  @IsNumber()
+  @IsOptional()
+  zusatz?: number | null;
+  @IsBoolean()
+  @IsOptional()
+  streichresultat?: boolean | null;
+  @IsNumber()
+  @IsOptional()
+  total_kegel?: number | null;
 }

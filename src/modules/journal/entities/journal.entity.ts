@@ -1,7 +1,7 @@
 import { journal } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { AccountEntity } from '../../account/entities/account.entity';
-import { Fiscalyearentity } from '../../fiscalyear/entities/fiscalyear.entity';
+import { FiscalyearEntity } from '../../fiscalyear/entities/fiscalyear.entity';
 import { JournalReceiptEntity } from '../../journal-receipt/entities/journal-receipt.entity';
 import { Kegelkasseentity } from '../../kegelkasse/entities/kegelkasse.entity';
 import { Expose, Transform } from 'class-transformer';
@@ -44,11 +44,11 @@ export class JournalEntity implements journal {
   })
   account_journal_to_accountToaccount?: AccountEntity | null;
   @ApiProperty({
-    type: () => Fiscalyearentity,
+    type: () => FiscalyearEntity,
     required: false,
     nullable: true,
   })
-  fiscalyear?: Fiscalyearentity | null;
+  fiscalyear?: FiscalyearEntity | null;
   @ApiProperty({
     type: () => JournalReceiptEntity,
     isArray: true,

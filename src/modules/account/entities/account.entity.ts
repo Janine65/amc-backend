@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Budgetentity } from '../../budget/entities/budget.entity';
+import { BudgetEntity } from '../../budget/entities/budget.entity';
 import { JournalEntity } from '../../journal/entities/journal.entity';
 import { account } from '@prisma/client';
 import { Expose } from 'class-transformer';
@@ -20,11 +20,11 @@ export class AccountEntity implements account {
   longname: string | null;
 
   @ApiProperty({
-    type: () => Budgetentity,
+    type: () => BudgetEntity,
     isArray: true,
     required: false,
   })
-  budget_budget_accountToaccount?: Budgetentity[];
+  budget_budget_accountToaccount?: BudgetEntity[];
   @ApiProperty({
     type: () => JournalEntity,
     isArray: true,

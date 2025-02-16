@@ -10,26 +10,44 @@ import {
   Query,
   ConflictException,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { AnlaesseService } from './anlaesse.service';
 import { CreateAnlaesseDto } from './dto/create-anlaesse.dto';
 import { UpdateAnlaesseDto } from './dto/update-anlaesse.dto';
 import { AnlaesseEntity } from './entities/anlaesse.entity';
-import { ApiCreatedResponse, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
-import { RetDataFileDto } from 'src/utils/ret-data.dto';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiQuery,
+} from '@nestjs/swagger';
+import { RetDataDto, RetDataFileDto } from 'src/utils/ret-data.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('anlaesse')
 export class AnlaesseController {
   constructor(private readonly anlaesseService: AnlaesseService) {}
 
   @Get('overview')
+  @ApiOkResponse({ type: RetDataDto })
   async getOverview() {
-    return await this.anlaesseService.getOverview();
+    return new RetDataDto(
+      await this.anlaesseService.getOverview(),
+      'Übersicht Anlässe',
+      'info',
+    );
   }
 
   @Get('getFkData')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: RetDataDto })
   async getFKData(@Query('jahr') jahr: string) {
-    return await this.anlaesseService.getFKData(jahr);
+    return new RetDataDto({
+      type: 'info',
+      data: await this.anlaesseService.getFKData(jahr),
+    });
   }
 
   @Get('writestammblatt')
@@ -52,6 +70,8 @@ export class AnlaesseController {
     description: 'ID der Adresse',
     required: false,
   })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOkResponse({ type: RetDataFileDto })
   async writeStammblatt(
     @Query('type', ParseIntPipe) type: number,
@@ -62,13 +82,19 @@ export class AnlaesseController {
   }
 
   @Post()
-  @ApiCreatedResponse({ type: AnlaesseEntity })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiCreatedResponse({ type: RetDataDto })
   async create(@Body() createAnlaesseDto: CreateAnlaesseDto) {
     const anlass = await this.anlaesseService.create(createAnlaesseDto);
     if (!anlass) {
       throw new ConflictException('Anlass konnte nicht erstellt werden');
     }
-    return new AnlaesseEntity(anlass);
+    return new RetDataDto(
+      new AnlaesseEntity(anlass),
+      'Anlass erstellt',
+      'info',
+    );
   }
 
   @Get()
@@ -78,7 +104,9 @@ export class AnlaesseController {
     description: 'Filtert Anlässe nach Kegelabenden',
     required: false,
   })
-  @ApiOkResponse({ type: AnlaesseEntity, isArray: true })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: RetDataDto, isArray: false })
   async findAll(
     @Query('fromJahr', ParseIntPipe) fromJahr: number,
     @Query('toJahr', ParseIntPipe) toJahr: number,
@@ -89,21 +117,33 @@ export class AnlaesseController {
       toJahr,
       istKegeln,
     );
-    return anlaesse.map((anlass) => new AnlaesseEntity(anlass));
+    return new RetDataDto(
+      anlaesse.map((anlass) => new AnlaesseEntity(anlass)),
+      'Anlässe gefunden',
+      'info',
+    );
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: AnlaesseEntity })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: RetDataDto })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const anlass = await this.anlaesseService.findOne(id);
     if (!anlass) {
       throw new NotFoundException('Anlass konnte nicht gefunden werden');
     }
-    return new AnlaesseEntity(anlass);
+    return new RetDataDto(
+      new AnlaesseEntity(anlass),
+      'Anlass gefunden',
+      'info',
+    );
   }
 
   @Patch(':id')
-  @ApiOkResponse({ type: AnlaesseEntity })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: RetDataDto })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateAnlaesseDto: UpdateAnlaesseDto,
@@ -112,16 +152,26 @@ export class AnlaesseController {
     if (!anlass) {
       throw new NotFoundException('Anlass konnte nicht gefunden werden');
     }
-    return new AnlaesseEntity(anlass);
+    return new RetDataDto(
+      new AnlaesseEntity(anlass),
+      'Anlass aktualisiert',
+      'info',
+    );
   }
 
   @Delete(':id')
-  @ApiOkResponse({ type: AnlaesseEntity })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: RetDataDto })
   async remove(@Param('id', ParseIntPipe) id: number) {
     const anlass = await this.anlaesseService.findOne(id);
     if (!anlass) {
       throw new NotFoundException('Anlass konnte nicht gefunden werden');
     }
-    return new AnlaesseEntity(anlass);
+    return new RetDataDto(
+      new AnlaesseEntity(anlass),
+      'Anlass gelöscht',
+      'info',
+    );
   }
 }

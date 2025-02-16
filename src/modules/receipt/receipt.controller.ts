@@ -19,7 +19,7 @@ import { ConfigService } from 'src/config/config.service';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { ApiBearerAuth, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
-import { RetDataFilesDto } from 'src/utils/ret-data.dto';
+import { RetDataDto, RetDataFilesDto } from 'src/utils/ret-data.dto';
 import { UploadFilesDto } from './dto/upload_files.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
@@ -39,7 +39,7 @@ export class ReceiptController {
   }
 
   @Get('findallatt')
-  @ApiOkResponse({ type: ReceiptEntity, isArray: true })
+  @ApiOkResponse({ type: RetDataDto })
   @ApiQuery({
     name: 'journalId',
     type: String,
@@ -56,21 +56,30 @@ export class ReceiptController {
       jahr,
       journalId,
     );
-    return receipts.map((receipt) => new ReceiptEntity(receipt));
+    return new RetDataDto(
+      receipts.map((receipt) => new ReceiptEntity(receipt)),
+      'findAllAttachments',
+      'info',
+    );
   }
 
   @Get('findatt')
-  @ApiOkResponse({ type: ReceiptEntity, isArray: true })
+  @ApiOkResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async findAttachments(@Query('journalId', ParseIntPipe) journalId: number) {
     const receipts = await this.receiptService.findAttachments(journalId);
-    return receipts.map((receipt) => new ReceiptEntity(receipt));
+    return new RetDataDto(
+      receipts.map((receipt) => new ReceiptEntity(receipt)),
+      'findAttachments',
+      'info',
+    );
   }
 
   @Get('uploadatt')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @ApiOkResponse({ type: StreamableFile })
   uploadAtt(@Query('filename') filename: string) {
     const file = createReadStream(join(this.configService.uploads, filename));
     return new StreamableFile(file);
@@ -93,24 +102,28 @@ export class ReceiptController {
   }
 
   @Get()
-  @ApiOkResponse({ type: ReceiptEntity, isArray: true })
+  @ApiOkResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async findAll(@Query('year') year: string) {
     const receipts = await this.receiptService.findAll(year);
-    return receipts.map((receipt) => new ReceiptEntity(receipt));
+    return new RetDataDto(
+      receipts.map((receipt) => new ReceiptEntity(receipt)),
+      'findAll',
+      'info',
+    );
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: ReceiptEntity })
+  @ApiOkResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.receiptService.findOne(id);
+    return new RetDataDto(this.receiptService.findOne(id), 'findOne', 'info');
   }
 
   @Patch(':id')
-  @ApiOkResponse({ type: ReceiptEntity })
+  @ApiOkResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async update(
@@ -121,11 +134,11 @@ export class ReceiptController {
     if (!receipt) {
       throw new NotFoundException('Receipt not found');
     }
-    return new ReceiptEntity(receipt);
+    return new RetDataDto(new ReceiptEntity(receipt), 'update', 'info');
   }
 
   @Delete(':id')
-  @ApiOkResponse({ type: ReceiptEntity })
+  @ApiOkResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async remove(@Param('id', ParseIntPipe) id: number) {
@@ -134,6 +147,6 @@ export class ReceiptController {
       throw new NotFoundException('Receipt not found');
     }
     await this.receiptService.remove(id);
-    return new ReceiptEntity(receipt);
+    return new RetDataDto(new ReceiptEntity(receipt), 'remove', 'info');
   }
 }

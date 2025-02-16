@@ -22,6 +22,7 @@ import {
 import { ParameterEntity } from './entities/parameter.entity';
 import { parameter } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RetDataDto } from 'src/utils/ret-data.dto';
 
 @Controller('parameter')
 @ApiTags('Parameter')
@@ -31,51 +32,71 @@ export class ParameterController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiCreatedResponse({ type: ParameterEntity })
+  @ApiCreatedResponse({ type: RetDataDto })
   async create(@Body() createParameterDto: CreateParameterDto) {
-    return new ParameterEntity(
-      await this.parameterService.create(createParameterDto),
+    return new RetDataDto(
+      new ParameterEntity(
+        await this.parameterService.create(createParameterDto),
+      ),
+      'Parameter created',
+      'info',
     );
   }
 
   @Get()
-  @ApiOkResponse({ type: ParameterEntity, isArray: true })
+  @ApiOkResponse({ type: RetDataDto })
   async findAll() {
     const parameters: parameter[] = await this.parameterService.findAll();
-    return parameters.map((parameter) => new ParameterEntity(parameter));
+    return new RetDataDto(
+      parameters.map((parameter) => new ParameterEntity(parameter)),
+      'Parameters found',
+      'info',
+    );
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ type: ParameterEntity, isArray: false })
+  @ApiOkResponse({ type: RetDataDto })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const paramRec = await this.parameterService.findOne(id);
     if (!paramRec) {
       throw new NotFoundException(`Parameter with ${id} does not exist.`);
     }
-    return new ParameterEntity(paramRec);
+    return new RetDataDto(
+      new ParameterEntity(paramRec),
+      'Parameter found',
+      'info',
+    );
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ type: ParameterEntity, isArray: false })
+  @ApiOkResponse({ type: RetDataDto })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body()
     updateParameterDto: UpdateParameterDto,
   ) {
-    return new ParameterEntity(
-      await this.parameterService.update(id, updateParameterDto),
+    return new RetDataDto(
+      new ParameterEntity(
+        await this.parameterService.update(id, updateParameterDto),
+      ),
+      'Parameter updated',
+      'info',
     );
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ type: ParameterEntity })
+  @ApiOkResponse({ type: RetDataDto })
   async remove(@Param('id', ParseIntPipe) id: number) {
-    return new ParameterEntity(await this.parameterService.remove(id));
+    return new RetDataDto(
+      new ParameterEntity(await this.parameterService.remove(id)),
+      'Parameter removed',
+      'info',
+    );
   }
 }

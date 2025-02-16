@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateJournalReceiptDto } from './dto/create-journal-receipt.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ReceiptEntity } from '../receipt/entities/receipt.entity';
-import { journal_receipt } from '@prisma/client';
+import { journal_receipt, Prisma } from '@prisma/client';
 
 @Injectable()
 export class JournalReceiptService {
@@ -16,7 +16,10 @@ export class JournalReceiptService {
     });
   }
 
-  add2journal(journalid: number, receipts: ReceiptEntity[]): Promise<any> {
+  add2journal(
+    journalid: number,
+    receipts: ReceiptEntity[],
+  ): Promise<Prisma.BatchPayload> {
     const data: journal_receipt[] = [];
     receipts.forEach((receipt) => {
       data.push({

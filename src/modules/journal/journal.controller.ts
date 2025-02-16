@@ -21,7 +21,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
-import { RetDataFileDto } from 'src/utils/ret-data.dto';
+import { RetDataDto, RetDataFileDto } from 'src/utils/ret-data.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('journal')
@@ -29,38 +29,50 @@ export class JournalController {
   constructor(private readonly journalService: JournalService) {}
   // this.router.get(this.path + 'write', authMiddleware, this.writeJournal);
   @Post()
-  @ApiCreatedResponse({ type: JournalEntity })
+  @ApiCreatedResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async create(@Body() createJournalDto: CreateJournalDto) {
     const journal = await this.journalService.create(createJournalDto);
     if (journal) {
-      return new JournalEntity(journal);
+      return new RetDataDto(
+        new JournalEntity(journal),
+        'Journal created',
+        'info',
+      );
     } else {
       throw new NotFoundException('Journal not created');
     }
   }
 
   @Get()
-  @ApiOkResponse({ type: JournalEntity, isArray: true })
+  @ApiOkResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async findAll() {
     const journals = await this.journalService.findAll();
-    return journals.map((journal) => new JournalEntity(journal));
+    return new RetDataDto(
+      journals.map((journal) => new JournalEntity(journal)),
+      'Journal found',
+      'info',
+    );
   }
 
   @Get('getbyyear')
-  @ApiOkResponse({ type: JournalEntity, isArray: true })
+  @ApiOkResponse({ type: RetDataDto, isArray: true })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async findByYear(@Query('year', ParseIntPipe) year: number) {
     const journals = await this.journalService.findByYear(year);
-    return journals.map((journal) => new JournalEntity(journal));
+    return new RetDataDto(
+      journals.map((journal) => new JournalEntity(journal)),
+      'Journal found',
+      'info',
+    );
   }
 
   @Get('getaccdata')
-  @ApiOkResponse({ type: JournalEntity, isArray: true })
+  @ApiOkResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async findByAccount(
@@ -68,7 +80,11 @@ export class JournalController {
     @Query('year', ParseIntPipe) year: number,
   ) {
     const journals = await this.journalService.findByAccount(account, year);
-    return journals.map((journal) => new JournalEntity(journal));
+    return new RetDataDto(
+      journals.map((journal) => new JournalEntity(journal)),
+      'Journal found',
+      'info',
+    );
   }
 
   @Get('write')
@@ -83,20 +99,24 @@ export class JournalController {
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: JournalEntity })
+  @ApiOkResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const journal = await this.journalService.findOne(id);
     if (journal) {
-      return new JournalEntity(journal);
+      return new RetDataDto(
+        new JournalEntity(journal),
+        'Journal found',
+        'info',
+      );
     } else {
       throw new NotFoundException('Journal not found');
     }
   }
 
   @Patch(':id')
-  @ApiOkResponse({ type: JournalEntity })
+  @ApiOkResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async update(
@@ -105,20 +125,28 @@ export class JournalController {
   ) {
     const journal = await this.journalService.update(id, updateJournalDto);
     if (journal) {
-      return new JournalEntity(journal);
+      return new RetDataDto(
+        new JournalEntity(journal),
+        'Journal updated',
+        'info',
+      );
     } else {
       throw new NotFoundException('Journal not updated');
     }
   }
 
   @Delete(':id')
-  @ApiOkResponse({ type: JournalEntity })
+  @ApiOkResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async remove(@Param('id', ParseIntPipe) id: number) {
     const journal = await this.journalService.remove(id);
     if (journal) {
-      return new JournalEntity(journal);
+      return new RetDataDto(
+        new JournalEntity(journal),
+        'Journal deleted',
+        'info',
+      );
     } else {
       throw new NotFoundException('Journal not deleted');
     }

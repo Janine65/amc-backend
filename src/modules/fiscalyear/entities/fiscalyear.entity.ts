@@ -1,48 +1,28 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Budgetentity } from '../../budget/entities/budget.entity';
+import { BudgetEntity } from '../../budget/entities/budget.entity';
 import { JournalEntity } from '../../journal/entities/journal.entity';
+import { Expose } from 'class-transformer';
+import { fiscalyear } from '@prisma/client';
 
-export class Fiscalyearentity {
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
+export class FiscalyearEntity implements fiscalyear {
+  constructor(partial: Partial<FiscalyearEntity>) {
+    Object.assign(this, partial);
+  }
+  @Expose()
   id: number;
-  @ApiProperty({
-    type: 'string',
-    nullable: true,
-  })
   name: string | null;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   state: number | null;
-  @ApiProperty({
-    type: 'string',
-    format: 'date-time',
-    nullable: true,
-  })
   createdAt: Date | null;
-  @ApiProperty({
-    type: 'string',
-    format: 'date-time',
-    nullable: true,
-  })
   updatedAt: Date | null;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   year: number | null;
+  $css: string | null;
+
   @ApiProperty({
-    type: () => Budgetentity,
+    type: () => BudgetEntity,
     isArray: true,
     required: false,
   })
-  budget?: Budgetentity[];
+  budget?: BudgetEntity[];
   @ApiProperty({
     type: () => JournalEntity,
     isArray: true,
