@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=DimpgP24
+    container_name: postgres
+    ports:
+      - '5437:5432'
+    networks:
+      - back-tier
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U prisma -d postgres']
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: postgres -c listen_addresses='*'
+    logging:
+      options:
+        max-size: '10m'
+        max-file: '3'
+
+  amcbackend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '2700:3000'
+    stdin_open: true
+    container_name: amcbackend
+    tty: true # Keeps the container running for debugging
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env.dev
+    environment:
+      - NODE_ENV=development
+    networks:
+      - back-tier
+
+networks:
+  back-tier:
+    name: back-tier
+    driver: bridge
+
+volumes:
+  postgres_data:

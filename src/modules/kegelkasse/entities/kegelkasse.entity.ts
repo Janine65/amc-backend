@@ -1,112 +1,40 @@
-import { Prisma } from '@prisma/client';
+import { kegelkasse, Prisma } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { JournalEntity } from '../../journal/entities/journal.entity';
 import { UserEntity } from '../../users/entities/user.entity';
+import { Expose, Transform } from 'class-transformer';
 
-export class Kegelkasseentity {
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
+export class KegelkasseEntity implements kegelkasse {
+  constructor(kegelkasse: kegelkasse) {
+    Object.assign(this, kegelkasse);
+  }
+  @Expose()
   id: number;
   @ApiProperty({
     type: 'string',
-    format: 'date-time',
+    format: 'date',
   })
   datum: Date;
-  @ApiProperty({
-    type: 'string',
-    format: 'Decimal.js',
-  })
+  @Transform((value) => parseFloat(value.value))
   kasse: Prisma.Decimal;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   rappen5: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   rappen10: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   rappen20: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   rappen50: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   franken1: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   franken2: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   franken5: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   franken10: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   franken20: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   franken50: number;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-  })
   franken100: number;
-  @ApiProperty({
-    type: 'string',
-    format: 'Decimal.js',
-  })
+  @Transform((value) => parseFloat(value.value))
   total: Prisma.Decimal;
-  @ApiProperty({
-    type: 'string',
-    format: 'Decimal.js',
-  })
+  @Transform((value) => parseFloat(value.value))
   differenz: Prisma.Decimal;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   journalid: number | null;
-  @ApiProperty({
-    type: 'string',
-    format: 'date-time',
-    nullable: true,
-  })
   createdAt: Date | null;
-  @ApiProperty({
-    type: 'string',
-    format: 'date-time',
-    nullable: true,
-  })
   updatedAt: Date | null;
-  @ApiProperty({
-    type: 'integer',
-    format: 'int32',
-    nullable: true,
-  })
   userid: number | null;
   @ApiProperty({
     type: () => JournalEntity,

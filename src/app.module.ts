@@ -16,7 +16,6 @@ import { KegelmeisterModule } from './modules/kegelmeister/kegelmeister.module';
 import { MeisterschaftModule } from './modules/meisterschaft/meisterschaft.module';
 import { ParameterModule } from './modules/parameter/parameter.module';
 import { ReceiptModule } from './modules/receipt/receipt.module';
-import { SessionsModule } from './modules/sessions/sessions.module';
 import { UserModule } from './modules/users/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { FileModule } from './utils/file/file.module';
@@ -39,7 +38,6 @@ import { FileModule } from './utils/file/file.module';
     ParameterModule,
     PrismaModule,
     ReceiptModule,
-    SessionsModule,
     UserModule,
     ConfigModule,
   ],

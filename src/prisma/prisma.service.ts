@@ -1,6 +1,6 @@
 // src/prisma/prisma.service.ts
 
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class PrismaService
     Prisma.PrismaClientOptions,
     'query | error | debug | info'
   >
-  implements OnModuleInit, OnModuleDestroy
+  implements OnModuleDestroy
 {
   constructor() {
     super({
@@ -39,10 +39,6 @@ export class PrismaService
       console.debug('Duration: ' + event.duration + 'ms');
       console.debug('--------------------------------------------------');
     });
-  }
-  async onModuleInit() {
-    await this.$connect();
-    console.info('PrismaService initialized');
   }
 
   async onModuleDestroy() {

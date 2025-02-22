@@ -1,0 +1,21 @@
+services:
+  amcbackend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: janine65/amcbackend:latest
+    platform: linux/amd64
+    ports:
+      - '5455:2700'
+    stdin_open: true
+    container_name: amcbackend
+    tty: true # Keeps the container running for debugging
+    env_file:
+      - .env.prod
+    environment:
+      - NODE_ENV=production
+    networks:
+      - back-tier
+
+networks:
+  back-tier: {}

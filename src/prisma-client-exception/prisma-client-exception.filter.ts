@@ -18,7 +18,17 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         const status = HttpStatus.CONFLICT;
         response.status(status).json({
           statusCode: status,
+          type: 'error',
           message: message[0],
+        });
+        break;
+      }
+      case 'P2003': {
+        const status = HttpStatus.CONFLICT;
+        response.status(status).json({
+          statusCode: status,
+          type: 'error',
+          message: message[message.length - 1],
         });
         break;
       }
@@ -26,6 +36,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         const status = HttpStatus.NOT_FOUND;
         response.status(status).json({
           statusCode: status,
+          type: 'error',
           message: message[0],
         });
         break;

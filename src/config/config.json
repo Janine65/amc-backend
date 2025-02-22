@@ -11,7 +11,7 @@
       "database": "amcadmin",
       "db_user": "postgres",
       "db_pwd": "808caaa5a7ff307b08e38458554c3f5d",
-      "port": 5436,
+      "port": 5437,
       "dbtype": "postgres",
       "defaultEmail": "JanineFranken",
       "userEmail": "Janine Franken",
@@ -34,7 +34,7 @@
     },
     "production": {
       "config_id": "production",
-      "node_port": 2700,
+      "node_port": 5455,
       "dbhost": "olconet",
       "webhost": "https://interna.automoto-sr.info",
       "database": "amcadmin",

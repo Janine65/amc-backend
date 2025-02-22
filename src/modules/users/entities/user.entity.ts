@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Kegelkasseentity } from '../../kegelkasse/entities/kegelkasse.entity';
-import { Sessionsentity } from '../../sessions/entities/sessions.entity';
+import { KegelkasseEntity } from '../../kegelkasse/entities/kegelkasse.entity';
 import { Exclude, Expose } from 'class-transformer';
 import { user } from '@prisma/client';
 
@@ -45,15 +44,9 @@ export class UserEntity implements user {
   last_login: Date | null;
 
   @ApiProperty({
-    type: () => Kegelkasseentity,
+    type: () => KegelkasseEntity,
     isArray: true,
     required: false,
   })
-  kegelkasse?: Kegelkasseentity[];
-  @ApiProperty({
-    type: () => Sessionsentity,
-    isArray: true,
-    required: false,
-  })
-  sessions?: Sessionsentity[];
+  kegelkasse?: KegelkasseEntity[];
 }

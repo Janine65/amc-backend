@@ -29,7 +29,20 @@ export class ConfigService {
   assets: string;
   log_dir: string;
 
+  static _thisSingelton: ConfigService | null = null;
+
+  static getThisSingelton(): ConfigService {
+    if (this._thisSingelton == null) {
+      this._thisSingelton = new ConfigService(new PrismaService());
+    }
+    return this._thisSingelton;
+  }
+
   constructor(private prisma: PrismaService) {
+    if (ConfigService._thisSingelton != null) {
+      return ConfigService._thisSingelton;
+    }
+    ConfigService._thisSingelton = this;
     const defaultConfig = config.development;
     const environment = process.env.NODE_ENV ?? 'development';
     const environmentConfig =
@@ -38,7 +51,7 @@ export class ConfigService {
 
     this.thisConfig = finalConfig;
 
-    // DATABASE_URL="${db_type}://${db_user}:${db_pwd}@${dbhost}:${db_port/${database}?schema=public"
+    // DATABASE_URL="${db_type}://${db_user}:${db_pwd}@${dbhost}:${db_port}/${database}?schema=public"
     const database_url =
       this.thisConfig.dbtype +
       '://' +
@@ -53,10 +66,6 @@ export class ConfigService {
       this.thisConfig.database +
       '?schema=public';
     process.env.DATABASE_URL = database_url;
-
-    this.loadParams().catch((err) => {
-      console.log(err);
-    });
 
     const mainpath = realpathSync(__dirname + '/..');
 
@@ -115,6 +124,9 @@ export class ConfigService {
 
   async loadParams(): Promise<Map<string, string>> {
     if (this._params.size === 0) {
+      console.debug('DATABASE_URL:', process.env.DATABASE_URL);
+      await this.prisma.$connect();
+      console.debug('Connected to database');
       const lstParams = await this.prisma.parameter.findMany();
       for (const param of lstParams) {
         this._params.set(param.key, param.value);

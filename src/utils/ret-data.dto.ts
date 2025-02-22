@@ -1,14 +1,17 @@
 import { IsObject, IsString } from 'class-validator';
 
 export class RetDataDto {
-  @IsObject()
-  data?: object;
+  data?: object | string | number | boolean;
   @IsString()
   message: string;
   @IsString()
   type: string;
 
-  constructor(data?: object, message?: string, type?: string) {
+  constructor(
+    data?: object | string | number | boolean,
+    message?: string,
+    type?: string,
+  ) {
     this.data = data;
     this.message = message || '';
     this.type = type || 'info';

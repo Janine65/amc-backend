@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { AccountEntity } from '../../account/entities/account.entity';
 import { FiscalyearEntity } from '../../fiscalyear/entities/fiscalyear.entity';
 import { JournalReceiptEntity } from '../../journal-receipt/entities/journal-receipt.entity';
-import { Kegelkasseentity } from '../../kegelkasse/entities/kegelkasse.entity';
+import { KegelkasseEntity } from '../../kegelkasse/entities/kegelkasse.entity';
 import { Expose, Transform } from 'class-transformer';
 import { Decimal } from '@prisma/client/runtime/library';
 
@@ -56,9 +56,9 @@ export class JournalEntity implements journal {
   })
   journal_receipt?: JournalReceiptEntity[];
   @ApiProperty({
-    type: () => Kegelkasseentity,
+    type: () => KegelkasseEntity,
     isArray: true,
     required: false,
   })
-  kegelkasse?: Kegelkasseentity[];
+  kegelkasse?: KegelkasseEntity[];
 }

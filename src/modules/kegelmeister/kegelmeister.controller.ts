@@ -7,40 +7,140 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  NotFoundException,
+  ConflictException,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { KegelmeisterService } from './kegelmeister.service';
 import { CreateKegelmeisterDto } from './dto/create-kegelmeister.dto';
 import { UpdateKegelmeisterDto } from './dto/update-kegelmeister.dto';
+import { KegelmeisterEntity } from './entities/kegelmeister.entity';
+import { RetDataDto } from 'src/utils/ret-data.dto';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('kegelmeister')
 export class KegelmeisterController {
   constructor(private readonly kegelmeisterService: KegelmeisterService) {}
 
+  @Get('byjahr')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiResponse({ type: RetDataDto, isArray: false })
+  async findAllByJahr(@Query('jahr') jahr: string) {
+    const kegelmeisters = await this.kegelmeisterService.findAllByJahr(jahr);
+    return new RetDataDto(
+      kegelmeisters.map((kegelmeister) => new KegelmeisterEntity(kegelmeister)),
+      'findAll',
+      'info',
+    );
+  }
+
+  @Get('overview')
+  @ApiResponse({ type: RetDataDto, isArray: false })
+  async overview() {
+    return new RetDataDto(
+      await this.kegelmeisterService.overview(),
+      'Übersicht Kegelmeister',
+      'info',
+    );
+  }
+
+  @Get('calcMeister')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiResponse({ type: RetDataDto, isArray: false })
+  async calcMeister(@Query('jahr') jahr: string) {
+    return new RetDataDto(
+      await this.kegelmeisterService.calcMeister(jahr),
+      'Berechnung Kegelmeister',
+      'info',
+    );
+  }
+
   @Post()
-  create(@Body() createKegelmeisterDto: CreateKegelmeisterDto) {
-    return this.kegelmeisterService.create(createKegelmeisterDto);
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiResponse({ type: RetDataDto, isArray: false })
+  async create(@Body() createKegelmeisterDto: CreateKegelmeisterDto) {
+    const kegelmeister = await this.kegelmeisterService.create(
+      createKegelmeisterDto,
+    );
+    if (!kegelmeister) {
+      throw new ConflictException('Kegelmeister nicht gefunden');
+    }
+    return new RetDataDto(
+      new KegelmeisterEntity(kegelmeister),
+      'create',
+      'info',
+    );
   }
 
   @Get()
-  findAll() {
-    return this.kegelmeisterService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiResponse({ type: RetDataDto, isArray: false })
+  async findAll() {
+    const kegelmeisters = await this.kegelmeisterService.findAll();
+    return new RetDataDto(
+      kegelmeisters.map((kegelmeister) => new KegelmeisterEntity(kegelmeister)),
+      'findAll',
+      'info',
+    );
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.kegelmeisterService.findOne(id);
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiResponse({ type: RetDataDto, isArray: false })
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const kegelmeister = await this.kegelmeisterService.findOne(id);
+    if (!kegelmeister) {
+      throw new NotFoundException('Kegelmeister nicht gefunden');
+    }
+    return new RetDataDto(
+      new KegelmeisterEntity(kegelmeister),
+      'findOne',
+      'info',
+    );
   }
 
   @Patch(':id')
-  update(
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiResponse({ type: RetDataDto, isArray: false })
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateKegelmeisterDto: UpdateKegelmeisterDto,
   ) {
-    return this.kegelmeisterService.update(id, updateKegelmeisterDto);
+    const kegelmeister = await this.kegelmeisterService.update(
+      id,
+      updateKegelmeisterDto,
+    );
+    if (!kegelmeister) {
+      throw new NotFoundException('Kegelmeister nicht gefunden');
+    }
+    return new RetDataDto(
+      new KegelmeisterEntity(kegelmeister),
+      'update',
+      'info',
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.kegelmeisterService.remove(id);
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiResponse({ type: RetDataDto, isArray: false })
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const kegelmeister = await this.kegelmeisterService.remove(id);
+    if (!kegelmeister) {
+      throw new NotFoundException('Kegelmeister nicht gefunden');
+    }
+    return new RetDataDto(
+      new KegelmeisterEntity(kegelmeister),
+      'remove',
+      'info',
+    );
   }
 }

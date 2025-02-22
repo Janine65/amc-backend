@@ -198,7 +198,7 @@ export class JournalService {
       | {
           label: string;
           property: string;
-          valign: string;
+          valign?: string;
           width: number;
           align?: string;
           renderer?: (value: string | number) => string;
@@ -417,7 +417,7 @@ export class JournalService {
           | {
               label: string;
               property: string;
-              valign: string;
+              valign?: string;
               width: number;
               align?: string;
               renderer?: (value: string | number) => string;

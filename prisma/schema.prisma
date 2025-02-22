@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:DimpgP24@localhost:5436/amcadmin?schema=public"
+  url      = env("DATABASE_URL")
 }
 
 model Sessions {

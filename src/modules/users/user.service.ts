@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import { randomUUID } from 'crypto';
 import { ConfigService } from 'src/config/config.service';
 import { AdressenService } from '../adressen/adressen.service';
