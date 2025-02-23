@@ -41,7 +41,7 @@ export class ReceiptController {
   @Get('findallatt')
   @ApiOkResponse({ type: RetDataDto })
   @ApiQuery({
-    name: 'journalId',
+    name: 'journalid',
     type: String,
     description: 'JournalId. Optional',
     required: false,
@@ -67,7 +67,7 @@ export class ReceiptController {
   @ApiOkResponse({ type: RetDataDto })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  async findAttachments(@Query('journalId', ParseIntPipe) journalId: number) {
+  async findAttachments(@Query('journalid', ParseIntPipe) journalId: number) {
     const receipts = await this.receiptService.findAttachments(journalId);
     return new RetDataDto(
       receipts.map((receipt) => new ReceiptEntity(receipt)),

@@ -4,7 +4,6 @@ import { ClubmeisterEntity } from '../../clubmeister/entities/clubmeister.entity
 import { KegelmeisterEntity } from '../../kegelmeister/entities/kegelmeister.entity';
 import { MeisterschaftEntity } from '../../meisterschaft/entities/meisterschaft.entity';
 import { Expose, Transform } from 'class-transformer';
-import { Decimal } from '@prisma/client/runtime/library';
 
 export class AdressenEntity implements adressen {
   constructor(partial: Partial<AdressenEntity>) {
@@ -39,7 +38,7 @@ export class AdressenEntity implements adressen {
   eintritt: Date | null;
   sam_mitglied: boolean;
   @Transform((value) => parseFloat(value.value))
-  jahresbeitrag: Decimal | null;
+  jahresbeitrag: number | null;
   mnr_sam: number | null;
   vorstand: boolean;
   ehrenmitglied: boolean;

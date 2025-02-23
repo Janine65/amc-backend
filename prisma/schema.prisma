@@ -44,7 +44,7 @@ model adressen {
   email          String?         @db.VarChar(150)
   eintritt       DateTime?       @db.Date
   sam_mitglied   Boolean         @default(false)
-  jahresbeitrag  Decimal?        @db.Decimal
+  jahresbeitrag  Float?          
   mnr_sam        Int?
   createdAt      DateTime        @db.Timestamptz(6)
   updatedAt      DateTime        @db.Timestamptz(6)
@@ -106,7 +106,7 @@ model budget {
   account                         Int
   year                            Int
   memo                            String?    @db.VarChar(255)
-  amount                          Decimal?   @db.Decimal
+  amount                          Float?
   createdAt                       DateTime?  @db.Timestamptz(6)
   updatedAt                       DateTime?  @db.Timestamptz(6)
   account_budget_accountToaccount account    @relation("budget_accountToaccount", fields: [account], references: [id], onDelete: NoAction)
@@ -157,7 +157,7 @@ model journal {
   date                                  DateTime?         @db.Date
   memo                                  String?           @db.VarChar(255)
   journalno                             Int?
-  amount                                Decimal?          @default(0) @db.Decimal
+  amount                                Float?          @default(0)
   status                                Int?
   createdAt                             DateTime?         @db.Timestamptz(6)
   updatedAt                             DateTime?         @db.Timestamptz(6)
@@ -176,8 +176,8 @@ model journal {
 model journal_receipt {
   journalid Int
   receiptid Int
-  journal   journal @relation(fields: [journalid], references: [id], onDelete: SetNull)
-  receipt   receipt @relation(fields: [receiptid], references: [id], onDelete: Cascade, onUpdate: SetNull, map: "receipt_fk")
+  journal   journal @relation(fields: [journalid], references: [id], onDelete: Cascade)
+  receipt   receipt @relation(fields: [receiptid], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "receipt_fk")
 
   @@id([journalid, receiptid])
 }
@@ -185,7 +185,7 @@ model journal_receipt {
 model kegelkasse {
   id         Int       @id @default(autoincrement())
   datum      DateTime  @unique(map: "date_uq") @db.Date
-  kasse      Decimal   @db.Decimal
+  kasse      Float   
   rappen5    Int
   rappen10   Int
   rappen20   Int
@@ -197,8 +197,8 @@ model kegelkasse {
   franken20  Int
   franken50  Int
   franken100 Int
-  total      Decimal   @db.Decimal
-  differenz  Decimal   @db.Decimal
+  total      Float   
+  differenz  Float   
   journalid  Int?
   createdAt  DateTime? @db.Timestamptz(6)
   updatedAt  DateTime? @db.Timestamptz(6)

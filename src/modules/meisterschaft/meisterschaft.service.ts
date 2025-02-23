@@ -115,7 +115,7 @@ export class MeisterschaftService {
     }
 
     for (const km of adresse.kegelmeister) {
-      let meister = alMeister.find((c) => c.jahr === km.jahr);
+      let meister = alMeister.find((c) => c.jahr === Number(km.jahr));
       if (!meister) {
         meister = new MeisterEnitity();
         meister.fillDataKegel(km);

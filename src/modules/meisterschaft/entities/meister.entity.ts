@@ -2,7 +2,7 @@ import { clubmeister, kegelmeister } from '@prisma/client';
 
 export class MeisterEnitity {
   fillDataClub(data: clubmeister) {
-    this.jahr = data.jahr!;
+    this.jahr = Number(data.jahr);
     this.rangC = data.rang!;
     this.punkteC = data.punkte!;
     this.anlaesseC = data.anlaesse!;
@@ -13,7 +13,7 @@ export class MeisterEnitity {
   }
 
   fillDataKegel(data: kegelmeister) {
-    this.jahr = data.jahr!;
+    this.jahr = Number(data.jahr);
     this.rangK = data.rang!;
     this.punkteK = data.punkte!;
     this.anlaesseK = data.anlaesse!;
@@ -22,7 +22,7 @@ export class MeisterEnitity {
     this.diffErsterK = 0;
   }
 
-  jahr!: string;
+  jahr!: number;
   rangC: number | undefined;
   punkteC: number | undefined;
   anlaesseC: number | undefined;

@@ -5,7 +5,6 @@ import { FiscalyearEntity } from '../../fiscalyear/entities/fiscalyear.entity';
 import { JournalReceiptEntity } from '../../journal-receipt/entities/journal-receipt.entity';
 import { KegelkasseEntity } from '../../kegelkasse/entities/kegelkasse.entity';
 import { Expose, Transform } from 'class-transformer';
-import { Decimal } from '@prisma/client/runtime/library';
 
 export class JournalEntity implements journal {
   constructor(partial: Partial<JournalEntity>) {
@@ -25,7 +24,7 @@ export class JournalEntity implements journal {
   memo: string | null;
   journalno: number | null;
   @Transform((value) => parseFloat(value.value))
-  amount: Decimal | null;
+  amount: number | null;
   status: number | null;
   createdAt: Date | null;
   updatedAt: Date | null;

@@ -9,6 +9,7 @@ import { ConfigService } from './config/config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
 
   const configService = app.get(ConfigService);
 
@@ -37,7 +38,7 @@ async function bootstrap() {
 
   await configService.loadParams();
 
-  await app.listen(configService.get('NODE_PORT', 3000));
+  await app.listen(configService.get('node_port', 3000));
 }
 bootstrap().catch((err) => {
   console.error(err);

@@ -41,9 +41,16 @@ export class KegelkasseService {
     return this.prisma.kegelkasse.findUnique({ where: { id } });
   }
 
-  findOneByDatum(datum: Date) {
+  findOneByDatum(monat: number, jahr: number) {
+    const startdatum = new Date(jahr, monat - 1, 1);
+    const enddatum = new Date(jahr, monat, 0);
     return this.prisma.kegelkasse.findFirst({
-      where: { datum: datum },
+      where: {
+        datum: {
+          gte: startdatum,
+          lte: enddatum,
+        },
+      },
       include: {
         journal: {
           include: {
@@ -70,6 +77,7 @@ export class KegelkasseService {
             account_journal_to_accountToaccount: true,
           },
         },
+        user: true,
       },
       orderBy: { datum: 'asc' },
     });

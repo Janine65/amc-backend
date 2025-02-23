@@ -1,4 +1,4 @@
-import { kegelkasse, Prisma } from '@prisma/client';
+import { kegelkasse } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { JournalEntity } from '../../journal/entities/journal.entity';
 import { UserEntity } from '../../users/entities/user.entity';
@@ -16,7 +16,7 @@ export class KegelkasseEntity implements kegelkasse {
   })
   datum: Date;
   @Transform((value) => parseFloat(value.value))
-  kasse: Prisma.Decimal;
+  kasse: number;
   rappen5: number;
   rappen10: number;
   rappen20: number;
@@ -29,9 +29,9 @@ export class KegelkasseEntity implements kegelkasse {
   franken50: number;
   franken100: number;
   @Transform((value) => parseFloat(value.value))
-  total: Prisma.Decimal;
+  total: number;
   @Transform((value) => parseFloat(value.value))
-  differenz: Prisma.Decimal;
+  differenz: number;
   journalid: number | null;
   createdAt: Date | null;
   updatedAt: Date | null;

@@ -9,7 +9,6 @@ import {
   ParseIntPipe,
   ConflictException,
   NotFoundException,
-  ParseDatePipe,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -29,8 +28,11 @@ export class KegelkasseController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiResponse({ type: RetDataDto, isArray: false })
-  async kasseByDatum(@Query('datum', new ParseDatePipe()) datum: Date) {
-    const kegelkasse = await this.kegelkasseService.findOneByDatum(datum);
+  async kasseByDatum(
+    @Query('monat', ParseIntPipe) monat: number,
+    @Query('jahr') jahr: number,
+  ) {
+    const kegelkasse = await this.kegelkasseService.findOneByDatum(monat, jahr);
     if (!kegelkasse) {
       throw new NotFoundException('Kegelkasse nicht gefunden');
     }

@@ -18,7 +18,7 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<AuthEntity> {
     // Step 1: Fetch a user with the given email
-    const user = await this.userService.findByEmail(email);
+    let user = await this.userService.findByEmail(email);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -30,11 +30,22 @@ export class AuthService {
     }
 
     // Step 3: Update the user's last login date
-    await this.userService.updateLastLogin(user.id);
-
+    user = await this.userService.updateLastLogin(user.id);
     // Step 4: Generate a JWT containing the user's ID and return it
-    return {
-      accessToken: this.jwtService.sign({ userId: user.id }),
-    };
+    const authEntity = new AuthEntity(user);
+    authEntity.accessToken = this.jwtService.sign({ userId: user.id });
+    return authEntity;
+  }
+
+  async refresh(user: AuthEntity): Promise<AuthEntity> {
+    // Step 1: Fetch the user with the given ID
+    const userOut = await this.userService.findOne(user.id);
+    if (!userOut) {
+      throw new NotFoundException('User not found');
+    }
+    const authEntity = new AuthEntity(userOut);
+    // Step 2: Generate a new JWT containing the user's ID and return it
+    authEntity.accessToken = this.jwtService.sign({ userId: user.id });
+    return authEntity;
   }
 }
