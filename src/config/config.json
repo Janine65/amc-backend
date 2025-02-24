@@ -4,7 +4,7 @@
       "config_id": "development",
       "app_name": "amc-administration",
       "app_desc": "AMC Administration",
-      "node_port": 5455,
+      "node_port": 3001,
       "json_indentation": 4,
       "dbhost": "localhost",
       "webhost": "http://localhost:4200",
@@ -34,7 +34,7 @@
     },
     "production": {
       "config_id": "production",
-      "node_port": 5455,
+      "node_port": 3001,
       "dbhost": "olconet",
       "webhost": "https://interna.automoto-sr.info",
       "database": "amcadmin",
