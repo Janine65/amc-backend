@@ -37,8 +37,7 @@ export class CreateAdressenDto {
   land?: string;
 
   @IsString()
-  @IsNotEmpty()
-  telefon_p: string;
+  telefon_p?: string;
 
   @IsString()
   telefon_g?: string;

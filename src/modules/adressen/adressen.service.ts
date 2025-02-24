@@ -15,7 +15,6 @@ import { Mailer } from 'nodemailer/lib/mailer';
 import { ConfigService } from 'src/config/config.service';
 import path from 'node:path';
 import { ConfigSmtpDtoClass } from 'src/config/dto/config.dto';
-import { FilterAdressenDto } from './dto/filter-adressen.dto';
 import { OverviewDto } from './dto/overview.dto';
 import { Workbook } from 'exceljs';
 import {
@@ -30,6 +29,7 @@ import { SwissQRBill } from 'swissqrbill/pdf';
 import { CreateJournalDto } from '../journal/dto/create-journal.dto';
 import { CreateReceiptDto } from '../receipt/dto/create-receipt.dto';
 import { CreateJournalReceiptDto } from '../journal-receipt/dto/create-journal-receipt.dto';
+import { AdressenEntity } from './entities/adressen.entity';
 
 @Injectable()
 export class AdressenService {
@@ -127,19 +127,7 @@ export class AdressenService {
     return result;
   }
 
-  async exportAdressen(filter: FilterAdressenDto): Promise<RetDataFileDto> {
-    const constructedWhere = Object.keys(filter).reduce(
-      (aggregate: Record<string, any>, property) => {
-        aggregate[property] = filter[property];
-        return aggregate;
-      },
-      {} as Record<string, any>,
-    );
-    const lstAdressen = await this.prisma.adressen.findMany({
-      where: constructedWhere,
-      orderBy: [{ name: 'asc' }, { vorname: 'asc' }],
-    });
-
+  async exportAdressen(lstAdressen: AdressenEntity[]): Promise<RetDataFileDto> {
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
       month: '2-digit',

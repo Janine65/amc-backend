@@ -13,7 +13,6 @@ import {
 import { AdressenService } from './adressen.service';
 import { CreateAdressenDto } from './dto/create-adressen.dto';
 import { UpdateAdressenDto } from './dto/update-adressen.dto';
-import { FilterAdressenDto } from './dto/filter-adressen.dto';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -54,8 +53,8 @@ export class AdressenController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiResponse({ type: RetDataFileDto })
-  async exportAdressen(@Body() filter: FilterAdressenDto) {
-    return this.adressenService.exportAdressen(filter);
+  async exportAdressen(@Body() adressen: AdressenEntity[]) {
+    return this.adressenService.exportAdressen(adressen);
   }
 
   @Post('sendmail')

@@ -18,23 +18,15 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    try {
-      if (createUserDto.password) {
-        createUserDto.password = await hash(
-          createUserDto.password,
-          roundsOfHashing,
-        );
-      }
-    } catch (error) {
-      throw new Error('Error hashing password - ' + error);
-    }
     const userData = {
       ...createUserDto,
+      password: 'initialPWD',
       userid: randomUUID(),
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    return this.prisma.user.create({ data: userData });
+    await this.prisma.user.create({ data: userData });
+    return this.newPassword(userData.email);
   }
 
   findAll() {
