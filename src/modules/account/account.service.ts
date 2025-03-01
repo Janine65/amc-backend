@@ -246,7 +246,7 @@ export class AccountService {
     });
 
     for (const account of lstAccount) {
-      arData.push({
+      const data = {
         id: account.id,
         level: account.level!,
         order: account.order!,
@@ -257,7 +257,7 @@ export class AccountService {
         budget: 0,
         diff: 0,
         $css: account.status ? 'active' : 'inactive',
-      });
+      };
 
       // read budget
       const lstBudget = await this.prisma.budget.findMany({
@@ -267,7 +267,7 @@ export class AccountService {
         },
       });
       if (lstBudget.length > 0) {
-        arData[arData.length - 1].budget = Number(lstBudget[0].amount!);
+        data.budget = Number(lstBudget[0].amount!);
       }
 
       //get amount on Journal from account
@@ -298,14 +298,15 @@ export class AccountService {
       const amountB = Number(lstJournalB[0]?._sum?.amount) || 0;
 
       if (account.level == 1 || account.level == 4) {
-        arData[arData.length - 1].amount = amountA - amountB;
-        arData[arData.length - 1].diff =
-          arData[arData.length - 1].amount - arData[arData.length - 1].budget!;
+        data.amount = amountA - amountB;
+        data.diff = data.amount - data.budget;
       } else {
-        arData[arData.length - 1].amount = amountB - amountA;
-        arData[arData.length - 1].diff =
-          arData[arData.length - 1].budget! - arData[arData.length - 1].amount;
+        data.amount = amountB - amountA;
+        data.diff = data.budget - data.amount;
       }
+
+      if (data.amount != 0 || data.budget != 0 || data.status != 0)
+        arData.push(data);
     }
 
     return arData;
