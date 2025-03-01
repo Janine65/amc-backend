@@ -10,8 +10,7 @@ import {
   mkdirSync,
   readFileSync,
 } from 'node:fs';
-import { createTransport } from 'nodemailer';
-import { Mailer } from 'nodemailer/lib/mailer';
+import { Mailer, createTransport } from 'nodemailer';
 import { ConfigService } from 'src/config/config.service';
 import path from 'node:path';
 import { ConfigSmtpDtoClass } from 'src/config/dto/config.dto';
@@ -78,14 +77,26 @@ export class AdressenService {
   }
 
   update(id: number, updateAdressenDto: UpdateAdressenDto) {
+    if (typeof updateAdressenDto.eintritt === 'string') {
+      updateAdressenDto.eintritt = new Date(updateAdressenDto.eintritt);
+    }
+    if (
+      updateAdressenDto.austritt &&
+      typeof updateAdressenDto.austritt === 'string'
+    ) {
+      updateAdressenDto.austritt = new Date(updateAdressenDto.austritt);
+    }
     return this.prisma.adressen.update({
-      data: updateAdressenDto,
+      data: { ...updateAdressenDto, updatedAt: new Date() },
       where: { id: id },
     });
   }
 
   remove(id: number) {
-    return this.prisma.adressen.delete({ where: { id: id } });
+    return this.prisma.adressen.update({
+      where: { id: id },
+      data: { austritt: new Date(), updatedAt: new Date() },
+    });
   }
 
   async getOverview(): Promise<OverviewDto[]> {
@@ -414,7 +425,7 @@ export class AdressenService {
         console.error(e);
         return {
           type: 'error',
-          message: e,
+          message: e as string,
           data: { filename: '' },
         };
       });
@@ -487,7 +498,7 @@ export class AdressenService {
 
     // Fit the image within the dimensions
     let img = readFileSync(this.configService.assets + '/AMCfarbigKlein.jpg');
-    pdf.image(img.buffer, mm2pt(140), mm2pt(5), { fit: [100, 100] });
+    pdf.image(Buffer.from(img), mm2pt(140), mm2pt(5), { fit: [100, 100] });
 
     const date = new Date();
 
@@ -591,7 +602,7 @@ export class AdressenService {
     img = readFileSync(
       this.configService.assets + '/RNW-TWINT-SWISS-QR-DE.png',
     );
-    pdf.image(img.buffer, mm2pt(0), mm2pt(182), {
+    pdf.image(Buffer.from(img), mm2pt(0), mm2pt(182), {
       fit: [mm2pt(210), mm2pt(10)],
     });
 

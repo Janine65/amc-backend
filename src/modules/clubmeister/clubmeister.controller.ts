@@ -92,7 +92,7 @@ export class ClubmeisterController {
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const clubmeister = await this.clubmeisterService.findOne(id);
     if (!clubmeister) {
-      throw new NotFoundException('Clubmeister nicht gefunden');
+      return new RetDataDto(undefined, 'findOne', 'info');
     }
     return new RetDataDto(
       new ClubmeisterEntity(clubmeister),

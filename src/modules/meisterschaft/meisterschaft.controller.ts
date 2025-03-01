@@ -132,7 +132,7 @@ export class MeisterschaftController {
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const meisterschaft = await this.meisterschaftService.findOne(id);
     if (!meisterschaft) {
-      throw new NotFoundException('Meisterschaft nicht gefunden');
+      return new RetDataDto(undefined, 'findOne', 'info');
     }
     return new RetDataDto(
       new MeisterschaftEntity(meisterschaft),

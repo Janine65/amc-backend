@@ -76,7 +76,7 @@ export class BudgetController {
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const budget = await this.budgetService.findOne(id);
     if (!budget) {
-      throw new NotFoundException('Budget not found');
+      return new RetDataDto(undefined, 'findOne', 'info');
     }
     return new RetDataDto(new BudgetEntity(budget), 'Budget found', 'info');
   }

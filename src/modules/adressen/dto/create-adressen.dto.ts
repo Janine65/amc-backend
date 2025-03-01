@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsBoolean,
+  IsDate,
   IsEmail,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
@@ -37,12 +40,15 @@ export class CreateAdressenDto {
   land?: string;
 
   @IsString()
+  @IsOptional()
   telefon_p?: string;
 
   @IsString()
+  @IsOptional()
   telefon_g?: string;
 
   @IsString()
+  @IsOptional()
   mobile?: string;
 
   @IsEmail()
@@ -54,17 +60,21 @@ export class CreateAdressenDto {
     format: 'date',
     required: true,
     nullable: false,
+    default: new Date().toISOString(),
   })
   @IsNotEmpty()
+  @Type(() => Date)
+  @IsDate()
   eintritt: Date;
 
   @IsBoolean()
   sam_mitglied?: boolean = false;
 
   @IsNumber({ maxDecimalPlaces: 2 })
-  jahresbeitrag?: number;
+  jahresbeitrag?: number = 78;
 
   @IsNumber()
+  @IsOptional()
   mnr_sam?: number;
 
   @ApiProperty({
@@ -74,15 +84,19 @@ export class CreateAdressenDto {
     nullable: false,
     default: '3000-01-01',
   })
+  @Type(() => Date)
+  @IsDate()
   austritt: Date;
 
   @IsBoolean()
   austritt_mail?: boolean = false;
 
   @IsNumber()
+  @IsOptional()
   jahrgang?: number;
 
   @IsString()
+  @IsOptional()
   arbeitgeber?: string;
 
   @IsBoolean()
@@ -92,5 +106,10 @@ export class CreateAdressenDto {
   allianz?: boolean = false;
 
   @IsString()
+  @IsOptional()
   notes?: string;
+
+  @IsNumber()
+  @IsOptional()
+  adressenid?: number;
 }

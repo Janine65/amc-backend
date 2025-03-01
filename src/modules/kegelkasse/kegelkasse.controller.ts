@@ -34,7 +34,7 @@ export class KegelkasseController {
   ) {
     const kegelkasse = await this.kegelkasseService.findOneByDatum(monat, jahr);
     if (!kegelkasse) {
-      throw new NotFoundException('Kegelkasse nicht gefunden');
+      return new RetDataDto(undefined, 'kasseByDatum', 'info');
     }
     const retKegelkasse = new KegelkasseEntity(kegelkasse);
     return new RetDataDto(retKegelkasse, 'kasseByDatum', 'info');
@@ -93,7 +93,7 @@ export class KegelkasseController {
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const kegelkasse = await this.kegelkasseService.findOne(id);
     if (!kegelkasse) {
-      throw new NotFoundException('Kegelkasse konnte nicht erstellt werden');
+      return new RetDataDto(undefined, 'findOne', 'info');
     }
     return new RetDataDto(new KegelkasseEntity(kegelkasse), 'findOne', 'info');
   }

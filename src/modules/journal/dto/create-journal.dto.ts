@@ -1,30 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDateString, IsNumber, IsString } from 'class-validator';
+import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateJournalDto {
   @Type(() => Date)
-  @IsDateString({ strict: true })
+  @IsDate()
   @ApiProperty({
     type: 'string',
     format: 'date',
     required: false,
     nullable: true,
   })
-  date?: Date;
+  date: Date;
   @IsString()
   memo?: string;
 
   @IsNumber()
+  @IsOptional()
   journalno?: number;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   amount?: number;
 
   @IsNumber()
-  status?: number;
-
-  @IsNumber()
+  @IsOptional()
   year: number;
 
   @IsNumber()

@@ -1,13 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDateString, IsNumber, IsOptional } from 'class-validator';
+import { IsDate, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateKegelkasseDto {
   @Type(() => Date)
-  @IsDateString({ strict: true })
+  @IsDate()
   @ApiProperty({
     type: 'string',
     format: 'date',
+    required: true,
+    nullable: false,
   })
   datum: Date;
   @IsNumber({ maxDecimalPlaces: 2 })
@@ -40,7 +42,7 @@ export class CreateKegelkasseDto {
   differenz: number;
   @IsNumber()
   @IsOptional()
-  useridid?: number | null;
+  userid?: number | null;
   @IsNumber()
   @IsOptional()
   journalid?: number | null;

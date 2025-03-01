@@ -44,10 +44,11 @@ export class AnlaesseController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: RetDataDto })
   async getFKData(@Query('jahr') jahr: string) {
-    return new RetDataDto({
-      type: 'info',
-      data: await this.anlaesseService.getFKData(jahr),
-    });
+    return new RetDataDto(
+      await this.anlaesseService.getFKData(jahr),
+      'getFKData',
+      'info',
+    );
   }
 
   @Get('writestammblatt')
@@ -76,9 +77,9 @@ export class AnlaesseController {
   async writeStammblatt(
     @Query('type', ParseIntPipe) type: number,
     @Query('jahr') jahr: string,
-    @Query('adressId') adressId?: number,
+    @Query('adresseId') adresseId?: number,
   ) {
-    return await this.anlaesseService.writeStammblatt(type, jahr, adressId);
+    return await this.anlaesseService.writeStammblatt(type, jahr, adresseId);
   }
 
   @Post()
@@ -131,7 +132,7 @@ export class AnlaesseController {
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const anlass = await this.anlaesseService.findOne(id);
     if (!anlass) {
-      throw new NotFoundException('Anlass konnte nicht gefunden werden');
+      return new RetDataDto(undefined, 'findOne', 'info');
     }
     return new RetDataDto(
       new AnlaesseEntity(anlass),

@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   NotFoundException,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AdressenService } from './adressen.service';
 import { CreateAdressenDto } from './dto/create-adressen.dto';
@@ -65,11 +66,11 @@ export class AdressenController {
     return this.adressenService.sendEmail(emailBody);
   }
 
-  @Get('qrbill:id')
+  @Get('qrbill')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiResponse({ type: RetDataFileDto })
-  async createQRBill(@Param('id', ParseIntPipe) id: number) {
+  async createQRBill(@Query('id', ParseIntPipe) id: number) {
     return await this.adressenService.createQRBill(id);
   }
 
@@ -105,7 +106,7 @@ export class AdressenController {
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const adr = await this.adressenService.findOne(id);
     if (adr === null) {
-      throw new NotFoundException('Address not found');
+      return new RetDataDto(undefined, 'findOne', 'info');
     }
     return new RetDataDto(new AdressenEntity(adr), 'Address found', 'info');
   }

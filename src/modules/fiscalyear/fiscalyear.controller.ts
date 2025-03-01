@@ -123,7 +123,7 @@ export class FiscalyearController {
   @ApiOkResponse({ type: RetDataDto })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const result = await this.fiscalyearService.findOne(id);
-    if (!result) throw new NotFoundException('Fiscalyear not found');
+    if (!result) return new RetDataDto(undefined, 'findOne', 'info');
     return new RetDataDto(
       new FiscalyearEntity(result),
       'Fiscalyear found',

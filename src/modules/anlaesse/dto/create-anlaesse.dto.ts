@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsBoolean,
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreateAnlaesseDto {
   @ApiProperty({
@@ -8,7 +15,9 @@ export class CreateAnlaesseDto {
     required: true,
     nullable: false,
   })
+  @Type(() => Date)
   @IsNotEmpty()
+  @IsDate()
   datum: Date;
   @IsString()
   name: string;

@@ -55,7 +55,12 @@ export class AnlaesseService {
             lt: new Date(toJahr + 1 + '-01-01T00:00:00Z'),
           },
         },
-        include: { anlaesse: true },
+        include: {
+          anlaesse: true,
+          _count: {
+            select: { meisterschaft: true },
+          },
+        },
         orderBy: { datum: 'asc' },
       });
     } else {

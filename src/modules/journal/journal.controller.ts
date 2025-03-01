@@ -11,6 +11,7 @@ import {
   Query,
   ParseBoolPipe,
   UseGuards,
+  ConflictException,
 } from '@nestjs/common';
 import { JournalService } from './journal.service';
 import { CreateJournalDto } from './dto/create-journal.dto';
@@ -41,7 +42,7 @@ export class JournalController {
         'info',
       );
     } else {
-      throw new NotFoundException('Journal not created');
+      throw new ConflictException('Journal not created');
     }
   }
 
@@ -111,7 +112,7 @@ export class JournalController {
         'info',
       );
     } else {
-      throw new NotFoundException('Journal not found');
+      return new RetDataDto(undefined, 'findOne', 'info');
     }
   }
 

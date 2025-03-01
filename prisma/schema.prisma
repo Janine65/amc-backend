@@ -176,8 +176,8 @@ model journal {
 model journal_receipt {
   journalid Int
   receiptid Int
-  journal   journal @relation(fields: [journalid], references: [id], onDelete: Cascade)
-  receipt   receipt @relation(fields: [receiptid], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "receipt_fk")
+  journal   journal @relation(fields: [journalid], references: [id], onDelete: Cascade, map: "journal_fk")
+  receipt   receipt @relation(fields: [receiptid], references: [id], onDelete: Cascade, map: "receipt_fk")
 
   @@id([journalid, receiptid])
 }

@@ -97,7 +97,7 @@ export class KegelmeisterController {
   async findOne(@Param('id', ParseIntPipe) id: number) {
     const kegelmeister = await this.kegelmeisterService.findOne(id);
     if (!kegelmeister) {
-      throw new NotFoundException('Kegelmeister nicht gefunden');
+      return new RetDataDto(undefined, 'findOne', 'info');
     }
     return new RetDataDto(
       new KegelmeisterEntity(kegelmeister),

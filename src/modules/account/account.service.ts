@@ -335,7 +335,6 @@ export class AccountService {
         date: { lte: date },
         account_journal_from_accountToaccount: { is: { order: order } },
       },
-
       by: ['from_account'],
       _sum: {
         amount: true,
@@ -354,10 +353,13 @@ export class AccountService {
       },
     });
 
+    const account = await this.prisma.account.findFirst({
+      where: { order: order },
+    });
     const amountA = Number(lstJournalA[0]?._sum?.amount) || 0;
     const amountB = Number(lstJournalB[0]?._sum?.amount) || 0;
 
-    return { amount: (amountA - amountB).toFixed(2) }; // Sollsaldo
+    return { id: account?.id, amount: (amountA - amountB).toFixed(2) }; // Sollsaldo
   }
   async getOneDataByOrder(order: number) {
     return this.prisma.account.findFirst({
