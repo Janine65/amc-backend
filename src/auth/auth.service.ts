@@ -37,15 +37,15 @@ export class AuthService {
     return authEntity;
   }
 
-  async refresh(user: AuthEntity): Promise<AuthEntity> {
+  async refresh(id: number): Promise<AuthEntity> {
     // Step 1: Fetch the user with the given ID
-    const userOut = await this.userService.findOne(user.id);
+    const userOut = await this.userService.findOne(id);
     if (!userOut) {
       throw new NotFoundException('User not found');
     }
     const authEntity = new AuthEntity(userOut);
     // Step 2: Generate a new JWT containing the user's ID and return it
-    authEntity.accessToken = this.jwtService.sign({ userId: user.id });
+    authEntity.accessToken = this.jwtService.sign({ userId: id });
     return authEntity;
   }
 }

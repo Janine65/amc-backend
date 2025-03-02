@@ -1,6 +1,13 @@
 //src/auth/auth.controller.ts
 
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  ParseIntPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthEntity } from './entities/auth.entity';
@@ -23,10 +30,10 @@ export class AuthController {
       'info',
     );
   }
-  @Post('refreshToken')
+  @Get('refreshToken')
   @ApiOkResponse({ type: AuthEntity })
-  async refreshToken(@Body() user: AuthEntity) {
-    const userOut = await this.authService.refresh(user);
+  async refreshToken(@Query('id', ParseIntPipe) id: number) {
+    const userOut = await this.authService.refresh(id);
     return new RetDataUserDto(
       userOut,
       userOut.accessToken,
