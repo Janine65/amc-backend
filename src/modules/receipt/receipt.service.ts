@@ -185,8 +185,6 @@ export class ReceiptService {
           copyFileSync(filename, path + newFilename);
           payload.data!.files.push(newFilename);
           chmodSync(path + newFilename, '0640');
-
-          payload.data!.files.push(uploadfile);
         } else {
           payload.message +=
             'Error while reading the file ' + uploadfile + '; ';
