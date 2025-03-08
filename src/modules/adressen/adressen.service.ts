@@ -10,7 +10,7 @@ import {
   mkdirSync,
   readFileSync,
 } from 'node:fs';
-import { Mailer, createTransport } from 'nodemailer';
+import { createTransport, Transporter } from 'nodemailer';
 import { ConfigService } from 'src/config/config.service';
 import path from 'node:path';
 import { ConfigSmtpDtoClass } from 'src/config/dto/config.dto';
@@ -726,8 +726,8 @@ export class AdressenService {
       };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const transporter: Mailer = createTransport({
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const transporter: Transporter = createTransport({
       host: smtpConfig.smtp,
       port: smtpConfig.smtp_port,
       secure: true,
@@ -738,11 +738,14 @@ export class AdressenService {
     });
 
     // verify connection configuration
-    transporter.verify(function (error: Error | null, success: boolean) {
-      if (error) {
-        console.error('SMTP Connection can not be verified', error.message);
-      } else if (success) {
-        console.log('Server is ready to take our messages');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    transporter.verify(function (error: unknown, success: boolean) {
+      if (error instanceof Error) {
+        if (error) {
+          console.error('SMTP Connection can not be verified', error.message);
+        } else if (success) {
+          console.log('Server is ready to take our messages');
+        }
       }
     });
 
@@ -758,6 +761,7 @@ export class AdressenService {
       }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     await transporter.sendMail({
       from: smtpConfig.email_from, // sender address
       to: emailBody.email_an, // list of receivers
@@ -769,6 +773,7 @@ export class AdressenService {
       html: emailBody.email_body, // html body
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     transporter.close();
     return {
       type: '250 Message received',

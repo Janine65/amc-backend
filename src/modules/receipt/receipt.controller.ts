@@ -9,9 +9,10 @@ import {
   ParseIntPipe,
   NotFoundException,
   Query,
-  StreamableFile,
   UseGuards,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { ReceiptService } from './receipt.service';
 import { UpdateReceiptDto } from './dto/update-receipt.dto';
 import { ReceiptEntity } from './entities/receipt.entity';
@@ -79,10 +80,18 @@ export class ReceiptController {
   @Get('uploadatt')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ type: StreamableFile })
-  uploadAtt(@Query('filename') filename: string) {
-    const file = createReadStream(join(this.configService.uploads, filename));
-    return new StreamableFile(file);
+  uploadAtt(
+    @Query('filename') filename: string,
+    @Query('year') year: string,
+    @Res() res: Response,
+  ) {
+    const filePath = join(this.configService.documents, year, filename);
+    const file = createReadStream(filePath);
+    res.set({
+      'Content-Disposition': 'inline',
+      'Content-Type': 'application/pdf',
+    });
+    file.pipe(res);
   }
 
   @Post('att2journal')
