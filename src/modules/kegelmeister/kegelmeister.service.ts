@@ -125,6 +125,7 @@ export class KegelmeisterService {
             lte: new Date(jahr + '-12-31T23:59:59Z'),
           },
           istkegeln: true,
+          nachkegeln: false,
         },
       });
       if (cntAnl > 0) {

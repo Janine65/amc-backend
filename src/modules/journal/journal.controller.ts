@@ -93,10 +93,10 @@ export class JournalController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   write(
-    @Query('receipt', ParseBoolPipe) receipt: boolean,
+    @Query('receipt', ParseIntPipe) receipt: number,
     @Query('year', ParseIntPipe) year: number,
   ) {
-    return this.journalService.writeJournal(year, receipt);
+    return this.journalService.writeJournal(year, Boolean(receipt));
   }
 
   @Get(':id')

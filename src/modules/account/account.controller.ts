@@ -21,6 +21,7 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { RetDataDto, RetDataFileDto } from 'src/utils/ret-data.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -102,6 +103,13 @@ export class AccountController {
   @Get('writekontoauszug')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @ApiQuery({
+    name: 'all',
+    type: Boolean,
+    description: 'Include all accounts',
+    required: false,
+    default: false,
+  })
   @ApiOkResponse({ type: RetDataFileDto })
   async writeKontoauszug(
     @Query('year', ParseIntPipe) year: number,

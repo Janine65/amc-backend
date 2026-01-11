@@ -23,7 +23,7 @@ export class AccountService {
 
   async writeKontoauszug(year: number, all: boolean) {
     const retData: RetDataFileDto = new RetDataFileDto();
-    retData.data = { filename: 'Kontoauszug_' + year + '.xlsx' };
+    retData.data = { filename: 'Kontoauszug-' + year + '.xlsx' };
 
     const workbok = new Workbook();
     workbok.creator = 'Janine Franken';

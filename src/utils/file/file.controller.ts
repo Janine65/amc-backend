@@ -3,13 +3,11 @@ import {
   Get,
   Post,
   Query,
-  StreamableFile,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { createReadStream } from 'fs';
-import { join } from 'path';
 import { ConfigService } from 'src/config/config.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -17,12 +15,11 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOkResponse,
-  ApiProduces,
-  ApiResponse,
 } from '@nestjs/swagger';
 import { FileService } from './file.service';
 import { RetDataFileDto } from '../ret-data.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Response } from 'express';
 
 @Controller('files')
 export class FileController {
@@ -32,30 +29,16 @@ export class FileController {
   ) {}
 
   @Get('download')
-  @ApiProduces('multipart/form-data')
-  @ApiResponse({
-    status: 200,
-    schema: {
-      type: 'string',
-      format: 'binary',
-    },
-  })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  getFile(@Query('filename') filename: string): StreamableFile {
-    const file = createReadStream(join(this.configService.exports, filename));
-    let type = 'application/pdf';
-    if (filename.endsWith('.xlsx')) {
-      type =
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    }
-    if (filename.endsWith('.zip')) {
-      type = 'application/zip';
-    }
-    return new StreamableFile(file, {
-      type: type,
-      disposition: 'attachment; filename="' + filename + '"',
+  getFile(@Query('filename') filename: string, @Res() res: Response) {
+    res.attachment(filename);
+    res.sendFile(filename, { root: this.configService.exports }, (err) => {
+      if (err) {
+        return res.status(500).send('Internal Server Error');
+      }
     });
+    return;
   }
 
   @Post('upload')
