@@ -26,7 +26,7 @@
         "smtp": "smtp.zoho.com",
         "smtp_port": 465,
         "smtp_user": "info@automoto-sr.info",
-        "smtp_pwd": "c37fec5a0552904265841b0ab95dd4f8",
+        "smtp_pwd": "f138882da43b451ce601a3aeece9888a",
         "email_from": "AutoMotoClub Swissair <info@automoto-sr.info>"
       },
       "secret": "AutoMotoClubSwissairOberlunkhofe",
