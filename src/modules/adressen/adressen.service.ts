@@ -607,7 +607,7 @@ export class AdressenService {
     });
 
     const qrBill = new SwissQRBill(qrData);
-    qrBill.attachTo(pdf);
+    qrBill.attachTo(pdf as unknown as PDFKit.PDFDocument);
     pdf.save();
     pdf.end();
 
@@ -726,7 +726,6 @@ export class AdressenService {
       };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const transporter: Transporter = createTransport({
       host: smtpConfig.smtp,
       port: smtpConfig.smtp_port,
@@ -738,7 +737,6 @@ export class AdressenService {
     });
 
     // verify connection configuration
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     transporter.verify(function (error: unknown, success: boolean) {
       if (error instanceof Error) {
         if (error) {
@@ -761,7 +759,6 @@ export class AdressenService {
       }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     await transporter.sendMail({
       from: smtpConfig.email_from, // sender address
       to: emailBody.email_an, // list of receivers
@@ -773,7 +770,6 @@ export class AdressenService {
       html: emailBody.email_body, // html body
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     transporter.close();
     return {
       type: '250 Message received',

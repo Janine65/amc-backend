@@ -8,12 +8,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Sessions {
-  sid     String    @id @db.VarChar(255)
-  sess    Json
-  expires DateTime? @db.Timestamp(6)
-}
-
 model account {
   id                                    Int       @id @default(autoincrement())
   name                                  String?   @db.VarChar(255)
