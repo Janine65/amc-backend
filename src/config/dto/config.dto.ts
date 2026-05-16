@@ -2,7 +2,11 @@ export class ConfigSmtpDtoClass {
   smtp: string;
   smtp_port: number;
   smtp_user: string;
-  smtp_pwd: string;
+  /**
+   * Name der Environment-Variable, die das SMTP-Passwort enthält.
+   * Beispiel: "SMTP_PWD_JANINEFRANKEN"
+   */
+  smtp_pwd_env: string;
   email_from: string;
 }
 
@@ -11,14 +15,11 @@ export class ConfigDtoClass {
   app_name!: string;
   app_desc!: string;
   node_port!: number;
-  secret!: string;
-  iv!: string;
   json_indentation!: number;
   dbhost!: string;
   webhost!: string;
   database!: string;
   db_user!: string;
-  db_pwd!: string;
   port!: number;
   dbtype!: string;
   defaultEmail!: string;

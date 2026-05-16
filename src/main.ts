@@ -1,19 +1,37 @@
 // src/main.ts
 
+import 'dotenv/config';
 import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 import { PrismaClientExceptionFilter } from './prisma-client-exception/prisma-client-exception.filter';
 import { ConfigService } from './config/config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
 
   const configService = app.get(ConfigService);
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  // Security headers
+  app.use(helmet());
+
+  // CORS: nur konfigurierte Origins zulassen
+  const corsOrigins = (
+    process.env.CORS_ORIGIN ??
+    configService.thisConfig.webhost ??
+    ''
+  )
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  app.enableCors({
+    origin: corsOrigins.length > 0 ? corsOrigins : false,
+    credentials: true,
+  });
+
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const config = new DocumentBuilder()
@@ -30,8 +48,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));

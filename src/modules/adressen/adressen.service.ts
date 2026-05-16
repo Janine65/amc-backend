@@ -732,7 +732,9 @@ export class AdressenService {
       secure: true,
       auth: {
         user: smtpConfig.smtp_user,
-        pass: this.configService.decrypt(smtpConfig.smtp_pwd),
+        pass: this.configService.getSmtpPassword(
+          emailBody.email_signature ?? '',
+        ),
       },
     });
 

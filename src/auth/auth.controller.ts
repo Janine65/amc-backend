@@ -1,18 +1,13 @@
 //src/auth/auth.controller.ts
 
-import {
-  Body,
-  Controller,
-  Get,
-  ParseIntPipe,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthEntity } from './entities/auth.entity';
 import { LoginDto } from './dto/login.dto';
 import { RetDataUserDto } from 'src/utils/ret-data.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import type { Request } from 'express';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -31,8 +26,11 @@ export class AuthController {
     );
   }
   @Get('refreshToken')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOkResponse({ type: AuthEntity })
-  async refreshToken(@Query('id', ParseIntPipe) id: number) {
+  async refreshToken(@Req() req: Request & { user: { id: number } }) {
+    const id = req.user.id;
     const userOut = await this.authService.refresh(id);
     return new RetDataUserDto(
       userOut,

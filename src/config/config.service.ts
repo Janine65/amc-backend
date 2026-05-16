@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import * as crypto from 'crypto';
 import { realpathSync, existsSync, mkdirSync } from 'fs';
 import {
   version,
@@ -22,12 +21,12 @@ export class ConfigService {
   private _email = pkgconfig.email;
   private _homepage = pkgconfig.homepage;
   private _params: Map<string, string> = new Map<string, string>();
-  documents: string;
-  public: string;
-  uploads: string;
-  exports: string;
-  assets: string;
-  log_dir: string;
+  documents: string = '';
+  public: string = '';
+  uploads: string = '';
+  exports: string = '';
+  assets: string = '';
+  log_dir: string = '';
 
   static _thisSingelton: ConfigService | null = null;
 
@@ -51,21 +50,19 @@ export class ConfigService {
 
     this.thisConfig = finalConfig;
 
-    // DATABASE_URL="${db_type}://${db_user}:${db_pwd}@${dbhost}:${db_port}/${database}?schema=public"
-    const database_url =
-      this.thisConfig.dbtype +
-      '://' +
-      this.thisConfig.db_user +
-      ':' +
-      this.decrypt(this.thisConfig.db_pwd) +
-      '@' +
-      this.thisConfig.dbhost +
-      ':' +
-      this.thisConfig.port +
-      '/' +
-      this.thisConfig.database +
-      '?schema=public';
-    process.env.DATABASE_URL = database_url;
+    // DATABASE_URL bevorzugt aus Umgebungsvariable (z. B. .env, Docker secret).
+    // Falls nicht gesetzt, aus config.json + DB_PASSWORD-Env zusammenbauen.
+    if (!process.env.DATABASE_URL) {
+      const dbPwd = process.env.DB_PASSWORD;
+      if (!dbPwd) {
+        throw new Error(
+          'Database credentials missing: set DATABASE_URL or DB_PASSWORD environment variable.',
+        );
+      }
+      process.env.DATABASE_URL =
+        `${this.thisConfig.dbtype}://${this.thisConfig.db_user}:${dbPwd}` +
+        `@${this.thisConfig.dbhost}:${this.thisConfig.port}/${this.thisConfig.database}?schema=public`;
+    }
 
     const mainpath = realpathSync(__dirname + '/..');
 
@@ -124,9 +121,7 @@ export class ConfigService {
 
   async loadParams(): Promise<Map<string, string>> {
     if (this._params.size === 0) {
-      console.debug('DATABASE_URL:', process.env.DATABASE_URL);
       await this.prisma.$connect();
-      console.debug('Connected to database');
       const lstParams = await this.prisma.parameter.findMany();
       for (const param of lstParams) {
         this._params.set(param.key, param.value);
@@ -154,37 +149,26 @@ export class ConfigService {
     return value;
   }
 
-  encrypt(decrypted: string): string {
-    try {
-      const key = Buffer.from(this.thisConfig.secret, 'utf-8');
-      const iv = Buffer.from(this.thisConfig.iv, 'utf-8');
-      const algorithm = 'aes-256-cbc';
-
-      const cipher = crypto.createCipheriv(algorithm, key, iv);
-      let retVal = cipher.update(decrypted, 'utf-8', 'hex');
-      retVal += cipher.final('hex');
-
-      return retVal;
-    } catch (err) {
-      console.log(err);
-      throw err;
+  /**
+   * Liest das SMTP-Passwort einer Signatur aus der Umgebungsvariable,
+   * die in `smtp_pwd_env` der jeweiligen Signatur in config.json steht.
+   */
+  getSmtpPassword(signature: string): string {
+    const smtpCfg = this.thisConfig[signature] as
+      | { smtp_pwd_env?: string }
+      | undefined;
+    const envName = smtpCfg?.smtp_pwd_env;
+    if (!envName) {
+      throw new Error(
+        `SMTP configuration for "${signature}" is missing "smtp_pwd_env".`,
+      );
     }
-  }
-
-  decrypt(encrypted: string): string {
-    try {
-      const key = Buffer.from(this.thisConfig.secret, 'utf-8');
-      const iv = Buffer.from(this.thisConfig.iv, 'utf-8');
-      const algorithm = 'aes-256-cbc';
-
-      const cipher = crypto.createDecipheriv(algorithm, key, iv);
-
-      let retVal = cipher.update(encrypted, 'hex', 'utf-8');
-      retVal += cipher.final('utf-8');
-      return retVal;
-    } catch (err) {
-      console.log(err);
-      throw err;
+    const pwd = process.env[envName];
+    if (!pwd) {
+      throw new Error(
+        `Environment variable "${envName}" is not set (required for SMTP signature "${signature}").`,
+      );
     }
+    return pwd;
   }
 }
