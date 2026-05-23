@@ -49,6 +49,7 @@ export class ConfigService {
     const finalConfig = { ...defaultConfig, ...environmentConfig };
 
     this.thisConfig = finalConfig;
+    console.info(`Configuration loaded for environment: ${environment}`);
 
     // DATABASE_URL bevorzugt aus Umgebungsvariable (z. B. .env, Docker secret).
     // Falls nicht gesetzt, aus config.json + DB_PASSWORD-Env zusammenbauen.
