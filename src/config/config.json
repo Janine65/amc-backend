@@ -5,6 +5,7 @@
       "app_name": "amc-administration",
       "app_desc": "AMC Administration",
       "node_port": 3001,
+      "host": "0.0.0.0",
       "json_indentation": 4,
       "dbhost": "host.docker.internal",
       "webhost": "http://localhost:4200",
@@ -37,6 +38,7 @@
       "database": "amcadmin",
       "db_user": "postgres",
       "port": 5439,
+      "host": "0.0.0.0",
       "defaultEmail": "HansjoergDutler"
     }
   }

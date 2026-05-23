@@ -8,6 +8,7 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { PrismaClientExceptionFilter } from './prisma-client-exception/prisma-client-exception.filter';
 import { ConfigService } from './config/config.service';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -54,7 +55,10 @@ async function bootstrap() {
 
   await configService.loadParams();
 
-  await app.listen(configService.get('node_port', 3000));
+  await (app as NestExpressApplication).listen(
+    configService.get('node_port', 3001),
+    configService.get('host', '0.0.0.0'),
+  );
 }
 bootstrap().catch((err) => {
   console.error(err);
