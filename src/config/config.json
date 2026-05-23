@@ -6,7 +6,7 @@
       "app_desc": "AMC Administration",
       "node_port": 3001,
       "json_indentation": 4,
-      "dbhost": "localhost",
+      "dbhost": "host.docker.internal",
       "webhost": "http://localhost:4200",
       "database": "amcadmin",
       "db_user": "postgres",
