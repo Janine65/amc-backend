@@ -10,7 +10,7 @@
       "webhost": "http://localhost:4200",
       "database": "amcadmin",
       "db_user": "postgres",
-      "port": 5437,
+      "port": 5432,
       "dbtype": "postgres",
       "defaultEmail": "JanineFranken",
       "userEmail": "Janine Franken",
