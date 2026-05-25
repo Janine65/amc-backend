@@ -4,10 +4,10 @@
       "config_id": "development",
       "app_name": "amc-administration",
       "app_desc": "AMC Administration",
-      "node_port": 3001,
+      "node_port": 3002,
       "host": "0.0.0.0",
       "json_indentation": 4,
-      "dbhost": "host.docker.internal",
+      "dbhost": "localhost",
       "webhost": "http://localhost:4200",
       "database": "amcadmin",
       "db_user": "postgres",
@@ -29,6 +29,11 @@
         "smtp_pwd_env": "SMTP_PWD_HANSJOERGDUTLER",
         "email_from": "AutoMotoClub Swissair <info@automoto-sr.info>"
       }
+    },
+    "test": {
+      "node_port": 3001,
+      "config_id": "test",
+      "dbhost": "host.docker.internal"
     },
     "production": {
       "config_id": "production",

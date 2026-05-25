@@ -5,6 +5,7 @@ import {
   IsDate,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
@@ -18,21 +19,32 @@ export class CreateAnlaesseDto {
   @Type(() => Date)
   @IsNotEmpty()
   @IsDate()
-  datum: Date;
+  datum!: Date;
   @IsString()
-  name: string;
+  @IsNotEmpty()
+  name!: string;
+  @IsOptional()
   @IsString()
   beschreibung?: string;
+  @IsOptional()
   @IsNumber()
   punkte?: number = 50;
+  @IsOptional()
   @IsBoolean()
   istkegeln?: boolean = false;
+  @IsOptional()
   @IsBoolean()
   istsamanlass?: boolean = false;
+  @IsOptional()
   @IsBoolean()
   nachkegeln?: boolean = false;
+  @IsOptional()
   @IsNumber()
   gaeste?: number = 0;
+  @IsOptional()
   @IsNumber()
   status?: number = 1;
+  @IsOptional()
+  @IsNumber()
+  anlaesseid?: number;
 }

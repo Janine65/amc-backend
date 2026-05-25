@@ -161,7 +161,10 @@ export class ClubmeisterService {
     });
 
     let i = 1;
-    const punkteMin = laClubmeister[0].punkte! * 0.4;
+    let punkteMin = 0;
+    if (laClubmeister.length > 0) {
+      punkteMin = laClubmeister[0].punkte! * 0.4;
+    }
     for (const clubmeister of laClubmeister) {
       clubmeister.rang = i;
       if (clubmeister.punkte! < punkteMin) {

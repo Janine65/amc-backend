@@ -726,6 +726,17 @@ export class AdressenService {
       };
     }
 
+    console.log('SMTP Debug', {
+      host: smtpConfig.smtp,
+      port: smtpConfig.smtp_port,
+      secure: true,
+      user: smtpConfig.smtp_user,
+      passLen: this.configService.getSmtpPassword(
+        emailBody.email_signature ?? '',
+      )?.length,
+      from: smtpConfig.email_from,
+    });
+
     const transporter: Transporter = createTransport({
       host: smtpConfig.smtp,
       port: smtpConfig.smtp_port,
@@ -736,18 +747,17 @@ export class AdressenService {
           emailBody.email_signature ?? '',
         ),
       },
+      logger: true,
+      debug: true,
     });
 
     // verify connection configuration
-    transporter.verify(function (error: unknown, success: boolean) {
-      if (error instanceof Error) {
-        if (error) {
-          console.error('SMTP Connection can not be verified', error.message);
-        } else if (success) {
-          console.log('Server is ready to take our messages');
-        }
-      }
-    });
+    try {
+      await transporter.verify();
+      console.log('SMTP OK');
+    } catch (e) {
+      console.error('SMTP verify failed:', e);
+    }
 
     const attachments: { filename: string; path: string }[] = [];
 

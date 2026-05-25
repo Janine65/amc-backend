@@ -84,7 +84,7 @@ export class ConfigService {
 
   /** Schlüssel, deren Werte beim Debug-Log maskiert werden. */
   private static readonly SENSITIVE_KEY_RE =
-    /(password|passwd|pwd|secret|token|api[_-]?key)/i;
+    /(password|passwd|secret|token|api[_-]?key)/i;
 
   /**
    * Liefert eine flache Kopie des Config-Objekts, in der Werte unter
@@ -117,8 +117,12 @@ export class ConfigService {
     ConfigService._thisSingelton = this;
     const defaultConfig = config.development;
     const environment = process.env.NODE_ENV ?? 'development';
-    const environmentConfig =
-      environment == 'development' ? defaultConfig : config.production;
+    const sections: Record<string, Partial<typeof defaultConfig>> = {
+      development: defaultConfig,
+      test: config.test,
+      production: config.production,
+    };
+    const environmentConfig = sections[environment] ?? defaultConfig;
     const finalConfig = { ...defaultConfig, ...environmentConfig };
 
     // ENV-Variablen überschreiben gleichnamige Keys in config.json.

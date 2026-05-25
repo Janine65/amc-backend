@@ -191,7 +191,10 @@ export class KegelmeisterService {
     });
 
     let i = 1;
-    const punkteMin = laKegelmeister[0].punkte! * 0.4;
+    let punkteMin = 0;
+    if (laKegelmeister.length > 0) {
+      punkteMin = laKegelmeister[0].punkte! * 0.4;
+    }
 
     for (const kegelmeister of laKegelmeister) {
       kegelmeister.rang = i;

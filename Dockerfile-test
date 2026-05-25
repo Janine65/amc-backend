@@ -8,7 +8,7 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 COPY . .
 # .env wird zur Build-Zeit für `prisma migrate deploy` gebraucht.
 # Sie wird via --mount=type=secret eingehängt und liegt NICHT im Layer.
-RUN --mount=type=secret,id=dotenv,target=/usr/src/app/.env \
+RUN --mount=type=secret,id=dotenv,target=/usr/src/app/.env.test \
     pnpm run db:deploy && pnpm run build
 
 # --- Stage 2: Runtime ---
