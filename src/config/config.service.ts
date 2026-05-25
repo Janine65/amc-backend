@@ -84,7 +84,7 @@ export class ConfigService {
 
   /** Schlüssel, deren Werte beim Debug-Log maskiert werden. */
   private static readonly SENSITIVE_KEY_RE =
-    /(password|passwd|secret|token|api[_-]?key)/i;
+    /(password|passwd|pwd|secret|token|api[_-]?key)/i;
 
   /**
    * Liefert eine flache Kopie des Config-Objekts, in der Werte unter
