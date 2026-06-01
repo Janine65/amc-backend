@@ -740,12 +740,19 @@ export class AdressenService {
     const transporter: Transporter = createTransport({
       host: smtpConfig.smtp,
       port: smtpConfig.smtp_port,
-      secure: true,
+      secure: smtpConfig.smtp_port === 465, // true bei 465, sonst false
+      requireTLS: smtpConfig.smtp_port !== 465, // STARTTLS erzwingen bei 587/25
       auth: {
         user: smtpConfig.smtp_user,
         pass: this.configService.getSmtpPassword(
           emailBody.email_signature ?? '',
         ),
+      },
+      tls: {
+        minVersion: 'TLSv1.2',
+        rejectUnauthorized: true, // Zertifikat des Servers prüfen (Standard: true)
+        servername: smtpConfig.smtp, // SNI – nützlich, falls host eine IP ist
+        // ciphers: 'TLSv1.2', // optional
       },
       logger: true,
       debug: true,
@@ -757,6 +764,11 @@ export class AdressenService {
       console.log('SMTP OK');
     } catch (e) {
       console.error('SMTP verify failed:', e);
+      return {
+        type: 'error',
+        message: e instanceof Error ? e.message : String(e),
+        data: {},
+      };
     }
 
     const attachments: { filename: string; path: string }[] = [];
@@ -784,7 +796,7 @@ export class AdressenService {
 
     transporter.close();
     return {
-      type: '250 Message received',
+      type: 'success',
       message: 'Email sent',
       data: {},
     };

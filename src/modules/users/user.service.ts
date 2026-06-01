@@ -81,8 +81,10 @@ export class UserService {
       email_body: 'Dein neues Passwort lautet: ' + newPassword,
       email_uploadfiles: '',
     };
-    await this.adressenService.sendEmail(emailBody);
-
+    const result = await this.adressenService.sendEmail(emailBody);
+    if (result.type === 'error') {
+      throw new Error(`Failed to send email: ${result.message}`);
+    }
     return user;
   }
 
