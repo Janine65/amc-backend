@@ -174,7 +174,7 @@ export class KegelkasseService {
             valign?: string;
             width: number;
             align?: string;
-            renderer?: (value: string | number) => string;
+            renderer?: (value: unknown) => string;
           }
       )[] = [
         {
@@ -182,8 +182,12 @@ export class KegelkasseService {
           label: 'Einheit',
           width: 80,
           align: 'right',
-          renderer: (value: string) => {
-            return typeof value == 'number' ? Number(value).toFixed(2) : value;
+          renderer: (value: unknown) => {
+            return typeof value === 'number'
+              ? value.toFixed(2)
+              : typeof value === 'string'
+                ? value
+                : '';
           },
         },
         { property: 'field', label: 'Anzahl', width: 80, align: 'right' },
@@ -192,8 +196,12 @@ export class KegelkasseService {
           label: 'Total',
           width: 80,
           align: 'right',
-          renderer: (value: string) => {
-            return typeof value == 'number' ? Number(value).toFixed(2) : value;
+          renderer: (value: unknown) => {
+            return typeof value === 'number'
+              ? value.toFixed(2)
+              : typeof value === 'string'
+                ? value
+                : '';
           },
         },
       ];
@@ -367,8 +375,7 @@ export class KegelkasseService {
       };
 
       const filenamePDF = filename.replace('.xlsx', '.pdf');
-      const pdf = new PDFDocumentWithTables();
-      pdf.arguments = {
+      const pdf = new PDFDocumentWithTables({
         autoFirstPage: true,
         bufferPages: true,
         layout: 'portrait',
@@ -377,6 +384,8 @@ export class KegelkasseService {
           Title: 'Kegelkasse ' + kegelDateFormat,
           Author: 'AutoMoto-Club Swissair, Janine Franken',
         },
+      }) as unknown as PDFKit.PDFDocument & {
+        table: (table: unknown, options?: unknown) => Promise<void>;
       };
       // Embed a font, set the font size, and render some text
       pdf
@@ -443,7 +452,7 @@ export class KegelkasseService {
 
       // Pipe its output somewhere, like to a file or HTTP response
       // See below for browser usage
-      pdf.pipe(createWriteStream(global.exports + filenamePDF));
+      pdf.pipe(createWriteStream(this.configService.exports + filenamePDF));
 
       // Finalize PDF file
       pdf.end();
@@ -477,7 +486,10 @@ export class KegelkasseService {
           receipt: { connect: { id: newReceipt.id } },
         },
       });
-      copyFileSync(global.exports + filenamePDF, path + newFilename);
+      copyFileSync(
+        this.configService.exports + filenamePDF,
+        path + newFilename,
+      );
       chmod(path + newFilename, '0640', (err) => {
         if (err) {
           console.log(err);

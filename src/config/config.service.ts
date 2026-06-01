@@ -176,26 +176,34 @@ export class ConfigService {
     let path = mainpath + '/documents/';
     if (!existsSync(path)) mkdirSync(path);
     this.documents = path;
+    console.debug(
+      `ConfigService initialized. Document path: ${this.documents}`,
+    );
 
     path = mainpath + '/public/';
     if (!existsSync(path)) mkdirSync(path);
     this.public = path;
+    console.debug(`ConfigService initialized. Public path: ${this.public}`);
 
     path = mainpath + '/public/uploads/';
     if (!existsSync(path)) mkdirSync(path);
     this.uploads = path;
+    console.debug(`ConfigService initialized. Uploads path: ${this.uploads}`);
 
     path = mainpath + '/public/exports/';
     if (!existsSync(path)) mkdirSync(path);
     this.exports = path;
+    console.debug(`ConfigService initialized. Exports path: ${this.exports}`);
 
     path = mainpath + '/public/assets/';
     if (!existsSync(path)) mkdirSync(path);
     this.assets = path;
+    console.debug(`ConfigService initialized. Assets path: ${this.assets}`);
 
     path = mainpath + '/logs/';
     if (!existsSync(path)) mkdirSync(path);
     this.log_dir = path;
+    console.debug(`ConfigService initialized. Logs path: ${this.log_dir}`);
   }
 
   get version(): string {
