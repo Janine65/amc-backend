@@ -8,7 +8,7 @@
       "host": "0.0.0.0",
       "json_indentation": 4,
       "dbhost": "localhost",
-      "webhost": "http://localhost:4200",
+      "webhost": "http://localhost:4201",
       "database": "amcadmin",
       "db_user": "postgres",
       "port": 5436,
@@ -33,7 +33,10 @@
     "test": {
       "node_port": 3001,
       "config_id": "test",
-      "dbhost": "host.docker.internal"
+      "webhost": "http://localhost:4200",
+      "dbhost": "host.docker.internal",
+      "defaultEmail": "JanineFranken",
+      "userEmail": "Janine Franken"
     },
     "production": {
       "config_id": "production",
