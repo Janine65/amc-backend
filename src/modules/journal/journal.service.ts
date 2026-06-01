@@ -201,7 +201,7 @@ export class JournalService {
           valign?: string;
           width: number;
           align?: string;
-          renderer?: (value: string | number) => string;
+          renderer?: (value: unknown) => string;
         }
     )[] = [
       {
@@ -210,8 +210,12 @@ export class JournalService {
         valign: 'top',
         width: 50,
         align: 'right',
-        renderer: (value: string | number) => {
-          return typeof value == 'number' ? Number(value).toFixed(0) : value;
+        renderer: (value: unknown) => {
+          return typeof value === 'number'
+            ? value.toFixed(0)
+            : typeof value === 'string'
+              ? value
+              : '';
         },
       },
       { property: 'date', label: 'Date', valign: 'top', width: 80 },
@@ -224,8 +228,12 @@ export class JournalService {
         valign: 'top',
         align: 'right',
         width: 100,
-        renderer: (value: string | number) => {
-          return typeof value == 'number' ? Number(value).toFixed(2) : value;
+        renderer: (value: unknown) => {
+          return typeof value === 'number'
+            ? value.toFixed(2)
+            : typeof value === 'string'
+              ? value
+              : '';
         },
       },
       { property: 'receipt', label: 'Receipt', valign: 'top', width: 250 },
@@ -401,7 +409,9 @@ export class JournalService {
           Title: 'Journal ' + year,
           Author: 'AutoMoto-Club Swissair, Janine Franken',
         },
-      });
+      }) as unknown as PDFKit.PDFDocument & {
+        table: (table: unknown, options?: unknown) => Promise<void>;
+      };
 
       // Pipe its output somewhere, like to a file or HTTP response
       // See below for browser usage
@@ -420,7 +430,7 @@ export class JournalService {
               valign?: string;
               width: number;
               align?: string;
-              renderer?: (value: string | number) => string;
+              renderer?: (value: unknown) => string;
             }
         )[];
         datas?: { [key: string]: string | { label: string } }[];
